@@ -1,0 +1,40 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8">
+<title>Trainer Ranking</title>
+<style>
+body { font-family: Arial; background: #fff; padding: 20px; }
+h1 { text-align: center; }
+table { width: 100%; border-collapse: collapse; }
+th, td { border: 1px solid #ccc; padding: 6px; text-align: center; }
+th { background-color: #eee; cursor: pointer; }
+</style></head><body>
+<h1>🏅 Trainer Rangliste</h1>
+<table id="rankingTable"><thead><tr>
+<th onclick="sortTable(0)">Name</th>
+<th onclick="sortTable(1)">Gesamtpunkte</th>
+<th onclick="sortTable(2)">Einzigartige Pokémon</th>
+<th onclick="sortTable(3)">Gesamtanzahl</th>
+</tr></thead><tbody>
+<tr><td><a href="trainer_pages/Nick.html">Nick</a></td><td>1077</td><td>3</td><td>3</td></tr>
+</tbody></table>
+<script>
+function sortTable(n) {
+  var table = document.getElementById("rankingTable"), rows, switching = true, dir = "desc", switchcount = 0;
+  while (switching) {
+    switching = false;
+    rows = table.rows;
+    for (var i = 1; i < (rows.length - 1); i++) {
+      var x = rows[i].getElementsByTagName("TD")[n];
+      var y = rows[i + 1].getElementsByTagName("TD")[n];
+      var cmpX = isNaN(x.innerHTML) ? x.innerHTML.toLowerCase() : parseFloat(x.innerHTML);
+      var cmpY = isNaN(y.innerHTML) ? y.innerHTML.toLowerCase() : parseFloat(y.innerHTML);
+      if ((dir == "asc" && cmpX > cmpY) || (dir == "desc" && cmpX < cmpY)) {
+        rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+        switching = true; switchcount++;
+        break;
+      }
+    }
+    if (switchcount == 0 && dir == "desc") { dir = "asc"; switching = true; }
+  }
+}
+</script><a href="index.html">← Zurück</a>
+</body></html>

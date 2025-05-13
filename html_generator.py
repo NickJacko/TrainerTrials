@@ -643,7 +643,6 @@ def generate_pokedex_with_filter(data):
     # → Du kannst manuell z. B. `data-rarity="Legendary"` an jedes `.card`-Div anhängen und über Dropdown filtern.
 
 def generate_homepage(output_file="index.html"):
-
     os.makedirs("output", exist_ok=True)
     with open(output_file, "w", encoding="utf-8") as f:
         f.write("""
