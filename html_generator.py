@@ -311,7 +311,7 @@ import os
 import requests
 from collections import defaultdict
 
-def generate_enhanced_pokedex(data, output_dir="output"):
+def generate_enhanced_pokedex(data, output_dir="."):
     import os
     from collections import defaultdict
     import requests
@@ -409,7 +409,7 @@ function filterDex() {
 
         sprite = sorted_entries[0]["sprite"] if sorted_entries else f"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{i}.png"
 
-        with open(f"{output_dir}/dex_detail/poke_{i:03d}_{safe_name}.html", "w", encoding="utf-8") as f:
+        with open(f"{output_dir}/dex_detail/{safe_name}.html", "w", encoding="utf-8") as f:
 
             f.write(f"""<!DOCTYPE html>
 <html>
@@ -474,7 +474,8 @@ function filterDex() {
 """)
 
 
-def generate_trainer_pages(data, output_dir="output"):
+def generate_trainer_pages(data, output_dir="."):
+
     import os
     os.makedirs(f"{output_dir}/trainer_pages", exist_ok=True)
 
@@ -489,7 +490,7 @@ def generate_trainer_pages(data, output_dir="output"):
         team_sorted = sorted(team, key=calc_pokepoints, reverse=True)
         total_points = sum(calc_pokepoints(p) for p in team_sorted)
 
-        with open(f"{output_dir}/trainer_{trainer}.html", "w", encoding="utf-8") as f:
+        with open(f"{output_dir}/trainer_pages/{trainer}.html", "w", encoding="utf-8") as f:
 
             f.write(f"""<!DOCTYPE html>
 <html>
@@ -536,7 +537,8 @@ def generate_trainer_pages(data, output_dir="output"):
 
 
 
-def generate_strongest_pokemon_ranking(data, output_file="output/ranking_pokemon.html"):
+def generate_strongest_pokemon_ranking(data, output_file="ranking_pokemon.html"):
+
     os.makedirs("output", exist_ok=True)
 
     def calc_points(p):
@@ -576,7 +578,8 @@ th { background-color: #eee; }
         f.write("</table><a href=\"index.html\">← Zurück</a></body></html>")
 
 
-def generate_trainer_ranking_page(data, output_file="output/trainer_ranking.html"):
+def generate_trainer_ranking_page(data, output_file="trainer_ranking.html"):
+
     os.makedirs("output", exist_ok=True)
 
     def calc_points(p):
@@ -639,7 +642,8 @@ def generate_pokedex_with_filter(data):
     generate_enhanced_pokedex(data)  # nutzt bereits rarity = Mythical / Legendary / etc.
     # → Du kannst manuell z. B. `data-rarity="Legendary"` an jedes `.card`-Div anhängen und über Dropdown filtern.
 
-def generate_homepage(output_file="output/index.html"):
+def generate_homepage(output_file="index.html"):
+
     os.makedirs("output", exist_ok=True)
     with open(output_file, "w", encoding="utf-8") as f:
         f.write("""
@@ -659,6 +663,7 @@ def generate_homepage(output_file="output/index.html"):
     }
     .button:hover { background: #45a049; }
   </style>
+                
 </head>
 <body>
   <h1>🎮 Welcome to the Pokémon Hub</h1>
@@ -739,7 +744,7 @@ def generate_evolution_announcement(username, from_name, to_name, output_file="e
   <div><span class="highlight">{from_name}</span> evolved into <span class="highlight">{to_name}</span>!</div>
 </body>
 </html>""")
-def generate_howto_page(output_file="output/howto.html"):
+def generate_howto_page(output_file="howto.html"):
     os.makedirs("output", exist_ok=True)
     with open(output_file, "w", encoding="utf-8") as f:
         f.write("""<!DOCTYPE html>
