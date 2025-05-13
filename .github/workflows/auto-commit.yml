@@ -1,28 +1,25 @@
-name: Auto Commit and Push
+name: Auto Commit HTML
 
 on:
   schedule:
-    - cron: '*/1 * * * *'
-  workflow_dispatch:
+    - cron: '*/1 * * * *'  # jede Minute
+  workflow_dispatch:       # manuell auslösbar
 
 jobs:
-  auto-commit:
+  commit-html:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v3
-        with:
-          persist-credentials: true
 
-      - name: Set up Git config
+      - name: Set Git config
         run: |
           git config --global user.name "AutoBot"
           git config --global user.email "bot@example.com"
 
-      - name: Commit all changes
+      - name: Commit only changed HTML files
         run: |
-          git add -A
-          git commit -m "🔁 Auto-update $(date)" || echo "No changes"
+          git add -u '*.html' || true
+          git diff --cached --quiet || git commit -m "🔁 Auto-update HTML files"
           git push
-
