@@ -111,7 +111,7 @@
     "Inkay": 1,
     "Kangaskhan": 2,
     "Klink": 2,
-    "Cyclizar": 1,
+    "Cyclizar": 2,
     "Wimpod": 1,
     "Gossifleur": 1,
     "Stakataka": 1,
@@ -3042,6 +3042,27 @@
       "evolution_line": [
         "Morelull",
         "Shiinotic"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Wiglett",
+      "level": 2,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 19,
+        "Attack": 20,
+        "Defense": 27,
+        "Sp.Attack": 8,
+        "Sp.Defense": 22,
+        "Speed": 25
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/960.png",
+      "stage": 1,
+      "evolution_line": [
+        "Wiglett",
+        "Wugtrio"
       ],
       "trainer": null
     }
