@@ -24,4 +24,5 @@ jobs:
         run: |
           git add -A
           git commit -m "🔁 Auto-update $(date)" || echo "No changes"
-          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:${{ github.ref }}
+          git push
+
