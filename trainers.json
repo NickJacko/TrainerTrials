@@ -75,17 +75,25 @@
     "Unown": 1,
     "Baltoy": 2,
     "Scorbunny": 2,
+<<<<<<< Updated upstream
     "Scorbunny": 2,
     "Spinda": 1,
     "Kecleon": 2,
 <<<<<<< Updated upstream
     "Flutter-mane": 2,
 =======
+=======
+    "Spinda": 1,
+    "Kecleon": 2,
+>>>>>>> Stashed changes
     "Flutter-mane": 1,
 >>>>>>> Stashed changes
     "Growlithe": 1,
     "Deino": 4,
+<<<<<<< Updated upstream
     "Deino": 4,
+=======
+>>>>>>> Stashed changes
     "Skrelp": 2,
     "Smoochum": 1,
     "Sneasel": 2,
@@ -98,12 +106,18 @@
     "Larvitar": 1,
     "Stonjourner": 2,
     "Bellsprout": 2,
+<<<<<<< Updated upstream
     "Stonjourner": 2,
     "Bellsprout": 2,
     "Trapinch": 1,
     "Aerodactyl": 1,
     "Skorupi": 2,
     "Skorupi": 2,
+=======
+    "Trapinch": 1,
+    "Aerodactyl": 1,
+    "Skorupi": 2,
+>>>>>>> Stashed changes
     "Falinks": 1,
     "Chingling": 1,
     "Ekans": 1,
@@ -127,7 +141,11 @@
     "Tropius": 1,
     "Cherubi": 2,
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     "Foongus": 3,
+=======
+    "Foongus": 2,
+>>>>>>> Stashed changes
 =======
     "Foongus": 2,
 >>>>>>> Stashed changes
@@ -136,6 +154,7 @@
     "Natu": 1,
     "Popplio": 3,
     "Bramblin": 2,
+<<<<<<< Updated upstream
     "Bramblin": 2,
     "Anorith": 1,
 <<<<<<< Updated upstream
@@ -143,6 +162,12 @@
     "Maschiff": 1,
     "Mudbray": 2,
 =======
+    "Magikarp": 3,
+    "Maschiff": 1,
+    "Mudbray": 1,
+>>>>>>> Stashed changes
+=======
+    "Anorith": 1,
     "Magikarp": 3,
     "Maschiff": 1,
     "Mudbray": 1,
@@ -158,6 +183,7 @@
     "Dunsparce": 1,
     "Squirtle": 1,
     "Zorua": 2,
+<<<<<<< Updated upstream
     "Zorua": 2,
     "Riolu": 1,
     "Rattata": 2,
@@ -168,6 +194,14 @@
     "Magnemite": 1,
     "Swinub": 2,
     "Swinub": 2,
+=======
+    "Riolu": 1,
+    "Rattata": 2,
+    "Xurkitree": 3,
+    "Cubone": 2,
+    "Magnemite": 1,
+    "Swinub": 2,
+>>>>>>> Stashed changes
     "Houndour": 1,
     "Heracross": 1,
     "Pansage": 1,
@@ -175,7 +209,11 @@
     "Snom": 1,
     "Impidimp": 2,
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     "Sandy-shocks": 2,
+=======
+    "Sandy-shocks": 1,
+>>>>>>> Stashed changes
 =======
     "Sandy-shocks": 1,
 >>>>>>> Stashed changes
@@ -183,8 +221,11 @@
     "Pansear": 1,
     "Bergmite": 2,
     "Rellor": 2,
+<<<<<<< Updated upstream
     "Bergmite": 2,
     "Rellor": 2,
+=======
+>>>>>>> Stashed changes
     "Vullaby": 1,
     "Turtonator": 1,
     "Passimian": 2,
@@ -192,7 +233,11 @@
     "Cryogonal": 1,
     "Pyukumuku": 1,
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     "Panpour": 3,
+=======
+    "Panpour": 4,
+>>>>>>> Stashed changes
 =======
     "Panpour": 4,
 >>>>>>> Stashed changes
@@ -200,6 +245,7 @@
     "Emolga": 2,
     "Duraludon": 1,
     "Hippopotas": 1,
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
     "Aipom": 2,
     "Zubat": 2,
@@ -216,30 +262,47 @@
     "Vanillite": 2,
     "Mime-jr": 2,
     "Nihilego": 2,
+=======
+    "Aipom": 1,
+    "Zubat": 2,
+    "Elgyem": 1,
+>>>>>>> Stashed changes
     "Vanillite": 2,
     "Mime-jr": 2,
     "Nihilego": 2,
     "Cyndaquil": 1,
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
     "Arrokuda": 2,
     "Stunky": 1,
     "Pincurchin": 1,
     "Wattrel": 3,
+<<<<<<< Updated upstream
     "Wattrel": 3,
+=======
+>>>>>>> Stashed changes
     "Jangmo-o": 1,
     "Skwovet": 1,
     "Milcery": 2,
     "Tyrunt": 2,
     "Eevee": 2,
+<<<<<<< Updated upstream
     "Milcery": 2,
     "Tyrunt": 2,
     "Eevee": 2,
+=======
+>>>>>>> Stashed changes
     "Shellder": 1,
     "Purrloin": 1,
     "Arctovish": 2,
     "Glimmet": 2,
+<<<<<<< Updated upstream
     "Arctovish": 2,
     "Glimmet": 2,
+=======
+>>>>>>> Stashed changes
     "Walking-wake": 1,
     "Dreepy": 3,
     "Pheromosa": 1,
@@ -250,13 +313,19 @@
     "Spoink": 1,
     "Qwilfish": 2,
     "Ponyta": 3,
+<<<<<<< Updated upstream
     "Qwilfish": 2,
     "Ponyta": 3,
+=======
+>>>>>>> Stashed changes
     "Porygon": 1,
 <<<<<<< Updated upstream
     "Sprigatito": 2,
 =======
     "Sprigatito": 1,
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
     "Taillow": 2,
     "Toxel": 1,
@@ -267,6 +336,7 @@
     "Turtwig": 1,
     "Morelull": 1,
     "Wiglett": 1,
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
     "Scyther": 1,
     "Lapras": 1,
@@ -287,6 +357,8 @@
     "Scatterbug": 1,
     "Sizzlipede": 1
 =======
+=======
+>>>>>>> Stashed changes
     "Kricketot": 1,
     "Clauncher": 1,
     "Piplup": 1,
@@ -371,6 +443,9 @@
     "Dewpider": 1,
     "Noibat": 1,
     "Toedscool": 1
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
   },
   "seen": [
@@ -3233,6 +3308,7 @@
     },
     {
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
       "name": "Scyther",
       "level": 1,
       "rarity": "Common",
@@ -3251,6 +3327,8 @@
         "Scyther",
         "Scizor"
 =======
+=======
+>>>>>>> Stashed changes
       "name": "Cyclizar",
       "level": 5,
       "rarity": "Common",
@@ -3267,11 +3345,15 @@
       "stage": 1,
       "evolution_line": [
         "Cyclizar"
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
       ],
       "trainer": null
     },
     {
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
       "name": "Flutter-mane",
       "level": 2,
@@ -3501,6 +3583,8 @@
         "Aipom",
         "Ambipom"
 =======
+=======
+>>>>>>> Stashed changes
       "name": "Kricketot",
       "level": 4,
       "rarity": "Common",
@@ -3518,11 +3602,15 @@
       "evolution_line": [
         "Kricketot",
         "Kricketune"
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
       ],
       "trainer": null
     },
     {
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
       "name": "Pawmi",
       "level": 36,
@@ -3543,6 +3631,8 @@
         "Pawmo",
         "Pawmot"
 =======
+=======
+>>>>>>> Stashed changes
       "name": "Clauncher",
       "level": 1,
       "rarity": "Common",
@@ -3560,14 +3650,22 @@
       "evolution_line": [
         "Clauncher",
         "Clawitzer"
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
       ],
       "trainer": null
     },
     {
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
       "name": "Munna",
       "level": 1,
+=======
+      "name": "Piplup",
+      "level": 8,
+>>>>>>> Stashed changes
 =======
       "name": "Piplup",
       "level": 8,
@@ -3577,6 +3675,7 @@
       "stats": {
         "HP": 1,
         "Attack": 2,
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
         "Defense": 11,
         "Sp.Attack": 10,
@@ -3674,6 +3773,8 @@
         "Carkol",
         "Coalossal"
 =======
+=======
+>>>>>>> Stashed changes
         "Defense": 28,
         "Sp.Attack": 27,
         "Sp.Defense": 12,
@@ -3685,12 +3786,16 @@
         "Piplup",
         "Prinplup",
         "Empoleon"
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
       ],
       "trainer": null
     },
     {
       "name": "Magikarp",
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
       "level": 4,
       "rarity": "Common",
@@ -3702,6 +3807,8 @@
         "Sp.Attack": 14,
         "Sp.Defense": 30,
 =======
+=======
+>>>>>>> Stashed changes
       "level": 82,
       "rarity": "Common",
       "shiny": false,
@@ -3711,6 +3818,9 @@
         "Defense": 30,
         "Sp.Attack": 9,
         "Sp.Defense": 8,
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
         "Speed": 30
       },
@@ -3723,6 +3833,7 @@
       "trainer": null
     },
     {
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
       "name": "Sandy-shocks",
       "level": 7,
@@ -3741,6 +3852,8 @@
       "evolution_line": [
         "Sandy-shocks"
 =======
+=======
+>>>>>>> Stashed changes
       "name": "Arrokuda",
       "level": 10,
       "rarity": "Common",
@@ -3758,11 +3871,15 @@
       "evolution_line": [
         "Arrokuda",
         "Barraskewda"
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
       ],
       "trainer": null
     },
     {
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
       "name": "Stunfisk",
       "level": 1,
@@ -3781,6 +3898,8 @@
       "evolution_line": [
         "Stunfisk"
 =======
+=======
+>>>>>>> Stashed changes
       "name": "Seel",
       "level": 3,
       "rarity": "Common",
@@ -3798,6 +3917,9 @@
       "evolution_line": [
         "Seel",
         "Dewgong"
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
       ],
       "trainer": null
@@ -3809,6 +3931,7 @@
       "shiny": false,
       "stats": {
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
         "HP": 6,
         "Attack": 2,
         "Defense": 0,
@@ -3816,12 +3939,17 @@
         "Sp.Defense": 12,
         "Speed": 29
 =======
+=======
+>>>>>>> Stashed changes
         "HP": 17,
         "Attack": 13,
         "Defense": 25,
         "Sp.Attack": 0,
         "Sp.Defense": 21,
         "Speed": 1
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
       },
       "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/590.png",
@@ -3834,7 +3962,11 @@
     },
     {
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
       "name": "Machop",
+=======
+      "name": "Nidoran-f",
+>>>>>>> Stashed changes
 =======
       "name": "Nidoran-f",
 >>>>>>> Stashed changes
@@ -3842,6 +3974,7 @@
       "rarity": "Common",
       "shiny": false,
       "stats": {
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
         "HP": 6,
         "Attack": 8,
@@ -3857,6 +3990,8 @@
         "Machoke",
         "Machamp"
 =======
+=======
+>>>>>>> Stashed changes
         "HP": 17,
         "Attack": 5,
         "Defense": 9,
@@ -3870,13 +4005,20 @@
         "Nidoran-f",
         "Nidorina",
         "Nidoqueen"
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
       ],
       "trainer": null
     },
     {
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
       "name": "Caterpie",
+=======
+      "name": "Volbeat",
+>>>>>>> Stashed changes
 =======
       "name": "Volbeat",
 >>>>>>> Stashed changes
@@ -3884,6 +4026,7 @@
       "rarity": "Common",
       "shiny": false,
       "stats": {
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
         "HP": 25,
         "Attack": 5,
@@ -3899,6 +4042,8 @@
         "Metapod",
         "Butterfree"
 =======
+=======
+>>>>>>> Stashed changes
         "HP": 6,
         "Attack": 25,
         "Defense": 8,
@@ -3910,14 +4055,20 @@
       "stage": 1,
       "evolution_line": [
         "Volbeat"
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
       ],
       "trainer": null
     },
     {
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
       "name": "Vanillite",
 =======
+=======
+>>>>>>> Stashed changes
       "name": "Glimmet",
       "level": 45,
       "rarity": "Common",
@@ -4238,11 +4389,15 @@
     },
     {
       "name": "Stonjourner",
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
       "level": 4,
       "rarity": "Common",
       "shiny": false,
       "stats": {
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
         "HP": 25,
         "Attack": 5,
@@ -4258,6 +4413,8 @@
         "Vanillish",
         "Vanilluxe"
 =======
+=======
+>>>>>>> Stashed changes
         "HP": 7,
         "Attack": 6,
         "Defense": 5,
@@ -4627,12 +4784,16 @@
       "evolution_line": [
         "Shuppet",
         "Banette"
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
       ],
       "trainer": null
     },
     {
       "name": "Pidove",
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
       "level": 6,
       "rarity": "Common",
@@ -4645,6 +4806,8 @@
         "Sp.Defense": 26,
         "Speed": 11
 =======
+=======
+>>>>>>> Stashed changes
       "level": 1,
       "rarity": "Common",
       "shiny": false,
@@ -4655,6 +4818,9 @@
         "Sp.Attack": 0,
         "Sp.Defense": 23,
         "Speed": 4
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
       },
       "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/519.png",
@@ -4667,6 +4833,7 @@
       "trainer": null
     },
     {
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
       "name": "Larvesta",
       "level": 4,
@@ -4686,6 +4853,8 @@
         "Larvesta",
         "Volcarona"
 =======
+=======
+>>>>>>> Stashed changes
       "name": "Rattata",
       "level": 51,
       "rarity": "Common",
@@ -4703,14 +4872,20 @@
       "evolution_line": [
         "Rattata",
         "Raticate"
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
       ],
       "trainer": null
     },
     {
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
       "name": "Scatterbug",
 =======
+=======
+>>>>>>> Stashed changes
       "name": "Vulpix",
       "level": 1,
       "rarity": "Rare",
@@ -4733,11 +4908,15 @@
     },
     {
       "name": "Bagon",
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
       "level": 1,
       "rarity": "Common",
       "shiny": false,
       "stats": {
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
         "HP": 27,
         "Attack": 9,
@@ -4753,6 +4932,8 @@
         "Spewpa",
         "Vivillon"
 =======
+=======
+>>>>>>> Stashed changes
         "HP": 25,
         "Attack": 22,
         "Defense": 11,
@@ -4766,14 +4947,20 @@
         "Bagon",
         "Shelgon",
         "Salamence"
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
       ],
       "trainer": null
     },
     {
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
       "name": "Cramorant",
 =======
+=======
+>>>>>>> Stashed changes
       "name": "Pinsir",
       "level": 7,
       "rarity": "Common",
@@ -5156,12 +5343,16 @@
     },
     {
       "name": "Togepi",
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
       "level": 1,
       "rarity": "Common",
       "shiny": false,
       "stats": {
         "HP": 24,
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
         "Attack": 3,
         "Defense": 3,
@@ -5174,6 +5365,8 @@
       "evolution_line": [
         "Cramorant"
 =======
+=======
+>>>>>>> Stashed changes
         "Attack": 30,
         "Defense": 18,
         "Sp.Attack": 5,
@@ -6598,6 +6791,9 @@
         "Starly",
         "Staravia",
         "Staraptor"
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
       ],
       "trainer": null
