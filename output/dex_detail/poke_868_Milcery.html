@@ -40,4 +40,11 @@
   <script>
     function filterRows() {
       const showCaughtOnly = document.getElementById("caughtOnly").checked;
-      const rows = document.
+      const rows = document.querySelectorAll("#dataTable tbody tr");
+      rows.forEach(row => {
+        row.style.display = (!showCaughtOnly || row.classList.contains("caught")) ? "" : "none";
+      });
+    }
+  </script>
+</body>
+</html>
