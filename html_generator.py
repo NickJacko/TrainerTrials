@@ -370,7 +370,7 @@ input { width: 90%; max-width: 400px; margin: 10px auto; padding: 10px; font-siz
             encounter_n = encounter_count.get(name, 0)
             f.write(f"""
 <div class="card">
-  <a href="dex_detail/poke_{i:03d}_{safe_name}.html">
+  <a href="dex_detail/{safe_name}.html">
     <img src="{sprite}" alt="{name}">
     <div>#{i:03d}<br>{name}</div>
     <div class="small">{encounter_n} seen / {caught_n} caught</div>
