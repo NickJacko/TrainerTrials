@@ -1,0 +1,3004 @@
+{
+  "trainers": {
+    "Nick": {
+      "coins": 63,
+      "team": [
+        {
+          "name": "Frigibax",
+          "level": 2,
+          "rarity": "Common",
+          "shiny": false,
+          "stats": {
+            "HP": 23,
+            "Attack": 22,
+            "Defense": 10,
+            "Sp.Attack": 12,
+            "Sp.Defense": 18,
+            "Speed": 3
+          },
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/996.png",
+          "stage": 1,
+          "evolution_line": [
+            "Frigibax",
+            "Arctibax",
+            "Baxcalibur"
+          ]
+        },
+        {
+          "name": "Unown",
+          "level": 1,
+          "rarity": "Common",
+          "shiny": false,
+          "stats": {
+            "HP": 15,
+            "Attack": 18,
+            "Defense": 11,
+            "Sp.Attack": 27,
+            "Sp.Defense": 29,
+            "Speed": 9
+          },
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/201.png",
+          "stage": 1,
+          "evolution_line": [
+            "Unown"
+          ]
+        },
+        {
+          "name": "Falinks",
+          "level": 5,
+          "rarity": "Common",
+          "shiny": false,
+          "stats": {
+            "HP": 0,
+            "Attack": 26,
+            "Defense": 19,
+            "Sp.Attack": 11,
+            "Sp.Defense": 21,
+            "Speed": 3
+          },
+          "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/870.png",
+          "stage": 1,
+          "evolution_line": [
+            "Falinks"
+          ]
+        }
+      ]
+    }
+  },
+  "encounters": {
+    "Happiny": 1,
+    "Iron-hands": 1,
+    "Buneary": 1,
+    "Pikipek": 1,
+    "Frigibax": 1,
+    "Solosis": 1,
+    "Unown": 1,
+    "Baltoy": 2,
+    "Scorbunny": 1,
+    "Spinda": 1,
+    "Kecleon": 1,
+    "Flutter-mane": 1,
+    "Growlithe": 1,
+    "Deino": 3,
+    "Skrelp": 2,
+    "Smoochum": 1,
+    "Sneasel": 2,
+    "Weedle": 2,
+    "Roaring-moon": 2,
+    "Psyduck": 1,
+    "Gothita": 1,
+    "Electrike": 2,
+    "Gulpin": 1,
+    "Larvitar": 1,
+    "Stonjourner": 1,
+    "Bellsprout": 1,
+    "Trapinch": 1,
+    "Aerodactyl": 1,
+    "Skorupi": 1,
+    "Falinks": 1,
+    "Chingling": 1,
+    "Ekans": 1,
+    "Geodude": 1,
+    "Drowzee": 3,
+    "Minun": 2,
+    "Zangoose": 1,
+    "Yamask": 1,
+    "Corsola": 1,
+    "Tadbulb": 1,
+    "Dedenne": 1,
+    "Yungoos": 1,
+    "Glameow": 1,
+    "Inkay": 1,
+    "Kangaskhan": 2,
+    "Klink": 2,
+    "Cyclizar": 1,
+    "Wimpod": 1,
+    "Gossifleur": 1,
+    "Stakataka": 1,
+    "Tropius": 1,
+    "Cherubi": 2,
+    "Foongus": 1,
+    "Cleffa": 1,
+    "Phanpy": 1,
+    "Natu": 1,
+    "Popplio": 3,
+    "Bramblin": 1,
+    "Anorith": 1,
+    "Magikarp": 2,
+    "Maschiff": 1,
+    "Mudbray": 1,
+    "Crabrawler": 1,
+    "Patrat": 2,
+    "Cottonee": 1,
+    "Bruxish": 2,
+    "Honedge": 1,
+    "Charcadet": 1,
+    "Budew": 1,
+    "Tauros": 1,
+    "Dunsparce": 1,
+    "Squirtle": 1,
+    "Zorua": 1,
+    "Riolu": 1,
+    "Rattata": 1,
+    "Xurkitree": 2,
+    "Cubone": 2,
+    "Magnemite": 1,
+    "Swinub": 1,
+    "Houndour": 1,
+    "Heracross": 1,
+    "Pansage": 1,
+    "Shroomish": 2,
+    "Snom": 1,
+    "Impidimp": 1,
+    "Sandy-shocks": 1,
+    "Starly": 1,
+    "Pansear": 1,
+    "Bergmite": 1,
+    "Rellor": 1,
+    "Vullaby": 1,
+    "Turtonator": 1,
+    "Passimian": 2,
+    "Pawmi": 1,
+    "Cryogonal": 1,
+    "Pyukumuku": 1,
+    "Panpour": 3,
+    "Cramorant": 1,
+    "Emolga": 2,
+    "Duraludon": 1,
+    "Hippopotas": 1,
+    "Aipom": 1,
+    "Zubat": 1,
+    "Elgyem": 1,
+    "Vanillite": 1,
+    "Mime-jr": 1,
+    "Nihilego": 1,
+    "Cyndaquil": 1,
+    "Arrokuda": 1,
+    "Stunky": 1,
+    "Pincurchin": 1,
+    "Wattrel": 1,
+    "Jangmo-o": 1,
+    "Skwovet": 1,
+    "Milcery": 1,
+    "Tyrunt": 1,
+    "Eevee": 1,
+    "Shellder": 1,
+    "Purrloin": 1,
+    "Arctovish": 1,
+    "Glimmet": 1,
+    "Walking-wake": 1,
+    "Dreepy": 1,
+    "Pheromosa": 1,
+    "Drampa": 1,
+    "Shieldon": 1,
+    "Throh": 1,
+    "Tinkatink": 1,
+    "Spoink": 1,
+    "Qwilfish": 1,
+    "Ponyta": 1,
+    "Porygon": 1,
+    "Sprigatito": 1,
+    "Taillow": 1,
+    "Toxel": 1,
+    "Venonat": 1,
+    "Fuecoco": 1,
+    "Spinarak": 1,
+    "Smeargle": 1,
+    "Turtwig": 1
+  },
+  "seen": [
+    {
+      "name": "Carvanha",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 5,
+        "Attack": 26,
+        "Defense": 8,
+        "Sp.Attack": 26,
+        "Sp.Defense": 31,
+        "Speed": 9
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/318.png",
+      "stage": 1,
+      "evolution_line": [
+        "Carvanha",
+        "Sharpedo"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Happiny",
+      "level": 2,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 12,
+        "Attack": 19,
+        "Defense": 9,
+        "Sp.Attack": 26,
+        "Sp.Defense": 27,
+        "Speed": 16
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/440.png",
+      "stage": 1,
+      "evolution_line": [
+        "Happiny",
+        "Chansey",
+        "Blissey"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Iron-hands",
+      "level": 25,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 23,
+        "Attack": 2,
+        "Defense": 0,
+        "Sp.Attack": 3,
+        "Sp.Defense": 4,
+        "Speed": 23
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/992.png",
+      "stage": 1,
+      "evolution_line": [
+        "Iron-hands"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Buneary",
+      "level": 7,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 9,
+        "Attack": 5,
+        "Defense": 21,
+        "Sp.Attack": 4,
+        "Sp.Defense": 21,
+        "Speed": 21
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/427.png",
+      "stage": 1,
+      "evolution_line": [
+        "Buneary",
+        "Lopunny"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Pikipek",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 13,
+        "Attack": 18,
+        "Defense": 31,
+        "Sp.Attack": 4,
+        "Sp.Defense": 29,
+        "Speed": 9
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/731.png",
+      "stage": 1,
+      "evolution_line": [
+        "Pikipek",
+        "Trumbeak",
+        "Toucannon"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Frigibax",
+      "level": 2,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 23,
+        "Attack": 22,
+        "Defense": 10,
+        "Sp.Attack": 12,
+        "Sp.Defense": 18,
+        "Speed": 3
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/996.png",
+      "stage": 1,
+      "evolution_line": [
+        "Frigibax",
+        "Arctibax",
+        "Baxcalibur"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Solosis",
+      "level": 5,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 17,
+        "Attack": 24,
+        "Defense": 2,
+        "Sp.Attack": 22,
+        "Sp.Defense": 8,
+        "Speed": 21
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/577.png",
+      "stage": 1,
+      "evolution_line": [
+        "Solosis",
+        "Duosion",
+        "Reuniclus"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Unown",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 15,
+        "Attack": 18,
+        "Defense": 11,
+        "Sp.Attack": 27,
+        "Sp.Defense": 29,
+        "Speed": 9
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/201.png",
+      "stage": 1,
+      "evolution_line": [
+        "Unown"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Baltoy",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 7,
+        "Attack": 16,
+        "Defense": 9,
+        "Sp.Attack": 20,
+        "Sp.Defense": 18,
+        "Speed": 12
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/343.png",
+      "stage": 1,
+      "evolution_line": [
+        "Baltoy",
+        "Claydol"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Scorbunny",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 31,
+        "Attack": 10,
+        "Defense": 21,
+        "Sp.Attack": 3,
+        "Sp.Defense": 25,
+        "Speed": 29
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/813.png",
+      "stage": 1,
+      "evolution_line": [
+        "Scorbunny",
+        "Raboot",
+        "Cinderace"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Gulpin",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 10,
+        "Attack": 22,
+        "Defense": 18,
+        "Sp.Attack": 8,
+        "Sp.Defense": 19,
+        "Speed": 12
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/316.png",
+      "stage": 1,
+      "evolution_line": [
+        "Gulpin",
+        "Swalot"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Trapinch",
+      "level": 2,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 26,
+        "Attack": 15,
+        "Defense": 22,
+        "Sp.Attack": 8,
+        "Sp.Defense": 16,
+        "Speed": 13
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/328.png",
+      "stage": 1,
+      "evolution_line": [
+        "Trapinch",
+        "Vibrava",
+        "Flygon"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Aerodactyl",
+      "level": 7,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 19,
+        "Attack": 7,
+        "Defense": 19,
+        "Sp.Attack": 20,
+        "Sp.Defense": 18,
+        "Speed": 19
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/142.png",
+      "stage": 1,
+      "evolution_line": [
+        "Aerodactyl"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Skorupi",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 26,
+        "Attack": 3,
+        "Defense": 28,
+        "Sp.Attack": 9,
+        "Sp.Defense": 3,
+        "Speed": 19
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/451.png",
+      "stage": 1,
+      "evolution_line": [
+        "Skorupi",
+        "Drapion"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Weedle",
+      "level": 9,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 19,
+        "Attack": 26,
+        "Defense": 16,
+        "Sp.Attack": 4,
+        "Sp.Defense": 8,
+        "Speed": 29
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/13.png",
+      "stage": 1,
+      "evolution_line": [
+        "Weedle",
+        "Kakuna",
+        "Beedrill"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Ekans",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 17,
+        "Attack": 7,
+        "Defense": 20,
+        "Sp.Attack": 10,
+        "Sp.Defense": 16,
+        "Speed": 7
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/23.png",
+      "stage": 1,
+      "evolution_line": [
+        "Ekans",
+        "Arbok"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Geodude",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 14,
+        "Attack": 4,
+        "Defense": 1,
+        "Sp.Attack": 13,
+        "Sp.Defense": 18,
+        "Speed": 25
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/74.png",
+      "stage": 1,
+      "evolution_line": [
+        "Geodude",
+        "Graveler",
+        "Golem"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Drowzee",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 1,
+        "Attack": 17,
+        "Defense": 2,
+        "Sp.Attack": 8,
+        "Sp.Defense": 22,
+        "Speed": 3
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/96.png",
+      "stage": 1,
+      "evolution_line": [
+        "Drowzee",
+        "Hypno"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Yamask",
+      "level": 2,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 27,
+        "Attack": 21,
+        "Defense": 18,
+        "Sp.Attack": 25,
+        "Sp.Defense": 4,
+        "Speed": 21
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/562.png",
+      "stage": 1,
+      "evolution_line": [
+        "Yamask",
+        "Cofagrigus"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Corsola",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 2,
+        "Attack": 4,
+        "Defense": 10,
+        "Sp.Attack": 30,
+        "Sp.Defense": 2,
+        "Speed": 27
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/222.png",
+      "stage": 1,
+      "evolution_line": [
+        "Corsola",
+        "Cursola"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Tadbulb",
+      "level": 2,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 1,
+        "Attack": 25,
+        "Defense": 30,
+        "Sp.Attack": 10,
+        "Sp.Defense": 18,
+        "Speed": 27
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/938.png",
+      "stage": 1,
+      "evolution_line": [
+        "Tadbulb",
+        "Bellibolt"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Dedenne",
+      "level": 3,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 27,
+        "Attack": 24,
+        "Defense": 12,
+        "Sp.Attack": 17,
+        "Sp.Defense": 7,
+        "Speed": 26
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/702.png",
+      "stage": 1,
+      "evolution_line": [
+        "Dedenne"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Yungoos",
+      "level": 3,
+      "rarity": "Rare",
+      "shiny": false,
+      "stats": {
+        "HP": 1,
+        "Attack": 18,
+        "Defense": 21,
+        "Sp.Attack": 5,
+        "Sp.Defense": 12,
+        "Speed": 0
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/734.png",
+      "stage": 1,
+      "evolution_line": [
+        "Yungoos",
+        "Gumshoos"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Glameow",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 18,
+        "Attack": 13,
+        "Defense": 23,
+        "Sp.Attack": 6,
+        "Sp.Defense": 18,
+        "Speed": 9
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/431.png",
+      "stage": 1,
+      "evolution_line": [
+        "Glameow",
+        "Purugly"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Electrike",
+      "level": 2,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 10,
+        "Attack": 15,
+        "Defense": 30,
+        "Sp.Attack": 9,
+        "Sp.Defense": 18,
+        "Speed": 14
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/309.png",
+      "stage": 1,
+      "evolution_line": [
+        "Electrike",
+        "Manectric"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Inkay",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 27,
+        "Attack": 13,
+        "Defense": 21,
+        "Sp.Attack": 17,
+        "Sp.Defense": 15,
+        "Speed": 24
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/686.png",
+      "stage": 1,
+      "evolution_line": [
+        "Inkay",
+        "Malamar"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Kangaskhan",
+      "level": 6,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 11,
+        "Attack": 16,
+        "Defense": 6,
+        "Sp.Attack": 7,
+        "Sp.Defense": 23,
+        "Speed": 5
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/115.png",
+      "stage": 1,
+      "evolution_line": [
+        "Kangaskhan"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Klink",
+      "level": 2,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 11,
+        "Attack": 3,
+        "Defense": 9,
+        "Sp.Attack": 1,
+        "Sp.Defense": 7,
+        "Speed": 13
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/599.png",
+      "stage": 1,
+      "evolution_line": [
+        "Klink",
+        "Klang",
+        "Klinklang"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Cyclizar",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 24,
+        "Attack": 2,
+        "Defense": 22,
+        "Sp.Attack": 28,
+        "Sp.Defense": 21,
+        "Speed": 18
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/967.png",
+      "stage": 1,
+      "evolution_line": [
+        "Cyclizar"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Wimpod",
+      "level": 2,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 20,
+        "Attack": 1,
+        "Defense": 27,
+        "Sp.Attack": 7,
+        "Sp.Defense": 0,
+        "Speed": 7
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/767.png",
+      "stage": 1,
+      "evolution_line": [
+        "Wimpod",
+        "Golisopod"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Baltoy",
+      "level": 2,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 23,
+        "Attack": 15,
+        "Defense": 22,
+        "Sp.Attack": 26,
+        "Sp.Defense": 29,
+        "Speed": 24
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/343.png",
+      "stage": 1,
+      "evolution_line": [
+        "Baltoy",
+        "Claydol"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Gossifleur",
+      "level": 2,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 31,
+        "Attack": 23,
+        "Defense": 28,
+        "Sp.Attack": 7,
+        "Sp.Defense": 19,
+        "Speed": 17
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/829.png",
+      "stage": 1,
+      "evolution_line": [
+        "Gossifleur",
+        "Eldegoss"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Stakataka",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 24,
+        "Attack": 1,
+        "Defense": 23,
+        "Sp.Attack": 16,
+        "Sp.Defense": 12,
+        "Speed": 13
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/805.png",
+      "stage": 1,
+      "evolution_line": [
+        "Stakataka"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Tropius",
+      "level": 2,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 19,
+        "Attack": 5,
+        "Defense": 28,
+        "Sp.Attack": 24,
+        "Sp.Defense": 8,
+        "Speed": 27
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/357.png",
+      "stage": 1,
+      "evolution_line": [
+        "Tropius"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Cherubi",
+      "level": 12,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 16,
+        "Attack": 14,
+        "Defense": 31,
+        "Sp.Attack": 19,
+        "Sp.Defense": 19,
+        "Speed": 12
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/420.png",
+      "stage": 1,
+      "evolution_line": [
+        "Cherubi",
+        "Cherrim"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Foongus",
+      "level": 6,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 9,
+        "Attack": 23,
+        "Defense": 4,
+        "Sp.Attack": 5,
+        "Sp.Defense": 24,
+        "Speed": 25
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/590.png",
+      "stage": 1,
+      "evolution_line": [
+        "Foongus",
+        "Amoonguss"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Cleffa",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 8,
+        "Attack": 2,
+        "Defense": 21,
+        "Sp.Attack": 12,
+        "Sp.Defense": 18,
+        "Speed": 29
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/173.png",
+      "stage": 1,
+      "evolution_line": [
+        "Cleffa",
+        "Clefairy",
+        "Clefable"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Phanpy",
+      "level": 4,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 20,
+        "Attack": 23,
+        "Defense": 14,
+        "Sp.Attack": 20,
+        "Sp.Defense": 3,
+        "Speed": 2
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/231.png",
+      "stage": 1,
+      "evolution_line": [
+        "Phanpy",
+        "Donphan"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Natu",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 24,
+        "Attack": 28,
+        "Defense": 0,
+        "Sp.Attack": 21,
+        "Sp.Defense": 22,
+        "Speed": 15
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/177.png",
+      "stage": 1,
+      "evolution_line": [
+        "Natu",
+        "Xatu"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Deino",
+      "level": 9,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 25,
+        "Attack": 6,
+        "Defense": 9,
+        "Sp.Attack": 30,
+        "Sp.Defense": 9,
+        "Speed": 13
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/633.png",
+      "stage": 1,
+      "evolution_line": [
+        "Deino",
+        "Zweilous",
+        "Hydreigon"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Popplio",
+      "level": 5,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 27,
+        "Attack": 12,
+        "Defense": 17,
+        "Sp.Attack": 4,
+        "Sp.Defense": 19,
+        "Speed": 19
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/728.png",
+      "stage": 1,
+      "evolution_line": [
+        "Popplio",
+        "Brionne",
+        "Primarina"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Sneasel",
+      "level": 2,
+      "rarity": "Rare",
+      "shiny": false,
+      "stats": {
+        "HP": 31,
+        "Attack": 26,
+        "Defense": 8,
+        "Sp.Attack": 6,
+        "Sp.Defense": 2,
+        "Speed": 24
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/215.png",
+      "stage": 1,
+      "evolution_line": [
+        "Sneasel",
+        "Weavile"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Klink",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 10,
+        "Attack": 5,
+        "Defense": 9,
+        "Sp.Attack": 27,
+        "Sp.Defense": 12,
+        "Speed": 31
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/599.png",
+      "stage": 1,
+      "evolution_line": [
+        "Klink",
+        "Klang",
+        "Klinklang"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Anorith",
+      "level": 3,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 17,
+        "Attack": 15,
+        "Defense": 21,
+        "Sp.Attack": 26,
+        "Sp.Defense": 22,
+        "Speed": 15
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/347.png",
+      "stage": 1,
+      "evolution_line": [
+        "Anorith",
+        "Armaldo"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Magikarp",
+      "level": 2,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 2,
+        "Attack": 15,
+        "Defense": 19,
+        "Sp.Attack": 23,
+        "Sp.Defense": 24,
+        "Speed": 8
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/129.png",
+      "stage": 1,
+      "evolution_line": [
+        "Magikarp",
+        "Gyarados"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Maschiff",
+      "level": 7,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 15,
+        "Attack": 6,
+        "Defense": 19,
+        "Sp.Attack": 15,
+        "Sp.Defense": 24,
+        "Speed": 18
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/942.png",
+      "stage": 1,
+      "evolution_line": [
+        "Maschiff",
+        "Mabosstiff"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Drowzee",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 18,
+        "Attack": 8,
+        "Defense": 1,
+        "Sp.Attack": 20,
+        "Sp.Defense": 22,
+        "Speed": 9
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/96.png",
+      "stage": 1,
+      "evolution_line": [
+        "Drowzee",
+        "Hypno"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Crabrawler",
+      "level": 15,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 5,
+        "Attack": 1,
+        "Defense": 25,
+        "Sp.Attack": 31,
+        "Sp.Defense": 29,
+        "Speed": 0
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/739.png",
+      "stage": 1,
+      "evolution_line": [
+        "Crabrawler",
+        "Crabominable"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Patrat",
+      "level": 13,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 15,
+        "Attack": 26,
+        "Defense": 11,
+        "Sp.Attack": 1,
+        "Sp.Defense": 9,
+        "Speed": 11
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/504.png",
+      "stage": 1,
+      "evolution_line": [
+        "Patrat",
+        "Watchog"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Cottonee",
+      "level": 4,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 12,
+        "Attack": 2,
+        "Defense": 23,
+        "Sp.Attack": 15,
+        "Sp.Defense": 3,
+        "Speed": 12
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/546.png",
+      "stage": 1,
+      "evolution_line": [
+        "Cottonee",
+        "Whimsicott"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Bruxish",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 9,
+        "Attack": 2,
+        "Defense": 6,
+        "Sp.Attack": 13,
+        "Sp.Defense": 19,
+        "Speed": 16
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/779.png",
+      "stage": 1,
+      "evolution_line": [
+        "Bruxish"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Honedge",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 2,
+        "Attack": 9,
+        "Defense": 12,
+        "Sp.Attack": 29,
+        "Sp.Defense": 31,
+        "Speed": 19
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/679.png",
+      "stage": 1,
+      "evolution_line": [
+        "Honedge",
+        "Doublade",
+        "Aegislash"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Charcadet",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 25,
+        "Attack": 11,
+        "Defense": 0,
+        "Sp.Attack": 16,
+        "Sp.Defense": 16,
+        "Speed": 1
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/935.png",
+      "stage": 1,
+      "evolution_line": [
+        "Charcadet",
+        "Armarouge"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Budew",
+      "level": 3,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 8,
+        "Attack": 10,
+        "Defense": 8,
+        "Sp.Attack": 26,
+        "Sp.Defense": 29,
+        "Speed": 21
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/406.png",
+      "stage": 1,
+      "evolution_line": [
+        "Budew",
+        "Roselia",
+        "Roserade"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Tauros",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 25,
+        "Attack": 23,
+        "Defense": 29,
+        "Sp.Attack": 25,
+        "Sp.Defense": 27,
+        "Speed": 29
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/128.png",
+      "stage": 1,
+      "evolution_line": [
+        "Tauros"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Dunsparce",
+      "level": 10,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 1,
+        "Attack": 23,
+        "Defense": 8,
+        "Sp.Attack": 10,
+        "Sp.Defense": 15,
+        "Speed": 18
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/206.png",
+      "stage": 1,
+      "evolution_line": [
+        "Dunsparce",
+        "Dudunsparce"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Squirtle",
+      "level": 3,
+      "rarity": "Rare",
+      "shiny": false,
+      "stats": {
+        "HP": 15,
+        "Attack": 21,
+        "Defense": 11,
+        "Sp.Attack": 13,
+        "Sp.Defense": 23,
+        "Speed": 20
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/7.png",
+      "stage": 1,
+      "evolution_line": [
+        "Squirtle",
+        "Wartortle",
+        "Blastoise"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Riolu",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 21,
+        "Attack": 10,
+        "Defense": 21,
+        "Sp.Attack": 4,
+        "Sp.Defense": 10,
+        "Speed": 17
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/447.png",
+      "stage": 1,
+      "evolution_line": [
+        "Riolu",
+        "Lucario"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Rattata",
+      "level": 7,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 7,
+        "Attack": 16,
+        "Defense": 2,
+        "Sp.Attack": 3,
+        "Sp.Defense": 30,
+        "Speed": 4
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/19.png",
+      "stage": 1,
+      "evolution_line": [
+        "Rattata",
+        "Raticate"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Xurkitree",
+      "level": 5,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 8,
+        "Attack": 10,
+        "Defense": 7,
+        "Sp.Attack": 2,
+        "Sp.Defense": 13,
+        "Speed": 29
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/796.png",
+      "stage": 1,
+      "evolution_line": [
+        "Xurkitree"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Magikarp",
+      "level": 3,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 10,
+        "Attack": 21,
+        "Defense": 16,
+        "Sp.Attack": 4,
+        "Sp.Defense": 14,
+        "Speed": 23
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/129.png",
+      "stage": 1,
+      "evolution_line": [
+        "Magikarp",
+        "Gyarados"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Cubone",
+      "level": 2,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 4,
+        "Attack": 21,
+        "Defense": 11,
+        "Sp.Attack": 3,
+        "Sp.Defense": 27,
+        "Speed": 22
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/104.png",
+      "stage": 1,
+      "evolution_line": [
+        "Cubone",
+        "Marowak"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Magnemite",
+      "level": 2,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 4,
+        "Attack": 26,
+        "Defense": 23,
+        "Sp.Attack": 20,
+        "Sp.Defense": 24,
+        "Speed": 12
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/81.png",
+      "stage": 1,
+      "evolution_line": [
+        "Magnemite",
+        "Magneton",
+        "Magnezone"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Swinub",
+      "level": 4,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 3,
+        "Attack": 8,
+        "Defense": 22,
+        "Sp.Attack": 13,
+        "Sp.Defense": 5,
+        "Speed": 26
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/220.png",
+      "stage": 1,
+      "evolution_line": [
+        "Swinub",
+        "Piloswine",
+        "Mamoswine"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Houndour",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 21,
+        "Attack": 4,
+        "Defense": 28,
+        "Sp.Attack": 30,
+        "Sp.Defense": 19,
+        "Speed": 8
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/228.png",
+      "stage": 1,
+      "evolution_line": [
+        "Houndour",
+        "Houndoom"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Bruxish",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 3,
+        "Attack": 26,
+        "Defense": 6,
+        "Sp.Attack": 22,
+        "Sp.Defense": 27,
+        "Speed": 5
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/779.png",
+      "stage": 1,
+      "evolution_line": [
+        "Bruxish"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Heracross",
+      "level": 1,
+      "rarity": "Rare",
+      "shiny": false,
+      "stats": {
+        "HP": 21,
+        "Attack": 5,
+        "Defense": 2,
+        "Sp.Attack": 22,
+        "Sp.Defense": 7,
+        "Speed": 14
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/214.png",
+      "stage": 1,
+      "evolution_line": [
+        "Heracross"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Pansage",
+      "level": 7,
+      "rarity": "Rare",
+      "shiny": false,
+      "stats": {
+        "HP": 25,
+        "Attack": 4,
+        "Defense": 17,
+        "Sp.Attack": 28,
+        "Sp.Defense": 25,
+        "Speed": 14
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/511.png",
+      "stage": 1,
+      "evolution_line": [
+        "Pansage",
+        "Simisage"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Shroomish",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 14,
+        "Attack": 17,
+        "Defense": 29,
+        "Sp.Attack": 15,
+        "Sp.Defense": 6,
+        "Speed": 20
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/285.png",
+      "stage": 1,
+      "evolution_line": [
+        "Shroomish",
+        "Breloom"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Snom",
+      "level": 3,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 25,
+        "Attack": 21,
+        "Defense": 27,
+        "Sp.Attack": 12,
+        "Sp.Defense": 18,
+        "Speed": 9
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/872.png",
+      "stage": 1,
+      "evolution_line": [
+        "Snom",
+        "Frosmoth"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Sandy-shocks",
+      "level": 4,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 21,
+        "Attack": 18,
+        "Defense": 26,
+        "Sp.Attack": 6,
+        "Sp.Defense": 12,
+        "Speed": 6
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/989.png",
+      "stage": 1,
+      "evolution_line": [
+        "Sandy-shocks"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Starly",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 5,
+        "Attack": 27,
+        "Defense": 11,
+        "Sp.Attack": 19,
+        "Sp.Defense": 18,
+        "Speed": 0
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/396.png",
+      "stage": 1,
+      "evolution_line": [
+        "Starly",
+        "Staravia",
+        "Staraptor"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Skrelp",
+      "level": 5,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 5,
+        "Attack": 6,
+        "Defense": 6,
+        "Sp.Attack": 7,
+        "Sp.Defense": 23,
+        "Speed": 18
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/690.png",
+      "stage": 1,
+      "evolution_line": [
+        "Skrelp",
+        "Dragalge"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Pansear",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 5,
+        "Attack": 19,
+        "Defense": 17,
+        "Sp.Attack": 12,
+        "Sp.Defense": 17,
+        "Speed": 20
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/513.png",
+      "stage": 1,
+      "evolution_line": [
+        "Pansear",
+        "Simisear"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Bergmite",
+      "level": 7,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 12,
+        "Attack": 10,
+        "Defense": 1,
+        "Sp.Attack": 14,
+        "Sp.Defense": 14,
+        "Speed": 29
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/712.png",
+      "stage": 1,
+      "evolution_line": [
+        "Bergmite",
+        "Avalugg"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Vullaby",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 7,
+        "Attack": 7,
+        "Defense": 2,
+        "Sp.Attack": 10,
+        "Sp.Defense": 27,
+        "Speed": 18
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/629.png",
+      "stage": 1,
+      "evolution_line": [
+        "Vullaby",
+        "Mandibuzz"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Turtonator",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 23,
+        "Attack": 8,
+        "Defense": 1,
+        "Sp.Attack": 20,
+        "Sp.Defense": 15,
+        "Speed": 28
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/776.png",
+      "stage": 1,
+      "evolution_line": [
+        "Turtonator"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Xurkitree",
+      "level": 1,
+      "rarity": "Rare",
+      "shiny": false,
+      "stats": {
+        "HP": 14,
+        "Attack": 6,
+        "Defense": 5,
+        "Sp.Attack": 7,
+        "Sp.Defense": 9,
+        "Speed": 31
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/796.png",
+      "stage": 1,
+      "evolution_line": [
+        "Xurkitree"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Pawmi",
+      "level": 2,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 11,
+        "Attack": 23,
+        "Defense": 4,
+        "Sp.Attack": 23,
+        "Sp.Defense": 18,
+        "Speed": 28
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/921.png",
+      "stage": 1,
+      "evolution_line": [
+        "Pawmi",
+        "Pawmo",
+        "Pawmot"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Cryogonal",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 19,
+        "Attack": 2,
+        "Defense": 11,
+        "Sp.Attack": 22,
+        "Sp.Defense": 4,
+        "Speed": 15
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/615.png",
+      "stage": 1,
+      "evolution_line": [
+        "Cryogonal"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Pyukumuku",
+      "level": 2,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 24,
+        "Attack": 2,
+        "Defense": 27,
+        "Sp.Attack": 29,
+        "Sp.Defense": 4,
+        "Speed": 28
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/771.png",
+      "stage": 1,
+      "evolution_line": [
+        "Pyukumuku"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Panpour",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 5,
+        "Attack": 3,
+        "Defense": 19,
+        "Sp.Attack": 29,
+        "Sp.Defense": 27,
+        "Speed": 13
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/515.png",
+      "stage": 1,
+      "evolution_line": [
+        "Panpour",
+        "Simipour"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Popplio",
+      "level": 59,
+      "rarity": "Rare",
+      "shiny": false,
+      "stats": {
+        "HP": 26,
+        "Attack": 23,
+        "Defense": 11,
+        "Sp.Attack": 31,
+        "Sp.Defense": 17,
+        "Speed": 15
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/728.png",
+      "stage": 1,
+      "evolution_line": [
+        "Popplio",
+        "Brionne",
+        "Primarina"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Cramorant",
+      "level": 5,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 9,
+        "Attack": 2,
+        "Defense": 0,
+        "Sp.Attack": 15,
+        "Sp.Defense": 19,
+        "Speed": 5
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/845.png",
+      "stage": 1,
+      "evolution_line": [
+        "Cramorant"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Deino",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 5,
+        "Attack": 17,
+        "Defense": 29,
+        "Sp.Attack": 6,
+        "Sp.Defense": 23,
+        "Speed": 2
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/633.png",
+      "stage": 1,
+      "evolution_line": [
+        "Deino",
+        "Zweilous",
+        "Hydreigon"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Emolga",
+      "level": 19,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 17,
+        "Attack": 19,
+        "Defense": 30,
+        "Sp.Attack": 5,
+        "Sp.Defense": 18,
+        "Speed": 17
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/587.png",
+      "stage": 1,
+      "evolution_line": [
+        "Emolga"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Duraludon",
+      "level": 5,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 18,
+        "Attack": 18,
+        "Defense": 14,
+        "Sp.Attack": 30,
+        "Sp.Defense": 11,
+        "Speed": 13
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/884.png",
+      "stage": 1,
+      "evolution_line": [
+        "Duraludon",
+        "Archaludon"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Hippopotas",
+      "level": 2,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 19,
+        "Attack": 23,
+        "Defense": 10,
+        "Sp.Attack": 23,
+        "Sp.Defense": 26,
+        "Speed": 6
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/449.png",
+      "stage": 1,
+      "evolution_line": [
+        "Hippopotas",
+        "Hippowdon"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Aipom",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 23,
+        "Attack": 31,
+        "Defense": 9,
+        "Sp.Attack": 1,
+        "Sp.Defense": 13,
+        "Speed": 30
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/190.png",
+      "stage": 1,
+      "evolution_line": [
+        "Aipom",
+        "Ambipom"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Zubat",
+      "level": 1,
+      "rarity": "Rare",
+      "shiny": false,
+      "stats": {
+        "HP": 10,
+        "Attack": 20,
+        "Defense": 20,
+        "Sp.Attack": 10,
+        "Sp.Defense": 5,
+        "Speed": 17
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/41.png",
+      "stage": 1,
+      "evolution_line": [
+        "Zubat",
+        "Golbat",
+        "Crobat"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Elgyem",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 19,
+        "Attack": 6,
+        "Defense": 6,
+        "Sp.Attack": 14,
+        "Sp.Defense": 28,
+        "Speed": 8
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/605.png",
+      "stage": 1,
+      "evolution_line": [
+        "Elgyem",
+        "Beheeyem"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Vanillite",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 26,
+        "Attack": 9,
+        "Defense": 18,
+        "Sp.Attack": 13,
+        "Sp.Defense": 7,
+        "Speed": 22
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/582.png",
+      "stage": 1,
+      "evolution_line": [
+        "Vanillite",
+        "Vanillish",
+        "Vanilluxe"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Mime-jr",
+      "level": 17,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 26,
+        "Attack": 29,
+        "Defense": 14,
+        "Sp.Attack": 1,
+        "Sp.Defense": 27,
+        "Speed": 16
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/439.png",
+      "stage": 1,
+      "evolution_line": [
+        "Mime-jr",
+        "Mr-mime",
+        "Mr-rime"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Nihilego",
+      "level": 10,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 25,
+        "Attack": 1,
+        "Defense": 26,
+        "Sp.Attack": 31,
+        "Sp.Defense": 30,
+        "Speed": 0
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/793.png",
+      "stage": 1,
+      "evolution_line": [
+        "Nihilego"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Shroomish",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 0,
+        "Attack": 23,
+        "Defense": 4,
+        "Sp.Attack": 1,
+        "Sp.Defense": 8,
+        "Speed": 27
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/285.png",
+      "stage": 1,
+      "evolution_line": [
+        "Shroomish",
+        "Breloom"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Cyndaquil",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 3,
+        "Attack": 29,
+        "Defense": 21,
+        "Sp.Attack": 19,
+        "Sp.Defense": 25,
+        "Speed": 4
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/155.png",
+      "stage": 1,
+      "evolution_line": [
+        "Cyndaquil",
+        "Quilava",
+        "Typhlosion"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Arrokuda",
+      "level": 8,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 6,
+        "Attack": 14,
+        "Defense": 18,
+        "Sp.Attack": 8,
+        "Sp.Defense": 21,
+        "Speed": 13
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/846.png",
+      "stage": 1,
+      "evolution_line": [
+        "Arrokuda",
+        "Barraskewda"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Stunky",
+      "level": 3,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 11,
+        "Attack": 29,
+        "Defense": 24,
+        "Sp.Attack": 18,
+        "Sp.Defense": 25,
+        "Speed": 1
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/434.png",
+      "stage": 1,
+      "evolution_line": [
+        "Stunky",
+        "Skuntank"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Passimian",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 4,
+        "Attack": 1,
+        "Defense": 23,
+        "Sp.Attack": 28,
+        "Sp.Defense": 25,
+        "Speed": 15
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/766.png",
+      "stage": 1,
+      "evolution_line": [
+        "Passimian"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Emolga",
+      "level": 3,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 2,
+        "Attack": 3,
+        "Defense": 23,
+        "Sp.Attack": 24,
+        "Sp.Defense": 25,
+        "Speed": 10
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/587.png",
+      "stage": 1,
+      "evolution_line": [
+        "Emolga"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Pincurchin",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 0,
+        "Attack": 24,
+        "Defense": 30,
+        "Sp.Attack": 20,
+        "Sp.Defense": 8,
+        "Speed": 20
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/871.png",
+      "stage": 1,
+      "evolution_line": [
+        "Pincurchin"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Patrat",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 4,
+        "Attack": 16,
+        "Defense": 15,
+        "Sp.Attack": 24,
+        "Sp.Defense": 2,
+        "Speed": 26
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/504.png",
+      "stage": 1,
+      "evolution_line": [
+        "Patrat",
+        "Watchog"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Wattrel",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 20,
+        "Attack": 14,
+        "Defense": 24,
+        "Sp.Attack": 17,
+        "Sp.Defense": 5,
+        "Speed": 2
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/940.png",
+      "stage": 1,
+      "evolution_line": [
+        "Wattrel",
+        "Kilowattrel"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Jangmo-o",
+      "level": 9,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 21,
+        "Attack": 12,
+        "Defense": 3,
+        "Sp.Attack": 11,
+        "Sp.Defense": 7,
+        "Speed": 13
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/782.png",
+      "stage": 1,
+      "evolution_line": [
+        "Jangmo-o",
+        "Hakamo-o",
+        "Kommo-o"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Shellder",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 13,
+        "Attack": 13,
+        "Defense": 18,
+        "Sp.Attack": 9,
+        "Sp.Defense": 15,
+        "Speed": 23
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/90.png",
+      "stage": 1,
+      "evolution_line": [
+        "Shellder",
+        "Cloyster"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Purrloin",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 17,
+        "Attack": 23,
+        "Defense": 11,
+        "Sp.Attack": 14,
+        "Sp.Defense": 29,
+        "Speed": 30
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/509.png",
+      "stage": 1,
+      "evolution_line": [
+        "Purrloin",
+        "Liepard"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Arctovish",
+      "level": 2,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 29,
+        "Attack": 6,
+        "Defense": 27,
+        "Sp.Attack": 12,
+        "Sp.Defense": 29,
+        "Speed": 28
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/883.png",
+      "stage": 1,
+      "evolution_line": [
+        "Arctovish"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Glimmet",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 17,
+        "Attack": 1,
+        "Defense": 5,
+        "Sp.Attack": 27,
+        "Sp.Defense": 19,
+        "Speed": 4
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/969.png",
+      "stage": 1,
+      "evolution_line": [
+        "Glimmet",
+        "Glimmora"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Popplio",
+      "level": 2,
+      "rarity": "Rare",
+      "shiny": false,
+      "stats": {
+        "HP": 21,
+        "Attack": 10,
+        "Defense": 10,
+        "Sp.Attack": 8,
+        "Sp.Defense": 26,
+        "Speed": 30
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/728.png",
+      "stage": 1,
+      "evolution_line": [
+        "Popplio",
+        "Brionne",
+        "Primarina"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Walking-wake",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 21,
+        "Attack": 27,
+        "Defense": 15,
+        "Sp.Attack": 16,
+        "Sp.Defense": 6,
+        "Speed": 26
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1009.png",
+      "stage": 1,
+      "evolution_line": [
+        "Walking-wake"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Kangaskhan",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 12,
+        "Attack": 17,
+        "Defense": 10,
+        "Sp.Attack": 2,
+        "Sp.Defense": 31,
+        "Speed": 31
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/115.png",
+      "stage": 1,
+      "evolution_line": [
+        "Kangaskhan"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Dreepy",
+      "level": 2,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 29,
+        "Attack": 8,
+        "Defense": 5,
+        "Sp.Attack": 2,
+        "Sp.Defense": 16,
+        "Speed": 16
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/885.png",
+      "stage": 1,
+      "evolution_line": [
+        "Dreepy",
+        "Drakloak",
+        "Dragapult"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Pheromosa",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 18,
+        "Attack": 20,
+        "Defense": 20,
+        "Sp.Attack": 1,
+        "Sp.Defense": 26,
+        "Speed": 9
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/795.png",
+      "stage": 1,
+      "evolution_line": [
+        "Pheromosa"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Drampa",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 17,
+        "Attack": 16,
+        "Defense": 6,
+        "Sp.Attack": 17,
+        "Sp.Defense": 23,
+        "Speed": 22
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/780.png",
+      "stage": 1,
+      "evolution_line": [
+        "Drampa"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Shieldon",
+      "level": 3,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 23,
+        "Attack": 28,
+        "Defense": 11,
+        "Sp.Attack": 26,
+        "Sp.Defense": 24,
+        "Speed": 0
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/410.png",
+      "stage": 1,
+      "evolution_line": [
+        "Shieldon",
+        "Bastiodon"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Panpour",
+      "level": 15,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 16,
+        "Attack": 27,
+        "Defense": 20,
+        "Sp.Attack": 9,
+        "Sp.Defense": 26,
+        "Speed": 11
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/515.png",
+      "stage": 1,
+      "evolution_line": [
+        "Panpour",
+        "Simipour"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Throh",
+      "level": 11,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 25,
+        "Attack": 2,
+        "Defense": 2,
+        "Sp.Attack": 13,
+        "Sp.Defense": 25,
+        "Speed": 4
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/538.png",
+      "stage": 1,
+      "evolution_line": [
+        "Throh"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Panpour",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 25,
+        "Attack": 31,
+        "Defense": 2,
+        "Sp.Attack": 13,
+        "Sp.Defense": 21,
+        "Speed": 3
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/515.png",
+      "stage": 1,
+      "evolution_line": [
+        "Panpour",
+        "Simipour"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Tinkatink",
+      "level": 2,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 8,
+        "Attack": 10,
+        "Defense": 16,
+        "Sp.Attack": 13,
+        "Sp.Defense": 26,
+        "Speed": 16
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/957.png",
+      "stage": 1,
+      "evolution_line": [
+        "Tinkatink",
+        "Tinkatuff",
+        "Tinkaton"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Minun",
+      "level": 2,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 24,
+        "Attack": 21,
+        "Defense": 31,
+        "Sp.Attack": 29,
+        "Sp.Defense": 13,
+        "Speed": 16
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/312.png",
+      "stage": 1,
+      "evolution_line": [
+        "Minun"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Spoink",
+      "level": 9,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 6,
+        "Attack": 18,
+        "Defense": 18,
+        "Sp.Attack": 31,
+        "Sp.Defense": 10,
+        "Speed": 12
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/325.png",
+      "stage": 1,
+      "evolution_line": [
+        "Spoink",
+        "Grumpig"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Qwilfish",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 27,
+        "Attack": 2,
+        "Defense": 17,
+        "Sp.Attack": 30,
+        "Sp.Defense": 25,
+        "Speed": 17
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/211.png",
+      "stage": 1,
+      "evolution_line": [
+        "Qwilfish",
+        "Overqwil"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Ponyta",
+      "level": 2,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 24,
+        "Attack": 31,
+        "Defense": 18,
+        "Sp.Attack": 28,
+        "Sp.Defense": 24,
+        "Speed": 22
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/77.png",
+      "stage": 1,
+      "evolution_line": [
+        "Ponyta",
+        "Rapidash"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Porygon",
+      "level": 4,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 20,
+        "Attack": 18,
+        "Defense": 23,
+        "Sp.Attack": 19,
+        "Sp.Defense": 29,
+        "Speed": 14
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/137.png",
+      "stage": 1,
+      "evolution_line": [
+        "Porygon",
+        "Porygon2",
+        "Porygon-z"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Sprigatito",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 21,
+        "Attack": 29,
+        "Defense": 21,
+        "Sp.Attack": 18,
+        "Sp.Defense": 23,
+        "Speed": 2
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/906.png",
+      "stage": 1,
+      "evolution_line": [
+        "Sprigatito",
+        "Floragato",
+        "Meowscarada"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Taillow",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 12,
+        "Attack": 14,
+        "Defense": 12,
+        "Sp.Attack": 8,
+        "Sp.Defense": 11,
+        "Speed": 24
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/276.png",
+      "stage": 1,
+      "evolution_line": [
+        "Taillow",
+        "Swellow"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Toxel",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 13,
+        "Attack": 19,
+        "Defense": 4,
+        "Sp.Attack": 4,
+        "Sp.Defense": 14,
+        "Speed": 4
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/848.png",
+      "stage": 1,
+      "evolution_line": [
+        "Toxel",
+        "Toxtricity"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Venonat",
+      "level": 3,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 0,
+        "Attack": 31,
+        "Defense": 6,
+        "Sp.Attack": 23,
+        "Sp.Defense": 18,
+        "Speed": 12
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/48.png",
+      "stage": 1,
+      "evolution_line": [
+        "Venonat",
+        "Venomoth"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Fuecoco",
+      "level": 2,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 4,
+        "Attack": 9,
+        "Defense": 21,
+        "Sp.Attack": 4,
+        "Sp.Defense": 10,
+        "Speed": 27
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/909.png",
+      "stage": 1,
+      "evolution_line": [
+        "Fuecoco",
+        "Crocalor",
+        "Skeledirge"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Spinarak",
+      "level": 1,
+      "rarity": "Rare",
+      "shiny": false,
+      "stats": {
+        "HP": 22,
+        "Attack": 7,
+        "Defense": 7,
+        "Sp.Attack": 23,
+        "Sp.Defense": 12,
+        "Speed": 30
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/167.png",
+      "stage": 1,
+      "evolution_line": [
+        "Spinarak",
+        "Ariados"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Smeargle",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 8,
+        "Attack": 21,
+        "Defense": 8,
+        "Sp.Attack": 16,
+        "Sp.Defense": 15,
+        "Speed": 5
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/235.png",
+      "stage": 1,
+      "evolution_line": [
+        "Smeargle"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Cherubi",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 15,
+        "Attack": 7,
+        "Defense": 7,
+        "Sp.Attack": 9,
+        "Sp.Defense": 10,
+        "Speed": 9
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/420.png",
+      "stage": 1,
+      "evolution_line": [
+        "Cherubi",
+        "Cherrim"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Roaring-moon",
+      "level": 3,
+      "rarity": "Rare",
+      "shiny": false,
+      "stats": {
+        "HP": 29,
+        "Attack": 22,
+        "Defense": 26,
+        "Sp.Attack": 9,
+        "Sp.Defense": 28,
+        "Speed": 3
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1005.png",
+      "stage": 1,
+      "evolution_line": [
+        "Roaring-moon"
+      ],
+      "trainer": null
+    }
+  ]
+}
