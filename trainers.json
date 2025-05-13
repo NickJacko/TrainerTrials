@@ -70,7 +70,7 @@
     "Iron-hands": 1,
     "Buneary": 1,
     "Pikipek": 1,
-    "Frigibax": 1,
+    "Frigibax": 2,
     "Solosis": 2,
     "Unown": 1,
     "Baltoy": 2,
@@ -117,14 +117,14 @@
     "Stakataka": 1,
     "Tropius": 1,
     "Cherubi": 2,
-    "Foongus": 2,
+    "Foongus": 3,
     "Cleffa": 1,
     "Phanpy": 1,
     "Natu": 1,
     "Popplio": 3,
     "Bramblin": 2,
     "Anorith": 1,
-    "Magikarp": 3,
+    "Magikarp": 4,
     "Maschiff": 1,
     "Mudbray": 2,
     "Crabrawler": 2,
@@ -150,7 +150,7 @@
     "Shroomish": 2,
     "Snom": 1,
     "Impidimp": 2,
-    "Sandy-shocks": 1,
+    "Sandy-shocks": 2,
     "Starly": 2,
     "Pansear": 1,
     "Bergmite": 1,
@@ -158,18 +158,18 @@
     "Vullaby": 1,
     "Turtonator": 1,
     "Passimian": 2,
-    "Pawmi": 1,
+    "Pawmi": 2,
     "Cryogonal": 1,
     "Pyukumuku": 1,
     "Panpour": 3,
-    "Cramorant": 1,
+    "Cramorant": 2,
     "Emolga": 2,
     "Duraludon": 1,
     "Hippopotas": 1,
     "Aipom": 2,
     "Zubat": 2,
     "Elgyem": 1,
-    "Vanillite": 2,
+    "Vanillite": 3,
     "Mime-jr": 2,
     "Nihilego": 2,
     "Cyndaquil": 2,
@@ -213,7 +213,18 @@
     "Sandygast": 1,
     "Heatmor": 1,
     "Skitty": 1,
-    "Paras": 1
+    "Paras": 1,
+    "Munna": 1,
+    "Finizen": 1,
+    "Arctozolt": 1,
+    "Rolycoly": 1,
+    "Stunfisk": 1,
+    "Machop": 1,
+    "Caterpie": 1,
+    "Pidove": 1,
+    "Larvesta": 1,
+    "Scatterbug": 1,
+    "Sizzlipede": 1
   },
   "seen": [
     {
@@ -3322,6 +3333,367 @@
       "evolution_line": [
         "Aipom",
         "Ambipom"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Pawmi",
+      "level": 36,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 9,
+        "Attack": 5,
+        "Defense": 16,
+        "Sp.Attack": 6,
+        "Sp.Defense": 0,
+        "Speed": 11
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/921.png",
+      "stage": 1,
+      "evolution_line": [
+        "Pawmi",
+        "Pawmo",
+        "Pawmot"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Munna",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 1,
+        "Attack": 2,
+        "Defense": 11,
+        "Sp.Attack": 10,
+        "Sp.Defense": 0,
+        "Speed": 28
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/517.png",
+      "stage": 1,
+      "evolution_line": [
+        "Munna",
+        "Musharna"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Frigibax",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 6,
+        "Attack": 31,
+        "Defense": 11,
+        "Sp.Attack": 30,
+        "Sp.Defense": 14,
+        "Speed": 13
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/996.png",
+      "stage": 1,
+      "evolution_line": [
+        "Frigibax",
+        "Arctibax",
+        "Baxcalibur"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Finizen",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 13,
+        "Attack": 26,
+        "Defense": 25,
+        "Sp.Attack": 12,
+        "Sp.Defense": 6,
+        "Speed": 2
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/963.png",
+      "stage": 1,
+      "evolution_line": [
+        "Finizen",
+        "Palafin"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Arctozolt",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 18,
+        "Attack": 8,
+        "Defense": 14,
+        "Sp.Attack": 4,
+        "Sp.Defense": 18,
+        "Speed": 3
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/881.png",
+      "stage": 1,
+      "evolution_line": [
+        "Arctozolt"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Rolycoly",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 4,
+        "Attack": 5,
+        "Defense": 31,
+        "Sp.Attack": 22,
+        "Sp.Defense": 25,
+        "Speed": 14
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/837.png",
+      "stage": 1,
+      "evolution_line": [
+        "Rolycoly",
+        "Carkol",
+        "Coalossal"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Magikarp",
+      "level": 4,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 24,
+        "Attack": 17,
+        "Defense": 5,
+        "Sp.Attack": 14,
+        "Sp.Defense": 30,
+        "Speed": 30
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/129.png",
+      "stage": 1,
+      "evolution_line": [
+        "Magikarp",
+        "Gyarados"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Sandy-shocks",
+      "level": 7,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 11,
+        "Attack": 8,
+        "Defense": 21,
+        "Sp.Attack": 25,
+        "Sp.Defense": 25,
+        "Speed": 24
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/989.png",
+      "stage": 1,
+      "evolution_line": [
+        "Sandy-shocks"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Stunfisk",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 15,
+        "Attack": 19,
+        "Defense": 5,
+        "Sp.Attack": 26,
+        "Sp.Defense": 27,
+        "Speed": 8
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/618.png",
+      "stage": 1,
+      "evolution_line": [
+        "Stunfisk"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Foongus",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 6,
+        "Attack": 2,
+        "Defense": 0,
+        "Sp.Attack": 1,
+        "Sp.Defense": 12,
+        "Speed": 29
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/590.png",
+      "stage": 1,
+      "evolution_line": [
+        "Foongus",
+        "Amoonguss"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Machop",
+      "level": 4,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 6,
+        "Attack": 8,
+        "Defense": 25,
+        "Sp.Attack": 13,
+        "Sp.Defense": 24,
+        "Speed": 26
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/66.png",
+      "stage": 1,
+      "evolution_line": [
+        "Machop",
+        "Machoke",
+        "Machamp"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Caterpie",
+      "level": 3,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 25,
+        "Attack": 5,
+        "Defense": 11,
+        "Sp.Attack": 26,
+        "Sp.Defense": 8,
+        "Speed": 19
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/10.png",
+      "stage": 1,
+      "evolution_line": [
+        "Caterpie",
+        "Metapod",
+        "Butterfree"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Vanillite",
+      "level": 4,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 25,
+        "Attack": 5,
+        "Defense": 21,
+        "Sp.Attack": 15,
+        "Sp.Defense": 9,
+        "Speed": 22
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/582.png",
+      "stage": 1,
+      "evolution_line": [
+        "Vanillite",
+        "Vanillish",
+        "Vanilluxe"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Pidove",
+      "level": 6,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 11,
+        "Attack": 26,
+        "Defense": 12,
+        "Sp.Attack": 5,
+        "Sp.Defense": 26,
+        "Speed": 11
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/519.png",
+      "stage": 1,
+      "evolution_line": [
+        "Pidove",
+        "Tranquill",
+        "Unfezant"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Larvesta",
+      "level": 4,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 31,
+        "Attack": 24,
+        "Defense": 31,
+        "Sp.Attack": 4,
+        "Sp.Defense": 4,
+        "Speed": 13
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/636.png",
+      "stage": 1,
+      "evolution_line": [
+        "Larvesta",
+        "Volcarona"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Scatterbug",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 27,
+        "Attack": 9,
+        "Defense": 17,
+        "Sp.Attack": 13,
+        "Sp.Defense": 31,
+        "Speed": 11
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/664.png",
+      "stage": 1,
+      "evolution_line": [
+        "Scatterbug",
+        "Spewpa",
+        "Vivillon"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Cramorant",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 24,
+        "Attack": 3,
+        "Defense": 3,
+        "Sp.Attack": 16,
+        "Sp.Defense": 0,
+        "Speed": 11
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/845.png",
+      "stage": 1,
+      "evolution_line": [
+        "Cramorant"
       ],
       "trainer": null
     }
