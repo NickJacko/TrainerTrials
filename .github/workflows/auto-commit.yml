@@ -1,0 +1,27 @@
+name: Auto Commit and Push
+
+on:
+  schedule:
+    - cron: '*/1 * * * *'
+  workflow_dispatch:
+
+jobs:
+  auto-commit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+        with:
+          persist-credentials: false
+
+      - name: Set up Git config
+        run: |
+          git config --global user.name "AutoBot"
+          git config --global user.email "bot@example.com"
+
+      - name: Commit all changes
+        run: |
+          git add -A
+          git commit -m "🔁 Auto-update $(date)" || echo "No changes"
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:${{ github.ref }}
