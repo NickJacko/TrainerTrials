@@ -204,7 +204,9 @@
     "Fuecoco": 1,
     "Spinarak": 1,
     "Smeargle": 1,
-    "Turtwig": 1
+    "Turtwig": 1,
+    "Morelull": 1,
+    "Wiglett": 1
   },
   "seen": [
     {
@@ -2997,6 +2999,49 @@
       "stage": 1,
       "evolution_line": [
         "Roaring-moon"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Turtwig",
+      "level": 71,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 16,
+        "Attack": 9,
+        "Defense": 5,
+        "Sp.Attack": 29,
+        "Sp.Defense": 11,
+        "Speed": 31
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/387.png",
+      "stage": 1,
+      "evolution_line": [
+        "Turtwig",
+        "Grotle",
+        "Torterra"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Morelull",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 22,
+        "Attack": 27,
+        "Defense": 25,
+        "Sp.Attack": 10,
+        "Sp.Defense": 17,
+        "Speed": 18
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/755.png",
+      "stage": 1,
+      "evolution_line": [
+        "Morelull",
+        "Shiinotic"
       ],
       "trainer": null
     }
