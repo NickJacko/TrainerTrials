@@ -1,1 +1,19 @@
-<!DOCTYPE html><html><head><meta http-equiv="refresh" content="0"><style>body{background:transparent;}</style></head><body></body></html>
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Catch Result</title>
+  <meta http-equiv="refresh" content="5">
+  <style>
+    body { background: transparent; font-family: 'Segoe UI', sans-serif; text-align: center; color: white; text-shadow: 0 0 5px black; }
+    .pokeball { width: 100px; height: 100px; background: linear-gradient(to bottom, red 50%, white 50%); border: 5px solid black; border-radius: 50%; margin: 50px auto 20px; position: relative; animation: bounce 1s ease-in-out; }
+    .pokeball-center { width: 20px; height: 20px; background: white; border: 5px solid black; border-radius: 50%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+    @keyframes bounce { 0% { transform: translateY(0); } 30% { transform: translateY(-30px); } 60% { transform: translateY(0); } 80% { transform: translateY(-10px); } 100% { transform: translateY(0); } }
+    .message { font-size: 24px; font-weight: bold; color: #e74c3c; }
+  </style>
+</head>
+<body>
+  <div class="pokeball"><div class="pokeball-center"></div></div>
+  <div class="message">💨 Cottonee broke free and escaped…</div>
+</body>
+</html>
