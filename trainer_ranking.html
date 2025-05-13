@@ -1,39 +1,80 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8">
-<title>Trainer Ranking</title>
-<style>
-body { font-family: Arial; background: #fff; padding: 20px; }
-h1 { text-align: center; }
-table { width: 100%; border-collapse: collapse; }
-th, td { border: 1px solid #ccc; padding: 6px; text-align: center; }
-th { background-color: #eee; cursor: pointer; }
-</style></head><body>
-<h1>🏅 Trainer Rangliste</h1>
-<table id="rankingTable"><thead><tr>
-<th onclick="sortTable(0)">Name</th>
-<th onclick="sortTable(1)">Gesamtpunkte</th>
-<th onclick="sortTable(2)">Einzigartige Pokémon</th>
-<th onclick="sortTable(3)">Gesamtanzahl</th>
-</tr></thead><tbody>
-</tbody></table>
-<script>
-function sortTable(n) {
-  var table = document.getElementById("rankingTable"), rows, switching = true, dir = "desc", switchcount = 0;
-  while (switching) {
-    switching = false;
-    rows = table.rows;
-    for (var i = 1; i < (rows.length - 1); i++) {
-      var x = rows[i].getElementsByTagName("TD")[n];
-      var y = rows[i + 1].getElementsByTagName("TD")[n];
-      var cmpX = isNaN(x.innerHTML) ? x.innerHTML.toLowerCase() : parseFloat(x.innerHTML);
-      var cmpY = isNaN(y.innerHTML) ? y.innerHTML.toLowerCase() : parseFloat(y.innerHTML);
-      if ((dir == "asc" && cmpX > cmpY) || (dir == "desc" && cmpX < cmpY)) {
-        rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-        switching = true; switchcount++;
-        break;
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Trainer Ranking</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background-color: #f9f9f9; }
+    h1 { text-align: center; }
+    input {
+      display: block;
+      margin: 10px auto 20px;
+      padding: 8px;
+      font-size: 16px;
+      width: 80%;
+      max-width: 400px;
+    }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 10px; border: 1px solid #ccc; text-align: center; }
+    th { background-color: #eee; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h1>🏆 Trainer Ranking</h1>
+  <input type="text" id="searchInput" placeholder="Search trainer name..." onkeyup="filterTable()">
+  <table id="rankingTable">
+    <thead>
+      <tr>
+        <th onclick="sortTable(0)">#</th>
+        <th onclick="sortTable(1)">Trainer</th>
+        <th onclick="sortTable(2)">Pokémon</th>
+        <th onclick="sortTable(3)">Gesamtpunkte</th>
+      </tr>
+    </thead>
+    <tbody>
+</tbody>
+  </table>
+  <script>
+    function filterTable() {
+      var input = document.getElementById("searchInput");
+      var filter = input.value.toUpperCase();
+      var table = document.getElementById("rankingTable");
+      var tr = table.getElementsByTagName("tr");
+      for (var i = 1; i < tr.length; i++) {
+        var td = tr[i].getElementsByTagName("td")[1];
+        tr[i].style.display = (td && td.innerHTML.toUpperCase().indexOf(filter) > -1) ? "" : "none";
       }
     }
-    if (switchcount == 0 && dir == "desc") { dir = "asc"; switching = true; }
-  }
-}
-</script><a href="index.html">← Zurück</a>
-</body></html>
+    function sortTable(n) {
+      var table = document.getElementById("rankingTable");
+      var switching = true;
+      var dir = "asc";
+      while (switching) {
+        switching = false;
+        var rows = table.rows;
+        for (var i = 1; i < (rows.length - 1); i++) {
+          var shouldSwitch = false;
+          var x = rows[i].getElementsByTagName("TD")[n];
+          var y = rows[i+1].getElementsByTagName("TD")[n];
+          if (!x || !y) continue;
+          var cmpX = (n==0 || n==2 || n==3) ? parseInt(x.innerText) : x.innerText.toUpperCase();
+          var cmpY = (n==0 || n==2 || n==3) ? parseInt(y.innerText) : y.innerText.toUpperCase();
+          if ((dir == "asc" && cmpX > cmpY) || (dir == "desc" && cmpX < cmpY)) {
+            shouldSwitch = true;
+            break;
+          }
+        }
+        if (shouldSwitch) {
+          rows[i].parentNode.insertBefore(rows[i+1], rows[i]);
+          switching = true;
+        } else {
+          if (dir == "asc") {
+            dir = "desc";
+            switching = true;
+          }
+        }
+      }
+    }
+  </script>
+</body>
+</html>
