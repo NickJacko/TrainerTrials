@@ -77,7 +77,7 @@
     "Scorbunny": 2,
     "Spinda": 1,
     "Kecleon": 2,
-    "Flutter-mane": 1,
+    "Flutter-mane": 2,
     "Growlithe": 1,
     "Deino": 4,
     "Skrelp": 2,
@@ -112,7 +112,7 @@
     "Kangaskhan": 2,
     "Klink": 2,
     "Cyclizar": 2,
-    "Wimpod": 1,
+    "Wimpod": 2,
     "Gossifleur": 1,
     "Stakataka": 1,
     "Tropius": 1,
@@ -126,14 +126,14 @@
     "Anorith": 1,
     "Magikarp": 3,
     "Maschiff": 1,
-    "Mudbray": 1,
+    "Mudbray": 2,
     "Crabrawler": 2,
     "Patrat": 2,
     "Cottonee": 2,
     "Bruxish": 2,
     "Honedge": 1,
     "Charcadet": 1,
-    "Budew": 1,
+    "Budew": 2,
     "Tauros": 2,
     "Dunsparce": 1,
     "Squirtle": 1,
@@ -166,13 +166,13 @@
     "Emolga": 2,
     "Duraludon": 1,
     "Hippopotas": 1,
-    "Aipom": 1,
+    "Aipom": 2,
     "Zubat": 2,
     "Elgyem": 1,
     "Vanillite": 2,
     "Mime-jr": 2,
     "Nihilego": 2,
-    "Cyndaquil": 1,
+    "Cyndaquil": 2,
     "Arrokuda": 2,
     "Stunky": 1,
     "Pincurchin": 1,
@@ -197,7 +197,7 @@
     "Qwilfish": 2,
     "Ponyta": 3,
     "Porygon": 1,
-    "Sprigatito": 1,
+    "Sprigatito": 2,
     "Taillow": 2,
     "Toxel": 1,
     "Venonat": 1,
@@ -206,7 +206,14 @@
     "Smeargle": 1,
     "Turtwig": 1,
     "Morelull": 1,
-    "Wiglett": 1
+    "Wiglett": 1,
+    "Scyther": 1,
+    "Lapras": 1,
+    "Wurmple": 1,
+    "Sandygast": 1,
+    "Heatmor": 1,
+    "Skitty": 1,
+    "Paras": 1
   },
   "seen": [
     {
@@ -3063,6 +3070,258 @@
       "evolution_line": [
         "Wiglett",
         "Wugtrio"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Scyther",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 10,
+        "Attack": 28,
+        "Defense": 2,
+        "Sp.Attack": 20,
+        "Sp.Defense": 11,
+        "Speed": 17
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/123.png",
+      "stage": 1,
+      "evolution_line": [
+        "Scyther",
+        "Scizor"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Flutter-mane",
+      "level": 2,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 18,
+        "Attack": 16,
+        "Defense": 21,
+        "Sp.Attack": 31,
+        "Sp.Defense": 12,
+        "Speed": 25
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/987.png",
+      "stage": 1,
+      "evolution_line": [
+        "Flutter-mane"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Cyndaquil",
+      "level": 33,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 5,
+        "Attack": 25,
+        "Defense": 29,
+        "Sp.Attack": 30,
+        "Sp.Defense": 30,
+        "Speed": 15
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/155.png",
+      "stage": 1,
+      "evolution_line": [
+        "Cyndaquil",
+        "Quilava",
+        "Typhlosion"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Lapras",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 28,
+        "Attack": 22,
+        "Defense": 20,
+        "Sp.Attack": 25,
+        "Sp.Defense": 6,
+        "Speed": 28
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/131.png",
+      "stage": 1,
+      "evolution_line": [
+        "Lapras"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Wurmple",
+      "level": 3,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 1,
+        "Attack": 24,
+        "Defense": 16,
+        "Sp.Attack": 30,
+        "Sp.Defense": 9,
+        "Speed": 5
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/265.png",
+      "stage": 1,
+      "evolution_line": [
+        "Wurmple",
+        "Silcoon",
+        "Beautifly"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Mudbray",
+      "level": 6,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 16,
+        "Attack": 18,
+        "Defense": 2,
+        "Sp.Attack": 28,
+        "Sp.Defense": 6,
+        "Speed": 5
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/749.png",
+      "stage": 1,
+      "evolution_line": [
+        "Mudbray",
+        "Mudsdale"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Budew",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 31,
+        "Attack": 31,
+        "Defense": 26,
+        "Sp.Attack": 3,
+        "Sp.Defense": 11,
+        "Speed": 19
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/406.png",
+      "stage": 1,
+      "evolution_line": [
+        "Budew",
+        "Roselia",
+        "Roserade"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Sandygast",
+      "level": 2,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 9,
+        "Attack": 28,
+        "Defense": 24,
+        "Sp.Attack": 5,
+        "Sp.Defense": 2,
+        "Speed": 6
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/769.png",
+      "stage": 1,
+      "evolution_line": [
+        "Sandygast",
+        "Palossand"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Heatmor",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 16,
+        "Attack": 20,
+        "Defense": 11,
+        "Sp.Attack": 6,
+        "Sp.Defense": 27,
+        "Speed": 12
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/631.png",
+      "stage": 1,
+      "evolution_line": [
+        "Heatmor"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Skitty",
+      "level": 2,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 8,
+        "Attack": 19,
+        "Defense": 11,
+        "Sp.Attack": 3,
+        "Sp.Defense": 0,
+        "Speed": 13
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/300.png",
+      "stage": 1,
+      "evolution_line": [
+        "Skitty",
+        "Delcatty"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Wimpod",
+      "level": 2,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 22,
+        "Attack": 15,
+        "Defense": 2,
+        "Sp.Attack": 21,
+        "Sp.Defense": 0,
+        "Speed": 14
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/767.png",
+      "stage": 1,
+      "evolution_line": [
+        "Wimpod",
+        "Golisopod"
+      ],
+      "trainer": null
+    },
+    {
+      "name": "Aipom",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "HP": 27,
+        "Attack": 18,
+        "Defense": 5,
+        "Sp.Attack": 12,
+        "Sp.Defense": 12,
+        "Speed": 14
+      },
+      "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/190.png",
+      "stage": 1,
+      "evolution_line": [
+        "Aipom",
+        "Ambipom"
       ],
       "trainer": null
     }
