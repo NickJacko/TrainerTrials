@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Global Catch Bonus</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body {
+      margin: 0; padding: 0;
+      background: #111; color: white;
+      font-family: sans-serif;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      height: 100vh;
+    }
+
+    .bar-container {
+      width: 80%;
+      height: 30px;
+      background: #333;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+
+    .bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #4facfe, #00f2fe);
+      transition: width 0.1s linear;
+    }
+
+    .bar-fill.full {
+      animation: pulse 1s infinite;
+      background: gold;
+    }
+
+    @keyframes pulse {
+      0%, 100% { filter: brightness(1); }
+      50% { filter: brightness(2); }
+    }
+
+    .bonus {
+      font-size: 1.7em;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bar-container">
+    <div class="bar-fill" id="bar"></div>
+  </div>
+  <div class="bonus" id="bonusText">+0.0% global catchrate</div>
+
+  <script>
+    let currentPercent = 0;
+    let targetPercent = 0;
+    let bonusValue = 0;
+
+    async function fetchData() {
+      try {
+        const res = await fetch("global_likes.json?_=" + Date.now());
+        const data = await res.json();
+        const global = data.global_likes || 0;
+        targetPercent = Math.min(global / 1000 * 100, 100);
+        bonusValue = Math.min(global / 1000 * 10, 10);
+      } catch (e) {
+        console.error("Fehler beim Laden von global_likes.json");
+      }
+    }
+
+    function updateDisplay() {
+      const bar = document.getElementById("bar");
+      const bonusText = document.getElementById("bonusText");
+
+      // Smooth Übergang berechnen
+      currentPercent += (targetPercent - currentPercent) * 0.1;
+      bar.style.width = currentPercent.toFixed(1) + "%";
+      bonusText.textContent = `+${bonusValue.toFixed(1)}% global catchrate`;
+
+      if (targetPercent >= 100) {
+        bar.classList.add("full");
+      } else {
+        bar.classList.remove("full");
+      }
+    }
+
+    // Daten regelmäßig holen (weniger oft)
+    setInterval(fetchData, 300);
+
+    // Anzeige sanft aktualisieren (sehr oft)
+    setInterval(updateDisplay, 60);
+  </script>
+
+</body>
+</html>

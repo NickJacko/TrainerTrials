@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Water Finale – Blubber Boost</title>
+  <script src="utils.js"></script>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background: transparent;
+      overflow: hidden;
+    }
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 999;
+      pointer-events: none;
+      background: rgba(0, 0, 0, 0.01);
+    }
+    #blueOverlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 191, 255, 0.85);
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 1.2s ease;
+    }
+    #winnerText {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      z-index: 1001;
+      opacity: 0;
+      transition: opacity 1.2s ease;
+      font-family: 'Segoe UI', sans-serif;
+      color: white;
+      text-shadow: 0 0 10px #003366;
+    }
+    #winnerName {
+      font-size: 48px;
+      font-weight: bold;
+    }
+    #catchmonLine {
+      font-size: 32px;
+      margin-top: 12px;
+    }
+
+    /* shine + tier styles */
+    .catcher-name {
+      display: inline-block;
+      font-weight: bold;
+      background-size: 200% auto;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shine 3s linear infinite;
+      text-shadow: 0 0 4px rgba(255, 255, 255, 0);
+    }
+
+    .king {
+      background-image: linear-gradient(90deg, #ffd700, white, #ffd700);
+    }
+
+    .flame {
+      background-image: linear-gradient(90deg, #ff0000, white, #ff0000);
+    }
+
+    .diamond {
+      background-image: linear-gradient(90deg, deepskyblue, white, deepskyblue);
+    }
+
+    .shine {
+      background-image: linear-gradient(90deg, limegreen, white, limegreen);
+    }
+
+    .normal {
+      color: #fff;
+      font-weight: normal;
+      background: none;
+      -webkit-text-fill-color: inherit;
+      background-clip: unset;
+      animation: none;
+    }
+
+    @keyframes shine {
+      to { background-position: -200% center; }
+    }
+  </style>
+</head>
+<body>
+<canvas id="bubbleCanvas"></canvas>
+<div id="blueOverlay"></div>
+<div id="winnerText">
+  <div id="winnerName">???</div>
+  <div id="catchmonLine">caught ???!</div>
+</div>
+
+<script>
+const canvas = document.getElementById("bubbleCanvas");
+const ctx = canvas.getContext("2d");
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+const overlay = document.getElementById("blueOverlay");
+const winnerText = document.getElementById("winnerText");
+const winnerName = document.getElementById("winnerName");
+const catchmonLine = document.getElementById("catchmonLine");
+
+fetch("spawn_data.json?" + Date.now())
+  .then(res => res.json())
+  .then(data => {
+    const styledName = getStyledCatcherName(data.winner || "???", data.donation || 0);
+    winnerName.innerHTML = `🌊 ${styledName} 🌊`;
+    catchmonLine.textContent = `caught ${data.name || "???"}!`;
+  });
+
+let bubbles = [];
+
+function createBubble() {
+  return {
+    x: Math.random() * canvas.width,
+    y: canvas.height + Math.random() * 300,
+    r: Math.random() * 20 + 10,
+    speed: Math.random() * 2 + 1.5,
+    alpha: 0.6 + Math.random() * 0.4
+  };
+}
+
+for (let i = 0; i < 200; i++) bubbles.push(createBubble());
+
+function drawBubbles() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  for (let i = bubbles.length - 1; i >= 0; i--) {
+    const b = bubbles[i];
+    ctx.beginPath();
+    ctx.arc(b.x, b.y, b.r, 0, 2 * Math.PI);
+    ctx.fillStyle = `rgba(173,216,230,${b.alpha})`;
+    ctx.fill();
+
+    b.y -= b.speed;
+    b.alpha -= 0.001;
+    if (b.y + b.r < -50 || b.alpha <= 0.05) {
+      bubbles.splice(i, 1);
+    }
+  }
+}
+
+function animate() {
+  while (bubbles.length < 250) bubbles.push(createBubble());
+  drawBubbles();
+  requestAnimationFrame(animate);
+}
+
+function showFinale() {
+  overlay.style.opacity = "0.85";
+  winnerText.style.opacity = "1";
+}
+
+animate();
+setTimeout(showFinale, 3000);
+
+setTimeout(() => {
+  canvas.remove();
+  overlay.remove();
+  winnerText.remove();
+}, 8000);
+</script>
+</body>
+</html>

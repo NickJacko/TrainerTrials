@@ -1,0 +1,21 @@
+{
+  "name": "Stellaryon",
+  "level": 1,
+  "rarity": "Rare",
+  "shiny": false,
+  "sprite": "catchmon/Rare/Stellaryon.png",
+  "stats": {
+    "ATK": 10,
+    "DEF": 0,
+    "SPD": 3,
+    "WIS": 27,
+    "CHA": 31,
+    "LUK": 9
+  },
+  "result": null,
+  "winner": null,
+  "donation": 0,
+  "duration": 3.0,
+  "timestamp": 1747923086,
+  "spawn_start": 1747923086
+}

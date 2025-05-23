@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Flammeninferno</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: transparent;
+      overflow: hidden;
+    }
+    canvas {
+      display: block;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 999;
+      pointer-events: none;
+    }
+    #overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(255, 0, 0, 0.95);
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 1.2s ease;
+    }
+    #winnerText {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      z-index: 1001;
+      opacity: 0;
+      transition: opacity 1.2s ease;
+      font-family: 'Segoe UI', sans-serif;
+      color: white;
+      text-shadow: 0 0 20px orange;
+    }
+    #winnerName {
+      font-size: 48px;
+      font-weight: bold;
+    }
+    #catchmonLine {
+      font-size: 32px;
+      margin-top: 12px;
+    }
+  </style>
+</head>
+<body>
+<canvas id="fireCanvas"></canvas>
+<div id="overlay"></div>
+<div id="winnerText">
+  <div id="winnerName">???</div>
+  <div id="catchmonLine">caught ???!</div>
+</div>
+<audio id="fireSound" src="fire.mp3" preload="auto"></audio>
+
+<script>
+const canvas = document.getElementById("fireCanvas");
+const ctx = canvas.getContext("2d");
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+const width = canvas.width;
+const height = canvas.height;
+const firePixelsArray = new Array(width * height).fill(0);
+const fireWidth = width;
+const fireHeight = height;
+
+const palette = [
+  "#070707", "#1F0707", "#2F0F07", "#470F07",
+  "#571707", "#671F07", "#771F07", "#8F2707",
+  "#9F2F07", "#AF3F07", "#BF4707", "#C74707",
+  "#DF4F07", "#DF5707", "#DF5707", "#D75F07",
+  "#D75F07", "#D7670F", "#CF6F0F", "#CF770F",
+  "#CF7F0F", "#CF8717", "#C78717", "#C78F17",
+  "#C7971F", "#BF9F1F", "#BF9F1F", "#BFA727",
+  "#BFA727", "#BFAF2F", "#B7AF2F", "#B7B72F",
+  "#B7B737", "#CFCF6F", "#DFDF9F", "#EFEFC7",
+  "#FFFFFF"
+];
+
+function calculateFirePropagation() {
+  for (let x = 0; x < fireWidth; x++) {
+    for (let y = 1; y < fireHeight; y++) {
+      const src = y * fireWidth + x;
+      const below = src + fireWidth;
+      if (below >= firePixelsArray.length) continue;
+
+      const decay = Math.floor(Math.random() * 1.5);
+      const shift = Math.floor(Math.random() * 3) - 1;
+
+      const belowIntensity = Math.max(firePixelsArray[below], firePixelsArray[src]);
+      const newIntensity = belowIntensity - decay >= 0 ? belowIntensity - decay : 0;
+
+      const dst = src + shift;
+      if (dst >= 0 && dst < firePixelsArray.length) {
+        firePixelsArray[dst] = newIntensity;
+      }
+    }
+  }
+}
+
+function renderFire() {
+  const image = ctx.createImageData(fireWidth, fireHeight);
+  for (let i = 0; i < firePixelsArray.length; i++) {
+    const intensity = firePixelsArray[i];
+    if (intensity === 0) {
+      image.data[i * 4 + 3] = 0; // transparent
+    } else {
+      const color = hexToRGB(palette[intensity] || "#000000");
+      image.data[i * 4 + 0] = color.r;
+      image.data[i * 4 + 1] = color.g;
+      image.data[i * 4 + 2] = color.b;
+      image.data[i * 4 + 3] = 255;
+    }
+  }
+  ctx.putImageData(image, 0, 0);
+}
+
+function hexToRGB(hex) {
+  const bigint = parseInt(hex.slice(1), 16);
+  return {
+    r: (bigint >> 16) & 255,
+    g: (bigint >> 8) & 255,
+    b: bigint & 255
+  };
+}
+
+function createFireSource() {
+  for (let x = 0; x < fireWidth; x++) {
+    for (let y = 0; y < 6; y++) {
+      const index = (fireHeight - 1 - y) * fireWidth + x;
+      firePixelsArray[index] = palette.length - 1;
+    }
+  }
+}
+
+function update() {
+  createFireSource();
+  calculateFirePropagation();
+  renderFire();
+  requestAnimationFrame(update);
+}
+
+update();
+
+// Dynamisch Name und Monster aus JSON einfügen
+fetch("spawn_data.json?" + Date.now())
+  .then(res => res.json())
+  .then(data => {
+    const winnerName = document.getElementById("winnerName");
+    const catchmonLine = document.getElementById("catchmonLine");
+    winnerName.textContent = `🔥 ${data.winner || "???"} 🔥`;
+    catchmonLine.textContent = `caught ${data.name || "???"}!`;
+
+    setTimeout(() => {
+      document.getElementById("overlay").style.opacity = "1";
+      document.getElementById("winnerText").style.opacity = "1";
+      document.getElementById("fireSound").play();
+    }, 4000);
+
+    setTimeout(() => {
+      canvas.remove();
+      document.getElementById("overlay").remove();
+      document.getElementById("winnerText").remove();
+    }, 9000);
+  });
+</script>
+</body>
+</html>

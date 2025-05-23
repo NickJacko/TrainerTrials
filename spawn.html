@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="utils.js"></script>
+  <meta charset="UTF-8" />
+  <title>Wild Catchmon Spawn</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    html, body {
+      margin: 0; padding: 0; background: transparent;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      height: 100vh;
+    }
+    .catchmon-ring {
+      position: relative;
+      width: 240px;
+      height: 240px;
+    }
+    .ring-base, .ring-progress {
+      position: absolute;
+      top: 0; left: 0;
+      width: 240px; height: 240px;
+      border-radius: 50%;
+      mask-image: radial-gradient(circle, transparent 95px, black 96px);
+      -webkit-mask-image: radial-gradient(circle, transparent 95px, black 96px);
+    }
+    .ring-base { background: #555; }
+    .ring-progress {
+      background: conic-gradient(#00cc66 0deg, transparent 0deg);
+      transition: background 0.2s linear;
+    }
+    .catchmon {
+      position: absolute;
+      top: 20px; left: 20px;
+      width: 200px; height: 200px;
+      display: flex; justify-content: center; align-items: center;
+    }
+    #catchImg {
+      width: 200px; height: auto;
+      z-index: 1; position: relative;
+      transition: all 0.6s ease;
+    }
+    .shake {
+      animation: shake 1.4s cubic-bezier(0.65, 0, 0.35, 1) 1 forwards;
+    }
+    @keyframes shake {
+      0% { transform: translateX(0); }
+      10% { transform: translateX(-10px); }
+      20% { transform: translateX(10px); }
+      30% { transform: translateX(-6px); }
+      40% { transform: translateX(6px); }
+      50% { transform: translateX(-3px); }
+      60% { transform: translateX(3px); }
+      70% { transform: translateX(-2px); }
+      80% { transform: translateX(2px); }
+      90% { transform: translateX(-1px); }
+      100% { transform: translateX(0); }
+    }
+    .glitter {
+      position: absolute;
+      width: 260px; height: 260px;
+      top: -30px; left: -30px;
+      background: radial-gradient(circle, rgba(255,255,255,0.6) 0%, transparent 70%);
+      border-radius: 50%;
+      animation: shimmer 2s infinite;
+      z-index: 0;
+    }
+    @keyframes shimmer {
+      0% { transform: rotate(0deg); opacity: 0.6; }
+      50% { transform: rotate(180deg); opacity: 1; }
+      100% { transform: rotate(360deg); opacity: 0.6; }
+    }
+    .timer-text {
+      margin-top: 10px;
+      font-size: 20px;
+      font-weight: bold;
+      color: white;
+      text-shadow: 0 0 4px black;
+    }
+    .info {
+      font-size: 20px;
+      margin-top: 20px;
+      font-weight: bold;
+      color: white;
+      text-shadow: 0 0 4px black;
+      text-align: center;
+    }
+    .stat-table {
+      margin-top: 20px;
+      border-collapse: collapse;
+      color: white;
+      text-shadow: 0 0 2px black;
+      width: 500px;
+      table-layout: fixed;
+    }
+    .stat-table th, .stat-table td {
+      padding: 6px 12px;
+      border: 1px solid #ccc;
+      text-align: center;
+      width: 16.66%;
+    }
+    .stat-table th { background: #34495e; }
+    .message-wrapper {
+      height: 40px;
+      margin-top: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .message {
+      font-size: 24px;
+      font-weight: bold;
+      text-shadow: 0 0 4px black;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+    .message.show { opacity: 1; }
+  </style>
+</head>
+
+<body>
+  <div class="catchmon-ring">
+    <div class="ring-base"></div>
+    <div class="ring-progress" id="ringProgress"></div>
+    <div class="catchmon" id="catchWrapper"></div>
+  </div>
+  <div class="timer-text" id="timerText">00:00</div>
+  <div class="info" id="infoText"></div>
+  <table class="stat-table"><thead><tr id="statHead"></tr></thead><tbody><tr id="statRow"></tr></tbody></table>
+  <div class="message-wrapper"><div class="message" id="catchMsg"></div></div>
+
+  <script>
+    let spawnData = null;
+    let lastTimestamp = 0;
+    const SPAWN_INTERVAL = 15;
+
+    async function fetchSpawn() {
+      try {
+        const res = await fetch("spawn_data.json?" + Date.now());
+        const data = await res.json();
+        if (!data.timestamp || data.timestamp === lastTimestamp) return;
+        lastTimestamp = data.timestamp;
+        spawnData = data;
+        renderSpawn(data);
+      } catch (err) {
+        console.error("Fehler beim Laden:", err);
+      }
+    }
+
+function renderSpawn(data) {
+  const { name, level, rarity, shiny, sprite, stats, result, winner, donation = 0 } = data;
+
+  document.getElementById("infoText").innerHTML = `✨ Wild ${name} appeared!<br>Level: ${level} · ${rarity}`;
+  const head = document.getElementById("statHead");
+  const row = document.getElementById("statRow");
+  head.innerHTML = ""; row.innerHTML = "";
+  for (let key in stats) {
+    head.innerHTML += `<th>${key}</th>`;
+    const val = stats[key];
+    let color = "#f1c40f";
+    if (val === 0) color = "#ff69b4";
+    else if (val === 31) color = "#8e44ad";
+    else if (val > 25) color = "#e74c3c";
+    else if (val < 10) color = "#2ecc71";
+    row.innerHTML += `<td style="color:${color}">${val}</td>`;
+  }
+
+  const msg = document.getElementById("catchMsg");
+  msg.classList.remove("show");
+  msg.textContent = "";
+  msg.style.color = result === "caught" ? "#2ecc71" : "#e74c3c";
+  msg.style.zIndex = "1000"; // höher als effect iframe
+
+  const wrapper = document.getElementById("catchWrapper");
+  wrapper.innerHTML = "";
+
+  if (shiny) {
+    const glitter = document.createElement("div");
+    glitter.className = "glitter";
+    wrapper.appendChild(glitter);
+  }
+
+  const img = document.createElement("img");
+  img.id = "catchImg";
+  img.src = sprite;
+  img.alt = name;
+  wrapper.appendChild(img);
+
+  let i = 0;
+  const shakeCount = result === "caught" ? 3 : result === "escaped" ? 1 + Math.floor(Math.random() * 2) : 0;
+
+  function doShake() {
+    if (i < shakeCount) {
+      img.classList.remove("shake");
+      void img.offsetWidth;
+      img.classList.add("shake");
+      i++;
+      setTimeout(doShake, 1200);
+    } else {
+      if (result === "caught") {
+        setTimeout(() => {
+          img.style.filter = "brightness(2.5)";
+
+          // Gewinnertext vorbereiten und anzeigen
+          msg.textContent = `🎉 @${winner} caught ${name}!`;
+          msg.classList.add("show");
+
+          // Effekt starten
+          reloadEffect(donation);
+
+          // Effekt nach 1.5s entfernen und Bild zurücksetzen
+          setTimeout(() => {
+            const effectFrame = document.getElementById("catchEffect");
+            if (effectFrame) effectFrame.remove();
+
+            img.style.filter = "none";
+          }, 6000);
+        }, 100);
+      } else if (result === "escaped") {
+        setTimeout(() => {
+          img.style.opacity = 0;
+          msg.textContent = `${name} broke free and escaped…`;
+          msg.classList.add("show");
+        }, 100);
+      }
+    }
+  }
+
+  setTimeout(doShake, 300);
+}
+
+
+    function reloadEffect(donation) {
+      const tier = getDonationTier(donation);
+      setTimeout(() => {
+        const oldFrame = document.getElementById("catchEffect");
+        if (oldFrame) oldFrame.remove();
+
+        const newFrame = document.createElement("iframe");
+        newFrame.id = "catchEffect";
+        newFrame.style.cssText = `
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100vw;
+          height: 100vh;
+          border: none;
+          z-index: 999;
+          pointer-events: none;
+          background: transparent;
+          opacity: 0;
+          transition: opacity 0.1s ease;
+        `;
+        newFrame.onload = () => {
+          newFrame.style.opacity = 1;
+        };
+        newFrame.src = `${tier}_effect.html?` + Date.now();
+        document.body.appendChild(newFrame);
+      }, 50);
+  }
+
+
+    function updateTimer() {
+      if (!spawnData || !spawnData.spawn_start) return;
+
+      const elapsed = Math.floor(Date.now() / 1000) - spawnData.spawn_start;
+      const remaining = Math.max(0, SPAWN_INTERVAL - elapsed);
+      const angle = Math.min(1.0, elapsed / SPAWN_INTERVAL) * 360;
+
+      const ring = document.getElementById("ringProgress");
+      ring.style.opacity = remaining === 0 ? "0" : "1";
+      ring.style.background = `conic-gradient(#00cc66 ${angle}deg, transparent ${angle}deg)`;
+
+      const mm = String(Math.floor(remaining / 60)).padStart(2, '0');
+      const ss = String(remaining % 60).padStart(2, '0');
+      document.getElementById("timerText").textContent = `${mm}:${ss}`;
+    }
+
+    setInterval(updateTimer, 500);
+    setInterval(fetchSpawn, 500);
+    fetchSpawn();
+  </script>
+</body>
+</html>

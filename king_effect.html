@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Lightning Finale</title>
+  <script src="utils.js"></script>
+  <style>
+    html, body {
+      margin: 0; padding: 0;
+      background: transparent;
+      overflow: hidden;
+      width: 1080px; height: 1920px;
+    }
+    canvas {
+      width: 1080px; height: 1920px;
+      position: fixed;
+      top: 0; left: 0;
+      pointer-events: none;
+      z-index: 999;
+    }
+    #whiteFlash {
+      position: fixed;
+      top: 0; left: 0;
+      width: 1080px; height: 1920px;
+      background: white;
+      opacity: 0;
+      z-index: 1000;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+    #winnerText {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      z-index: 1001;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    #winnerName {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+    }
+    .crown {
+      font-size: clamp(24px, 4vw, 48px);
+    }
+    .winner-name {
+      font-size: clamp(36px, 6vw, 64px);
+      font-weight: bold;
+      background: linear-gradient(90deg, #ffd700, white, #ffd700);
+      background-size: 200% auto;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shine 3s linear infinite;
+      white-space: nowrap;
+      text-shadow: 0 0 8px white;
+    }
+    #catchmonLine {
+      font-size: clamp(24px, 4vw, 36px);
+      color: black;
+      margin-top: 10px;
+      text-shadow: 0 0 4px white;
+    }
+    .catcher-name {
+      display: inline-block;
+      font-weight: bold;
+      background-size: 200% auto;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shine 3s linear infinite;
+      text-shadow: 0 0 4px rgba(255, 255, 255, 0);
+    }
+    .king {
+      background-image: linear-gradient(90deg, #ffd700, white, #ffd700);
+    }
+    .flame {
+      background-image: linear-gradient(90deg, #ff0000, white, #ff0000);
+    }
+    .diamond {
+      background-image: linear-gradient(90deg, deepskyblue, white, deepskyblue);
+    }
+    .shine {
+      background-image: linear-gradient(90deg, limegreen, white, limegreen);
+    }
+    .normal {
+      color: #fff;
+      font-weight: normal;
+      background: none;
+      -webkit-text-fill-color: inherit;
+      background-clip: unset;
+      animation: none;
+    }
+
+    @keyframes shine {
+      to { background-position: -200% center; }
+    }
+  </style>
+</head>
+<body>
+<canvas id="lightningCanvas" width="1080" height="1920"></canvas>
+<div id="whiteFlash"></div>
+<div id="winnerText">
+  <div id="winnerName"></div>
+  <div id="catchmonLine"></div>
+</div>
+
+<script>
+const canvas = document.getElementById("lightningCanvas");
+const ctx = canvas.getContext("2d");
+const width = canvas.width;
+const height = canvas.height;
+const flash = document.getElementById("whiteFlash");
+const winnerText = document.getElementById("winnerText");
+const winnerName = document.getElementById("winnerName");
+const catchmonLine = document.getElementById("catchmonLine");
+
+let bolts = [];
+let boltTimer = 0;
+let flashTriggered = false;
+let stage = 0;
+let soundPlayed = false;
+
+// Winner-Name + Styling
+fetch("spawn_data.json?" + Date.now())
+  .then(res => res.json())
+  .then(data => {
+    const styled = getStyledCatcherName(data.winner || "???", data.donation || 0);
+    winnerName.innerHTML = `<span class="crown">⚡</span>${styled}<span class="crown">⚡</span>`;
+    catchmonLine.textContent = `caught ${data.name || "???"}!`;
+  });
+
+const thunderSounds = [
+  new Audio("thunder1.mp3"),
+  new Audio("thunder2.mp3"),
+  new Audio("thunder3.mp3")
+];
+
+function generateBolt(x, y, segments, branchChance = 0.4) {
+  const path = [{ x, y }];
+  const bolt = {
+    path,
+    progress: 0,
+    done: false,
+    thickness: 5 + Math.random() * 5,
+    brightness: 90 + Math.random() * 10,
+    colorShift: Math.random() * 10,
+    children: []
+  };
+  for (let i = 0; i < segments; i++) {
+    const last = path[path.length - 1];
+    const newX = last.x + (Math.random() - 0.5) * 120;
+    const newY = last.y + 40 + Math.random() * 50;
+    const newPoint = { x: newX, y: newY };
+    path.push(newPoint);
+    if (Math.random() < branchChance && i > 2 && i < segments - 2) {
+      const branch = generateBolt(newX, newY, segments - i - 1, 0);
+      bolt.children.push(branch);
+    }
+  }
+  return bolt;
+}
+
+function drawBolt(bolt) {
+  const { path, progress, thickness, brightness, colorShift } = bolt;
+  for (let i = 1; i <= progress && i < path.length; i++) {
+    const p1 = path[i - 1];
+    const p2 = path[i];
+    const t = i / path.length;
+    const light = brightness - t * 40;
+    const alpha = 1 - t * 0.6;
+    const hue = 50 + colorShift;
+
+    ctx.beginPath();
+    ctx.moveTo(p1.x, p1.y);
+    ctx.lineTo(p2.x, p2.y);
+    ctx.strokeStyle = `hsla(${hue}, 100%, ${light}%, ${alpha})`;
+    ctx.lineWidth = thickness * (1 - t * 0.6);
+    ctx.shadowColor = `hsla(${hue}, 100%, 95%, ${alpha})`;
+    ctx.shadowBlur = 40;
+    ctx.stroke();
+  }
+
+  for (const child of bolt.children) drawBolt(child);
+}
+
+function updateBolts() {
+  for (const bolt of bolts) {
+    if (!bolt.done) {
+      bolt.progress += 2;
+      if (bolt.progress >= bolt.path.length) {
+        bolt.done = true;
+        flashEffect(150);
+      }
+    }
+    for (const child of bolt.children) {
+      if (!child.done) {
+        child.progress += 2;
+        if (child.progress >= child.path.length) child.done = true;
+      }
+    }
+  }
+}
+
+function flashEffect(duration = 200) {
+  flash.style.opacity = "1";
+  setTimeout(() => { flash.style.opacity = "0"; }, duration);
+}
+
+function shakeCanvas(strength = 25, duration = 300) {
+  const end = Date.now() + duration;
+  function shake() {
+    if (Date.now() < end) {
+      const dx = (Math.random() - 0.5) * strength;
+      const dy = (Math.random() - 0.5) * strength;
+      canvas.style.transform = `translate(${dx}px, ${dy}px)`;
+      requestAnimationFrame(shake);
+    } else {
+      canvas.style.transform = "translate(0, 0)";
+    }
+  }
+  shake();
+}
+
+function triggerLightning() {
+  bolts = [];
+  for (let i = 0; i < 4; i++) {
+    const x = width * (0.2 + 0.2 * i) + (Math.random() - 0.5) * 80;
+    bolts.push(generateBolt(x, 0, 25 + Math.floor(Math.random() * 6)));
+  }
+  shakeCanvas(30, 400);
+  if (!soundPlayed) {
+    const s = thunderSounds[Math.floor(Math.random() * thunderSounds.length)];
+    s.volume = 0.8;
+    s.play();
+    soundPlayed = true;
+  }
+}
+
+function animate() {
+  ctx.clearRect(0, 0, width, height);
+  updateBolts();
+  for (const bolt of bolts) drawBolt(bolt);
+
+  const now = Date.now();
+  if (stage === 0 && now - boltTimer > 0) {
+    boltTimer = now;
+    triggerLightning();
+    stage = 1;
+  }
+  if (stage === 1 && now - boltTimer > 1200) {
+    triggerLightning();
+    stage = 2;
+  }
+  if (stage === 2 && now - boltTimer > 3000 && !flashTriggered) {
+    flashTriggered = true;
+    flash.style.opacity = "1";
+    winnerText.style.opacity = "1";
+    setTimeout(() => { flash.style.opacity = "0"; }, 2000);
+  }
+
+  requestAnimationFrame(animate);
+}
+
+animate();
+
+setTimeout(() => {
+  canvas.remove();
+  flash.remove();
+  winnerText.remove();
+}, 7000);
+</script>
+</body>
+</html>

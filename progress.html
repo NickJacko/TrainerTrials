@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Spawn Timer Ring</title>
+  <meta http-equiv="refresh" content="1">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: transparent;
+    }
+    .container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 220px;
+      height: 220px;
+      pointer-events: none;
+      z-index: 10;
+    }
+    .base-ring, .progress-ring {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      mask-image: radial-gradient(circle, transparent 78px, black 79px);
+      -webkit-mask-image: radial-gradient(circle, transparent 78px, black 79px);
+    }
+    .base-ring {
+      background: #999;
+    }
+    .progress-ring {
+      background: conic-gradient(
+        #00cc66 15.539559364318848deg,
+        transparent 15.539559364318848deg
+      );
+      transition: background 0.2s linear;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="base-ring"></div>
+    <div class="progress-ring"></div>
+  </div>
+</body>
+</html>

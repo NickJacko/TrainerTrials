@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Effect Placeholder</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background: transparent;
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+<!-- Leerer Platzhalter – macht nichts, zeigt nichts -->
+
+<script>
+  setTimeout(() => {
+    document.body.innerHTML = "";
+  }, 10); // optional: sofort nach 10ms selbst entfernen
+</script>
+</body>
+</html>

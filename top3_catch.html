@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Top 3 Catchrates</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="refresh" content="30">
+  <script src="utils.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: white;
+      text-align: center;
+      padding: 30px;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    .bar-container {
+      background: #333;
+      border-radius: 12px;
+      margin: 10px auto;
+      width: 80%;
+      max-width: 400px;
+      height: 32px;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      line-height: 32px;
+      text-align: left;
+      padding-left: 12px;
+      color: white;
+      font-weight: bold;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    a {
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .catcher-name {
+      display: inline-block;
+      font-weight: bold;
+      background-size: 200% auto;
+      background-clip: text;
+      color: transparent;
+      animation: shine 3s linear infinite;
+      text-shadow: 0 0 4px rgba(255, 255, 255, 0);
+    }
+
+    .king {
+      background-image: linear-gradient(90deg, #ffd700, white, #ffd700);
+    }
+
+    .flame {
+      background-image: linear-gradient(90deg, #ff0000, white, #ff0000);
+    }
+
+    .diamond {
+      background-image: linear-gradient(90deg, deepskyblue, white, deepskyblue);
+    }
+
+    .shine {
+      background-image: linear-gradient(90deg, limegreen, white, limegreen);
+    }
+
+    .normal {
+      background: none;
+      background-clip: border-box;
+      color: #ccc;
+      font-weight: normal;
+      text-shadow: none;
+      animation: none;
+    }
+
+    @keyframes shine {
+      to { background-position: -200% center; }
+    }
+  </style>
+</head>
+<body>
+  <h1>🎯 Top 3 Catchrates</h1>
+  <div id="catchBars" style="visibility: hidden;">Loading…</div>
+
+  <script>
+    async function updateCatchrates() {
+      try {
+        const res = await fetch("catch_chances.json?" + Date.now());
+        const data = await res.json();
+
+        const top = Object.entries(data)
+          .map(([name, chance]) => ({ name, chance }))
+          .sort((a, b) => b.chance - a.chance)
+          .slice(0, 3);
+
+        const container = document.getElementById("catchBars");
+        container.style.visibility = "hidden";
+        container.innerHTML = "";
+
+        top.forEach((entry, idx) => {
+          const percent = (entry.chance * 100).toFixed(1);
+          const div = document.createElement("div");
+          const styledName = getStyledCatcherName(entry.name, 0); // Update donation if available
+          div.innerHTML = `
+            <div class="bar-container">
+              <div class="bar-fill" style="width:${percent}%; background:linear-gradient(90deg,#4facfe,#00f2fe);">
+                ${idx + 1}. ${styledName} – ${percent}%
+              </div>
+            </div>`;
+          container.appendChild(div);
+        });
+
+        container.style.visibility = "visible";
+      } catch (e) {
+        console.error("Fehler beim Laden der catch_chances.json", e);
+      }
+    }
+
+    updateCatchrates();
+    setInterval(updateCatchrates, 300);
+  </script>
+</body>
+</html>
