@@ -1,14 +1,15 @@
 @echo off
 cd /d "C:\Users\nickj\Desktop\TikTok"
 
-:: Sicherstellen, dass du im richtigen Branch bist
-git checkout gh-pages 2>nul || git checkout -b gh-pages
+:: Sicherstellen, dass der Remote-Branch gh-pages korrekt verwendet wird
+git fetch origin gh-pages
+git checkout gh-pages || git checkout -b gh-pages origin/gh-pages
 
 :loop
-:: Kurze Wartezeit, um Änderungen zu erfassen
+:: Kurze Wartezeit, um Dateisystemänderungen sicher zu erkennen
 timeout /t 2 >nul
 
-:: Alle relevanten Dateien adden – keine Pfadspec-Fehler mehr
+:: Einzelne gezielte Dateien hinzufügen (nur wenn sie existieren)
 for %%F in (
   catchdex_live.html
   catcher.json
@@ -27,27 +28,29 @@ for %%F in (
   seen_caught.json
   utils.js
 ) do (
-  if exist %%F git add %%F
+  if exist "%%F" git add "%%F"
 )
 
-:: Ganze Ordner checken
-if exist catchmon git add catchmon
-if exist sounds git add sounds
+:: Ganze Ordner hinzufügen, falls vorhanden
+if exist "catchmon" git add catchmon
+if exist "sounds" git add sounds
 
-:: Nur committen, wenn sich was geändert hat
-git diff --cached --quiet || (
-    git commit -m "🔁 Auto-update %date% %time%"
+:: Änderungen committen, falls vorhanden
+git status --porcelain | findstr /v "^??" >nul
+if not errorlevel 1 (
+  git commit -am "🔁 Auto-update %date% %time%"
 )
 
-:: Upstream holen und rebasen
+
+:: Upstream aktualisieren und eventuelle lokale Änderungen kurz zurücklegen
 git fetch origin gh-pages
 git stash push -m "Auto stash"
 git rebase origin/gh-pages
 git stash pop || echo Nothing to pop
 
-:: Pushen
+:: Änderungen pushen
 git push origin gh-pages
 
-:: Wiederholen nach 60 Sekunden
+:: Schleife wiederholen alle 60 Sekunden
 timeout /t 60 >nul
 goto loop
