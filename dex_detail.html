@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Catchmon Detail</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="utils.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #fafafa;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+    .top-bar {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .back-button {
+      font-size: 16px;
+      text-decoration: none;
+      color: #555;
+      font-weight: bold;
+      padding: 6px 12px;
+      border-radius: 6px;
+      background: #e0e0e0;
+      transition: background 0.2s ease;
+    }
+    .back-button:hover {
+      background: #ccc;
+    }
+    h1 {
+      text-align: center;
+      font-size: 26px;
+      margin: 12px 0 16px;
+    }
+    img {
+      display: block;
+      margin: 0 auto 20px;
+      width: 200px;
+      max-width: 100%;
+      height: auto;
+    }
+    #summary {
+      text-align: center;
+      font-size: 15px;
+      color: #444;
+    }
+    #filterBox {
+      margin: 20px auto;
+      text-align: center;
+      font-size: 15px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      font-size: 14px;
+      overflow-x: auto;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: center;
+    }
+    a {
+      text-decoration: none;
+      font-weight: bold;
+      color: inherit;
+    }
+    .catcher-name {
+      display: inline-block;
+      font-weight: bold;
+      background-size: 200% auto;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shine 3s linear infinite;
+      text-shadow: 0 0 4px rgba(255, 255, 255, 0);
+    }
+    .king { background-image: linear-gradient(90deg, #ffd700, white, #ffd700); }
+    .flame { background-image: linear-gradient(90deg, #ff0000, white, #ff0000); }
+    .diamond { background-image: linear-gradient(90deg, deepskyblue, white, deepskyblue); }
+    .shine { background-image: linear-gradient(90deg, limegreen, white, limegreen); }
+    .normal {
+      color: #444;
+      text-shadow: none;
+      font-weight: normal;
+      background: none;
+      -webkit-text-fill-color: inherit;
+      background-clip: unset;
+      animation: none;
+    }
+    @keyframes shine {
+      to { background-position: -200% center; }
+    }
+    @media (max-width: 768px) {
+      .container { padding: 16px; }
+      th, td { font-size: 12px; padding: 6px; }
+      h1 { font-size: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="top-bar">
+      <a class="back-button" href="catchdex_live.html">← Back</a>
+    </div>
+
+    <h1 id="catchTitle">Loading...</h1>
+    <img id="catchImg" src="" alt="Sprite">
+    <p id="summary">Loading...</p>
+
+    <div id="filterBox">
+      <label>
+        <input type="checkbox" id="caughtOnly" onchange="renderTable()"> Show caught only
+      </label>
+    </div>
+
+    <table id="dataTable">
+      <thead>
+        <tr>
+          <th>Catcher</th><th>Points</th><th>Level</th><th>Shiny</th><th>Sum</th>
+          <th>ATK</th><th>DEF</th><th>SPD</th><th>WIS</th><th>CHA</th><th>LUK</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <script>
+    const statsOrder = ["ATK", "DEF", "SPD", "WIS", "CHA", "LUK"];
+    let allEntries = [];
+    let catcherDonations = {};
+
+    function getParam(name) {
+      return new URLSearchParams(window.location.search).get(name);
+    }
+
+    function capitalize(s) {
+      return s.charAt(0).toUpperCase() + s.slice(1);
+    }
+
+    function sumStats(stats) {
+      return Object.values(stats).reduce((a, b) => a + b, 0);
+    }
+
+    function calcPoints(p) {
+      return p.gesamtpunkte ?? 0;
+    }
+
+
+    function renderTable() {
+      const tbody = document.querySelector("#dataTable tbody");
+      const showCaughtOnly = document.getElementById("caughtOnly").checked;
+      tbody.innerHTML = "";
+
+      allEntries
+        .filter(e => !showCaughtOnly || e.catcher)
+        .sort((a, b) => calcPoints(b) - calcPoints(a))
+        .forEach(e => {
+          const tr = document.createElement("tr");
+          const stats = statsOrder.map(s => `<td>${e.stats[s]}</td>`).join("");
+          const catcherCell = e.catcher
+            ? getStyledCatcherName(e.catcher, catcherDonations[e.catcher] || 0)
+            : "❌";
+          tr.innerHTML = `
+            <td>${catcherCell}</td>
+            <td>${calcPoints(e)}</td>
+            <td>${e.level}</td>
+            <td>${e.shiny ? "✨" : ""}</td>
+            <td>${sumStats(e.stats)}</td>
+            ${stats}
+          `;
+          tbody.appendChild(tr);
+        });
+    }
+
+    async function loadData() {
+      const name = getParam("name");
+      if (!name) return;
+
+      const [catcher, dexList, seenData] = await Promise.all([
+        fetch("catcher.json").then(r => r.json()),
+        fetch("dex_list.json").then(r => r.json()),
+        fetch("seen_caught.json").then(r => r.json())
+      ]);
+
+      const lowerName = name.toLowerCase();
+      const entries = [];
+      catcherDonations = {};
+
+      Object.entries(catcher.catcher || {}).forEach(([catcher, info]) => {
+        catcherDonations[catcher] = info.donation || 0;
+        (info.team || []).forEach(p => {
+          if (p.name.toLowerCase() === lowerName) {
+            entries.push({ ...p, catcher });
+          }
+        });
+      });
+
+      (catcher.escaped || []).forEach(p => {
+        if (p.name.toLowerCase() === lowerName) {
+          entries.push({ ...p, catcher: null });
+        }
+      });
+
+      const dexEntry = dexList.find(p => p.name.toLowerCase() === lowerName);
+      const sprite = dexEntry?.sprite || "";
+      const escaped = seenData[lowerName]?.escaped || 0;
+      const caught = seenData[lowerName]?.caught || 0;
+
+      document.getElementById("catchTitle").textContent =
+        `#${String(dexEntry?.id || "").padStart(3, "0")} ${capitalize(name)}`;
+      document.getElementById("catchImg").src = sprite;
+      document.getElementById("catchImg").alt = name;
+      document.getElementById("summary").textContent = `${escaped} escaped / ${caught} caught`;
+
+      allEntries = entries;
+      renderTable();
+    }
+
+    loadData();
+  </script>
+</body>
+</html>

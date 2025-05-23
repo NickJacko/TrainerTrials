@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>🏆 Strongest Catchmon</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="utils.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #fff;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 960px;
+      margin: auto;
+      padding: 24px;
+    }
+    .top-bar {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .back-button {
+      font-size: 16px;
+      text-decoration: none;
+      color: #555;
+      font-weight: bold;
+      padding: 6px 12px;
+      border-radius: 6px;
+      background: #e0e0e0;
+      transition: background 0.2s ease;
+    }
+    .back-button:hover {
+      background: #ccc;
+    }
+    h1 {
+      text-align: center;
+      margin-top: 0;
+      font-size: 26px;
+    }
+    label {
+      display: block;
+      text-align: center;
+      margin: 16px 0;
+      font-size: 16px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      margin-top: 10px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: center;
+    }
+    th {
+      background-color: #eee;
+    }
+    tr:hover {
+      background: #f9f9f9;
+    }
+    .gold { background: #fff8dc; font-weight: bold; }
+    .silver { background: #f0f0f0; font-weight: bold; }
+    .bronze { background: #fdf5e6; font-weight: bold; }
+    img.catchmon-sprite {
+      width: 48px;
+      height: auto;
+    }
+    a {
+      text-decoration: none;
+      font-weight: bold;
+      color: inherit;
+    }
+    .catcher-name {
+      display: inline-block;
+      font-weight: bold;
+      background-size: 200% auto;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shine 3s linear infinite;
+      text-shadow: 0 0 4px white;
+    }
+    .king { background-image: linear-gradient(90deg, #ffd700, #fff2a8, #ffd700); }
+    .flame { background-image: linear-gradient(90deg, #ff0000, #ff6666, #ff0000); }
+    .diamond { background-image: linear-gradient(90deg, deepskyblue, white, deepskyblue); }
+    .shine { background-image: linear-gradient(90deg, limegreen, white, limegreen); }
+    .normal {
+      color: #444;
+      text-shadow: none;
+      font-weight: normal;
+      background: none;
+      -webkit-text-fill-color: inherit;
+      background-clip: unset;
+      animation: none;
+    }
+    @keyframes shine {
+      to { background-position: -200% center; }
+    }
+    @media (max-width: 768px) {
+      .container { padding: 16px; }
+      table { font-size: 12px; }
+      h1 { font-size: 22px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="top-bar">
+      <a class="back-button" href="index_live.html">← Back</a>
+    </div>
+
+    <h1>🏆 Strongest Catchmon</h1>
+    <label><input type="checkbox" id="caughtOnly" onchange="renderTable()"> Show caught only</label>
+
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Image</th>
+          <th>Name</th>
+          <th>Catcher</th>
+          <th>Points</th>
+          <th>Level</th>
+          <th>Stat Sum</th>
+          <th>Shiny</th>
+        </tr>
+      </thead>
+      <tbody id="rankingBody">
+        <tr><td colspan="8">Loading...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    let allCatchmon = [];
+    let catcherDonations = {};
+
+    function sumStats(stats) {
+      return Object.values(stats || {}).reduce((a, b) => a + b, 0);
+    }
+
+    function calcPoints(p) {
+      return p.gesamtpunkte ?? 0;
+    }
+
+
+    function updateData() {
+      fetch("catcher.json")
+        .then(r => r.json())
+        .then(data => {
+          allCatchmon = [];
+          catcherDonations = {};
+
+          for (const [catcher, info] of Object.entries(data.catcher || {})) {
+            catcherDonations[catcher] = info.donation || 0;
+            (info.team || []).forEach(c => {
+              allCatchmon.push({
+                catcher,
+                name: c.name,
+                level: c.level || 1,
+                shiny: c.shiny,
+                stats: c.stats,
+                rarity: c.rarity || "Common",
+                sprite: c.sprite || "",
+                points: calcPoints(c),
+                statSum: sumStats(c.stats),
+                caught: true
+              });
+            });
+          }
+
+          (data.seen || []).forEach(c => {
+            allCatchmon.push({
+              catcher: null,
+              name: c.name,
+              level: c.level || 1,
+              shiny: c.shiny,
+              stats: c.stats,
+              rarity: c.rarity || "Common",
+              sprite: c.sprite || "",
+              points: calcPoints(c),
+              statSum: sumStats(c.stats),
+              caught: false
+            });
+          });
+
+          renderTable();
+        });
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById("rankingBody");
+      tbody.innerHTML = "";
+
+      const showCaughtOnly = document.getElementById("caughtOnly").checked;
+
+      const visible = allCatchmon
+        .filter(p => !showCaughtOnly || p.caught)
+        .sort((a, b) => b.points - a.points);
+
+      visible.forEach((p, index) => {
+        const tr = document.createElement("tr");
+        const rank = index + 1;
+
+        if (index === 0) tr.classList.add("gold");
+        else if (index === 1) tr.classList.add("silver");
+        else if (index === 2) tr.classList.add("bronze");
+
+        const catcherCell = p.caught
+          ? getStyledCatcherName(p.catcher, catcherDonations[p.catcher] || 0)
+          : "–";
+
+        tr.innerHTML = `
+          <td>${rank}</td>
+          <td><a href="dex_detail.html?name=${encodeURIComponent(p.name)}"><img class="catchmon-sprite" src="${p.sprite}" alt="${p.name}"></a></td>
+          <td><a href="dex_detail.html?name=${encodeURIComponent(p.name)}">${p.name}</a></td>
+          <td>${catcherCell}</td>
+          <td>${p.points}</td>
+          <td>${p.level}</td>
+          <td>${p.statSum}</td>
+          <td>${p.shiny ? "✨" : ""}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    updateData();
+    setInterval(updateData, 5000);
+  </script>
+</body>
+</html>

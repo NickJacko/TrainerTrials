@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>💖 Donations & Bonuses</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background: #f8faff;
+      color: #333;
+      padding: 20px;
+    }
+    .container {
+      max-width: 960px;
+      margin: auto;
+    }
+    h1, h2 {
+      text-align: center;
+      color: #2c3e50;
+    }
+    .section {
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 30px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+    .section p {
+      text-align: center;
+    }
+    .multiplier-example {
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+    .box {
+      flex: 1 1 180px;
+      margin: 10px;
+      background: linear-gradient(145deg, #ffffff, #e6f0ff);
+      padding: 16px;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .box h3 {
+      margin: 0;
+      font-size: 18px;
+    }
+    .box p {
+      font-size: 14px;
+      margin: 8px 0 0;
+    }
+    .badge {
+      font-size: 24px;
+      display: block;
+      margin-bottom: 6px;
+    }
+    .cap-note {
+      background: #ffe0e0;
+      color: #900;
+      border-left: 5px solid #f55;
+      padding: 12px;
+      border-radius: 6px;
+      margin-top: 20px;
+      font-weight: bold;
+      text-align: center;
+    }
+    .cosmetic-row {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+    .cosmetic {
+      width: 140px;
+      text-align: center;
+    }
+    .cosmetic img {
+      width: 100px;
+      height: 100px;
+      object-fit: contain;
+    }
+    .footer {
+      text-align: center;
+      color: #777;
+      font-size: 14px;
+      margin-top: 30px;
+    }
+    .tier-name {
+      display: inline-block;
+      font-weight: bold;
+      background-size: 200% auto;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shine 3s linear infinite;
+      text-shadow: 0 0 4px rgba(255, 255, 255, 0);
+    }
+    .shine  { background-image: linear-gradient(90deg, limegreen, white, limegreen); }
+    .diamond { background-image: linear-gradient(90deg, deepskyblue, white, deepskyblue); }
+    .flame  { background-image: linear-gradient(90deg, #ff0000, white, #ff0000); }
+    .king   { background-image: linear-gradient(90deg, #ffd700, white, #ffd700); }
+
+    @keyframes shine {
+      to { background-position: -200% center; }
+    }
+
+    @media(max-width: 600px) {
+      .box, .cosmetic {
+        flex: 1 1 100%;
+      }
+    }
+
+    .footer-buttons {
+      margin-top: 30px;
+      text-align: center;
+    }
+
+    .footer-buttons a {
+      display: inline-block;
+      margin: 6px 10px;
+      padding: 10px 16px;
+      background: #4CAF50;
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 15px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>💖 Donations & Cosmetic Bonuses</h1>
+
+    <div class="section">
+      <h2>🎁 What Donations Do</h2>
+      <p>When you send a donation during a live Catchmon spawn, your likes become more powerful!</p>
+      <div class="multiplier-example">
+        <div class="box">
+          <span class="badge">✨</span>
+          <h3 class="tier-name shine">x2</h3>
+          <p>100 Coins</p>
+        </div>
+        <div class="box">
+          <span class="badge">💎</span>
+          <h3 class="tier-name diamond">x3</h3>
+          <p>250 Coins</p>
+        </div>
+        <div class="box">
+          <span class="badge">🔥</span>
+          <h3 class="tier-name flame">x4</h3>
+          <p>500 Coins</p>
+        </div>
+        <div class="box">
+          <span class="badge">👑</span>
+          <h3 class="tier-name king">x5</h3>
+          <p>2500 Coins</p>
+        </div>
+      </div>
+      <div class="cap-note">
+        ⚠️ Fairness First: The Catch Chance is still capped — no matter how strong your multiplier is, 1000 effective likes is the limit!
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>🧢 Cosmetic Effects</h2>
+      <p>Donators also unlock unique cosmetic effects when catching or fusing Pokémon:</p>
+      <div class="cosmetic-row">
+        <div class="cosmetic">
+          <img src="catchmon/rare/mindferno.png" alt="Mindferno">
+          <p><strong>🔥 Flame Trail</strong><br>Customized Catch Effects</p>
+        </div>
+        <div class="cosmetic">
+          <img src="catchmon/rare/abyssirex.png" alt="Abyssirex">
+          <p><strong>💦 Water Burst</strong><br>Special Colours</p>
+        </div>
+        <div class="cosmetic">
+          <img src="catchmon/rare/voltrionox.png" alt="Voltrionox">
+          <p><strong>🌟 Catch Glow</strong><br>...and much more coming soon!</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      🌟 Your support powers the game – and makes your catches unforgettable.
+    </div>
+
+    <div class="footer-buttons">
+      <a href="index_live.html">← Back to Hub</a>
+    </div>
+  </div>
+</body>
+</html>

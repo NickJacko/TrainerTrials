@@ -1,0 +1,626 @@
+[
+  {
+    "id": 31,
+    "name": "Aqualume",
+    "sprite": "catchmon/Common/Aqualume.png",
+    "gen": 1
+  },
+  {
+    "id": 85,
+    "name": "Aquaril",
+    "sprite": "catchmon/Common/Aquaril.png",
+    "gen": 1
+  },
+  {
+    "id": 43,
+    "name": "Armobug",
+    "sprite": "catchmon/Common/Armobug.png",
+    "gen": 1
+  },
+  {
+    "id": 50,
+    "name": "Astranox",
+    "sprite": "catchmon/Common/Astranox.png",
+    "gen": 1
+  },
+  {
+    "id": 34,
+    "name": "Badgock",
+    "sprite": "catchmon/Common/Badgock.png",
+    "gen": 1
+  },
+  {
+    "id": 35,
+    "name": "Badgogon",
+    "sprite": "catchmon/Common/Badgogon.png",
+    "gen": 1
+  },
+  {
+    "id": 33,
+    "name": "Badgy",
+    "sprite": "catchmon/Common/Badgy.png",
+    "gen": 1
+  },
+  {
+    "id": 17,
+    "name": "Boltusk",
+    "sprite": "catchmon/Common/Boltusk.png",
+    "gen": 1
+  },
+  {
+    "id": 78,
+    "name": "Brumblast",
+    "sprite": "catchmon/Common/Brumblast.png",
+    "gen": 1
+  },
+  {
+    "id": 77,
+    "name": "Brummel",
+    "sprite": "catchmon/Common/Brummel.png",
+    "gen": 1
+  },
+  {
+    "id": 81,
+    "name": "Brutalux",
+    "sprite": "catchmon/Common/Brutalux.png",
+    "gen": 1
+  },
+  {
+    "id": 18,
+    "name": "Crylette",
+    "sprite": "catchmon/Common/Crylette.png",
+    "gen": 1
+  },
+  {
+    "id": 27,
+    "name": "Cryonettle",
+    "sprite": "catchmon/Common/Cryonettle.png",
+    "gen": 1
+  },
+  {
+    "id": 53,
+    "name": "Driftoss",
+    "sprite": "catchmon/Common/Driftoss.png",
+    "gen": 1
+  },
+  {
+    "id": 79,
+    "name": "Duskaran",
+    "sprite": "catchmon/Common/Duskaran.png",
+    "gen": 1
+  },
+  {
+    "id": 24,
+    "name": "Emberynn",
+    "sprite": "catchmon/Common/Emberynn.png",
+    "gen": 1
+  },
+  {
+    "id": 51,
+    "name": "Ethernal",
+    "sprite": "catchmon/Common/Ethernal.png",
+    "gen": 1
+  },
+  {
+    "id": 20,
+    "name": "Fairypup",
+    "sprite": "catchmon/Common/Fairypup.png",
+    "gen": 1
+  },
+  {
+    "id": 13,
+    "name": "Flambini",
+    "sprite": "catchmon/Common/Flambini.png",
+    "gen": 1
+  },
+  {
+    "id": 29,
+    "name": "Florispur",
+    "sprite": "catchmon/Common/Florispur.png",
+    "gen": 1
+  },
+  {
+    "id": 52,
+    "name": "Flurrie",
+    "sprite": "catchmon/Common/Flurrie.png",
+    "gen": 1
+  },
+  {
+    "id": 44,
+    "name": "Fortressar",
+    "sprite": "catchmon/Common/Fortressar.png",
+    "gen": 1
+  },
+  {
+    "id": 26,
+    "name": "Friggleaf",
+    "sprite": "catchmon/Common/Friggleaf.png",
+    "gen": 1
+  },
+  {
+    "id": 19,
+    "name": "Glacelyra",
+    "sprite": "catchmon/Common/Glacelyra.png",
+    "gen": 1
+  },
+  {
+    "id": 28,
+    "name": "Glacivernox",
+    "sprite": "catchmon/Common/Glacivernox.png",
+    "gen": 1
+  },
+  {
+    "id": 14,
+    "name": "Glimbird",
+    "sprite": "catchmon/Common/Glimbird.png",
+    "gen": 1
+  },
+  {
+    "id": 67,
+    "name": "Glissalune",
+    "sprite": "catchmon/Common/Glissalune.png",
+    "gen": 1
+  },
+  {
+    "id": 74,
+    "name": "Gravogorn",
+    "sprite": "catchmon/Common/Gravogorn.png",
+    "gen": 1
+  },
+  {
+    "id": 54,
+    "name": "Hydroscythe",
+    "sprite": "catchmon/Common/Hydroscythe.png",
+    "gen": 1
+  },
+  {
+    "id": 38,
+    "name": "Hypnoctob",
+    "sprite": "catchmon/Common/Hypnoctob.png",
+    "gen": 1
+  },
+  {
+    "id": 37,
+    "name": "Hypnoctus",
+    "sprite": "catchmon/Common/Hypnoctus.png",
+    "gen": 1
+  },
+  {
+    "id": 15,
+    "name": "Infernox",
+    "sprite": "catchmon/Common/Infernox.png",
+    "gen": 1
+  },
+  {
+    "id": 58,
+    "name": "Koivya",
+    "sprite": "catchmon/Common/Koivya.png",
+    "gen": 1
+  },
+  {
+    "id": 71,
+    "name": "Lumibun",
+    "sprite": "catchmon/Common/Lumibun.png",
+    "gen": 1
+  },
+  {
+    "id": 59,
+    "name": "Luminakoi",
+    "sprite": "catchmon/Common/Luminakoi.png",
+    "gen": 1
+  },
+  {
+    "id": 72,
+    "name": "Lumispirit",
+    "sprite": "catchmon/Common/Lumispirit.png",
+    "gen": 1
+  },
+  {
+    "id": 57,
+    "name": "Luraville",
+    "sprite": "catchmon/Common/Luraville.png",
+    "gen": 1
+  },
+  {
+    "id": 30,
+    "name": "Luravine",
+    "sprite": "catchmon/Common/Luravine.png",
+    "gen": 1
+  },
+  {
+    "id": 39,
+    "name": "Mabbit",
+    "sprite": "catchmon/Common/Mabbit.png",
+    "gen": 1
+  },
+  {
+    "id": 41,
+    "name": "Mabboss",
+    "sprite": "catchmon/Common/Mabboss.png",
+    "gen": 1
+  },
+  {
+    "id": 40,
+    "name": "Mabteen",
+    "sprite": "catchmon/Common/Mabteen.png",
+    "gen": 1
+  },
+  {
+    "id": 23,
+    "name": "Magmarock",
+    "sprite": "catchmon/Common/Magmarock.png",
+    "gen": 1
+  },
+  {
+    "id": 42,
+    "name": "Metallino",
+    "sprite": "catchmon/Common/Metallino.png",
+    "gen": 1
+  },
+  {
+    "id": 32,
+    "name": "Nairowisp",
+    "sprite": "catchmon/Common/Nairowisp.png",
+    "gen": 1
+  },
+  {
+    "id": 16,
+    "name": "Nuttiki",
+    "sprite": "catchmon/Common/Nuttiki.png",
+    "gen": 1
+  },
+  {
+    "id": 64,
+    "name": "Obscerion",
+    "sprite": "catchmon/Common/Obscerion.png",
+    "gen": 1
+  },
+  {
+    "id": 36,
+    "name": "Psypus",
+    "sprite": "catchmon/Common/Psypus.png",
+    "gen": 1
+  },
+  {
+    "id": 25,
+    "name": "Pyrocore",
+    "sprite": "catchmon/Common/Pyrocore.png",
+    "gen": 1
+  },
+  {
+    "id": 80,
+    "name": "Ravikar",
+    "sprite": "catchmon/Common/Ravikar.png",
+    "gen": 1
+  },
+  {
+    "id": 62,
+    "name": "Rharnox",
+    "sprite": "catchmon/Common/Rharnox.png",
+    "gen": 1
+  },
+  {
+    "id": 60,
+    "name": "Rhinubi",
+    "sprite": "catchmon/Common/Rhinubi.png",
+    "gen": 1
+  },
+  {
+    "id": 61,
+    "name": "Rhyrok",
+    "sprite": "catchmon/Common/Rhyrok.png",
+    "gen": 1
+  },
+  {
+    "id": 65,
+    "name": "Ripplee",
+    "sprite": "catchmon/Common/Ripplee.png",
+    "gen": 1
+  },
+  {
+    "id": 21,
+    "name": "Rockoon",
+    "sprite": "catchmon/Common/Rockoon.png",
+    "gen": 1
+  },
+  {
+    "id": 22,
+    "name": "Shadopup",
+    "sprite": "catchmon/Common/Shadopup.png",
+    "gen": 1
+  },
+  {
+    "id": 45,
+    "name": "Silv",
+    "sprite": "catchmon/Common/Silv.png",
+    "gen": 1
+  },
+  {
+    "id": 48,
+    "name": "Silvaflare",
+    "sprite": "catchmon/Common/Silvaflare.png",
+    "gen": 1
+  },
+  {
+    "id": 46,
+    "name": "Silvonfla",
+    "sprite": "catchmon/Common/Silvonfla.png",
+    "gen": 1
+  },
+  {
+    "id": 73,
+    "name": "Spikrit",
+    "sprite": "catchmon/Common/Spikrit.png",
+    "gen": 1
+  },
+  {
+    "id": 49,
+    "name": "Spirico",
+    "sprite": "catchmon/Common/Spirico.png",
+    "gen": 1
+  },
+  {
+    "id": 69,
+    "name": "Terraklawn",
+    "sprite": "catchmon/Common/Terraklawn.png",
+    "gen": 1
+  },
+  {
+    "id": 68,
+    "name": "Terraky",
+    "sprite": "catchmon/Common/Terraky.png",
+    "gen": 1
+  },
+  {
+    "id": 70,
+    "name": "Terranox",
+    "sprite": "catchmon/Common/Terranox.png",
+    "gen": 1
+  },
+  {
+    "id": 75,
+    "name": "Terrarokh",
+    "sprite": "catchmon/Common/Terrarokh.png",
+    "gen": 1
+  },
+  {
+    "id": 84,
+    "name": "Thundralis",
+    "sprite": "catchmon/Common/Thundralis.png",
+    "gen": 1
+  },
+  {
+    "id": 55,
+    "name": "Toxibelle",
+    "sprite": "catchmon/Common/Toxibelle.png",
+    "gen": 1
+  },
+  {
+    "id": 63,
+    "name": "Venametis",
+    "sprite": "catchmon/Common/Venametis.png",
+    "gen": 1
+  },
+  {
+    "id": 56,
+    "name": "Venuscale",
+    "sprite": "catchmon/Common/Venuscale.png",
+    "gen": 1
+  },
+  {
+    "id": 66,
+    "name": "Volfreeze",
+    "sprite": "catchmon/Common/Volfreeze.png",
+    "gen": 1
+  },
+  {
+    "id": 11,
+    "name": "Voltera",
+    "sprite": "catchmon/Common/Voltera.png",
+    "gen": 1
+  },
+  {
+    "id": 12,
+    "name": "Voltitan",
+    "sprite": "catchmon/Common/Voltitan.png",
+    "gen": 1
+  },
+  {
+    "id": 83,
+    "name": "Voltrossa",
+    "sprite": "catchmon/Common/Voltrossa.png",
+    "gen": 1
+  },
+  {
+    "id": 76,
+    "name": "Wyrmling",
+    "sprite": "catchmon/Common/Wyrmling.png",
+    "gen": 1
+  },
+  {
+    "id": 10,
+    "name": "Zapkit",
+    "sprite": "catchmon/Common/Zapkit.png",
+    "gen": 1
+  },
+  {
+    "id": 82,
+    "name": "Zappiri",
+    "sprite": "catchmon/Common/Zappiri.png",
+    "gen": 1
+  },
+  {
+    "id": 104,
+    "name": "Xandryth",
+    "sprite": "catchmon/God/Xandryth.png",
+    "gen": 1
+  },
+  {
+    "id": 93,
+    "name": "Chronavelle",
+    "sprite": "catchmon/Legendary/Chronavelle.png",
+    "gen": 1
+  },
+  {
+    "id": 94,
+    "name": "Voidalon",
+    "sprite": "catchmon/Legendary/Voidalon.png",
+    "gen": 1
+  },
+  {
+    "id": 95,
+    "name": "Chimourn",
+    "sprite": "catchmon/Mystic/Chimourn.png",
+    "gen": 1
+  },
+  {
+    "id": 97,
+    "name": "Cogmino",
+    "sprite": "catchmon/Mystic/Cogmino.png",
+    "gen": 1
+  },
+  {
+    "id": 96,
+    "name": "Echolurne",
+    "sprite": "catchmon/Mystic/Echolurne.png",
+    "gen": 1
+  },
+  {
+    "id": 100,
+    "name": "Myrelith",
+    "sprite": "catchmon/Mystic/Myrelith.png",
+    "gen": 1
+  },
+  {
+    "id": 98,
+    "name": "Neurogear",
+    "sprite": "catchmon/Mystic/Neurogear.png",
+    "gen": 1
+  },
+  {
+    "id": 99,
+    "name": "Obscidrahl",
+    "sprite": "catchmon/Mystic/Obscidrahl.png",
+    "gen": 1
+  },
+  {
+    "id": 85,
+    "name": "Abyssirex",
+    "sprite": "catchmon/Rare/Abyssirex.png",
+    "gen": 1
+  },
+  {
+    "id": 92,
+    "name": "Aerorion",
+    "sprite": "catchmon/Rare/Aerorion.png",
+    "gen": 1
+  },
+  {
+    "id": 88,
+    "name": "Lunareve",
+    "sprite": "catchmon/Rare/Lunareve.png",
+    "gen": 1
+  },
+  {
+    "id": 86,
+    "name": "Mindferno",
+    "sprite": "catchmon/Rare/Mindferno.png",
+    "gen": 1
+  },
+  {
+    "id": 91,
+    "name": "Skyrion",
+    "sprite": "catchmon/Rare/Skyrion.png",
+    "gen": 1
+  },
+  {
+    "id": 90,
+    "name": "Solanir",
+    "sprite": "catchmon/Rare/Solanir.png",
+    "gen": 1
+  },
+  {
+    "id": 89,
+    "name": "Stellaryon",
+    "sprite": "catchmon/Rare/Stellaryon.png",
+    "gen": 1
+  },
+  {
+    "id": 87,
+    "name": "Voltrionox",
+    "sprite": "catchmon/Rare/Voltrionox.png",
+    "gen": 1
+  },
+  {
+    "id": 5,
+    "name": "Aquilor",
+    "sprite": "catchmon/Starter/Aquilor.png",
+    "gen": 1
+  },
+  {
+    "id": 9,
+    "name": "Dracogold",
+    "sprite": "catchmon/Starter/Dracogold.png",
+    "gen": 1
+  },
+  {
+    "id": 2,
+    "name": "Flamarox",
+    "sprite": "catchmon/Starter/Flamarox.png",
+    "gen": 1
+  },
+  {
+    "id": 3,
+    "name": "Flameron",
+    "sprite": "catchmon/Starter/Flameron.png",
+    "gen": 1
+  },
+  {
+    "id": 1,
+    "name": "Flaumi",
+    "sprite": "catchmon/Starter/Flaumi.png",
+    "gen": 1
+  },
+  {
+    "id": 7,
+    "name": "Geckon",
+    "sprite": "catchmon/Starter/Geckon.png",
+    "gen": 1
+  },
+  {
+    "id": 6,
+    "name": "Hydravian",
+    "sprite": "catchmon/Starter/Hydravian.png",
+    "gen": 1
+  },
+  {
+    "id": 4,
+    "name": "Plipsy",
+    "sprite": "catchmon/Starter/Plipsy.png",
+    "gen": 1
+  },
+  {
+    "id": 8,
+    "name": "Reptorax",
+    "sprite": "catchmon/Starter/Reptorax.png",
+    "gen": 1
+  },
+  {
+    "id": 101,
+    "name": "Betario",
+    "sprite": "catchmon/Mystic/Betario.png",
+    "gen": 1
+  },
+  {
+    "id": 102,
+    "name": "Betaron",
+    "sprite": "catchmon/Mystic/Betaron.png",
+    "gen": 1
+  },
+  {
+    "id": 103,
+    "name": "Betarion Prime",
+    "sprite": "catchmon/Mystic/Betarion_Prime.png",
+    "gen": 1
+  }
+]

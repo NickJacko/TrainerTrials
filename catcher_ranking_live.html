@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>🏆 Live Catcher Ranking</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="utils.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 960px;
+      margin: auto;
+      padding: 24px;
+    }
+    .top-bar {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .back-button {
+      font-size: 16px;
+      text-decoration: none;
+      color: #555;
+      font-weight: bold;
+      padding: 6px 12px;
+      border-radius: 6px;
+      background: #e0e0e0;
+      transition: background 0.2s ease;
+    }
+    .back-button:hover {
+      background: #ccc;
+    }
+    h1 {
+      text-align: center;
+      margin-top: 0;
+      font-size: 26px;
+    }
+    #searchInput {
+      width: 100%;
+      max-width: 400px;
+      padding: 10px;
+      margin: 20px auto;
+      display: block;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+    th, td {
+      padding: 10px;
+      border: 1px solid #ccc;
+      text-align: center;
+    }
+    th {
+      background: #eee;
+    }
+    tr:hover {
+      background: #f1f1f1;
+    }
+    .gold { background: #fff8dc; font-weight: bold; }
+    .silver { background: #f0f0f0; font-weight: bold; }
+    .bronze { background: #fdf5e6; font-weight: bold; }
+    a {
+      text-decoration: none;
+      font-weight: bold;
+      color: inherit;
+    }
+    .catcher-name {
+      display: inline-block;
+      font-weight: bold;
+      background-size: 200% auto;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shine 3s linear infinite;
+      text-shadow: 0 0 4px rgba(255, 255, 255, 0);
+    }
+    .king {
+      background-image: linear-gradient(90deg, #ffd700, white, #ffd700);
+    }
+    .flame {
+      background-image: linear-gradient(90deg, #ff0000, white, #ff0000);
+    }
+    .diamond {
+      background-image: linear-gradient(90deg, deepskyblue, white, deepskyblue);
+    }
+    .shine {
+      background-image: linear-gradient(90deg, limegreen, white, limegreen);
+    }
+    .normal {
+      color: #444;
+      text-shadow: none;
+      font-weight: normal;
+      background: none;
+      -webkit-text-fill-color: inherit;
+      background-clip: unset;
+      animation: none;
+    }
+    @keyframes shine {
+      to { background-position: -200% center; }
+    }
+    @media (max-width: 768px) {
+      .container { padding: 16px; }
+      #searchInput { font-size: 14px; padding: 8px; }
+      th, td { font-size: 12px; padding: 6px; }
+      h1 { font-size: 22px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="top-bar">
+      <a class="back-button" href="index_live.html">← Back</a>
+    </div>
+
+    <h1>🏆 Catcher Ranking</h1>
+    <input type="text" id="searchInput" placeholder="Search catcher..." onkeyup="filterTable()">
+
+    <table>
+      <thead>
+        <tr>
+          <th>Rank</th>
+          <th>Catcher</th>
+          <th>Total Catchmon</th>
+          <th>Total Points</th>
+        </tr>
+      </thead>
+      <tbody id="rankingBody">
+        <tr><td colspan="4">Loading...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    function filterTable() {
+      const input = document.getElementById("searchInput").value.toUpperCase();
+      const rows = document.getElementById("rankingBody").getElementsByTagName("tr");
+      for (let i = 0; i < rows.length; i++) {
+        const td = rows[i].getElementsByTagName("td")[1];
+        rows[i].style.display = (td && td.innerText.toUpperCase().includes(input)) ? "" : "none";
+      }
+    }
+
+    function calcPoints(p) {
+      return p.gesamtpunkte ?? 0;
+    }
+
+    function updateRanking() {
+      fetch("catcher.json")
+        .then(res => res.json())
+        .then(data => {
+          const tbody = document.getElementById("rankingBody");
+          tbody.innerHTML = "";
+
+          const catcher = Object.entries(data.catcher || {}).map(([name, info]) => {
+            const team = info.team || [];
+            const totalPoints = team.reduce((sum, p) => sum + calcPoints(p), 0);
+            const donation = info.donation || 0;
+            return { name, teamSize: team.length, totalPoints, donation };
+          });
+
+          catcher.sort((a, b) => b.totalPoints - a.totalPoints);
+
+          catcher.forEach((t, i) => {
+            const tr = document.createElement("tr");
+
+            const rank = i + 1;
+            let rankClass = "";
+            if (rank === 1) rankClass = "gold";
+            else if (rank === 2) rankClass = "silver";
+            else if (rank === 3) rankClass = "bronze";
+
+            tr.className = rankClass;
+
+            tr.innerHTML = `
+              <td>${rank}</td>
+              <td>${getStyledCatcherName(t.name, t.donation)}</td>
+              <td>${t.teamSize}</td>
+              <td>${t.totalPoints}</td>
+            `;
+            tbody.appendChild(tr);
+          });
+        });
+    }
+
+    setInterval(updateRanking, 5000);
+    updateRanking();
+  </script>
+</body>
+</html>

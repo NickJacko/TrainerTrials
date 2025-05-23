@@ -1,0 +1,50 @@
+{
+  "spirico": {
+    "escaped": 0,
+    "caught": 1
+  },
+  "voidalon": {
+    "escaped": 0,
+    "caught": 1
+  },
+  "aquilor": {
+    "escaped": 0,
+    "caught": 1
+  },
+  "reptorax": {
+    "escaped": 0,
+    "caught": 1
+  },
+  "flaumi": {
+    "escaped": 4,
+    "caught": 1
+  },
+  "plipsy": {
+    "escaped": 5,
+    "caught": 1
+  },
+  "solanir": {
+    "escaped": 3,
+    "caught": 1
+  },
+  "mindferno": {
+    "escaped": 2,
+    "caught": 0
+  },
+  "stellaryon": {
+    "escaped": 1,
+    "caught": 0
+  },
+  "geckon": {
+    "escaped": 3,
+    "caught": 0
+  },
+  "skyrion": {
+    "escaped": 2,
+    "caught": 0
+  },
+  "lunareve": {
+    "escaped": 2,
+    "caught": 0
+  }
+}

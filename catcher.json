@@ -1,0 +1,587 @@
+{
+  "catcher": {
+    "king": {
+      "coins": 2800,
+      "team": [
+        {
+          "name": "Spirico",
+          "level": 1,
+          "rarity": "Common",
+          "shiny": false,
+          "stats": {
+            "ATK": 1,
+            "DEF": 21,
+            "SPD": 0,
+            "WIS": 17,
+            "CHA": 15,
+            "LUK": 10
+          },
+          "sprite": "catchmon/Common/Spirico.png",
+          "stage": 1,
+          "evolution_line": [
+            "Spirico",
+            "Astranox",
+            "Ethernal"
+          ],
+          "categories": [
+            "Common"
+          ]
+        },
+        {
+          "name": "Voidalon",
+          "level": 4,
+          "rarity": "Legendary",
+          "shiny": false,
+          "stats": {
+            "ATK": 26,
+            "DEF": 20,
+            "SPD": 26,
+            "WIS": 0,
+            "CHA": 29,
+            "LUK": 8
+          },
+          "sprite": "catchmon/Legendary/Voidalon.png",
+          "stage": 1,
+          "evolution_line": [
+            "Voidalon"
+          ],
+          "categories": [
+            "Legendary"
+          ]
+        },
+        {
+          "name": "Aquilor",
+          "level": 18,
+          "rarity": "Starter",
+          "shiny": false,
+          "sprite": "catchmon/Starter/Aquilor.png",
+          "stats": {
+            "ATK": 25,
+            "DEF": 14,
+            "SPD": 55,
+            "WIS": 30,
+            "CHA": 25,
+            "LUK": 40
+          },
+          "stage": 2,
+          "evolution_line": [
+            "Plipsy",
+            "Aquilor",
+            "Hydravian"
+          ],
+          "gesamtpunkte": 3289
+        },
+        {
+          "name": "Reptorax",
+          "level": 55,
+          "rarity": "Starter",
+          "shiny": false,
+          "sprite": "catchmon/Starter/Reptorax.png",
+          "stats": {
+            "ATK": 21,
+            "DEF": 30,
+            "SPD": 18,
+            "WIS": 26,
+            "CHA": 26,
+            "LUK": 46
+          },
+          "stage": 2,
+          "evolution_line": [
+            "Geckon",
+            "Reptorax",
+            "Dracogold"
+          ],
+          "gesamtpunkte": 8500
+        },
+        {
+          "name": "Flaumi",
+          "level": 48,
+          "rarity": "Starter",
+          "shiny": false,
+          "stats": {
+            "ATK": 17,
+            "DEF": 14,
+            "SPD": 7,
+            "WIS": 8,
+            "CHA": 30,
+            "LUK": 23
+          },
+          "sprite": "catchmon/Starter/Flaumi.png",
+          "stage": 1,
+          "evolution_line": [
+            "Flaumi",
+            "Flamarox",
+            "Flameron"
+          ],
+          "categories": [
+            "Starter"
+          ],
+          "gesamtpunkte": 7348
+        },
+        {
+          "name": "Plipsy",
+          "level": 5,
+          "rarity": "Starter",
+          "shiny": false,
+          "stats": {
+            "ATK": 28,
+            "DEF": 2,
+            "SPD": 22,
+            "WIS": 26,
+            "CHA": 31,
+            "LUK": 5
+          },
+          "sprite": "catchmon/Starter/Plipsy.png",
+          "stage": 1,
+          "evolution_line": [
+            "Plipsy",
+            "Aquilor",
+            "Hydravian"
+          ],
+          "categories": [
+            "Starter"
+          ],
+          "gesamtpunkte": 921
+        },
+        {
+          "name": "Solanir",
+          "level": 1,
+          "rarity": "Rare",
+          "shiny": false,
+          "stats": {
+            "ATK": 0,
+            "DEF": 27,
+            "SPD": 18,
+            "WIS": 14,
+            "CHA": 14,
+            "LUK": 8
+          },
+          "sprite": "catchmon/Rare/Solanir.png",
+          "stage": 1,
+          "evolution_line": [
+            "Solanir"
+          ],
+          "categories": [
+            "Rare"
+          ],
+          "gesamtpunkte": 362
+        }
+      ],
+      "donation": 2500
+    }
+  },
+  "encounters": {
+    "Spirico": 1,
+    "Plipsy": 4,
+    "Voidalon": 1,
+    "Mindferno": 1,
+    "Geckon": 2,
+    "Flaumi": 1,
+    "Solanir": 1
+  },
+  "escaped": [
+    {
+      "name": "Plipsy",
+      "level": 38,
+      "rarity": "Starter",
+      "shiny": false,
+      "stats": {
+        "ATK": 18,
+        "DEF": 3,
+        "SPD": 31,
+        "WIS": 22,
+        "CHA": 6,
+        "LUK": 22
+      },
+      "sprite": "catchmon/Starter/Plipsy.png",
+      "stage": 1,
+      "evolution_line": [
+        "Plipsy",
+        "Aquilor",
+        "Hydravian"
+      ],
+      "categories": [
+        "Starter"
+      ],
+      "gesamtpunkte": 5853,
+      "catcher": null
+    },
+    {
+      "name": "Mindferno",
+      "level": 59,
+      "rarity": "Rare",
+      "shiny": false,
+      "stats": {
+        "ATK": 19,
+        "DEF": 29,
+        "SPD": 24,
+        "WIS": 31,
+        "CHA": 19,
+        "LUK": 2
+      },
+      "sprite": "catchmon/Rare/Mindferno.png",
+      "stage": 1,
+      "evolution_line": [
+        "Mindferno"
+      ],
+      "categories": [
+        "Rare"
+      ],
+      "gesamtpunkte": 12048,
+      "catcher": null
+    },
+    {
+      "name": "Stellaryon",
+      "level": 13,
+      "rarity": "Rare",
+      "shiny": false,
+      "stats": {
+        "ATK": 5,
+        "DEF": 15,
+        "SPD": 4,
+        "WIS": 18,
+        "CHA": 20,
+        "LUK": 0
+      },
+      "sprite": "catchmon/Rare/Stellaryon.png",
+      "stage": 1,
+      "evolution_line": [
+        "Stellaryon"
+      ],
+      "categories": [
+        "Rare"
+      ],
+      "gesamtpunkte": 2724,
+      "catcher": null
+    },
+    {
+      "name": "Plipsy",
+      "level": 1,
+      "rarity": "Starter",
+      "shiny": false,
+      "stats": {
+        "ATK": 1,
+        "DEF": 14,
+        "SPD": 19,
+        "WIS": 6,
+        "CHA": 24,
+        "LUK": 10
+      },
+      "sprite": "catchmon/Starter/Plipsy.png",
+      "stage": 1,
+      "evolution_line": [
+        "Plipsy",
+        "Aquilor",
+        "Hydravian"
+      ],
+      "categories": [
+        "Starter"
+      ],
+      "gesamtpunkte": 261,
+      "catcher": null
+    },
+    {
+      "name": "Geckon",
+      "level": 5,
+      "rarity": "Starter",
+      "shiny": false,
+      "stats": {
+        "ATK": 15,
+        "DEF": 26,
+        "SPD": 23,
+        "WIS": 9,
+        "CHA": 4,
+        "LUK": 11
+      },
+      "sprite": "catchmon/Starter/Geckon.png",
+      "stage": 1,
+      "evolution_line": [
+        "Geckon",
+        "Reptorax",
+        "Dracogold"
+      ],
+      "categories": [
+        "Starter"
+      ],
+      "gesamtpunkte": 882,
+      "catcher": null
+    },
+    {
+      "name": "Geckon",
+      "level": 10,
+      "rarity": "Starter",
+      "shiny": false,
+      "stats": {
+        "ATK": 18,
+        "DEF": 23,
+        "SPD": 14,
+        "WIS": 19,
+        "CHA": 17,
+        "LUK": 0
+      },
+      "sprite": "catchmon/Starter/Geckon.png",
+      "stage": 1,
+      "evolution_line": [
+        "Geckon",
+        "Reptorax",
+        "Dracogold"
+      ],
+      "categories": [
+        "Starter"
+      ],
+      "gesamtpunkte": 1636,
+      "catcher": null
+    },
+    {
+      "name": "Plipsy",
+      "level": 11,
+      "rarity": "Starter",
+      "shiny": false,
+      "stats": {
+        "ATK": 1,
+        "DEF": 6,
+        "SPD": 5,
+        "WIS": 10,
+        "CHA": 21,
+        "LUK": 2
+      },
+      "sprite": "catchmon/Starter/Plipsy.png",
+      "stage": 1,
+      "evolution_line": [
+        "Plipsy",
+        "Aquilor",
+        "Hydravian"
+      ],
+      "categories": [
+        "Starter"
+      ],
+      "gesamtpunkte": 1718,
+      "catcher": null
+    },
+    {
+      "name": "Plipsy",
+      "level": 55,
+      "rarity": "Starter",
+      "shiny": false,
+      "stats": {
+        "ATK": 7,
+        "DEF": 18,
+        "SPD": 24,
+        "WIS": 30,
+        "CHA": 24,
+        "LUK": 14
+      },
+      "sprite": "catchmon/Starter/Plipsy.png",
+      "stage": 1,
+      "evolution_line": [
+        "Plipsy",
+        "Aquilor",
+        "Hydravian"
+      ],
+      "categories": [
+        "Starter"
+      ],
+      "gesamtpunkte": 8426,
+      "catcher": null
+    },
+    {
+      "name": "Flaumi",
+      "level": 80,
+      "rarity": "Starter",
+      "shiny": false,
+      "stats": {
+        "ATK": 8,
+        "DEF": 23,
+        "SPD": 31,
+        "WIS": 25,
+        "CHA": 29,
+        "LUK": 26
+      },
+      "sprite": "catchmon/Starter/Flaumi.png",
+      "stage": 1,
+      "evolution_line": [
+        "Flaumi",
+        "Flamarox",
+        "Flameron"
+      ],
+      "categories": [
+        "Starter"
+      ],
+      "gesamtpunkte": 12213,
+      "catcher": null
+    },
+    {
+      "name": "Flaumi",
+      "level": 5,
+      "rarity": "Starter",
+      "shiny": false,
+      "stats": {
+        "ATK": 29,
+        "DEF": 14,
+        "SPD": 11,
+        "WIS": 31,
+        "CHA": 11,
+        "LUK": 15
+      },
+      "sprite": "catchmon/Starter/Flaumi.png",
+      "stage": 1,
+      "evolution_line": [
+        "Flaumi",
+        "Flamarox",
+        "Flameron"
+      ],
+      "categories": [
+        "Starter"
+      ],
+      "gesamtpunkte": 916,
+      "catcher": null
+    },
+    {
+      "name": "Mindferno",
+      "level": 81,
+      "rarity": "Rare",
+      "shiny": false,
+      "stats": {
+        "ATK": 11,
+        "DEF": 20,
+        "SPD": 14,
+        "WIS": 30,
+        "CHA": 15,
+        "LUK": 15
+      },
+      "sprite": "catchmon/Rare/Mindferno.png",
+      "stage": 1,
+      "evolution_line": [
+        "Mindferno"
+      ],
+      "categories": [
+        "Rare"
+      ],
+      "gesamtpunkte": 16410,
+      "catcher": null
+    },
+    {
+      "name": "Skyrion",
+      "level": 49,
+      "rarity": "Rare",
+      "shiny": false,
+      "stats": {
+        "ATK": 19,
+        "DEF": 24,
+        "SPD": 26,
+        "WIS": 11,
+        "CHA": 22,
+        "LUK": 12
+      },
+      "sprite": "catchmon/Rare/Skyrion.png",
+      "stage": 1,
+      "evolution_line": [
+        "Skyrion",
+        "Aerorion"
+      ],
+      "categories": [
+        "Rare"
+      ],
+      "gesamtpunkte": 10028,
+      "catcher": null
+    },
+    {
+      "name": "Plipsy",
+      "level": 2,
+      "rarity": "Starter",
+      "shiny": false,
+      "stats": {
+        "ATK": 24,
+        "DEF": 8,
+        "SPD": 4,
+        "WIS": 4,
+        "CHA": 26,
+        "LUK": 17
+      },
+      "sprite": "catchmon/Starter/Plipsy.png",
+      "stage": 1,
+      "evolution_line": [
+        "Plipsy",
+        "Aquilor",
+        "Hydravian"
+      ],
+      "categories": [
+        "Starter"
+      ],
+      "gesamtpunkte": 424,
+      "catcher": null
+    },
+    {
+      "name": "Solanir",
+      "level": 26,
+      "rarity": "Rare",
+      "shiny": false,
+      "stats": {
+        "ATK": 17,
+        "DEF": 28,
+        "SPD": 14,
+        "WIS": 14,
+        "CHA": 30,
+        "LUK": 11
+      },
+      "sprite": "catchmon/Rare/Solanir.png",
+      "stage": 1,
+      "evolution_line": [
+        "Solanir"
+      ],
+      "categories": [
+        "Rare"
+      ],
+      "gesamtpunkte": 5428,
+      "catcher": null
+    },
+    {
+      "name": "Solanir",
+      "level": 4,
+      "rarity": "Rare",
+      "shiny": false,
+      "stats": {
+        "ATK": 11,
+        "DEF": 30,
+        "SPD": 23,
+        "WIS": 5,
+        "CHA": 27,
+        "LUK": 7
+      },
+      "sprite": "catchmon/Rare/Solanir.png",
+      "stage": 1,
+      "evolution_line": [
+        "Solanir"
+      ],
+      "categories": [
+        "Rare"
+      ],
+      "gesamtpunkte": 1006,
+      "catcher": null
+    },
+    {
+      "name": "Solanir",
+      "level": 9,
+      "rarity": "Rare",
+      "shiny": false,
+      "stats": {
+        "ATK": 16,
+        "DEF": 26,
+        "SPD": 25,
+        "WIS": 27,
+        "CHA": 8,
+        "LUK": 21
+      },
+      "sprite": "catchmon/Rare/Solanir.png",
+      "stage": 1,
+      "evolution_line": [
+        "Solanir"
+      ],
+      "categories": [
+        "Rare"
+      ],
+      "gesamtpunkte": 2046,
+      "catcher": null
+    }
+  ]
+}

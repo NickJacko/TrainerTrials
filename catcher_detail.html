@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="utils.js"></script>
+  <meta charset="UTF-8" />
+  <title>Catcher Detail</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f0f0;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: auto;
+      padding: 24px;
+    }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .back-button {
+      font-size: 16px;
+      text-decoration: none;
+      color: #555;
+      font-weight: bold;
+      padding: 6px 12px;
+      border-radius: 6px;
+      background: #e0e0e0;
+      transition: background 0.2s ease;
+    }
+
+    .back-button:hover {
+      background: #ccc;
+    }
+
+    h1 {
+      text-align: center;
+      margin: 0;
+      font-size: 26px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-top: 8px;
+      font-weight: normal;
+      font-size: 18px;
+      color: #444;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      font-size: 14px;
+      overflow-x: auto;
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: center;
+    }
+
+    img {
+      width: 64px;
+    }
+
+    a {
+      text-decoration: none;
+      font-weight: bold;
+      color: inherit;
+    }
+
+    .catcher-name {
+      display: inline-block;
+      font-weight: bold;
+      background-size: 200% auto;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shine 3s linear infinite;
+      text-shadow: 0 0 4px rgba(255, 255, 255, 0);
+    }
+
+    .king { background-image: linear-gradient(90deg, #ffd700, white, #ffd700); }
+    .flame { background-image: linear-gradient(90deg, orangered, white, red); }
+    .diamond { background-image: linear-gradient(90deg, deepskyblue, white, deepskyblue); }
+    .shine { background-image: linear-gradient(90deg, limegreen, white, limegreen); }
+
+    .normal {
+      color: #444;
+      font-weight: normal;
+      background: none;
+      -webkit-text-fill-color: inherit;
+      background-clip: unset;
+      animation: none;
+      text-shadow: 0 0 5px rgba(0,0,0,0.4);
+    }
+
+    @keyframes shine {
+      to { background-position: -200% center; }
+    }
+
+    @media (max-width: 768px) {
+      .container { padding: 16px; }
+      th, td { font-size: 12px; padding: 6px; }
+      h1 { font-size: 22px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="top-bar">
+      <a class="back-button" href="catchdex_live.html">← Back</a>
+    </div>
+
+    <h1 id="catcherTitle">Catcher’s Catchmon</h1>
+    <h2 id="totalPoints">Loading...</h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Sprite</th>
+          <th>Name</th>
+          <th>Level</th>
+          <th>Stats Sum</th>
+          <th>Points</th>
+        </tr>
+      </thead>
+      <tbody id="teamTable">
+        <tr><td colspan="5">Loading...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    function getParam(name) {
+      return new URLSearchParams(window.location.search).get(name);
+    }
+
+function calcPoints(p) {
+  return p.gesamtpunkte ?? 0;
+}
+
+
+    function getDonationTier(donation) {
+      if (donation >= 2500) return "king";
+      if (donation >= 500) return "flame";
+      if (donation >= 250) return "diamond";
+      if (donation >= 100) return "shine";
+      return "normal";
+    }
+
+    function styleCatcherName(name, tier) {
+      if (tier === "normal") return name;
+      return `<span class="catcher-name ${tier}">${name}</span>`;
+    }
+
+    async function loadCatcherData() {
+      const name = getParam("name");
+      if (!name) return;
+
+      const res = await fetch("catcher.json");
+      const data = await res.json();
+      const catcher = data.catcher?.[name];
+      if (!catcher) return;
+
+      const tier = getDonationTier(catcher.donation || 0);
+      document.getElementById("catcherTitle").innerHTML = `${styleCatcherName(name, tier)}’s Catchmon`;
+
+      const team = catcher.team || [];
+      const sorted = team.slice().sort((a, b) => calcPoints(b) - calcPoints(a));
+      const totalPoints = sorted.reduce((sum, p) => sum + calcPoints(p), 0);
+      document.getElementById("totalPoints").textContent = `Total Points: ${totalPoints}`;
+
+      const tbody = document.getElementById("teamTable");
+      tbody.innerHTML = "";
+
+      for (const p of sorted) {
+        const row = document.createElement("tr");
+        const sumStats = Object.values(p.stats).reduce((a, b) => a + b, 0);
+        const points = calcPoints(p);
+        const catchLink = `dex_detail.html?name=${encodeURIComponent(p.name)}`;
+
+        row.innerHTML = `
+          <td><a href="${catchLink}"><img src="${p.sprite}" alt="${p.name}"></a></td>
+          <td><a href="${catchLink}">${p.name}</a></td>
+          <td>${p.level}</td>
+          <td>${sumStats}</td>
+          <td>${points}</td>
+        `;
+        tbody.appendChild(row);
+      }
+    }
+
+    loadCatcherData();
+  </script>
+</body>
+</html>

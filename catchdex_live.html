@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>📘 Catchdex</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f2f2;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: auto;
+      padding: 24px;
+    }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .back-button {
+      font-size: 16px;
+      text-decoration: none;
+      color: #555;
+      font-weight: bold;
+      padding: 6px 12px;
+      border-radius: 6px;
+      background: #e0e0e0;
+      transition: background 0.2s ease;
+    }
+
+    .back-button:hover {
+      background: #ccc;
+    }
+
+    h1 {
+      text-align: center;
+      margin: 12px 0 16px;
+      font-size: 26px;
+    }
+
+    input {
+      width: 100%;
+      max-width: 400px;
+      margin: 10px auto 20px;
+      padding: 10px;
+      font-size: 16px;
+      display: block;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    .grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 8px;
+      width: 130px;
+      min-height: 200px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      padding: 10px;
+      text-align: center;
+      transition: transform 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+    }
+
+    .card:hover {
+      transform: scale(1.05);
+      background: #e6f7ff;
+    }
+
+    .card img {
+      width: 100px;
+      height: 100px;
+      object-fit: contain;
+      margin-bottom: 6px;
+    }
+
+    .card a {
+      text-decoration: none;
+      color: black;
+      font-weight: bold;
+      display: block;
+    }
+
+    .small {
+      font-size: 12px;
+      color: #777;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 16px;
+      }
+
+      h1 {
+        font-size: 22px;
+      }
+
+      .card {
+        width: 100px;
+      }
+
+      .card img {
+        width: 80px;
+        height: 80px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="top-bar">
+      <a class="back-button" href="index_live.html">← Back</a>
+    </div>
+
+    <h1>📘 Catchdex</h1>
+    <input type="text" id="searchInput" onkeyup="filterDex()" placeholder="Search Catchmon...">
+    <div class="grid" id="dexGrid"></div>
+  </div>
+
+  <script>
+    function capitalize(str) {
+      return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+
+    function filterDex() {
+      const input = document.getElementById("searchInput").value.toLowerCase();
+      const cards = document.querySelectorAll(".card");
+      cards.forEach(card => {
+        const name = card.innerText.toLowerCase();
+        card.style.display = name.includes(input) ? "" : "none";
+      });
+    }
+
+    function buildCards(dexList, seenData, enabledGens) {
+      const container = document.getElementById("dexGrid");
+      container.innerHTML = "";
+
+      const filtered = dexList
+        .filter(p => enabledGens.has(p.gen))
+        .sort((a, b) => a.id - b.id); // ✅ Sortierung nach ID
+
+      filtered.forEach(p => {
+        const name = p.name.toLowerCase();
+        const escaped = seenData[name]?.escaped || 0;
+        const caught = seenData[name]?.caught || 0;
+        const id = String(p.id).padStart(3, "0");
+        const safeName = capitalize(p.name).replace(/ /g, "_");
+
+        const div = document.createElement("div");
+        div.className = "card";
+        div.innerHTML = `
+          <a href="dex_detail.html?name=${safeName}">
+            <img src="${p.sprite}" alt="${capitalize(p.name)}">
+            <div>#${id}<br>${capitalize(p.name)}</div>
+            <div class="small">${escaped} escaped / ${caught} caught</div>
+          </a>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    async function updateDex() {
+      try {
+        const [dexList, seenCaught, genConfig] = await Promise.all([
+          fetch("dex_list.json?" + Date.now()).then(r => r.json()),
+          fetch("seen_caught.json?" + Date.now()).then(r => r.json()),
+          fetch("gen_config.json?" + Date.now()).then(r => r.json())
+        ]);
+        const enabledGens = new Set(genConfig.enabled_gens || []);
+        buildCards(dexList, seenCaught, enabledGens);
+      } catch (err) {
+        console.error("Fehler beim Laden der Catchdex-Daten:", err);
+      }
+    }
+
+    setInterval(updateDex, 5000);
+    updateDex();
+  </script>
+</body>
+</html>
