@@ -470,37 +470,37 @@
   {
     "id": 95,
     "name": "Chimourn",
-    "sprite": "catchmon/Mystical/Chimourn.png",
+    "sprite": "catchmon/Mythical/Chimourn.png",
     "gen": 1
   },
   {
     "id": 97,
     "name": "Cogmino",
-    "sprite": "catchmon/Mystical/Cogmino.png",
+    "sprite": "catchmon/Mythical/Cogmino.png",
     "gen": 1
   },
   {
     "id": 96,
     "name": "Echolurne",
-    "sprite": "catchmon/Mystical/Echolurne.png",
+    "sprite": "catchmon/Mythical/Echolurne.png",
     "gen": 1
   },
   {
     "id": 100,
     "name": "Myrelith",
-    "sprite": "catchmon/Mystical/Myrelith.png",
+    "sprite": "catchmon/Mythical/Myrelith.png",
     "gen": 1
   },
   {
     "id": 98,
     "name": "Neurogear",
-    "sprite": "catchmon/Mystical/Neurogear.png",
+    "sprite": "catchmon/Mythical/Neurogear.png",
     "gen": 1
   },
   {
     "id": 99,
     "name": "Obscidrahl",
-    "sprite": "catchmon/Mystical/Obscidrahl.png",
+    "sprite": "catchmon/Mythical/Obscidrahl.png",
     "gen": 1
   },
   {
@@ -608,19 +608,19 @@
   {
     "id": 101,
     "name": "Betario",
-    "sprite": "catchmon/Mystical/Betario.png",
+    "sprite": "catchmon/Mythical/Betario.png",
     "gen": 1
   },
   {
     "id": 102,
     "name": "Betaron",
-    "sprite": "catchmon/Mystical/Betaron.png",
+    "sprite": "catchmon/Mythical/Betaron.png",
     "gen": 1
   },
   {
     "id": 103,
     "name": "Betarion-Prime",
-    "sprite": "catchmon/Mystical/Betarion-Prime.png",
+    "sprite": "catchmon/Mythical/Betarion-Prime.png",
     "gen": 1
   }
 ]
