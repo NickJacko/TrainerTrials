@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
   <script src="utils.js"></script>
+  <audio id="wobbleSound" src="sounds/wobble.mp3" preload="auto"></audio>
+  <audio id="breakOut" src="sounds/breakout.mp3" preload="auto"></audio>  
   <meta charset="UTF-8" />
   <title>Wild Catchmon Spawn</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -29,7 +31,6 @@
     .ring-base { background: #555; }
     .ring-progress {
       background: conic-gradient(#00cc66 0deg, transparent 0deg);
-      transition: background 0.2s linear;
     }
     .catchmon {
       position: absolute;
@@ -196,6 +197,9 @@ function renderSpawn(data) {
       img.classList.remove("shake");
       void img.offsetWidth;
       img.classList.add("shake");
+      const wobbleAudio = document.getElementById("wobbleSound");
+      wobbleAudio.currentTime = 0;
+      wobbleAudio.play();
       i++;
       setTimeout(doShake, 1200);
     } else {
@@ -203,9 +207,9 @@ function renderSpawn(data) {
         setTimeout(() => {
           img.style.filter = "brightness(2.5)";
 
-          // Gewinnertext vorbereiten und anzeigen
-          msg.textContent = `🎉 @${winner} caught ${name}!`;
-          msg.classList.add("show");
+          setTimeout(() => {
+            img.style.filter = "none";
+          }, 400); // z. B. 400ms für kurzes Aufblitzen
 
           // Effekt starten
           reloadEffect(donation);
@@ -215,13 +219,15 @@ function renderSpawn(data) {
             const effectFrame = document.getElementById("catchEffect");
             if (effectFrame) effectFrame.remove();
 
-            img.style.filter = "none";
           }, 6000);
         }, 100);
       } else if (result === "escaped") {
         setTimeout(() => {
           img.style.opacity = 0;
           msg.textContent = `${name} broke free and escaped…`;
+          const wobbleAudio = document.getElementById("breakOut");
+          wobbleAudio.currentTime = 0;
+          wobbleAudio.play();
           msg.classList.add("show");
         }, 100);
       }
@@ -230,7 +236,6 @@ function renderSpawn(data) {
 
   setTimeout(doShake, 300);
 }
-
 
     function reloadEffect(donation) {
       const tier = getDonationTier(donation);
@@ -259,25 +264,37 @@ function renderSpawn(data) {
         newFrame.src = `${tier}_effect.html?` + Date.now();
         document.body.appendChild(newFrame);
       }, 50);
-  }
+    }
 
+    // Flüssige Ring-Animation
+    function updateRingProgress() {
+      if (spawnData && spawnData.spawn_start) {
+        const elapsed = (Date.now() / 1000) - spawnData.spawn_start;
+        const remaining = Math.max(0, SPAWN_INTERVAL - elapsed);
+        const angle = Math.min(1.0, elapsed / SPAWN_INTERVAL) * 360;
+
+        const ring = document.getElementById("ringProgress");
+        ring.style.opacity = remaining === 0 ? "0" : "1";
+        ring.style.background = `conic-gradient(#00cc66 ${angle}deg, transparent ${angle}deg)`;
+      }
+      requestAnimationFrame(updateRingProgress);
+    }
 
     function updateTimer() {
       if (!spawnData || !spawnData.spawn_start) return;
 
       const elapsed = Math.floor(Date.now() / 1000) - spawnData.spawn_start;
       const remaining = Math.max(0, SPAWN_INTERVAL - elapsed);
-      const angle = Math.min(1.0, elapsed / SPAWN_INTERVAL) * 360;
-
-      const ring = document.getElementById("ringProgress");
-      ring.style.opacity = remaining === 0 ? "0" : "1";
-      ring.style.background = `conic-gradient(#00cc66 ${angle}deg, transparent ${angle}deg)`;
 
       const mm = String(Math.floor(remaining / 60)).padStart(2, '0');
       const ss = String(remaining % 60).padStart(2, '0');
       document.getElementById("timerText").textContent = `${mm}:${ss}`;
     }
 
+    // Starte flüssige Ring-Animation
+    requestAnimationFrame(updateRingProgress);
+    
+    // Behalte die ursprünglichen Intervalle
     setInterval(updateTimer, 500);
     setInterval(fetchSpawn, 500);
     fetchSpawn();

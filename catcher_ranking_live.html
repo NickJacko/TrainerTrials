@@ -21,6 +21,7 @@
       display: flex;
       align-items: center;
       margin-bottom: 10px;
+      gap: 12px;
     }
     .back-button {
       font-size: 16px;
@@ -40,11 +41,11 @@
       margin-top: 0;
       font-size: 26px;
     }
-    #searchInput {
+    #searchInput, #sortSelect {
       width: 100%;
       max-width: 400px;
       padding: 10px;
-      margin: 20px auto;
+      margin: 10px auto;
       display: block;
       font-size: 16px;
       border: 1px solid #ccc;
@@ -84,19 +85,11 @@
       animation: shine 3s linear infinite;
       text-shadow: 0 0 4px rgba(255, 255, 255, 0);
     }
-    .king {
-      background-image: linear-gradient(90deg, #ffd700, white, #ffd700);
-    }
-    .flame {
-      background-image: linear-gradient(90deg, #ff0000, white, #ff0000);
-    }
-    .diamond {
-      background-image: linear-gradient(90deg, deepskyblue, white, deepskyblue);
-    }
-    .shine {
-      background-image: linear-gradient(90deg, limegreen, white, limegreen);
-    }
-    .normal {
+    .king    { background-image: linear-gradient(90deg, #ffd700, white, #ffd700); }
+    .flame   { background-image: linear-gradient(90deg, #ff0000, white, #ff0000); }
+    .diamond { background-image: linear-gradient(90deg, deepskyblue, white, deepskyblue); }
+    .shine   { background-image: linear-gradient(90deg, limegreen, white, limegreen); }
+    .normal  {
       color: #444;
       text-shadow: none;
       font-weight: normal;
@@ -110,7 +103,7 @@
     }
     @media (max-width: 768px) {
       .container { padding: 16px; }
-      #searchInput { font-size: 14px; padding: 8px; }
+      #searchInput, #sortSelect { font-size: 14px; padding: 8px; }
       th, td { font-size: 12px; padding: 6px; }
       h1 { font-size: 22px; }
     }
@@ -119,10 +112,15 @@
 <body>
   <div class="container">
     <div class="top-bar">
-      <a class="back-button" href="index_live.html">← Back</a>
+      <a class="back-button" href="javascript:history.back()">← Back</a>
     </div>
 
     <h1>🏆 Catcher Ranking</h1>
+    <select id="sortSelect" onchange="updateRanking()">
+      <option value="points">Sort by Total Points</option>
+      <option value="level">Sort by Level</option>
+      <option value="count">Sort by Catchmon Count</option>
+    </select>
     <input type="text" id="searchInput" placeholder="Search catcher..." onkeyup="filterTable()">
 
     <table>
@@ -131,11 +129,12 @@
           <th>Rank</th>
           <th>Catcher</th>
           <th>Total Catchmon</th>
+          <th>Level</th>
           <th>Total Points</th>
         </tr>
       </thead>
       <tbody id="rankingBody">
-        <tr><td colspan="4">Loading...</td></tr>
+        <tr><td colspan="5">Loading...</td></tr>
       </tbody>
     </table>
   </div>
@@ -154,37 +153,51 @@
       return p.gesamtpunkte ?? 0;
     }
 
+    function calcLevel(points) {
+      return Math.floor(Math.pow(points, 0.25));  // just example
+    }
+
     function updateRanking() {
       fetch("catcher.json")
         .then(res => res.json())
         .then(data => {
+          const sortMode = document.getElementById("sortSelect").value;
           const tbody = document.getElementById("rankingBody");
           tbody.innerHTML = "";
 
           const catcher = Object.entries(data.catcher || {}).map(([name, info]) => {
             const team = info.team || [];
             const totalPoints = team.reduce((sum, p) => sum + calcPoints(p), 0);
-            const donation = info.donation || 0;
-            return { name, teamSize: team.length, totalPoints, donation };
+            const level = calcLevel(totalPoints);
+            return {
+              name,
+              teamSize: team.length,
+              totalPoints,
+              level,
+              donation: info.donation || 0
+            };
           });
 
-          catcher.sort((a, b) => b.totalPoints - a.totalPoints);
+          catcher.sort((a, b) => {
+            if (sortMode === "points") return b.totalPoints - a.totalPoints;
+            if (sortMode === "level") return b.level - a.level;
+            if (sortMode === "count") return b.teamSize - a.teamSize;
+            return 0;
+          });
 
           catcher.forEach((t, i) => {
-            const tr = document.createElement("tr");
-
             const rank = i + 1;
+            const tr = document.createElement("tr");
             let rankClass = "";
             if (rank === 1) rankClass = "gold";
             else if (rank === 2) rankClass = "silver";
             else if (rank === 3) rankClass = "bronze";
-
             tr.className = rankClass;
-
             tr.innerHTML = `
               <td>${rank}</td>
               <td>${getStyledCatcherName(t.name, t.donation)}</td>
               <td>${t.teamSize}</td>
+              <td>${t.level}</td>
               <td>${t.totalPoints}</td>
             `;
             tbody.appendChild(tr);

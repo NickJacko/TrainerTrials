@@ -16,33 +16,80 @@
     }
 
     h1 {
+      margin-bottom: 30px;
+    }
+
+    .entry-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
       margin-bottom: 20px;
+    }
+
+    .player-label {
+      min-width: 240px;
+      text-align: right;
+      font-size: 20px;
+      font-weight: bold;
     }
 
     .bar-container {
       background: #333;
-      border-radius: 12px;
-      margin: 10px auto;
-      width: 80%;
-      max-width: 400px;
+      border-radius: 16px;
       height: 32px;
+      width: 60%;
+      max-width: 500px;
       overflow: hidden;
+      position: relative;
     }
 
     .bar-fill {
       height: 100%;
       line-height: 32px;
-      text-align: left;
-      padding-left: 12px;
-      color: white;
+      text-align: center;
       font-weight: bold;
       white-space: nowrap;
+      color: white;
+      text-shadow: 0 0 6px white;
+      position: relative;
+      transition: width 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
       overflow: hidden;
+      z-index: 1;
     }
 
-    a {
-      text-decoration: none;
-      font-weight: bold;
+    .shine-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      background-image: linear-gradient(
+        90deg,
+        rgba(0, 0, 0, 0) 0%,
+        rgba(255, 255, 255, 0.3) 30%,
+        rgba(255, 255, 255, 0.6) 50%,
+        rgba(255, 255, 255, 0.3) 70%,
+        rgba(0, 0, 0, 0) 100%
+      );
+      background-size: 200% auto;
+      background-position: -200% center;
+      animation: shineBar 3s ease-in-out infinite;
+      pointer-events: none;
+      border-radius: inherit;
+      z-index: 2;
+    }
+
+    @keyframes shineBar {
+      0%   { background-position: -200% center; }
+      50%  { background-position: 200% center; }
+      100% { background-position: 200% center; }
+    }
+
+    .percent-text {
+      position: relative;
+      z-index: 3;
+      transition: all 0.3s ease;
     }
 
     .catcher-name {
@@ -50,50 +97,105 @@
       font-weight: bold;
       background-size: 200% auto;
       background-clip: text;
-      color: transparent;
+      -webkit-text-fill-color: transparent;
       animation: shine 3s linear infinite;
-      text-shadow: 0 0 4px rgba(255, 255, 255, 0);
+      text-shadow: 0 0 4px rgba(255, 255, 255, 0.3);
     }
 
-    .king {
-      background-image: linear-gradient(90deg, #ffd700, white, #ffd700);
-    }
-
-    .flame {
-      background-image: linear-gradient(90deg, #ff0000, white, #ff0000);
-    }
-
-    .diamond {
-      background-image: linear-gradient(90deg, deepskyblue, white, deepskyblue);
-    }
-
-    .shine {
-      background-image: linear-gradient(90deg, limegreen, white, limegreen);
-    }
-
-    .normal {
-      background: none;
-      background-clip: border-box;
+    .king    { background-image: linear-gradient(90deg, #ffd700, white, #ffd700); }
+    .flame   { background-image: linear-gradient(90deg, #ff0000, white, #ff0000); }
+    .diamond { background-image: linear-gradient(90deg, deepskyblue, white, deepskyblue); }
+    .shine   { background-image: linear-gradient(90deg, limegreen, white, limegreen); }
+    .normal  {
       color: #ccc;
-      font-weight: normal;
       text-shadow: none;
+      font-weight: normal;
+      background: none;
+      -webkit-text-fill-color: inherit;
+      background-clip: unset;
       animation: none;
     }
 
     @keyframes shine {
       to { background-position: -200% center; }
     }
+
+    .gray       { 
+      background: #666;
+      transition: all 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .gray-glow  { 
+      background: #bff5b1;
+      transition: all 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .lightgreen-glow { 
+      background: #30c930;
+      transition: all 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .green-glow { 
+      background: #005300;
+      transition: all 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .cyan-glow  { 
+      background: #00ffff;
+      transition: all 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .blue-glow  { 
+      background: #3399ff;
+      transition: all 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .yellow-glow { 
+      background: #ffff66;
+      transition: all 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .orange-glow { 
+      background: #ff9900;
+      transition: all 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .red-glow   { 
+      background: #ff3333;
+      transition: all 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .deepred-glow { 
+      background: #cc0000;
+      transition: all 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .rainbow-glow {
+      background: linear-gradient(90deg, red, orange, yellow, green, cyan, blue, violet);
+      background-size: 200% auto;
+      animation: rainbowShine 3s linear infinite;
+      transition: width 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    @keyframes rainbowShine {
+      to { background-position: -200% center; }
+    }
+
+    /* Smooth transitions for color changes */
+    .bar-fill {
+      transition: 
+        width 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+        background 0.8s ease,
+        background-color 0.8s ease;
+    }
   </style>
 </head>
 <body>
   <h1>🎯 Top 3 Catchrates</h1>
-  <div id="catchBars" style="visibility: hidden;">Loading…</div>
+  <div id="catchBars"></div>
 
   <script>
+    let currentEntries = {};
+
     async function updateCatchrates() {
       try {
-        const res = await fetch("catch_chances.json?" + Date.now());
-        const data = await res.json();
+        const [catchChanceRes, catcherRes] = await Promise.all([
+          fetch("catch_chances.json?" + Date.now()),
+          fetch("catcher.json?" + Date.now())
+        ]);
+
+        const data = await catchChanceRes.json();
+        const allCatchers = await catcherRes.json();
 
         const top = Object.entries(data)
           .map(([name, chance]) => ({ name, chance }))
@@ -101,25 +203,70 @@
           .slice(0, 3);
 
         const container = document.getElementById("catchBars");
-        container.style.visibility = "hidden";
-        container.innerHTML = "";
+        const newIds = [];
 
         top.forEach((entry, idx) => {
+          const id = `catch-entry-${idx}`;
+          newIds.push(id);
           const percent = (entry.chance * 100).toFixed(1);
-          const div = document.createElement("div");
-          const styledName = getStyledCatcherName(entry.name, 0); // Update donation if available
-          div.innerHTML = `
-            <div class="bar-container">
-              <div class="bar-fill" style="width:${percent}%; background:linear-gradient(90deg,#4facfe,#00f2fe);">
-                ${idx + 1}. ${styledName} – ${percent}%
+          const info = allCatchers.catcher?.[entry.name] || {};
+          const coins = info.coins || 0;
+          const level = getPlayerLevel(coins);
+          const barColor = getLevelColor(level);
+          const donation = info.donation || 0;
+
+          const tierClass = donation >= 2500 ? "king" :
+                            donation >= 500  ? "flame" :
+                            donation >= 250  ? "diamond" :
+                            donation >= 100  ? "shine"  : "normal";
+
+          if (!currentEntries[id]) {
+            const row = document.createElement("div");
+            row.className = "entry-row";
+            row.id = id;
+            row.innerHTML = `
+              <div class="player-label">
+                ${idx + 1}. Lv.${level} <span class="catcher-name ${tierClass}">${entry.name}</span>
               </div>
-            </div>`;
-          container.appendChild(div);
+              <div class="bar-container">
+                <div class="bar-fill ${barColor}" style="width:${percent}%;">
+                  <span class="percent-text">${percent}%</span>
+                  <div class="shine-overlay"></div>
+                </div>
+              </div>
+            `;
+            container.appendChild(row);
+            currentEntries[id] = row;
+          } else {
+            const row = currentEntries[id];
+            const bar = row.querySelector(".bar-fill");
+            const text = bar.querySelector(".percent-text");
+            const label = row.querySelector(".player-label");
+            
+            // Smooth width transition
+            bar.style.width = `${percent}%`;
+            
+            // Smooth text update
+            if (text) text.textContent = `${percent}%`;
+            
+            // Update label content
+            label.innerHTML = `${idx + 1}. Lv.${level} <span class="catcher-name ${tierClass}">${entry.name}</span>`;
+            
+            // Smooth color transition by updating class
+            bar.className = `bar-fill ${barColor}`;
+          }
         });
 
-        container.style.visibility = "visible";
+        // Entferne nicht mehr vorhandene Einträge
+        Object.keys(currentEntries).forEach(id => {
+          if (!newIds.includes(id)) {
+            currentEntries[id].remove();
+            delete currentEntries[id];
+          }
+        });
+
       } catch (e) {
-        console.error("Fehler beim Laden der catch_chances.json", e);
+        console.error("Fehler beim Laden der Daten", e);
       }
     }
 

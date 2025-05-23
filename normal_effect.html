@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <title>Effect Placeholder</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="utils.js"></script>
   <style>
     html, body {
       margin: 0;
@@ -12,15 +14,109 @@
       background: transparent;
       overflow: hidden;
     }
+    #overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.25);
+      z-index: 998;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+    }
+    #winnerText {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      z-index: 1001;
+      font-family: 'Segoe UI', sans-serif;
+      color: white;
+      text-shadow: 0 0 10px #000;
+      opacity: 0;
+      transition: opacity 1s ease;
+    }
+    #winnerName {
+      font-size: 48px;
+      font-weight: bold;
+    }
+    #catchmonLine {
+      font-size: 32px;
+      margin-top: 12px;
+    }
+    .catcher-name {
+      display: inline-block;
+      font-weight: bold;
+      background-size: 200% auto;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shine 3s linear infinite;
+      text-shadow: 0 0 4px rgba(255, 255, 255, 0);
+    }
+    .king {
+      background-image: linear-gradient(90deg, #ffd700, white, #ffd700);
+    }
+    .flame {
+      background-image: linear-gradient(90deg, #ff0000, white, #ff0000);
+    }
+    .diamond {
+      background-image: linear-gradient(90deg, deepskyblue, white, deepskyblue);
+    }
+    .shine {
+      background-image: linear-gradient(90deg, limegreen, white, limegreen);
+    }
+    .normal {
+      color: #fff;
+      font-weight: normal;
+      background: none;
+      -webkit-text-fill-color: inherit;
+      background-clip: unset;
+      animation: none;
+    }
+    @keyframes shine {
+      to { background-position: -200% center; }
+    }
   </style>
 </head>
 <body>
-<!-- Leerer Platzhalter – macht nichts, zeigt nichts -->
+  <div id="overlay"></div>
+  <div id="winnerText">
+    <div id="winnerName">???</div>
+    <div id="catchmonLine">caught ???!</div>
+  </div>
+  <audio id="normalSound" src="sounds/normal.mp3" preload="auto"></audio>
 
-<script>
-  setTimeout(() => {
-    document.body.innerHTML = "";
-  }, 10); // optional: sofort nach 10ms selbst entfernen
-</script>
+  <script>
+    const overlay = document.getElementById("overlay");
+    const winnerText = document.getElementById("winnerText");
+    const winnerName = document.getElementById("winnerName");
+    const catchmonLine = document.getElementById("catchmonLine");
+
+    // Sound automatisch abspielen
+    window.addEventListener("DOMContentLoaded", () => {
+      const normalAudio = document.getElementById("normalSound");
+      normalAudio.volume = 0.3;
+      normalAudio.play().catch(() => {
+        console.log("Autoplay blockiert.");
+      });
+    });
+
+    // Daten anzeigen
+    fetch("spawn_data.json?" + Date.now())
+      .then(res => res.json())
+      .then(data => {
+        const styledName = getStyledCatcherName(data.winner || "???", data.donation || 0);
+        winnerName.innerHTML = ` ${styledName} `;
+        catchmonLine.textContent = `caught ${data.name + "🎉" || "???"}!`;
+        overlay.style.opacity = "1";
+        winnerText.style.opacity = "1";
+      });
+
+    setTimeout(() => {
+      overlay.remove();
+      winnerText.remove();
+    }, 3000);
+  </script>
 </body>
 </html>

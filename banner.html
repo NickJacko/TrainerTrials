@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Scrolling Stats Banner</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #111;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+    }
+
+    .marquee-container {
+      position: fixed;
+      bottom: 16px;
+      width: 100%;
+      overflow: hidden;
+      height: 36px;
+      z-index: 1000;
+    }
+
+    .marquee-text {
+      display: inline-block;
+      white-space: nowrap;
+      font-size: 20px;
+      animation: scrollLeft 25s linear forwards;
+    }
+
+    @keyframes scrollLeft {
+      0%   { transform: translateX(100%); }
+      100% { transform: translateX(-100%); }
+    }
+
+    .glow {
+      display: inline-block;
+      padding: 0 60px;
+    }
+
+    .gray-glow {
+      color: #aaa;
+      text-shadow: 0 0 4px #888;
+      animation: shimmer 10s infinite;
+    }
+
+    .red-glow {
+      color: #ff4444;
+      text-shadow: 0 0 8px #ff2222;
+      animation: shimmer 10s  infinite;
+    }
+
+    .cyan-glow {
+      color: #00ffff;
+      text-shadow: 0 0 8px #00cccc;
+      animation: shimmer 10s  infinite;
+    }
+
+    .yellow-glow {
+      color: #ffff66;
+      text-shadow: 0 0 8px #ffea00;
+      animation: shimmer 10s s infinite;
+    }
+
+    @keyframes shimmer {
+      0%, 100% { filter: brightness(1); }
+      50%      { filter: brightness(1.6); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="marquee-container">
+    <div id="marqueeSlot" class="marquee-text"></div>
+  </div>
+
+  <script>
+    const messages = [
+      { text: "Trainer stats unlocked – link in bio", class: "gray-glow" },
+      { text: "Level up? Check your stats in the bio", class: "red-glow" },
+      { text: "See your leaderboard position — link in bio", class: "cyan-glow" },
+      { text: "Who's the top catcher? Find out now!", class: "yellow-glow" }
+    ];
+
+    let currentIndex = 0;
+    const slot = document.getElementById("marqueeSlot");
+
+    function showNextMessage() {
+      const msg = messages[currentIndex];
+      slot.innerHTML = `<span class="glow ${msg.class}">${msg.text}</span>`;
+      slot.style.animation = "none"; // restart animation
+      void slot.offsetWidth; // force reflow
+      slot.style.animation = "scrollLeft 50s linear forwards";
+
+      currentIndex = (currentIndex + 1) % messages.length;
+    }
+
+    showNextMessage();
+    setInterval(showNextMessage, 60000); // alle 60 Sekunden
+  </script>
+
+</body>
+</html>

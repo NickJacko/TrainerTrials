@@ -7,8 +7,8 @@ BASE_FOLDER = "catchmon"
 DATA_FILE = "catcher.json"
 
 RARITY_SPAWN_CHANCES = {
-    "Common": 0, "Rare": 10, "Starter": 25,
-    "Legendary": 2, "Mythical": 3, "God": 1
+    "Common": 70, "Rare": 10, "Starter": 15,
+    "Legendary": 2, "Mythical": 2, "God": 1
 }
 
 RARITY_MULTIPLIERS = {
@@ -172,7 +172,7 @@ def calculate_catch_chance(catchmon, like_data, global_likes):
     level = catchmon.get("level", 1)
     rarity = catchmon.get("rarity", "Common")
     rate_per_like = get_catch_rate_per_like(level, rarity)
-    global_bonus_percent = min(global_likes / 1000 * 10, 10)
+    global_bonus_percent = min(global_likes / 10000 * 10, 10)
 
     chances = {}
     for user, entry in like_data.items():

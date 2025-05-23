@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donation Animation</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: transparent;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .donation-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .heart {
+            font-size: 120px;
+            color: #ff3366;
+            text-shadow: 0 0 20px rgba(255, 51, 102, 0.8);
+            margin-bottom: 20px;
+            animation: heartPulse 0.8s ease-in-out infinite alternate;
+        }
+
+        .donation-text {
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 15px;
+            padding: 15px 25px;
+            margin: 10px 0;
+            border: 2px solid #fff;
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+        }
+
+        .donor-name {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            text-shadow: 0 0 10px currentColor;
+            background-size: 200% auto;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .amount {
+            font-size: 28px;
+            color: #ffd700;
+            font-weight: bold;
+            text-shadow: 0 0 15px #ffd700;
+        }
+
+        .thank-you {
+            font-size: 24px;
+            color: #fff;
+            margin-top: 10px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+        }
+
+        /* Tier-basierte Namensfarben */
+        .king {
+            background-image: linear-gradient(90deg, #ffd700, white, #ffd700);
+            animation: shine 2s linear infinite;
+        }
+        
+        .flame {
+            background-image: linear-gradient(90deg, #ff0000, white, #ff0000);
+            animation: shine 2s linear infinite;
+        }
+        
+        .diamond {
+            background-image: linear-gradient(90deg, deepskyblue, white, deepskyblue);
+            animation: shine 2s linear infinite;
+        }
+        
+        .shine {
+            background-image: linear-gradient(90deg, limegreen, white, limegreen);
+            animation: shine 2s linear infinite;
+        }
+        
+        .normal {
+            color: #ccc;
+            text-shadow: 0 0 10px #ccc;
+            background: none;
+            -webkit-text-fill-color: inherit;
+            background-clip: unset;
+            animation: none;
+        }
+
+        @keyframes shine {
+            to { background-position: -200% center; }
+        }
+
+        @keyframes heartPulse {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.2); }
+        }
+
+        /* Eingangs-Animation */
+        .donation-enter {
+            opacity: 1;
+            animation: donationEnter 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        }
+
+        .donation-exit {
+            animation: donationExit 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        }
+
+        @keyframes donationEnter {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.3) rotate(-10deg);
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.1) rotate(5deg);
+            }
+            100% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1) rotate(0deg);
+            }
+        }
+
+        @keyframes donationExit {
+            0% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1) rotate(0deg);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.3) rotate(10deg);
+            }
+        }
+
+        /* Herz-Partikel Effekt */
+        .heart-particle {
+            position: absolute;
+            font-size: 24px;
+            color: #ff3366;
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        .particle-animation {
+            animation: floatUp 3s ease-out forwards;
+        }
+
+        @keyframes floatUp {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-150px) scale(0.3);
+            }
+        }
+
+        /* Premium Effakte für höhere Spenden */
+        .premium-effect {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 15px;
+            animation: premiumGlow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes premiumGlow {
+            0% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
+            100% { box-shadow: 0 0 40px rgba(255, 215, 0, 0.8); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="donation-container" id="donationContainer">
+        <div class="heart">💖</div>
+        <div class="donation-text">
+            <div class="donor-name" id="donorName">Spender</div>
+            <div class="amount" id="donationAmount">0 Coins</div>
+            <div class="thank-you">Thank you! ❤️</div>
+        </div>
+    </div>
+    <audio id="donoSound" src="sounds/dono.mp3" preload="auto"></audio>
+    <script>
+        let currentAnimation = null;
+        let lastDonationCheck = 0;
+
+        function getTierClass(donation) {
+            if (donation >= 2500) return "king";
+            if (donation >= 500) return "flame";
+            if (donation >= 250) return "diamond";
+            if (donation >= 100) return "shine";
+            return "normal";
+        }
+
+        function createHeartParticles() {
+            const container = document.body;
+            const centerX = window.innerWidth / 2;
+            const centerY = window.innerHeight / 2;
+
+            for (let i = 0; i < 8; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'heart-particle particle-animation';
+                particle.textContent = ['💖', '💕', '💗', '💝'][Math.floor(Math.random() * 4)];
+                
+                const angle = (i / 8) * Math.PI * 2;
+                const distance = 80 + Math.random() * 40;
+                const x = centerX + Math.cos(angle) * distance;
+                const y = centerY + Math.sin(angle) * distance;
+                
+                particle.style.left = x + 'px';
+                particle.style.top = y + 'px';
+                
+                container.appendChild(particle);
+                
+                setTimeout(() => {
+                    container.removeChild(particle);
+                }, 3000);
+            }
+        }
+
+        function showDonationAnimation(donorName, amount, totalDonation = 0) {
+            const sound = document.getElementById('donoSound');
+            if (sound) {
+                sound.volume = 0.5;
+                sound.currentTime = 0;
+                sound.play().catch(() => {});
+            }
+
+            const container = document.getElementById('donationContainer');
+            const nameElement = document.getElementById('donorName');
+            const amountElement = document.getElementById('donationAmount');
+            
+            // Aktuelle Animation abbrechen falls vorhanden
+            if (currentAnimation) {
+                clearTimeout(currentAnimation);
+                container.classList.remove('donation-enter', 'donation-exit');
+            }
+
+            // Tier-Klasse basierend auf Gesamtspende bestimmen
+            const tierClass = getTierClass(totalDonation);
+            
+            // Inhalte setzen
+            nameElement.textContent = donorName;
+            nameElement.className = `donor-name ${tierClass}`;
+            amountElement.textContent = `${amount} Coins`;
+            
+            // Premium-Effekt für große Spenden
+            const donationText = container.querySelector('.donation-text');
+            if (amount >= 100) {
+                if (!donationText.querySelector('.premium-effect')) {
+                    const premiumEffect = document.createElement('div');
+                    premiumEffect.className = 'premium-effect';
+                    donationText.style.position = 'relative';
+                    donationText.appendChild(premiumEffect);
+                }
+            } else {
+                const existingEffect = donationText.querySelector('.premium-effect');
+                if (existingEffect) {
+                    existingEffect.remove();
+                }
+            }
+
+            // Eingangs-Animation starten
+            container.classList.add('donation-enter');
+            
+            // Herz-Partikel erstellen
+            createHeartParticles();
+            
+            // Animation nach 4 Sekunden beenden
+            currentAnimation = setTimeout(() => {
+                container.classList.remove('donation-enter');
+                container.classList.add('donation-exit');
+                
+                setTimeout(() => {
+                    container.classList.remove('donation-exit');
+                    currentAnimation = null;
+                }, 800);
+            }, 4000);
+        }
+
+        async function checkForNewDonations() {
+            try {
+                const response = await fetch('donation_trigger.json?' + Date.now());
+                const data = await response.json();
+                
+                if (data.timestamp > lastDonationCheck && data.donor && data.amount) {
+                    lastDonationCheck = data.timestamp;
+                    showDonationAnimation(data.donor, data.amount, data.total_donation || 0);
+                }
+            } catch (error) {
+                // Datei existiert noch nicht - das ist normal
+            }
+        }
+
+        // Prüfe alle 500ms nach neuen Spenden
+        setInterval(checkForNewDonations, 500);
+
+        // Test-Animation (für Entwicklung - kann entfernt werden)
+        // setTimeout(() => showDonationAnimation("TestUser", 50, 150), 2000);
+    </script>
+</body>
+</html>

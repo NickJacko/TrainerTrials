@@ -54,6 +54,61 @@
       color: #444;
     }
 
+    .levelbar-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 10px;
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .bar-container {
+      background: #333;
+      border-radius: 16px;
+      height: 24px;
+      width: 100%;
+      max-width: 500px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .bar-fill {
+      height: 100%;
+      position: relative;
+      transition: width 0.5s ease;
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    .shine-overlay {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-image: linear-gradient(
+        90deg,
+        rgba(0, 0, 0, 0) 0%,
+        rgba(255, 255, 255, 0.5) 50%,
+        rgba(0, 0, 0, 0) 100%
+      );
+      background-size: 200% auto;
+      background-position: -200% center;
+      animation: shineBar 2.5s linear infinite;
+      pointer-events: none;
+      border-radius: inherit;
+    }
+
+    @keyframes shineBar {
+      0%   { background-position: -200% center; }
+      100% { background-position: 200% center; }
+    }
+
+    .level-label {
+      font-size: 14px;
+      color: #444;
+      margin-top: 6px;
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
@@ -103,7 +158,22 @@
       text-shadow: 0 0 5px rgba(0,0,0,0.4);
     }
 
-    @keyframes shine {
+    /* Balkenfarben */
+    .gray       { background: #666; }
+    .lightgreen-glow { background: #30c930; }
+    .green-glow { background: #005300; }
+    .blue-glow  { background: #3399ff; }
+    .yellow-glow { background: #ffff66; }
+    .orange-glow { background: #ff9900; }
+    .red-glow   { background: #ff3333; }
+    .deepred-glow { background: #cc0000; }
+    .rainbow-glow {
+      background: linear-gradient(90deg, red, orange, yellow, green, cyan, blue, violet);
+      background-size: 200% auto;
+      animation: rainbowShine 3s linear infinite;
+    }
+
+    @keyframes rainbowShine {
       to { background-position: -200% center; }
     }
 
@@ -117,11 +187,20 @@
 <body>
   <div class="container">
     <div class="top-bar">
-      <a class="back-button" href="catchdex_live.html">← Back</a>
+      <a class="back-button" href="javascript:history.back()">← Back</a>
     </div>
 
     <h1 id="catcherTitle">Catcher’s Catchmon</h1>
     <h2 id="totalPoints">Loading...</h2>
+
+    <div class="levelbar-wrapper">
+      <div class="bar-container">
+        <div class="bar-fill" id="levelFill">
+          <div class="shine-overlay"></div>
+        </div>
+      </div>
+      <div class="level-label" id="levelLabel">Level ? – ? / ?</div>
+    </div>
 
     <table>
       <thead>
@@ -144,10 +223,9 @@
       return new URLSearchParams(window.location.search).get(name);
     }
 
-function calcPoints(p) {
-  return p.gesamtpunkte ?? 0;
-}
-
+    function calcPoints(p) {
+      return p.gesamtpunkte ?? 0;
+    }
 
     function getDonationTier(donation) {
       if (donation >= 2500) return "king";
@@ -160,6 +238,26 @@ function calcPoints(p) {
     function styleCatcherName(name, tier) {
       if (tier === "normal") return name;
       return `<span class="catcher-name ${tier}">${name}</span>`;
+    }
+
+    function getPlayerLevel(totalPoints) {
+      return Math.floor(Math.pow(totalPoints / 500, 0.6));
+    }
+
+    function getXpForLevel(level) {
+      return Math.pow(level, 1.666) * 500;
+    }
+
+    function getLevelColor(level) {
+      if (level >= 50) return "rainbow-glow";
+      if (level >= 40) return "deepred-glow";
+      if (level >= 35) return "red-glow";
+      if (level >= 30) return "orange-glow";
+      if (level >= 25) return "yellow-glow";
+      if (level >= 20) return "blue-glow";
+      if (level >= 15) return "green-glow";
+      if (level >= 10) return "lightgreen-glow";
+      return "gray";
     }
 
     async function loadCatcherData() {
@@ -178,6 +276,17 @@ function calcPoints(p) {
       const sorted = team.slice().sort((a, b) => calcPoints(b) - calcPoints(a));
       const totalPoints = sorted.reduce((sum, p) => sum + calcPoints(p), 0);
       document.getElementById("totalPoints").textContent = `Total Points: ${totalPoints}`;
+
+      const level = getPlayerLevel(totalPoints);
+      const xpNow = totalPoints;
+      const xpPrev = getXpForLevel(level);
+      const xpNext = getXpForLevel(level + 1);
+      const percent = Math.min(100, ((xpNow - xpPrev) / (xpNext - xpPrev)) * 100).toFixed(1);
+
+      const fill = document.getElementById("levelFill");
+      fill.style.width = `${percent}%`;
+      fill.className = `bar-fill ${getLevelColor(level)}`;
+      document.getElementById("levelLabel").textContent = `Level ${level} – ${Math.floor(xpNow)} / ${Math.floor(xpNext)} XP`;
 
       const tbody = document.getElementById("teamTable");
       tbody.innerHTML = "";

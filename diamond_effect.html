@@ -53,7 +53,6 @@
       margin-top: 12px;
     }
 
-    /* shine + tier styles */
     .catcher-name {
       display: inline-block;
       font-weight: bold;
@@ -67,19 +66,15 @@
     .king {
       background-image: linear-gradient(90deg, #ffd700, white, #ffd700);
     }
-
     .flame {
       background-image: linear-gradient(90deg, #ff0000, white, #ff0000);
     }
-
     .diamond {
       background-image: linear-gradient(90deg, deepskyblue, white, deepskyblue);
     }
-
     .shine {
       background-image: linear-gradient(90deg, limegreen, white, limegreen);
     }
-
     .normal {
       color: #fff;
       font-weight: normal;
@@ -101,6 +96,7 @@
   <div id="winnerName">???</div>
   <div id="catchmonLine">caught ???!</div>
 </div>
+<audio id="diamondSound" src="sounds/diamond.mp3" preload="auto"></audio>
 
 <script>
 const canvas = document.getElementById("bubbleCanvas");
@@ -112,6 +108,15 @@ const overlay = document.getElementById("blueOverlay");
 const winnerText = document.getElementById("winnerText");
 const winnerName = document.getElementById("winnerName");
 const catchmonLine = document.getElementById("catchmonLine");
+
+// Diamond-Sound automatisch abspielen
+window.addEventListener("DOMContentLoaded", () => {
+  const diamondAudio = document.getElementById("diamondSound");
+  diamondAudio.volume = 0.5;
+  diamondAudio.play().catch(() => {
+    console.log("Autoplay blockiert.");
+  });
+});
 
 fetch("spawn_data.json?" + Date.now())
   .then(res => res.json())

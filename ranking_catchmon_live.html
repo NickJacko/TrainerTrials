@@ -84,10 +84,21 @@
       animation: shine 3s linear infinite;
       text-shadow: 0 0 4px white;
     }
-    .king { background-image: linear-gradient(90deg, #ffd700, #fff2a8, #ffd700); }
-    .flame { background-image: linear-gradient(90deg, #ff0000, #ff6666, #ff0000); }
-    .diamond { background-image: linear-gradient(90deg, deepskyblue, white, deepskyblue); }
-    .shine { background-image: linear-gradient(90deg, limegreen, white, limegreen); }
+    .king {
+      background-image: linear-gradient(90deg, #ffd700, white, #ffd700);
+    }
+
+    .flame {
+      background-image: linear-gradient(90deg, #ff0000, white, #ff0000);
+    }
+
+    .diamond {
+      background-image: linear-gradient(90deg, deepskyblue, white, deepskyblue);
+    }
+
+    .shine {
+      background-image: linear-gradient(90deg, limegreen, white, limegreen);
+    }
     .normal {
       color: #444;
       text-shadow: none;
@@ -110,7 +121,7 @@
 <body>
   <div class="container">
     <div class="top-bar">
-      <a class="back-button" href="index_live.html">← Back</a>
+      <a class="back-button" href="javascript:history.back()">← Back</a>
     </div>
 
     <h1>🏆 Strongest Catchmon</h1>

@@ -42,6 +42,9 @@ def simulate_like():
                 amount = int(amount)
                 add_donation(data, name, amount)
                 print(f"💸 {name} hat {amount} Coins gespendet.")
+                
+                # Spenden-Animation auslösen
+                trigger_donation_animation(name, amount)
             except:
                 print("❌ Falsches Format. Nutze: !donate Nick 50")
         elif user_input.startswith("!like "):
@@ -56,9 +59,30 @@ def simulate_like():
         else:
             on_like_event(user_input)
 
+def trigger_donation_animation(donor_name, amount):
+    """Löst die Spenden-Animation aus"""
+    try:
+        # Aktuelle Gesamtspende des Nutzers abrufen
+        total_donation = data["catcher"].get(donor_name, {}).get("donation", 0)
+        
+        animation_data = {
+            "donor": donor_name,
+            "amount": amount,
+            "total_donation": total_donation,
+            "timestamp": time.time()
+        }
+        
+        with open("donation_trigger.json", "w", encoding="utf-8") as f:
+            json.dump(animation_data, f, ensure_ascii=False, indent=2)
+        
+        print(f"🎬 Spenden-Animation für {donor_name} ({amount} Coins) ausgelöst!")
+        
+    except Exception as e:
+        print(f"❌ Fehler beim Auslösen der Animation: {e}")
+
 COINS_PER_LIKE = 1
 SPAWN_INTERVAL = 15
-DEFAULT_ANIMATION_DURATION = 7.0
+DEFAULT_ANIMATION_DURATION = 5.0
 
 user_like_counts = {}
 data = load_data()
@@ -122,6 +146,19 @@ def on_like_event(username):
 def start_tiktok_listener():
     asyncio.run(client.run())
 
+# Initialisiere donation_trigger.json falls sie nicht existiert
+def init_donation_trigger():
+    try:
+        with open("donation_trigger.json", "r", encoding="utf-8") as f:
+            pass  # Datei existiert bereits
+    except FileNotFoundError:
+        # Erstelle leere Trigger-Datei
+        with open("donation_trigger.json", "w", encoding="utf-8") as f:
+            json.dump({"donor": None, "amount": 0, "total_donation": 0, "timestamp": 0}, f)
+
+# Initialisiere die Trigger-Datei
+init_donation_trigger()
+
 if TESTMODE:
     threading.Thread(target=simulate_like, daemon=True).start()
 else:
@@ -171,11 +208,11 @@ try:
 
                 # Dynamische Animationsdauer
                 if donation >= 2500:
-                    animation_duration = 5.0
+                    animation_duration = 11.0
                 elif donation >= 500:
-                    animation_duration = 7.0
+                    animation_duration = 9.0
                 elif donation >= 250:
-                    animation_duration = 7.0
+                    animation_duration = 9.0
                 elif donation >= 100:
                     animation_duration = 7.5
                 else:

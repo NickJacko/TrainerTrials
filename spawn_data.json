@@ -1,21 +1,21 @@
 {
-  "name": "Stellaryon",
-  "level": 1,
-  "rarity": "Rare",
+  "name": "Fairypup",
+  "level": 10,
+  "rarity": "Common",
   "shiny": false,
-  "sprite": "catchmon/Rare/Stellaryon.png",
+  "sprite": "catchmon/Common/Fairypup.png",
   "stats": {
-    "ATK": 10,
-    "DEF": 0,
-    "SPD": 3,
-    "WIS": 27,
-    "CHA": 31,
-    "LUK": 9
+    "ATK": 23,
+    "DEF": 9,
+    "SPD": 23,
+    "WIS": 5,
+    "CHA": 28,
+    "LUK": 4
   },
   "result": null,
   "winner": null,
   "donation": 0,
   "duration": 3.0,
-  "timestamp": 1747923086,
-  "spawn_start": 1747923086
+  "timestamp": 1748017007,
+  "spawn_start": 1748017007
 }

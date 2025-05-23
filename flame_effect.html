@@ -58,7 +58,7 @@
   <div id="winnerName">???</div>
   <div id="catchmonLine">caught ???!</div>
 </div>
-<audio id="fireSound" src="fire.mp3" preload="auto"></audio>
+<audio id="fireSound" src="sounds/fire.mp3" preload="auto"></audio>
 
 <script>
 const canvas = document.getElementById("fireCanvas");
@@ -72,16 +72,11 @@ const fireWidth = width;
 const fireHeight = height;
 
 const palette = [
-  "#070707", "#1F0707", "#2F0F07", "#470F07",
-  "#571707", "#671F07", "#771F07", "#8F2707",
-  "#9F2F07", "#AF3F07", "#BF4707", "#C74707",
-  "#DF4F07", "#DF5707", "#DF5707", "#D75F07",
-  "#D75F07", "#D7670F", "#CF6F0F", "#CF770F",
-  "#CF7F0F", "#CF8717", "#C78717", "#C78F17",
-  "#C7971F", "#BF9F1F", "#BF9F1F", "#BFA727",
-  "#BFA727", "#BFAF2F", "#B7AF2F", "#B7B72F",
-  "#B7B737", "#CFCF6F", "#DFDF9F", "#EFEFC7",
-  "#FFFFFF"
+  "#070707", "#1F0707", "#2F0F07", "#470F07", "#571707", "#671F07", "#771F07", "#8F2707",
+  "#9F2F07", "#AF3F07", "#BF4707", "#C74707", "#DF4F07", "#DF5707", "#DF5707", "#D75F07",
+  "#D75F07", "#D7670F", "#CF6F0F", "#CF770F", "#CF7F0F", "#CF8717", "#C78717", "#C78F17",
+  "#C7971F", "#BF9F1F", "#BF9F1F", "#BFA727", "#BFA727", "#BFAF2F", "#B7AF2F", "#B7B72F",
+  "#B7B737", "#CFCF6F", "#DFDF9F", "#EFEFC7", "#FFFFFF"
 ];
 
 function calculateFirePropagation() {
@@ -149,7 +144,16 @@ function update() {
 
 update();
 
-// Dynamisch Name und Monster aus JSON einfügen
+// Startet den Feuer-Sound direkt beim Laden mit halber Lautstärke
+window.addEventListener("DOMContentLoaded", () => {
+  const fireAudio = document.getElementById("fireSound");
+  fireAudio.volume = 0.5;
+  fireAudio.play().catch(() => {
+    console.log("Autoplay blockiert. Wird beim Event nachgeholt.");
+  });
+});
+
+// Dynamisch Name und Monster einfügen
 fetch("spawn_data.json?" + Date.now())
   .then(res => res.json())
   .then(data => {
@@ -161,7 +165,6 @@ fetch("spawn_data.json?" + Date.now())
     setTimeout(() => {
       document.getElementById("overlay").style.opacity = "1";
       document.getElementById("winnerText").style.opacity = "1";
-      document.getElementById("fireSound").play();
     }, 4000);
 
     setTimeout(() => {

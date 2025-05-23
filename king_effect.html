@@ -94,7 +94,6 @@
       background-clip: unset;
       animation: none;
     }
-
     @keyframes shine {
       to { background-position: -200% center; }
     }
@@ -107,6 +106,7 @@
   <div id="winnerName"></div>
   <div id="catchmonLine"></div>
 </div>
+<audio id="kingSound" src="sounds/king.mp3" preload="auto"></audio>
 
 <script>
 const canvas = document.getElementById("lightningCanvas");
@@ -123,6 +123,15 @@ let boltTimer = 0;
 let flashTriggered = false;
 let stage = 0;
 let soundPlayed = false;
+
+// King-Sound direkt beim Laden mit halber Lautstärke
+window.addEventListener("DOMContentLoaded", () => {
+  const kingAudio = document.getElementById("kingSound");
+  kingAudio.volume = 0.5;
+  kingAudio.play().catch(() => {
+    console.log("Autoplay blockiert – wird ggf. manuell gestartet.");
+  });
+});
 
 // Winner-Name + Styling
 fetch("spawn_data.json?" + Date.now())
