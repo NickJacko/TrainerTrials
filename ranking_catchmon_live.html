@@ -6,84 +6,248 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="utils.js"></script>
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: Arial, sans-serif;
-      background: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       margin: 0;
       padding: 0;
+      min-height: 100vh;
+      color: #333;
     }
+
     .container {
-      max-width: 960px;
+      max-width: 1400px;
       margin: auto;
-      padding: 24px;
+      padding: 20px;
     }
+
     .top-bar {
       display: flex;
       align-items: center;
-      margin-bottom: 10px;
+      justify-content: space-between;
+      margin-bottom: 30px;
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      padding: 15px 20px;
+      border: 1px solid rgba(255,255,255,0.2);
     }
+
     .back-button {
       font-size: 16px;
       text-decoration: none;
-      color: #555;
-      font-weight: bold;
-      padding: 6px 12px;
-      border-radius: 6px;
-      background: #e0e0e0;
-      transition: background 0.2s ease;
+      color: white;
+      font-weight: 600;
+      padding: 12px 20px;
+      border-radius: 12px;
+      background: linear-gradient(145deg, rgba(255,255,255,0.2), rgba(255,255,255,0.1));
+      border: 1px solid rgba(255,255,255,0.3);
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
     }
+
     .back-button:hover {
-      background: #ccc;
+      transform: translateY(-2px);
+      background: linear-gradient(145deg, rgba(255,255,255,0.3), rgba(255,255,255,0.2));
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
     }
+
     h1 {
       text-align: center;
-      margin-top: 0;
-      font-size: 26px;
+      margin: 0;
+      font-size: clamp(2rem, 5vw, 2.5rem);
+      background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
+      background-size: 300% 300%;
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: gradientShift 3s ease-in-out infinite;
+      font-weight: 800;
     }
-    label {
-      display: block;
+
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .controls {
       text-align: center;
-      margin: 16px 0;
-      font-size: 16px;
+      margin: 30px 0;
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      padding: 20px;
+      border: 1px solid rgba(255,255,255,0.2);
     }
+
+    .controls label {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      color: white;
+      cursor: pointer;
+      padding: 12px 20px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 25px;
+      transition: all 0.3s ease;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .controls label:hover {
+      background: rgba(255,255,255,0.2);
+      transform: translateY(-2px);
+    }
+
+    .controls input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      accent-color: #4CAF50;
+      cursor: pointer;
+    }
+
+    .table-container {
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 0;
+      border: 1px solid rgba(255,255,255,0.2);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 14px;
-      margin-top: 10px;
+      font-size: 15px;
     }
-    th, td {
-      border: 1px solid #ccc;
-      padding: 8px;
-      text-align: center;
-    }
+
     th {
-      background-color: #eee;
+      background: linear-gradient(145deg, #4CAF50, #45a049);
+      color: white;
+      padding: 16px 12px;
+      text-align: center;
+      font-weight: 600;
+      font-size: 14px;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+      border: none;
+      position: sticky;
+      top: 0;
+      z-index: 10;
     }
+
+    td {
+      padding: 12px;
+      text-align: center;
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+      transition: all 0.2s ease;
+    }
+
+    tr {
+      transition: all 0.2s ease;
+    }
+
     tr:hover {
-      background: #f9f9f9;
+      background: linear-gradient(90deg, rgba(76, 175, 80, 0.05), rgba(76, 175, 80, 0.1), rgba(76, 175, 80, 0.05));
+      transform: scale(1.01);
     }
-    .gold { background: #fff8dc; font-weight: bold; }
-    .silver { background: #f0f0f0; font-weight: bold; }
-    .bronze { background: #fdf5e6; font-weight: bold; }
+
+    .gold { 
+      background: linear-gradient(90deg, rgba(255, 215, 0, 0.1), rgba(255, 215, 0, 0.2), rgba(255, 215, 0, 0.1));
+      font-weight: bold;
+      box-shadow: inset 0 0 0 2px rgba(255, 215, 0, 0.3);
+    }
+
+    .silver { 
+      background: linear-gradient(90deg, rgba(192, 192, 192, 0.1), rgba(192, 192, 192, 0.2), rgba(192, 192, 192, 0.1));
+      font-weight: bold;
+      box-shadow: inset 0 0 0 2px rgba(192, 192, 192, 0.3);
+    }
+
+    .bronze { 
+      background: linear-gradient(90deg, rgba(205, 127, 50, 0.1), rgba(205, 127, 50, 0.2), rgba(205, 127, 50, 0.1));
+      font-weight: bold;
+      box-shadow: inset 0 0 0 2px rgba(205, 127, 50, 0.3);
+    }
+
+    .rank-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      font-weight: bold;
+      color: white;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    }
+
+    .rank-1 { background: linear-gradient(45deg, #ffd700, #ffed4e); color: #333; text-shadow: none; }
+    .rank-2 { background: linear-gradient(45deg, #c0c0c0, #e8e8e8); color: #333; text-shadow: none; }
+    .rank-3 { background: linear-gradient(45deg, #cd7f32, #daa520); }
+    .rank-other { background: linear-gradient(45deg, #6c757d, #495057); }
+
     img.catchmon-sprite {
-      width: 48px;
-      height: auto;
+      width: 60px;
+      height: 60px;
+      object-fit: contain;
+      border-radius: 8px;
+      transition: transform 0.2s ease;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
+
+    img.catchmon-sprite:hover {
+      transform: scale(1.1);
+    }
+
     a {
       text-decoration: none;
-      font-weight: bold;
+      font-weight: 600;
       color: inherit;
+      transition: color 0.2s ease;
     }
+
+    a:hover {
+      color: #4CAF50;
+    }
+
+    .name-cell {
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .points-cell {
+      font-weight: bold;
+      color: #4CAF50;
+      font-size: 16px;
+    }
+
+    .shiny-badge {
+      font-size: 20px;
+      filter: drop-shadow(0 0 4px rgba(255, 215, 0, 0.6));
+      animation: sparkle 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes sparkle {
+      from { transform: scale(1); }
+      to { transform: scale(1.1); }
+    }
+
     .catcher-name {
       display: inline-block;
       font-weight: bold;
       background-size: 200% auto;
       background-clip: text;
+      -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       animation: shine 3s linear infinite;
-      text-shadow: 0 0 4px white;
     }
+
     .king {
       background-image: linear-gradient(90deg, #ffd700, white, #ffd700);
     }
@@ -99,22 +263,125 @@
     .shine {
       background-image: linear-gradient(90deg, limegreen, white, limegreen);
     }
+
     .normal {
       color: #444;
       text-shadow: none;
-      font-weight: normal;
+      font-weight: 600;
       background: none;
       -webkit-text-fill-color: inherit;
       background-clip: unset;
       animation: none;
     }
+
     @keyframes shine {
       to { background-position: -200% center; }
     }
+
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #666;
+      font-size: 16px;
+    }
+
+    .loading::after {
+      content: '';
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid #e0e0e0;
+      border-top: 2px solid #4CAF50;
+      border-radius: 50%;
+      margin-left: 10px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Mobile Optimierungen */
+    @media (max-width: 1024px) {
+      th:nth-child(7), td:nth-child(7) { display: none; } /* Stat Sum ausblenden */
+    }
+
     @media (max-width: 768px) {
-      .container { padding: 16px; }
-      table { font-size: 12px; }
-      h1 { font-size: 22px; }
+      .container { 
+        padding: 15px; 
+      }
+      
+      .top-bar {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+      }
+
+      table { 
+        font-size: 13px; 
+      }
+      
+      th, td { 
+        padding: 8px 4px; 
+      }
+
+      img.catchmon-sprite {
+        width: 40px;
+        height: 40px;
+      }
+
+      .rank-badge {
+        width: 30px;
+        height: 30px;
+        font-size: 12px;
+      }
+
+      /* Level und Stat Sum auf Mobile ausblenden */
+      th:nth-child(6), td:nth-child(6),
+      th:nth-child(7), td:nth-child(7) { 
+        display: none; 
+      }
+    }
+
+    @media (max-width: 480px) {
+      .container { 
+        padding: 10px; 
+      }
+
+      h1 { 
+        font-size: 1.8rem; 
+      }
+
+      .controls {
+        padding: 15px;
+      }
+
+      table { 
+        font-size: 12px; 
+      }
+
+      th, td { 
+        padding: 6px 2px; 
+      }
+
+      img.catchmon-sprite {
+        width: 35px;
+        height: 35px;
+      }
+
+      /* Auf sehr kleinen Screens nur die wichtigsten Spalten zeigen */
+      th:nth-child(4), td:nth-child(4) { display: none; } /* Catcher ausblenden */
+    }
+
+    /* Scrollbare Tabelle für sehr breite Inhalte */
+    @media (max-width: 600px) {
+      .table-container {
+        overflow-x: auto;
+      }
+      
+      table {
+        min-width: 500px;
+      }
     }
   </style>
 </head>
@@ -122,28 +389,36 @@
   <div class="container">
     <div class="top-bar">
       <a class="back-button" href="javascript:history.back()">← Back</a>
+      <h1>🏆 Strongest Catchmon</h1>
+      <div></div> <!-- Spacer for flex layout -->
     </div>
 
-    <h1>🏆 Strongest Catchmon</h1>
-    <label><input type="checkbox" id="caughtOnly" onchange="renderTable()"> Show caught only</label>
+    <div class="controls">
+      <label>
+        <input type="checkbox" id="caughtOnly" onchange="renderTable()">
+        Show caught only
+      </label>
+    </div>
 
-    <table>
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Image</th>
-          <th>Name</th>
-          <th>Catcher</th>
-          <th>Points</th>
-          <th>Level</th>
-          <th>Stat Sum</th>
-          <th>Shiny</th>
-        </tr>
-      </thead>
-      <tbody id="rankingBody">
-        <tr><td colspan="8">Loading...</td></tr>
-      </tbody>
-    </table>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Image</th>
+            <th>Name</th>
+            <th>Catcher</th>
+            <th>Points</th>
+            <th>Level</th>
+            <th>Stat Sum</th>
+            <th>Shiny</th>
+          </tr>
+        </thead>
+        <tbody id="rankingBody">
+          <tr><td colspan="8" class="loading">Loading</td></tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 
   <script>
@@ -158,10 +433,19 @@
       return p.gesamtpunkte ?? 0;
     }
 
+    function getRankClass(index) {
+      if (index === 0) return 'rank-1';
+      if (index === 1) return 'rank-2';
+      if (index === 2) return 'rank-3';
+      return 'rank-other';
+    }
 
     function updateData() {
       fetch("catcher.json")
-        .then(r => r.json())
+        .then(r => {
+          if (!r.ok) throw new Error('Network response was not ok');
+          return r.json();
+        })
         .then(data => {
           allCatchmon = [];
           catcherDonations = {};
@@ -200,6 +484,11 @@
           });
 
           renderTable();
+        })
+        .catch(error => {
+          console.error('Error loading data:', error);
+          document.getElementById("rankingBody").innerHTML = 
+            '<tr><td colspan="8" class="loading">Error loading data</td></tr>';
         });
     }
 
@@ -213,6 +502,11 @@
         .filter(p => !showCaughtOnly || p.caught)
         .sort((a, b) => b.points - a.points);
 
+      if (visible.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" class="loading">No data available</td></tr>';
+        return;
+      }
+
       visible.forEach((p, index) => {
         const tr = document.createElement("tr");
         const rank = index + 1;
@@ -225,15 +519,17 @@
           ? getStyledCatcherName(p.catcher, catcherDonations[p.catcher] || 0)
           : "–";
 
+        const rankBadge = `<div class="rank-badge ${getRankClass(index)}">${rank}</div>`;
+
         tr.innerHTML = `
-          <td>${rank}</td>
+          <td>${rankBadge}</td>
           <td><a href="dex_detail.html?name=${encodeURIComponent(p.name)}"><img class="catchmon-sprite" src="${p.sprite}" alt="${p.name}"></a></td>
-          <td><a href="dex_detail.html?name=${encodeURIComponent(p.name)}">${p.name}</a></td>
+          <td class="name-cell"><a href="dex_detail.html?name=${encodeURIComponent(p.name)}">${p.name}</a></td>
           <td>${catcherCell}</td>
-          <td>${p.points}</td>
+          <td class="points-cell">${p.points.toLocaleString()}</td>
           <td>${p.level}</td>
-          <td>${p.statSum}</td>
-          <td>${p.shiny ? "✨" : ""}</td>
+          <td>${p.statSum.toLocaleString()}</td>
+          <td>${p.shiny ? '<span class="shiny-badge">✨</span>' : ""}</td>
         `;
         tbody.appendChild(tr);
       });
