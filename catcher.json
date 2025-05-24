@@ -1,7 +1,7 @@
 {
   "catcher": {
     "test": {
-      "coins": 1200,
+      "coins": 1500,
       "team": [
         {
           "name": "Flurrie",
@@ -49,6 +49,29 @@
             "Common"
           ],
           "gesamtpunkte": 300
+        },
+        {
+          "name": "Glissalune",
+          "level": 35,
+          "rarity": "Common",
+          "shiny": false,
+          "stats": {
+            "ATK": 8,
+            "DEF": 12,
+            "SPD": 17,
+            "WIS": 23,
+            "CHA": 31,
+            "LUK": 4
+          },
+          "sprite": "catchmon/Common/Glissalune.png",
+          "stage": 1,
+          "evolution_line": [
+            "Glissalune"
+          ],
+          "categories": [
+            "Common"
+          ],
+          "gesamtpunkte": 3595
         }
       ]
     }
@@ -56,7 +79,8 @@
   "encounters": {
     "Flurrie": 1,
     "Zappiri": 1,
-    "Ripplee": 1
+    "Ripplee": 1,
+    "Glissalune": 1
   },
   "escaped": [
     {
