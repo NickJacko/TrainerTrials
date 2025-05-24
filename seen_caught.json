@@ -28,7 +28,7 @@
     "caught": 0
   },
   "zappiri": {
-    "escaped": 2,
+    "escaped": 3,
     "caught": 0
   },
   "zapkit": {
@@ -44,7 +44,7 @@
     "caught": 0
   },
   "wyrmling": {
-    "escaped": 2,
+    "escaped": 3,
     "caught": 0
   },
   "aquaril": {
@@ -72,6 +72,10 @@
     "caught": 0
   },
   "metallino": {
+    "escaped": 1,
+    "caught": 0
+  },
+  "terraky": {
     "escaped": 1,
     "caught": 0
   }
