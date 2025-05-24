@@ -28,7 +28,7 @@
     "caught": 0
   },
   "rhinubi": {
-    "escaped": 1,
+    "escaped": 2,
     "caught": 0
   },
   "duskaran": {
@@ -84,6 +84,10 @@
     "caught": 0
   },
   "metallino": {
+    "escaped": 1,
+    "caught": 0
+  },
+  "glissalune": {
     "escaped": 1,
     "caught": 0
   }
