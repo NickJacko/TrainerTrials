@@ -46,5 +46,13 @@
   "spikrit": {
     "escaped": 1,
     "caught": 0
+  },
+  "venametis": {
+    "escaped": 1,
+    "caught": 0
+  },
+  "spirico": {
+    "escaped": 1,
+    "caught": 0
   }
 }
