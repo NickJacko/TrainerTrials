@@ -182,11 +182,24 @@
       const name = getParam("name");
       if (!name) return;
 
-      const [catcher, dexList, seenData] = await Promise.all([
-        fetch("catcher.json").then(r => r.json()),
-        fetch("dex_list.json").then(r => r.json()),
-        fetch("seen_caught.json").then(r => r.json())
-      ]);
+      try {
+        // Debug: Einzeln laden und Status prüfen
+        console.log("Loading catcher.json...");
+        const catcherResponse = await fetch("catcher.json");
+        console.log("Catcher response status:", catcherResponse.status);
+        const catcher = catcherResponse.ok ? await catcherResponse.json() : {};
+
+        console.log("Loading dex_list.json...");
+        const dexResponse = await fetch("dex_list.json");
+        console.log("Dex response status:", dexResponse.status);
+        const dexList = dexResponse.ok ? await dexResponse.json() : [];
+
+        console.log("Loading seen_caught.json...");
+        const seenResponse = await fetch("seen_caught.json");
+        console.log("Seen response status:", seenResponse.status);
+        const seenData = seenResponse.ok ? await seenResponse.json() : {};
+
+        console.log("All files loaded successfully");
 
       const lowerName = name.toLowerCase();
       const entries = [];
@@ -222,6 +235,12 @@
 
       allEntries = entries;
       renderTable();
+      
+      } catch (error) {
+        console.error("Error loading data:", error);
+        document.getElementById("catchTitle").textContent = "Error loading data";
+        document.getElementById("summary").textContent = "Please check console for details";
+      }
     }
 
     loadData();
