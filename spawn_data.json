@@ -1,21 +1,21 @@
 {
-  "name": "Zapkit",
-  "level": 10,
+  "name": "Glissalune",
+  "level": 35,
   "rarity": "Common",
   "shiny": false,
-  "sprite": "catchmon/Common/Zapkit.png",
+  "sprite": "catchmon/Common/Glissalune.png",
   "stats": {
-    "ATK": 17,
-    "DEF": 5,
-    "SPD": 1,
-    "WIS": 9,
-    "CHA": 13,
-    "LUK": 29
+    "ATK": 8,
+    "DEF": 12,
+    "SPD": 17,
+    "WIS": 23,
+    "CHA": 31,
+    "LUK": 4
   },
-  "result": null,
-  "winner": null,
+  "result": "caught",
+  "winner": "test",
   "donation": 0,
   "duration": 5.0,
-  "timestamp": 1748077971,
+  "timestamp": 1748077950,
   "spawn_start": null
 }
