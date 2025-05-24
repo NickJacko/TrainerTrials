@@ -12,7 +12,7 @@
     "caught": 1
   },
   "spikrit": {
-    "escaped": 1,
+    "escaped": 2,
     "caught": 1
   },
   "rockoon": {
@@ -32,7 +32,7 @@
     "caught": 0
   },
   "zapkit": {
-    "escaped": 1,
+    "escaped": 2,
     "caught": 0
   },
   "psypus": {
@@ -52,7 +52,7 @@
     "caught": 0
   },
   "spirico": {
-    "escaped": 1,
+    "escaped": 2,
     "caught": 0
   },
   "duskaran": {
