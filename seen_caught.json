@@ -12,7 +12,7 @@
     "caught": 0
   },
   "plipsy": {
-    "escaped": 1,
+    "escaped": 2,
     "caught": 0
   },
   "zappiri": {
@@ -28,6 +28,10 @@
     "caught": 0
   },
   "rhinubi": {
+    "escaped": 1,
+    "caught": 0
+  },
+  "duskaran": {
     "escaped": 1,
     "caught": 0
   }
