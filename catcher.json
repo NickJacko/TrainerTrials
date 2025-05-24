@@ -99,6 +99,34 @@
           "gesamtpunkte": 1717
         }
       ]
+    },
+    "Nick": {
+      "coins": 2000,
+      "team": [
+        {
+          "name": "Rockoon",
+          "level": 1,
+          "rarity": "Common",
+          "shiny": false,
+          "stats": {
+            "ATK": 17,
+            "DEF": 11,
+            "SPD": 3,
+            "WIS": 15,
+            "CHA": 18,
+            "LUK": 0
+          },
+          "sprite": "catchmon/Common/Rockoon.png",
+          "stage": 1,
+          "evolution_line": [
+            "Rockoon"
+          ],
+          "categories": [
+            "Common"
+          ],
+          "gesamtpunkte": 164
+        }
+      ]
     }
   },
   "encounters": {
@@ -107,7 +135,8 @@
     "Ripplee": 1,
     "Glissalune": 1,
     "Zapkit": 1,
-    "Spikrit": 1
+    "Spikrit": 1,
+    "Rockoon": 1
   },
   "escaped": [
     {
