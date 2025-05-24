@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <title>Catchmon Detail</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <script src="utils.js"></script>
+  <script src="../utils.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -62,7 +62,6 @@
       border-collapse: collapse;
       margin-top: 20px;
       font-size: 14px;
-      overflow-x: auto;
     }
     th, td {
       border: 1px solid #ccc;
@@ -81,7 +80,6 @@
       background-clip: text;
       -webkit-text-fill-color: transparent;
       animation: shine 3s linear infinite;
-      text-shadow: 0 0 4px rgba(255, 255, 255, 0);
     }
     .king { background-image: linear-gradient(90deg, #ffd700, white, #ffd700); }
     .flame { background-image: linear-gradient(90deg, #ff0000, white, #ff0000); }
@@ -154,7 +152,6 @@
       return p.gesamtpunkte ?? 0;
     }
 
-
     function renderTable() {
       const tbody = document.querySelector("#dataTable tbody");
       const showCaughtOnly = document.getElementById("caughtOnly").checked;
@@ -186,9 +183,9 @@
       if (!name) return;
 
       const [catcher, dexList, seenData] = await Promise.all([
-        fetch("catcher.json").then(r => r.json()),
-        fetch("dex_list.json").then(r => r.json()),
-        fetch("seen_caught.json").then(r => r.json())
+        fetch("../catcher.json").then(r => r.json()),
+        fetch("../dex_list.json").then(r => r.json()),
+        fetch("../seen_caught.json").then(r => r.json())
       ]);
 
       const lowerName = name.toLowerCase();
@@ -212,12 +209,13 @@
 
       const dexEntry = dexList.find(p => p.name.toLowerCase() === lowerName);
       const sprite = dexEntry?.sprite || "";
+      const spritePath = sprite.startsWith("catchmon/") ? "../" + sprite : sprite;
       const escaped = seenData[lowerName]?.escaped || 0;
       const caught = seenData[lowerName]?.caught || 0;
 
       document.getElementById("catchTitle").textContent =
         `#${String(dexEntry?.id || "").padStart(3, "0")} ${capitalize(name)}`;
-      document.getElementById("catchImg").src = sprite;
+      document.getElementById("catchImg").src = spritePath;
       document.getElementById("catchImg").alt = name;
       document.getElementById("summary").textContent = `${escaped} escaped / ${caught} caught`;
 
