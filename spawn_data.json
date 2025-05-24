@@ -1,21 +1,21 @@
 {
-  "name": "Friggleaf",
-  "level": 17,
+  "name": "Zapkit",
+  "level": 10,
   "rarity": "Common",
   "shiny": false,
-  "sprite": "catchmon/Common/Friggleaf.png",
+  "sprite": "catchmon/Common/Zapkit.png",
   "stats": {
-    "ATK": 6,
-    "DEF": 10,
-    "SPD": 20,
-    "WIS": 20,
-    "CHA": 29,
-    "LUK": 11
+    "ATK": 17,
+    "DEF": 5,
+    "SPD": 1,
+    "WIS": 9,
+    "CHA": 13,
+    "LUK": 29
   },
   "result": null,
   "winner": null,
   "donation": 0,
-  "duration": 3.0,
-  "timestamp": 1748078082,
-  "spawn_start": 1748078082
+  "duration": 5.0,
+  "timestamp": 1748077971,
+  "spawn_start": null
 }
