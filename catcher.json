@@ -1,7 +1,7 @@
 {
   "catcher": {
     "test": {
-      "coins": 2100,
+      "coins": 2500,
       "team": [
         {
           "name": "Flurrie",
@@ -72,6 +72,31 @@
             "Common"
           ],
           "gesamtpunkte": 3595
+        },
+        {
+          "name": "Spikrit",
+          "level": 16,
+          "rarity": "Common",
+          "shiny": false,
+          "stats": {
+            "ATK": 25,
+            "DEF": 10,
+            "SPD": 23,
+            "WIS": 11,
+            "CHA": 18,
+            "LUK": 30
+          },
+          "sprite": "catchmon/Common/Spikrit.png",
+          "stage": 1,
+          "evolution_line": [
+            "Spikrit",
+            "Gravogorn",
+            "Terrarokh"
+          ],
+          "categories": [
+            "Common"
+          ],
+          "gesamtpunkte": 1717
         }
       ]
     }
@@ -81,7 +106,8 @@
     "Zappiri": 2,
     "Ripplee": 1,
     "Glissalune": 1,
-    "Zapkit": 1
+    "Zapkit": 1,
+    "Spikrit": 1
   },
   "escaped": [
     {
