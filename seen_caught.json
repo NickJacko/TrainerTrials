@@ -11,6 +11,10 @@
     "escaped": 0,
     "caught": 1
   },
+  "spikrit": {
+    "escaped": 0,
+    "caught": 1
+  },
   "fairypup": {
     "escaped": 1,
     "caught": 0
@@ -24,6 +28,14 @@
     "caught": 0
   },
   "zapkit": {
+    "escaped": 1,
+    "caught": 0
+  },
+  "toxibelle": {
+    "escaped": 1,
+    "caught": 0
+  },
+  "psypus": {
     "escaped": 1,
     "caught": 0
   }
