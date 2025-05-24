@@ -40,7 +40,7 @@
     "caught": 0
   },
   "friggleaf": {
-    "escaped": 1,
+    "escaped": 2,
     "caught": 0
   },
   "wyrmling": {
@@ -48,6 +48,14 @@
     "caught": 0
   },
   "aquaril": {
+    "escaped": 1,
+    "caught": 0
+  },
+  "spirico": {
+    "escaped": 1,
+    "caught": 0
+  },
+  "duskaran": {
     "escaped": 1,
     "caught": 0
   }
