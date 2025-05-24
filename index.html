@@ -6,96 +6,231 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="utils.js"></script>
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: Arial, sans-serif;
-      background: #f0f0f0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       margin: 0;
       padding: 0;
+      min-height: 100vh;
+      color: #333;
     }
 
     .container {
-      max-width: 960px;
+      max-width: 1200px;
       margin: auto;
-      padding: 24px;
+      padding: 20px;
     }
 
-    h1, h2 {
+    h1 {
       text-align: center;
-      margin-top: 0;
+      margin: 0 0 40px 0;
+      font-size: clamp(2rem, 5vw, 3rem);
+      background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
+      background-size: 300% 300%;
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: gradientShift 3s ease-in-out infinite;
+      text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      font-weight: 800;
+    }
+
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    h2 {
+      text-align: center;
+      margin: 0 0 30px 0;
+      font-size: clamp(1.5rem, 4vw, 2rem);
+      color: white;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+      font-weight: 600;
     }
 
     .section {
       margin-bottom: 60px;
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 30px 20px;
+      border: 1px solid rgba(255,255,255,0.2);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
     }
 
     .card-row {
-      display: flex;
-      justify-content: center;
-      gap: 16px;
-      margin-top: 20px;
-      flex-wrap: wrap;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      max-width: 800px;
+      margin: 0 auto;
+      align-items: end;
     }
 
     .card {
-      background: white;
-      border-radius: 8px;
-      padding: 12px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      background: linear-gradient(145deg, #ffffff, #f0f0f0);
+      border-radius: 16px;
+      padding: 20px;
       text-align: center;
-      width: 140px;
       position: relative;
-      transition: transform 0.2s ease;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 2px solid transparent;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      text-decoration: none;
+      color: inherit;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+      transition: left 0.5s;
+    }
+
+    .card:hover::before {
+      left: 100%;
+    }
+
+    .card:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
     }
 
     .card.medal-1 {
-      transform: scale(1.15);
+      transform: translateY(-10px) scale(1.08);
+      background: linear-gradient(145deg, #fff9c4, #ffd700);
+      border: 3px solid #ffb300;
+      box-shadow: 0 15px 35px rgba(255,215,0,0.4);
+      z-index: 3;
+    }
+
+    .card.medal-1:hover {
+      transform: translateY(-15px) scale(1.12);
+      box-shadow: 0 25px 50px rgba(255,215,0,0.5);
+    }
+
+    .card.medal-2 {
+      transform: translateY(-5px) scale(1.04);
+      background: linear-gradient(145deg, #f8f8f8, #e8e8e8);
+      border: 3px solid #c0c0c0;
+      z-index: 2;
+    }
+
+    .card.medal-3 {
+      background: linear-gradient(145deg, #ffeaa7, #fdcb6e);
+      border: 3px solid #cd7f32;
       z-index: 1;
-      background: #fffbe6;
-      border: 2px solid gold;
     }
 
     .badge {
       position: absolute;
-      top: -10px;
-      left: -10px;
-      background: gold;
-      color: black;
-      padding: 4px 8px;
-      border-radius: 12px;
-      font-size: 13px;
-      font-weight: bold;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-    }
-
-    .medal-2 .badge { background: silver; }
-    .medal-3 .badge { background: #cd7f32; }
-
-    .footer-links {
-      text-align: center;
-      margin-top: 30px;
-    }
-
-    .footer-links .row {
+      top: -12px;
+      left: -12px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
       display: flex;
-      flex-wrap: wrap;
+      align-items: center;
       justify-content: center;
-      gap: 10px;
-      margin-bottom: 10px;
+      font-size: 16px;
+      font-weight: 800;
+      color: white;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
     }
 
-    .footer-links a {
-      padding: 10px 16px;
-      background: #4CAF50;
+    .medal-1 .badge { 
+      background: linear-gradient(45deg, #ffd700, #ffed4e);
+      color: #333;
+      text-shadow: none;
+    }
+    .medal-2 .badge { 
+      background: linear-gradient(45deg, #c0c0c0, #e8e8e8);
+      color: #333;
+      text-shadow: none;
+    }
+    .medal-3 .badge { 
+      background: linear-gradient(45deg, #cd7f32, #daa520);
+    }
+
+    .main-links {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin: 40px 0;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .main-links a {
+      padding: 16px 24px;
+      background: linear-gradient(145deg, #4CAF50, #45a049);
       color: white;
       text-decoration: none;
-      border-radius: 6px;
-      font-size: 15px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      text-align: center;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+      border: none;
+      position: relative;
+      overflow: hidden;
     }
 
-    a {
+    .main-links a::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.4s;
+    }
+
+    .main-links a:hover::before {
+      left: 100%;
+    }
+
+    .main-links a:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
+      background: linear-gradient(145deg, #45a049, #3d8b40);
+    }
+
+    .main-links a:active {
+      transform: translateY(-1px);
+    }
+
+    .legal-links {
+      text-align: center;
+      margin-top: 60px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .legal-links a {
+      color: rgba(255,255,255,0.7);
       text-decoration: none;
-      font-weight: bold;
-      color: inherit;
+      font-size: 12px;
+      margin: 0 15px;
+      transition: color 0.3s ease;
+    }
+
+    .legal-links a:hover {
+      color: rgba(255,255,255,0.9);
     }
 
     .catcher-name {
@@ -103,9 +238,9 @@
       font-weight: bold;
       background-size: 200% auto;
       background-clip: text;
+      -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       animation: shine 3s linear infinite;
-      text-shadow: 0 0 4px rgba(255, 255, 255, 0);
     }
 
     .king {
@@ -126,7 +261,7 @@
 
     .normal {
       color: #444;
-      font-weight: normal;
+      font-weight: 600;
       text-shadow: none;
       background: none;
       -webkit-text-fill-color: inherit;
@@ -140,28 +275,110 @@
       }
     }
 
+    /* Mobile Optimierungen */
     @media (max-width: 768px) {
       .container {
-        padding: 16px;
+        padding: 15px;
       }
 
-      .card {
-        width: 120px;
-      }
-
-      .card.medal-1 {
-        transform: scale(1.1);
-      }
-
-      .footer-links a {
-        font-size: 14px;
-        padding: 8px 12px;
+      .section {
+        padding: 20px 15px;
+        margin-bottom: 40px;
       }
 
       .card-row {
-        flex-direction: column;
-        align-items: center;
+        grid-template-columns: 1fr;
+        gap: 15px;
+        max-width: 300px;
       }
+
+      .card {
+        padding: 16px;
+      }
+
+      .card.medal-1 {
+        transform: translateY(-5px) scale(1.05);
+      }
+
+      .card.medal-1:hover {
+        transform: translateY(-8px) scale(1.08);
+      }
+
+      .card.medal-2 {
+        transform: translateY(-3px) scale(1.02);
+      }
+
+      .main-links {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      .main-links a {
+        font-size: 15px;
+        padding: 14px 20px;
+      }
+
+      .legal-links {
+        margin-top: 40px;
+      }
+
+      .legal-links a {
+        display: block;
+        margin: 5px 0;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 10px;
+      }
+
+      h1 {
+        margin-bottom: 30px;
+      }
+
+      .section {
+        padding: 15px 10px;
+        margin-bottom: 30px;
+      }
+
+      .card {
+        padding: 12px;
+        font-size: 14px;
+      }
+
+      .badge {
+        width: 35px;
+        height: 35px;
+        font-size: 14px;
+        top: -10px;
+        left: -10px;
+      }
+    }
+
+    /* Loading Animation */
+    .loading {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100px;
+      color: rgba(255,255,255,0.8);
+      font-size: 16px;
+    }
+
+    .loading::after {
+      content: '';
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top: 2px solid white;
+      border-radius: 50%;
+      margin-left: 10px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
     }
   </style>
 </head>
@@ -171,26 +388,29 @@
 
     <div class="section">
       <h2>🏆 Top 3 Catcher</h2>
-      <div id="catcherRow" class="card-row">Loading...</div>
+      <div id="catcherRow" class="card-row">
+        <div class="loading">Loading</div>
+      </div>
     </div>
 
     <div class="section">
       <h2>🔥 Top 3 Catchmon</h2>
-      <div id="catchmonRow" class="card-row">Loading...</div>
+      <div id="catchmonRow" class="card-row">
+        <div class="loading">Loading</div>
+      </div>
     </div>
 
-    <div class="footer-links">
-      <div class="row">
-        <a href="catchdex_live.html">📘 Catchdex</a>
-        <a href="catcher_ranking_live.html">🏅 Catcher Ranking</a>
-        <a href="ranking_catchmon_live.html">🐲 Catchmon Ranking</a>
-      </div>
-      <div class="row">
-        <a href="howto.html">🧠 HowTo?</a>
-        <a href="donations.html">💖 Donate</a>
-        <a href="imprint.html">📄 Imprint</a>
-        <a href="privacy.html">🔒 Privacy</a>
-      </div>
+    <div class="main-links">
+      <a href="catchdex_live.html">📘 Catchdex</a>
+      <a href="catcher_ranking_live.html">🏅 Catcher Ranking</a>
+      <a href="ranking_catchmon_live.html">🐲 Catchmon Ranking</a>
+      <a href="howto.html">🧠 HowTo?</a>
+      <a href="donations.html">💖 Donate</a>
+    </div>
+
+    <div class="legal-links">
+      <a href="imprint.html">Imprint</a>
+      <a href="privacy.html">Privacy</a>
     </div>
   </div>
 
@@ -199,36 +419,39 @@
       return p.gesamtpunkte ?? 0;
     }
 
-
     function createCard(html, medalClass, place, link) {
       const wrapper = document.createElement("a");
       wrapper.href = link;
       wrapper.className = `card ${medalClass}`;
-      wrapper.innerHTML = `<div class="badge">${place}.</div>${html}`;
+      wrapper.innerHTML = `<div class="badge">${place}</div>${html}`;
       return wrapper;
     }
 
     function displayTop3Row(container, entries, renderFn, getLinkFn) {
       container.innerHTML = "";
-      const row = document.createElement("div");
-      row.className = "card-row";
+      
+      if (!entries || entries.length === 0) {
+        container.innerHTML = '<div class="loading">No data available</div>';
+        return;
+      }
 
-      const order = [1, 0, 2];
+      const order = entries.length >= 3 ? [1, 0, 2] : [0, 1, 2];
       const classes = ["medal-2", "medal-1", "medal-3"];
       const places = ["2", "1", "3"];
 
       order.forEach((i, idx) => {
         const entry = entries[i];
         if (!entry) return;
-        row.appendChild(createCard(renderFn(entry), classes[idx], places[idx], getLinkFn(entry)));
+        container.appendChild(createCard(renderFn(entry), classes[idx], places[idx], getLinkFn(entry)));
       });
-
-      container.appendChild(row);
     }
 
     function updateHomepage() {
       fetch("catcher.json")
-        .then(res => res.json())
+        .then(res => {
+          if (!res.ok) throw new Error('Network response was not ok');
+          return res.json();
+        })
         .then(data => {
           const CatcherRow = document.getElementById("catcherRow");
           const Catchmon = document.getElementById("catchmonRow");
@@ -249,7 +472,7 @@
             .slice(0, 3);
 
           const renderCatcher = t =>
-            `${getStyledCatcherName(t.name, t.donation)}<br>${t.points} Punkte`;
+            `${getStyledCatcherName(t.name, t.donation)}<br><strong>${t.points.toLocaleString()} Punkte</strong>`;
 
           displayTop3Row(
             CatcherRow,
@@ -276,9 +499,9 @@
             const shiny = p.shiny ? "✨ " : "";
             return `
               <strong>${shiny}${p.name}</strong><br>
-              Lv ${p.level}<br>
-              ${p.points} Punkte<br>
-              ${getStyledCatcherName(p.catcher, p.donation || 0)}
+              <span style="color: #666;">Lv ${p.level}</span><br>
+              <strong>${p.points.toLocaleString()} Punkte</strong><br>
+              <small>${getStyledCatcherName(p.catcher, p.donation || 0)}</small>
             `;
           };
 
@@ -288,10 +511,18 @@
             renderCatchmon,
             p => `dex_detail.html?name=${encodeURIComponent(p.name)}`
           );
+        })
+        .catch(error => {
+          console.error('Error loading data:', error);
+          document.getElementById("catcherRow").innerHTML = '<div class="loading">Error loading data</div>';
+          document.getElementById("catchmonRow").innerHTML = '<div class="loading">Error loading data</div>';
         });
     }
 
+    // Initial load
     updateHomepage();
+    
+    // Auto-refresh every 10 seconds
     setInterval(updateHomepage, 10000);
   </script>
 </body>
