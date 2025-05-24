@@ -209,14 +209,13 @@
 
       const dexEntry = dexList.find(p => p.name.toLowerCase() === lowerName);
       const sprite = dexEntry?.sprite || "";
+      const spritePath = sprite.startsWith("/") ? sprite : "/" + sprite;
       const escaped = seenData[lowerName]?.escaped || 0;
       const caught = seenData[lowerName]?.caught || 0;
 
       document.getElementById("catchTitle").textContent =
         `#${String(dexEntry?.id || "").padStart(3, "0")} ${capitalize(name)}`;
-
-      // ✅ final funktionierender Sprite-Pfad
-      document.getElementById("catchImg").src = sprite;
+      document.getElementById("catchImg").src = spritePath;
       document.getElementById("catchImg").alt = name;
       document.getElementById("summary").textContent = `${escaped} escaped / ${caught} caught`;
 
