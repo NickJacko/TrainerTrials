@@ -209,7 +209,8 @@
 
       const dexEntry = dexList.find(p => p.name.toLowerCase() === lowerName);
       const sprite = dexEntry?.sprite || "";
-      const spritePath = sprite.startsWith("/") ? sprite : "/" + sprite;
+      // ✅ FIX: Sprite direkt verwenden wie im Catchdex
+      const spritePath = sprite;
       const escaped = seenData[lowerName]?.escaped || 0;
       const caught = seenData[lowerName]?.caught || 0;
 
