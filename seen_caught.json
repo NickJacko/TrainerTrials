@@ -48,7 +48,7 @@
     "caught": 0
   },
   "aquaril": {
-    "escaped": 2,
+    "escaped": 3,
     "caught": 0
   },
   "spirico": {
@@ -64,6 +64,14 @@
     "caught": 0
   },
   "badgy": {
+    "escaped": 1,
+    "caught": 0
+  },
+  "shadopup": {
+    "escaped": 1,
+    "caught": 0
+  },
+  "metallino": {
     "escaped": 1,
     "caught": 0
   }
