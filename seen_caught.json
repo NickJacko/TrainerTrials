@@ -3,6 +3,10 @@
     "escaped": 0,
     "caught": 1
   },
+  "ripplee": {
+    "escaped": 0,
+    "caught": 1
+  },
   "fairypup": {
     "escaped": 1,
     "caught": 0
@@ -12,6 +16,14 @@
     "caught": 0
   },
   "zappiri": {
+    "escaped": 1,
+    "caught": 0
+  },
+  "flambini": {
+    "escaped": 1,
+    "caught": 0
+  },
+  "nuttiki": {
     "escaped": 1,
     "caught": 0
   }
