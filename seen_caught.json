@@ -40,7 +40,7 @@
     "caught": 0
   },
   "silv": {
-    "escaped": 1,
+    "escaped": 2,
     "caught": 0
   },
   "spikrit": {
@@ -56,6 +56,10 @@
     "caught": 0
   },
   "toxibelle": {
+    "escaped": 1,
+    "caught": 0
+  },
+  "shadopup": {
     "escaped": 1,
     "caught": 0
   }
