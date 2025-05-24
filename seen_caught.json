@@ -1,5 +1,17 @@
 {
+  "flurrie": {
+    "escaped": 0,
+    "caught": 1
+  },
   "fairypup": {
+    "escaped": 1,
+    "caught": 0
+  },
+  "plipsy": {
+    "escaped": 1,
+    "caught": 0
+  },
+  "zappiri": {
     "escaped": 1,
     "caught": 0
   }

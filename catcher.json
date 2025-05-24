@@ -1,0 +1,114 @@
+{
+  "catcher": {
+    "test": {
+      "coins": 700,
+      "team": [
+        {
+          "name": "Flurrie",
+          "level": 31,
+          "rarity": "Common",
+          "shiny": false,
+          "stats": {
+            "ATK": 1,
+            "DEF": 1,
+            "SPD": 1,
+            "WIS": 19,
+            "CHA": 16,
+            "LUK": 11
+          },
+          "sprite": "catchmon/Common/Flurrie.png",
+          "stage": 1,
+          "evolution_line": [
+            "Flurrie"
+          ],
+          "categories": [
+            "Common"
+          ],
+          "gesamtpunkte": 3149
+        }
+      ]
+    }
+  },
+  "encounters": {
+    "Flurrie": 1,
+    "Zappiri": 1
+  },
+  "escaped": [
+    {
+      "name": "Fairypup",
+      "level": 2,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "ATK": 3,
+        "DEF": 6,
+        "SPD": 27,
+        "WIS": 2,
+        "CHA": 12,
+        "LUK": 28
+      },
+      "sprite": "catchmon/Common/Fairypup.png",
+      "stage": 1,
+      "evolution_line": [
+        "Fairypup"
+      ],
+      "categories": [
+        "Common"
+      ],
+      "gesamtpunkte": 278,
+      "catcher": null
+    },
+    {
+      "name": "Plipsy",
+      "level": 1,
+      "rarity": "Starter",
+      "shiny": false,
+      "stats": {
+        "ATK": 2,
+        "DEF": 1,
+        "SPD": 10,
+        "WIS": 6,
+        "CHA": 2,
+        "LUK": 28
+      },
+      "sprite": "catchmon/Starter/Plipsy.png",
+      "stage": 1,
+      "evolution_line": [
+        "Plipsy",
+        "Aquilor",
+        "Hydravian"
+      ],
+      "categories": [
+        "Starter"
+      ],
+      "gesamtpunkte": 224,
+      "catcher": null
+    },
+    {
+      "name": "Zappiri",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "ATK": 15,
+        "DEF": 19,
+        "SPD": 10,
+        "WIS": 31,
+        "CHA": 1,
+        "LUK": 1
+      },
+      "sprite": "catchmon/Common/Zappiri.png",
+      "stage": 1,
+      "evolution_line": [
+        "Zappiri",
+        "Voltrossa",
+        "Thundralis"
+      ],
+      "categories": [
+        "Common"
+      ],
+      "gesamtpunkte": 177,
+      "catcher": null
+    }
+  ]
+}
