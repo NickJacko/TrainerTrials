@@ -8,11 +8,11 @@
     "caught": 1
   },
   "glissalune": {
-    "escaped": 0,
+    "escaped": 1,
     "caught": 1
   },
   "spikrit": {
-    "escaped": 2,
+    "escaped": 3,
     "caught": 1
   },
   "rockoon": {
@@ -76,6 +76,10 @@
     "caught": 0
   },
   "terraky": {
+    "escaped": 1,
+    "caught": 0
+  },
+  "venametis": {
     "escaped": 1,
     "caught": 0
   }
