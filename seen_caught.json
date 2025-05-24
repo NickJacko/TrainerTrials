@@ -54,5 +54,9 @@
   "spirico": {
     "escaped": 1,
     "caught": 0
+  },
+  "toxibelle": {
+    "escaped": 1,
+    "caught": 0
   }
 }
