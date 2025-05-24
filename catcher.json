@@ -1,7 +1,7 @@
 {
   "catcher": {
     "test": {
-      "coins": 1500,
+      "coins": 1700,
       "team": [
         {
           "name": "Flurrie",
@@ -80,7 +80,8 @@
     "Flurrie": 1,
     "Zappiri": 1,
     "Ripplee": 1,
-    "Glissalune": 1
+    "Glissalune": 1,
+    "Zapkit": 1
   },
   "escaped": [
     {
@@ -157,6 +158,32 @@
         "Common"
       ],
       "gesamtpunkte": 177,
+      "catcher": null
+    },
+    {
+      "name": "Zapkit",
+      "level": 10,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "ATK": 17,
+        "DEF": 5,
+        "SPD": 1,
+        "WIS": 9,
+        "CHA": 13,
+        "LUK": 29
+      },
+      "sprite": "catchmon/Common/Zapkit.png",
+      "stage": 1,
+      "evolution_line": [
+        "Zapkit",
+        "Voltera",
+        "Voltitan"
+      ],
+      "categories": [
+        "Common"
+      ],
+      "gesamtpunkte": 1074,
       "catcher": null
     }
   ]
