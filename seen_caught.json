@@ -36,7 +36,7 @@
     "caught": 0
   },
   "aqualume": {
-    "escaped": 1,
+    "escaped": 2,
     "caught": 0
   },
   "silv": {
@@ -76,6 +76,14 @@
     "caught": 0
   },
   "psypus": {
+    "escaped": 1,
+    "caught": 0
+  },
+  "crylette": {
+    "escaped": 1,
+    "caught": 0
+  },
+  "metallino": {
     "escaped": 1,
     "caught": 0
   }
