@@ -127,6 +127,10 @@
           "gesamtpunkte": 164
         }
       ]
+    },
+    "claudia": {
+      "coins": 500,
+      "team": []
     }
   },
   "encounters": {
