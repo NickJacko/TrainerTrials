@@ -66,5 +66,17 @@
   "duskaran": {
     "escaped": 1,
     "caught": 0
+  },
+  "brummel": {
+    "escaped": 1,
+    "caught": 0
+  },
+  "mabbit": {
+    "escaped": 1,
+    "caught": 0
+  },
+  "venametis": {
+    "escaped": 1,
+    "caught": 0
   }
 }
