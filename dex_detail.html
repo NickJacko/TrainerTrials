@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <title>Catchmon Detail</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <script src="../utils.js"></script>
+  <script src="utils.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -183,9 +183,9 @@
       if (!name) return;
 
       const [catcher, dexList, seenData] = await Promise.all([
-        fetch("../catcher.json").then(r => r.json()),
-        fetch("../dex_list.json").then(r => r.json()),
-        fetch("../seen_caught.json").then(r => r.json())
+        fetch("catcher.json").then(r => r.json()),
+        fetch("dex_list.json").then(r => r.json()),
+        fetch("seen_caught.json").then(r => r.json())
       ]);
 
       const lowerName = name.toLowerCase();
@@ -209,13 +209,12 @@
 
       const dexEntry = dexList.find(p => p.name.toLowerCase() === lowerName);
       const sprite = dexEntry?.sprite || "";
-      const spritePath = sprite.startsWith("catchmon/") ? "../" + sprite : sprite;
       const escaped = seenData[lowerName]?.escaped || 0;
       const caught = seenData[lowerName]?.caught || 0;
 
       document.getElementById("catchTitle").textContent =
         `#${String(dexEntry?.id || "").padStart(3, "0")} ${capitalize(name)}`;
-      document.getElementById("catchImg").src = spritePath;
+      document.getElementById("catchImg").src = sprite;
       document.getElementById("catchImg").alt = name;
       document.getElementById("summary").textContent = `${escaped} escaped / ${caught} caught`;
 
