@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Catchdex</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 960px;
+      margin: auto;
+      padding: 16px;
+    }
+    .top-bar {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .back-button {
+      font-size: 16px;
+      text-decoration: none;
+      color: #555;
+      font-weight: bold;
+      padding: 6px 12px;
+      border-radius: 6px;
+      background: #e0e0e0;
+    }
+    .back-button:hover {
+      background: #ccc;
+    }
+    h1 {
+      text-align: center;
+      font-size: 24px;
+      margin-bottom: 16px;
+    }
+    .dex-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+    }
+    .catchmon-box {
+      position: relative;
+      width: 100px;
+      height: 100px;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .catchmon-box img {
+      max-width: 80px;
+      max-height: 80px;
+    }
+    .uncaught img {
+      filter: grayscale(100%) brightness(0.4);
+    }
+    .star {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      font-size: 16px;
+      color: gold;
+    }
+    .catcher-name {
+      display: inline-block;
+      font-weight: bold;
+      background-size: 200% auto;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shine 3s linear infinite;
+    }
+    .king { background-image: linear-gradient(90deg, #ffd700, white, #ffd700); }
+    .flame { background-image: linear-gradient(90deg, orangered, white, red); }
+    .diamond { background-image: linear-gradient(90deg, deepskyblue, white, deepskyblue); }
+    .shine { background-image: linear-gradient(90deg, limegreen, white, limegreen); }
+    .normal {
+      color: #444;
+      font-weight: normal;
+      background: none;
+      -webkit-text-fill-color: inherit;
+      background-clip: unset;
+      animation: none;
+    }
+    @keyframes shine {
+      to { background-position: -200% center; }
+    }
+    @media (max-width: 600px) {
+      .catchmon-box {
+        width: 80px;
+        height: 80px;
+      }
+      .catchmon-box img {
+        max-width: 64px;
+        max-height: 64px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="top-bar">
+      <a class="back-button" href="javascript:history.back()">← Back</a>
+    </div>
+    <h1 id="catcher-title"><span class="catcher-name normal">Loading…</span>’s Catchdex</h1>
+    <div class="dex-grid" id="dex-grid">Loading Catchmon…</div>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const name = params.get("name");
+    if (!name) {
+      document.getElementById("dex-grid").innerText = "No trainer specified.";
+      document.querySelector(".catcher-name").innerText = "Unknown";
+    } else {
+      loadCatchdex(name.toLowerCase());
+    }
+
+    async function loadCatchdex(trainer) {
+      const [dexRes, catcherRes] = await Promise.all([
+        fetch("dex_list.json"),
+        fetch("catcher.json")
+      ]);
+      const dexList = await dexRes.json();
+      const catchers = (await catcherRes.json()).catcher;
+      const trainerData = catchers?.[trainer];
+      const grid = document.getElementById("dex-grid");
+      const title = document.querySelector(".catcher-name");
+
+      if (!trainerData) {
+        title.innerText = trainer;
+        grid.innerText = "Trainer not found.";
+        return;
+      }
+
+      const team = trainerData.team || [];
+      const donation = trainerData.donation || 0;
+      const caughtCount = {};
+      team.forEach(mon => {
+        const monName = mon.name.toLowerCase();
+        caughtCount[monName] = (caughtCount[monName] || 0) + 1;
+      });
+
+      title.innerText = trainer;
+      title.classList.remove("normal", "king", "flame", "diamond", "shine");
+      if (donation >= 2500) title.classList.add("king");
+      else if (donation >= 500) title.classList.add("flame");
+      else if (donation >= 250) title.classList.add("diamond");
+      else if (donation >= 100) title.classList.add("shine");
+      else title.classList.add("normal");
+
+      grid.innerHTML = "";
+      dexList.forEach(mon => {
+        const nameLower = mon.name.toLowerCase();
+        const caught = nameLower in caughtCount;
+        const star = caughtCount[nameLower] >= 3;
+        const box = document.createElement("div");
+        box.className = "catchmon-box" + (caught ? "" : " uncaught");
+        box.innerHTML = `<img src="${mon.sprite}" alt="${mon.name}">` + (star ? `<div class="star">★</div>` : "");
+        grid.appendChild(box);
+      });
+    }
+  </script>
+</body>
+</html>

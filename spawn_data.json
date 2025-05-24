@@ -1,21 +1,21 @@
 {
-  "name": "Fairypup",
-  "level": 10,
+  "name": "Metallino",
+  "level": 3,
   "rarity": "Common",
   "shiny": false,
-  "sprite": "catchmon/Common/Fairypup.png",
+  "sprite": "catchmon/Common/Metallino.png",
   "stats": {
-    "ATK": 23,
-    "DEF": 9,
-    "SPD": 23,
-    "WIS": 5,
-    "CHA": 28,
-    "LUK": 4
+    "ATK": 16,
+    "DEF": 5,
+    "SPD": 19,
+    "WIS": 22,
+    "CHA": 24,
+    "LUK": 17
   },
-  "result": null,
+  "result": "escaped",
   "winner": null,
   "donation": 0,
-  "duration": 3.0,
-  "timestamp": 1748017007,
-  "spawn_start": 1748017007
+  "duration": 5.0,
+  "timestamp": 1748075837,
+  "spawn_start": null
 }
