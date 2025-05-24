@@ -1,6 +1,6 @@
 {
   "flurrie": {
-    "escaped": 2,
+    "escaped": 3,
     "caught": 1
   },
   "ripplee": {
@@ -40,7 +40,7 @@
     "caught": 0
   },
   "magmarock": {
-    "escaped": 1,
+    "escaped": 2,
     "caught": 0
   },
   "terraky": {
@@ -48,6 +48,10 @@
     "caught": 0
   },
   "friggleaf": {
+    "escaped": 1,
+    "caught": 0
+  },
+  "solanir": {
     "escaped": 1,
     "caught": 0
   }
