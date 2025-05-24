@@ -1,7 +1,7 @@
 {
   "catcher": {
     "test": {
-      "coins": 1700,
+      "coins": 2100,
       "team": [
         {
           "name": "Flurrie",
@@ -78,7 +78,7 @@
   },
   "encounters": {
     "Flurrie": 1,
-    "Zappiri": 1,
+    "Zappiri": 2,
     "Ripplee": 1,
     "Glissalune": 1,
     "Zapkit": 1
@@ -184,6 +184,56 @@
         "Common"
       ],
       "gesamtpunkte": 1074,
+      "catcher": null
+    },
+    {
+      "name": "Flurrie",
+      "level": 4,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "ATK": 4,
+        "DEF": 8,
+        "SPD": 27,
+        "WIS": 14,
+        "CHA": 26,
+        "LUK": 18
+      },
+      "sprite": "catchmon/Common/Flurrie.png",
+      "stage": 1,
+      "evolution_line": [
+        "Flurrie"
+      ],
+      "categories": [
+        "Common"
+      ],
+      "gesamtpunkte": 497,
+      "catcher": null
+    },
+    {
+      "name": "Zappiri",
+      "level": 99,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "ATK": 24,
+        "DEF": 4,
+        "SPD": 31,
+        "WIS": 28,
+        "CHA": 7,
+        "LUK": 19
+      },
+      "sprite": "catchmon/Common/Zappiri.png",
+      "stage": 1,
+      "evolution_line": [
+        "Zappiri",
+        "Voltrossa",
+        "Thundralis"
+      ],
+      "categories": [
+        "Common"
+      ],
+      "gesamtpunkte": 10013,
       "catcher": null
     }
   ]

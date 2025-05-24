@@ -1,6 +1,6 @@
 {
   "flurrie": {
-    "escaped": 0,
+    "escaped": 1,
     "caught": 1
   },
   "ripplee": {
@@ -20,7 +20,7 @@
     "caught": 0
   },
   "zappiri": {
-    "escaped": 1,
+    "escaped": 2,
     "caught": 0
   },
   "zapkit": {
