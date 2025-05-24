@@ -48,7 +48,7 @@
     "caught": 0
   },
   "aquaril": {
-    "escaped": 1,
+    "escaped": 2,
     "caught": 0
   },
   "spirico": {
@@ -56,6 +56,14 @@
     "caught": 0
   },
   "duskaran": {
+    "escaped": 1,
+    "caught": 0
+  },
+  "mindferno": {
+    "escaped": 1,
+    "caught": 0
+  },
+  "badgy": {
     "escaped": 1,
     "caught": 0
   }
