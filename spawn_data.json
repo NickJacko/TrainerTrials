@@ -1,21 +1,21 @@
 {
-  "name": "Metallino",
-  "level": 3,
+  "name": "Spikrit",
+  "level": 1,
   "rarity": "Common",
   "shiny": false,
-  "sprite": "catchmon/Common/Metallino.png",
+  "sprite": "catchmon/Common/Spikrit.png",
   "stats": {
-    "ATK": 16,
-    "DEF": 5,
-    "SPD": 19,
+    "ATK": 10,
+    "DEF": 9,
+    "SPD": 31,
     "WIS": 22,
-    "CHA": 24,
-    "LUK": 17
+    "CHA": 15,
+    "LUK": 11
   },
   "result": "escaped",
   "winner": null,
   "donation": 0,
   "duration": 5.0,
-  "timestamp": 1748075837,
+  "timestamp": 1748075942,
   "spawn_start": null
 }
