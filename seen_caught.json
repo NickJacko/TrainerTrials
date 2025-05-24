@@ -38,5 +38,13 @@
   "aqualume": {
     "escaped": 1,
     "caught": 0
+  },
+  "silv": {
+    "escaped": 1,
+    "caught": 0
+  },
+  "spikrit": {
+    "escaped": 1,
+    "caught": 0
   }
 }
