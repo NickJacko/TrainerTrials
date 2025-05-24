@@ -130,7 +130,62 @@
     },
     "claudia": {
       "coins": 500,
-      "team": []
+      "team": [
+        {
+          "name": "Wyrmling",
+          "level": 5,
+          "rarity": "Common",
+          "shiny": false,
+          "stats": {
+            "ATK": 27,
+            "DEF": 6,
+            "SPD": 28,
+            "WIS": 3,
+            "CHA": 20,
+            "LUK": 20
+          },
+          "sprite": "catchmon/Common/Wyrmling.png",
+          "stage": 1,
+          "evolution_line": [
+            "Wyrmling"
+          ],
+          "categories": [
+            "Common"
+          ],
+          "gesamtpunkte": 604
+        }
+      ]
+    },
+    "hallo": {
+      "coins": 500,
+      "team": [
+        {
+          "name": "Spikrit",
+          "level": 4,
+          "rarity": "Common",
+          "shiny": false,
+          "stats": {
+            "ATK": 28,
+            "DEF": 7,
+            "SPD": 22,
+            "WIS": 12,
+            "CHA": 24,
+            "LUK": 9
+          },
+          "sprite": "catchmon/Common/Spikrit.png",
+          "stage": 1,
+          "evolution_line": [
+            "Spikrit",
+            "Gravogorn",
+            "Terrarokh"
+          ],
+          "categories": [
+            "Common"
+          ],
+          "gesamtpunkte": 502
+        }
+      ],
+      "donation": 500
     }
   },
   "encounters": {
@@ -139,8 +194,9 @@
     "Ripplee": 1,
     "Glissalune": 1,
     "Zapkit": 1,
-    "Spikrit": 1,
-    "Rockoon": 1
+    "Spikrit": 2,
+    "Rockoon": 1,
+    "Wyrmling": 1
   },
   "escaped": [
     {

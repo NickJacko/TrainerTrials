@@ -1,6 +1,6 @@
 {
   "flurrie": {
-    "escaped": 1,
+    "escaped": 2,
     "caught": 1
   },
   "ripplee": {
@@ -8,14 +8,18 @@
     "caught": 1
   },
   "glissalune": {
-    "escaped": 2,
+    "escaped": 0,
     "caught": 1
   },
   "spikrit": {
-    "escaped": 3,
-    "caught": 1
+    "escaped": 0,
+    "caught": 2
   },
   "rockoon": {
+    "escaped": 0,
+    "caught": 1
+  },
+  "wyrmling": {
     "escaped": 0,
     "caught": 1
   },
@@ -28,70 +32,10 @@
     "caught": 0
   },
   "zappiri": {
-    "escaped": 3,
+    "escaped": 2,
     "caught": 0
   },
   "zapkit": {
-    "escaped": 2,
-    "caught": 0
-  },
-  "psypus": {
-    "escaped": 1,
-    "caught": 0
-  },
-  "friggleaf": {
-    "escaped": 3,
-    "caught": 0
-  },
-  "wyrmling": {
-    "escaped": 3,
-    "caught": 0
-  },
-  "aquaril": {
-    "escaped": 4,
-    "caught": 0
-  },
-  "spirico": {
-    "escaped": 2,
-    "caught": 0
-  },
-  "duskaran": {
-    "escaped": 1,
-    "caught": 0
-  },
-  "mindferno": {
-    "escaped": 1,
-    "caught": 0
-  },
-  "badgy": {
-    "escaped": 1,
-    "caught": 0
-  },
-  "shadopup": {
-    "escaped": 1,
-    "caught": 0
-  },
-  "metallino": {
-    "escaped": 3,
-    "caught": 0
-  },
-  "terraky": {
-    "escaped": 1,
-    "caught": 0
-  },
-  "venametis": {
-    "escaped": 1,
-    "caught": 0
-  },
-  "rhinubi": {
-    "escaped": 1,
-    "caught": 0
-  },
-  "florispur": {
-    "escaped": 1,
-    "caught": 0
-  },
-  "flambini": {
     "escaped": 1,
     "caught": 0
   }
