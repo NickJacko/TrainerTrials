@@ -1,21 +1,21 @@
 {
-  "name": "Spikrit",
-  "level": 1,
+  "name": "Friggleaf",
+  "level": 17,
   "rarity": "Common",
   "shiny": false,
-  "sprite": "catchmon/Common/Spikrit.png",
+  "sprite": "catchmon/Common/Friggleaf.png",
   "stats": {
-    "ATK": 10,
-    "DEF": 9,
-    "SPD": 31,
-    "WIS": 22,
-    "CHA": 15,
+    "ATK": 6,
+    "DEF": 10,
+    "SPD": 20,
+    "WIS": 20,
+    "CHA": 29,
     "LUK": 11
   },
-  "result": "escaped",
+  "result": null,
   "winner": null,
   "donation": 0,
-  "duration": 5.0,
-  "timestamp": 1748075942,
-  "spawn_start": null
+  "duration": 3.0,
+  "timestamp": 1748078082,
+  "spawn_start": 1748078082
 }

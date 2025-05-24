@@ -38,6 +38,12 @@
       font-size: 24px;
       margin-bottom: 16px;
     }
+    h2 {
+      font-size: 18px;
+      margin: 24px 0 8px;
+      text-align: center;
+      color: #333;
+    }
     .dex-grid {
       display: flex;
       flex-wrap: wrap;
@@ -47,17 +53,24 @@
     .catchmon-box {
       position: relative;
       width: 100px;
-      height: 100px;
+      height: 120px;
       border: 2px solid #ccc;
       border-radius: 8px;
       background: white;
       display: flex;
+      flex-direction: column;
       align-items: center;
-      justify-content: center;
+      justify-content: flex-start;
+      padding-top: 6px;
+      text-align: center;
     }
     .catchmon-box img {
       max-width: 80px;
       max-height: 80px;
+    }
+    .catchmon-box a {
+      text-decoration: none;
+      color: inherit;
     }
     .uncaught img {
       filter: grayscale(100%) brightness(0.4);
@@ -77,11 +90,11 @@
       -webkit-text-fill-color: transparent;
       animation: shine 3s linear infinite;
     }
-    .king { background-image: linear-gradient(90deg, #ffd700, white, #ffd700); }
-    .flame { background-image: linear-gradient(90deg, orangered, white, red); }
+    .king    { background-image: linear-gradient(90deg, #ffd700, white, #ffd700); }
+    .flame   { background-image: linear-gradient(90deg, orangered, white, red); }
     .diamond { background-image: linear-gradient(90deg, deepskyblue, white, deepskyblue); }
-    .shine { background-image: linear-gradient(90deg, limegreen, white, limegreen); }
-    .normal {
+    .shine   { background-image: linear-gradient(90deg, limegreen, white, limegreen); }
+    .normal  {
       color: #444;
       font-weight: normal;
       background: none;
@@ -95,7 +108,7 @@
     @media (max-width: 600px) {
       .catchmon-box {
         width: 80px;
-        height: 80px;
+        height: 100px;
       }
       .catchmon-box img {
         max-width: 64px;
@@ -109,18 +122,20 @@
     <div class="top-bar">
       <a class="back-button" href="javascript:history.back()">← Back</a>
     </div>
-    <h1 id="catcher-title"><span class="catcher-name normal">Loading…</span>’s Catchdex</h1>
-    <div class="dex-grid" id="dex-grid">Loading Catchmon…</div>
+    <h1><span class="catcher-name normal" id="trainerName">Loading…</span>’s Catchdex</h1>
+    <div id="dexContainer">Loading Catchmon…</div>
   </div>
 
   <script>
     const params = new URLSearchParams(window.location.search);
-    const name = params.get("name");
-    if (!name) {
-      document.getElementById("dex-grid").innerText = "No trainer specified.";
-      document.querySelector(".catcher-name").innerText = "Unknown";
+    const trainerName = params.get("name");
+    const rarities = ["Starter", "Common", "Rare", "Legendary", "Mythical", "God"];
+
+    if (!trainerName) {
+      document.getElementById("dexContainer").innerText = "No trainer specified.";
+      document.getElementById("trainerName").innerText = "Unknown";
     } else {
-      loadCatchdex(name.toLowerCase());
+      loadCatchdex(trainerName.toLowerCase());
     }
 
     async function loadCatchdex(trainer) {
@@ -131,12 +146,12 @@
       const dexList = await dexRes.json();
       const catchers = (await catcherRes.json()).catcher;
       const trainerData = catchers?.[trainer];
-      const grid = document.getElementById("dex-grid");
-      const title = document.querySelector(".catcher-name");
+      const container = document.getElementById("dexContainer");
+      const nameSpan = document.getElementById("trainerName");
 
       if (!trainerData) {
-        title.innerText = trainer;
-        grid.innerText = "Trainer not found.";
+        nameSpan.textContent = trainer;
+        container.textContent = "Trainer not found.";
         return;
       }
 
@@ -148,23 +163,56 @@
         caughtCount[monName] = (caughtCount[monName] || 0) + 1;
       });
 
-      title.innerText = trainer;
-      title.classList.remove("normal", "king", "flame", "diamond", "shine");
-      if (donation >= 2500) title.classList.add("king");
-      else if (donation >= 500) title.classList.add("flame");
-      else if (donation >= 250) title.classList.add("diamond");
-      else if (donation >= 100) title.classList.add("shine");
-      else title.classList.add("normal");
+      nameSpan.textContent = trainer;
+      nameSpan.className = "catcher-name";
+      if (donation >= 2500) nameSpan.classList.add("king");
+      else if (donation >= 500) nameSpan.classList.add("flame");
+      else if (donation >= 250) nameSpan.classList.add("diamond");
+      else if (donation >= 100) nameSpan.classList.add("shine");
+      else nameSpan.classList.add("normal");
 
-      grid.innerHTML = "";
+      const byRarity = {};
+      rarities.forEach(r => byRarity[r] = []);
       dexList.forEach(mon => {
-        const nameLower = mon.name.toLowerCase();
-        const caught = nameLower in caughtCount;
-        const star = caughtCount[nameLower] >= 3;
-        const box = document.createElement("div");
-        box.className = "catchmon-box" + (caught ? "" : " uncaught");
-        box.innerHTML = `<img src="${mon.sprite}" alt="${mon.name}">` + (star ? `<div class="star">★</div>` : "");
-        grid.appendChild(box);
+        const parts = mon.sprite.split("/");
+        const rarity = parts.length > 1 ? parts[1] : "Unknown";
+        if (!byRarity[rarity]) byRarity[rarity] = [];
+        byRarity[rarity].push(mon);
+      });
+      rarities.forEach(r => {
+        if (byRarity[r]) byRarity[r].sort((a, b) => a.id - b.id);
+      });
+
+      container.innerHTML = "";
+      rarities.forEach(rarity => {
+        const mons = byRarity[rarity];
+        if (!mons || mons.length === 0) return;
+
+        const header = document.createElement("h2");
+        header.textContent = rarity;
+        container.appendChild(header);
+
+        const grid = document.createElement("div");
+        grid.className = "dex-grid";
+
+        mons.forEach(mon => {
+          const nameLower = mon.name.toLowerCase();
+          const caught = nameLower in caughtCount;
+          const star = caughtCount[nameLower] >= 3;
+
+          const box = document.createElement("div");
+          box.className = "catchmon-box" + (caught ? "" : " uncaught");
+          box.innerHTML = `
+            <a href="dex_detail.html?name=${encodeURIComponent(mon.name)}">
+              <img src="${mon.sprite}" alt="${mon.name}">
+              <div style="font-size: 12px; margin-top: 4px;">${mon.name}</div>
+              ${star ? '<div class="star">★</div>' : ''}
+            </a>
+          `;
+          grid.appendChild(box);
+        });
+
+        container.appendChild(grid);
       });
     }
   </script>
