@@ -219,7 +219,7 @@
       "donation": 500
     },
     "water": {
-      "coins": 400,
+      "coins": 600,
       "team": [
         {
           "name": "Psypus",
@@ -269,6 +269,31 @@
             "Common"
           ],
           "gesamtpunkte": 1273
+        },
+        {
+          "name": "Flaumi",
+          "level": 27,
+          "rarity": "Starter",
+          "shiny": false,
+          "stats": {
+            "ATK": 16,
+            "DEF": 23,
+            "SPD": 30,
+            "WIS": 15,
+            "CHA": 18,
+            "LUK": 5
+          },
+          "sprite": "catchmon/Starter/Flaumi.png",
+          "stage": 1,
+          "evolution_line": [
+            "Flaumi",
+            "Flamarox",
+            "Flameron"
+          ],
+          "categories": [
+            "Starter"
+          ],
+          "gesamtpunkte": 4210
         }
       ],
       "donation": 250
@@ -288,7 +313,8 @@
     "Rockoon": 1,
     "Wyrmling": 1,
     "Mabbit": 1,
-    "Psypus": 1
+    "Psypus": 1,
+    "Flaumi": 1
   },
   "escaped": [
     {
@@ -743,6 +769,82 @@
         "Rare"
       ],
       "gesamtpunkte": 572,
+      "catcher": null
+    },
+    {
+      "name": "Toxibelle",
+      "level": 62,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "ATK": 11,
+        "DEF": 7,
+        "SPD": 25,
+        "WIS": 8,
+        "CHA": 24,
+        "LUK": 2
+      },
+      "sprite": "catchmon/Common/Toxibelle.png",
+      "stage": 1,
+      "evolution_line": [
+        "Toxibelle",
+        "Venuscale",
+        "Luraville"
+      ],
+      "categories": [
+        "Common"
+      ],
+      "gesamtpunkte": 6277,
+      "catcher": null
+    },
+    {
+      "name": "Toxibelle",
+      "level": 15,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "ATK": 31,
+        "DEF": 20,
+        "SPD": 14,
+        "WIS": 13,
+        "CHA": 29,
+        "LUK": 3
+      },
+      "sprite": "catchmon/Common/Toxibelle.png",
+      "stage": 1,
+      "evolution_line": [
+        "Toxibelle",
+        "Venuscale",
+        "Luraville"
+      ],
+      "categories": [
+        "Common"
+      ],
+      "gesamtpunkte": 1610,
+      "catcher": null
+    },
+    {
+      "name": "Glissalune",
+      "level": 2,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "ATK": 23,
+        "DEF": 30,
+        "SPD": 23,
+        "WIS": 14,
+        "CHA": 27,
+        "LUK": 6
+      },
+      "sprite": "catchmon/Common/Glissalune.png",
+      "stage": 1,
+      "evolution_line": [
+        "Glissalune"
+      ],
+      "categories": [
+        "Common"
+      ],
+      "gesamtpunkte": 323,
       "catcher": null
     }
   ]

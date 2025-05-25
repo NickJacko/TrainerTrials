@@ -8,7 +8,7 @@
     "caught": 2
   },
   "glissalune": {
-    "escaped": 0,
+    "escaped": 1,
     "caught": 1
   },
   "spikrit": {
@@ -80,7 +80,7 @@
     "caught": 0
   },
   "toxibelle": {
-    "escaped": 1,
+    "escaped": 2,
     "caught": 0
   }
 }
