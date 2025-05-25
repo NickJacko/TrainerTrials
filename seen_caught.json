@@ -20,7 +20,7 @@
     "caught": 1
   },
   "wyrmling": {
-    "escaped": 1,
+    "escaped": 2,
     "caught": 1
   },
   "mabbit": {
@@ -36,15 +36,15 @@
     "caught": 1
   },
   "fairypup": {
-    "escaped": 1,
+    "escaped": 2,
+    "caught": 1
+  },
+  "zappiri": {
+    "escaped": 3,
     "caught": 1
   },
   "plipsy": {
     "escaped": 1,
-    "caught": 0
-  },
-  "zappiri": {
-    "escaped": 3,
     "caught": 0
   },
   "zapkit": {

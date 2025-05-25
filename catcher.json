@@ -219,7 +219,7 @@
       "donation": 500
     },
     "water": {
-      "coins": 800,
+      "coins": 1000,
       "team": [
         {
           "name": "Psypus",
@@ -317,6 +317,31 @@
             "Common"
           ],
           "gesamtpunkte": 187
+        },
+        {
+          "name": "Zappiri",
+          "level": 27,
+          "rarity": "Common",
+          "shiny": false,
+          "stats": {
+            "ATK": 2,
+            "DEF": 2,
+            "SPD": 14,
+            "WIS": 1,
+            "CHA": 19,
+            "LUK": 27
+          },
+          "sprite": "catchmon/Common/Zappiri.png",
+          "stage": 1,
+          "evolution_line": [
+            "Zappiri",
+            "Voltrossa",
+            "Thundralis"
+          ],
+          "categories": [
+            "Common"
+          ],
+          "gesamtpunkte": 2765
         }
       ],
       "donation": 250
@@ -328,7 +353,7 @@
   },
   "encounters": {
     "Flurrie": 1,
-    "Zappiri": 2,
+    "Zappiri": 3,
     "Ripplee": 2,
     "Glissalune": 1,
     "Zapkit": 1,
@@ -969,6 +994,56 @@
         "Common"
       ],
       "gesamtpunkte": 5300,
+      "catcher": null
+    },
+    {
+      "name": "Metallino",
+      "level": 92,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "ATK": 11,
+        "DEF": 24,
+        "SPD": 30,
+        "WIS": 25,
+        "CHA": 30,
+        "LUK": 0
+      },
+      "sprite": "catchmon/Common/Metallino.png",
+      "stage": 1,
+      "evolution_line": [
+        "Metallino",
+        "Armobug",
+        "Fortressar"
+      ],
+      "categories": [
+        "Common"
+      ],
+      "gesamtpunkte": 9320,
+      "catcher": null
+    },
+    {
+      "name": "Wyrmling",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "ATK": 25,
+        "DEF": 21,
+        "SPD": 9,
+        "WIS": 6,
+        "CHA": 30,
+        "LUK": 12
+      },
+      "sprite": "catchmon/Common/Wyrmling.png",
+      "stage": 1,
+      "evolution_line": [
+        "Wyrmling"
+      ],
+      "categories": [
+        "Common"
+      ],
+      "gesamtpunkte": 203,
       "catcher": null
     }
   ]
