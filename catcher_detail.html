@@ -3,106 +3,377 @@
 <head>
   <script src="utils.js"></script>
   <meta charset="UTF-8" />
-  <title>Catcher Detail</title>
+  <title>🎮 Elite Catcher Profile</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     * {
       box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: radial-gradient(ellipse at center, #1a1a2e 0%, #16213e 30%, #0f0f23 70%, #000000 100%);
       margin: 0;
       padding: 0;
       min-height: 100vh;
-      color: #333;
+      color: white;
+      overflow-x: hidden;
+    }
+
+    /* Animated Background */
+    .bg-effects {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      opacity: 0.4;
+    }
+
+    .trophy-float {
+      position: absolute;
+      font-size: 2rem;
+      opacity: 0.3;
+      animation: floatTrophy 15s linear infinite;
+      pointer-events: none;
+    }
+
+    @keyframes floatTrophy {
+      0% {
+        transform: translateY(100vh) rotate(0deg) scale(0.5);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.3;
+      }
+      90% {
+        opacity: 0.3;
+      }
+      100% {
+        transform: translateY(-100px) rotate(360deg) scale(0.8);
+        opacity: 0;
+      }
+    }
+
+    .energy-orb {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background: radial-gradient(circle, #FFD700, #FFA500);
+      border-radius: 50%;
+      animation: orbFloat 12s linear infinite;
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+    }
+
+    @keyframes orbFloat {
+      0% {
+        transform: translateY(100vh) translateX(0);
+        opacity: 0;
+      }
+      20% {
+        opacity: 0.8;
+      }
+      80% {
+        opacity: 0.8;
+      }
+      100% {
+        transform: translateY(-100px) translateX(50px);
+        opacity: 0;
+      }
     }
 
     .container {
-      max-width: 1200px;
+      max-width: 1400px;
       margin: auto;
       padding: 20px;
+      position: relative;
+      z-index: 1;
     }
 
-    .top-bar {
+    /* Header Section */
+    .header-section {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 30px;
-      background: rgba(255,255,255,0.1);
-      backdrop-filter: blur(10px);
-      border-radius: 16px;
-      padding: 15px 20px;
-      border: 1px solid rgba(255,255,255,0.2);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+      margin-bottom: 40px;
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(15px);
+      border-radius: 20px;
+      padding: 20px 30px;
+      border: 2px solid rgba(255,255,255,0.1);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header-section::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, 
+        transparent, 
+        rgba(255, 215, 0, 0.1), 
+        transparent, 
+        rgba(255, 215, 0, 0.1), 
+        transparent);
+      animation: headerShine 8s linear infinite;
+    }
+
+    @keyframes headerShine {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .header-content {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
     }
 
     .back-button {
       font-size: 16px;
       text-decoration: none;
       color: white;
-      font-weight: 600;
-      padding: 12px 20px;
-      border-radius: 12px;
-      background: linear-gradient(145deg, rgba(255,255,255,0.2), rgba(255,255,255,0.1));
-      border: 1px solid rgba(255,255,255,0.3);
-      transition: all 0.3s ease;
+      font-weight: 700;
+      padding: 15px 25px;
+      border-radius: 15px;
+      background: linear-gradient(145deg, rgba(255,255,255,0.15), rgba(255,255,255,0.08));
+      border: 2px solid rgba(255,255,255,0.2);
+      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
       backdrop-filter: blur(10px);
+      box-shadow: 0 5px 20px rgba(0,0,0,0.2);
     }
 
     .back-button:hover {
-      transform: translateY(-2px);
-      background: linear-gradient(145deg, rgba(255,255,255,0.3), rgba(255,255,255,0.2));
-      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      transform: translateY(-3px) scale(1.02);
+      background: linear-gradient(145deg, rgba(255,255,255,0.25), rgba(255,255,255,0.15));
+      box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+      border-color: rgba(255,255,255,0.4);
+    }
+
+    .title-section {
+      text-align: center;
+      flex: 1;
     }
 
     h1 {
-      text-align: center;
-      margin: 0;
-      font-size: clamp(1.8rem, 4vw, 2.2rem);
-      background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
+      margin: 0 0 10px 0;
+      font-size: clamp(2.2rem, 6vw, 3.5rem);
+      background: linear-gradient(45deg, #FFD700, #FF6B6B, #4ECDC4, #45B7D1, #FFD700);
       background-size: 300% 300%;
       background-clip: text;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      animation: gradientShift 3s ease-in-out infinite;
-      font-weight: 800;
+      animation: gradientShift 4s ease-in-out infinite;
+      font-weight: 900;
+      text-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+      letter-spacing: -1px;
+    }
+
+    .subtitle {
+      font-size: clamp(1rem, 3vw, 1.5rem);
+      color: rgba(255,255,255,0.8);
+      font-weight: 600;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.5);
     }
 
     @keyframes gradientShift {
       0%, 100% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
+      25% { background-position: 100% 50%; }
+      50% { background-position: 100% 100%; }
+      75% { background-position: 0% 100%; }
     }
 
-    h2 {
+    /* Stats Cards Section */
+    .stats-section {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 25px;
+      margin-bottom: 40px;
+    }
+
+    .stat-card {
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(15px);
+      border-radius: 20px;
+      padding: 25px;
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+      animation: cardShine 6s linear infinite;
+    }
+
+    @keyframes cardShine {
+      0% { left: -100%; }
+      50% { left: 100%; }
+      100% { left: 100%; }
+    }
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+      border-color: rgba(255,255,255,0.2);
+    }
+
+    .stat-card-content {
+      position: relative;
+      z-index: 2;
+    }
+
+    .stat-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #FFD700;
+      margin-bottom: 15px;
+      text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    }
+
+    .stat-value {
+      font-size: 2.5rem;
+      font-weight: 900;
+      color: white;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+      margin-bottom: 10px;
+    }
+
+    .stat-description {
+      color: rgba(255,255,255,0.7);
+      font-size: 0.9rem;
+    }
+
+    /* Level Progress Bar */
+    .level-section {
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(15px);
+      border-radius: 20px;
+      padding: 30px;
+      margin-bottom: 30px;
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    }
+
+    .level-title {
       text-align: center;
-      margin-top: 8px;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #FFD700;
+      margin-bottom: 20px;
+      text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    }
+
+    .level-bar-container {
+      background: rgba(255,255,255,0.1);
+      border-radius: 25px;
+      height: 40px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 
+        inset 0 2px 5px rgba(0,0,0,0.2),
+        0 2px 10px rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .level-bar {
+      height: 100%;
+      position: relative;
+      transition: width 2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      border-radius: 25px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      color: white;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+      overflow: hidden;
+    }
+
+    .level-bar::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.4) 50%,
+        rgba(255, 255, 255, 0) 100%
+      );
+      animation: levelShine 3s linear infinite;
+    }
+
+    @keyframes levelShine {
+      0%   { left: -100%; }
+      100% { left: 100%; }
+    }
+
+    /* Level Colors */
+    .level-rainbow { background: linear-gradient(135deg, #ff0000, #ff8000, #ffff00, #80ff00, #00ff00, #00ff80, #00ffff, #0080ff, #0000ff, #8000ff, #ff00ff, #ff0080); background-size: 400% 400%; animation: rainbowShine 4s linear infinite; }
+    .level-deepred { background: linear-gradient(135deg, #B71C1C, #D32F2F); }
+    .level-red { background: linear-gradient(135deg, #C62828, #F44336); }
+    .level-orange { background: linear-gradient(135deg, #E65100, #FF9800); }
+    .level-yellow { background: linear-gradient(135deg, #F57F17, #FFEB3B); }
+    .level-blue { background: linear-gradient(135deg, #1976D2, #42A5F5); }
+    .level-cyan { background: linear-gradient(135deg, #00838F, #26C6DA); }
+    .level-green { background: linear-gradient(135deg, #2E7D32, #4CAF50); }
+    .level-lightgreen { background: linear-gradient(135deg, #4CAF50, #66BB6A); }
+    .level-gray { background: linear-gradient(135deg, #6C757D, #9E9E9E); }
+
+    @keyframes rainbowShine {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 400% 50%; }
+    }
+
+    .level-text {
+      font-size: 1.1rem;
+      text-align: center;
+      margin-top: 15px;
       font-weight: 600;
-      font-size: clamp(1rem, 3vw, 1.2rem);
       color: rgba(255,255,255,0.9);
-      text-shadow: 0 2px 10px rgba(0,0,0,0.3);
     }
 
-    .catchdex-button-container {
+    /* Catchdex Button */
+    .catchdex-section {
       text-align: center;
-      margin: 20px 0 30px 0;
+      margin-bottom: 30px;
     }
 
     .catchdex-button {
       display: inline-block;
-      padding: 12px 24px;
+      padding: 15px 30px;
       background: linear-gradient(145deg, #4CAF50, #45a049);
       color: white;
       font-weight: 700;
-      border-radius: 12px;
+      border-radius: 15px;
       text-decoration: none;
-      box-shadow: 0 6px 20px rgba(76, 175, 80, 0.3);
+      box-shadow: 0 8px 25px rgba(76, 175, 80, 0.3);
       border: none;
       position: relative;
       overflow: hidden;
       transition: all 0.3s ease;
-      font-size: 16px;
+      font-size: 1.1rem;
     }
 
     .catchdex-button::before {
@@ -122,210 +393,95 @@
 
     .catchdex-button:hover {
       transform: translateY(-3px);
-      box-shadow: 0 10px 30px rgba(76, 175, 80, 0.4);
+      box-shadow: 0 12px 35px rgba(76, 175, 80, 0.4);
       background: linear-gradient(145deg, #45a049, #3d8b40);
     }
 
-    .stats-section {
-      background: rgba(255,255,255,0.1);
-      backdrop-filter: blur(15px);
-      border-radius: 20px;
-      padding: 25px;
-      margin-bottom: 30px;
-      border: 1px solid rgba(255,255,255,0.2);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .stats-section::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-      animation: sectionShimmer 5s ease-in-out infinite;
-    }
-
-    @keyframes sectionShimmer {
-      0% { left: -100%; }
-      50% { left: 100%; }
-      100% { left: 100%; }
-    }
-
-    .levelbar-wrapper {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin-bottom: 25px;
-      position: relative;
-      z-index: 2;
-    }
-
-    .bar-container {
-      background: rgba(255,255,255,0.2);
-      border-radius: 20px;
-      height: 32px;
-      width: 100%;
-      max-width: 600px;
-      overflow: hidden;
-      position: relative;
-      box-shadow: 
-        inset 0 2px 5px rgba(0,0,0,0.2),
-        0 2px 10px rgba(255,255,255,0.1);
-      border: 1px solid rgba(255,255,255,0.3);
-    }
-
-    .bar-fill {
-      height: 100%;
-      position: relative;
-      transition: width 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-      z-index: 1;
-      overflow: hidden;
-      border-radius: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .shine-overlay {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; 
-      height: 100%;
-      background-image: linear-gradient(
-        90deg,
-        rgba(255, 255, 255, 0) 0%,
-        rgba(255, 255, 255, 0.4) 50%,
-        rgba(255, 255, 255, 0) 100%
-      );
-      background-size: 200% auto;
-      background-position: -200% center;
-      animation: shineBar 3s linear infinite;
-      pointer-events: none;
-      border-radius: inherit;
-    }
-
-    @keyframes shineBar {
-      0%   { background-position: -200% center; }
-      100% { background-position: 200% center; }
-    }
-
-    .level-label {
-      font-size: 16px;
-      color: white;
-      margin-top: 12px;
-      font-weight: 600;
-      text-shadow: 0 2px 5px rgba(0,0,0,0.3);
-      position: relative;
-      z-index: 2;
-    }
-
-    /* Level Colors */
-    .gray       { background: linear-gradient(135deg, #9E9E9E, #757575); }
-    .lightgreen-glow { background: linear-gradient(135deg, #4CAF50, #66BB6A); }
-    .green-glow { background: linear-gradient(135deg, #2E7D32, #4CAF50); }
-    .blue-glow  { background: linear-gradient(135deg, #1976D2, #42A5F5); }
-    .yellow-glow { background: linear-gradient(135deg, #F57F17, #FFEB3B); }
-    .orange-glow { background: linear-gradient(135deg, #E65100, #FF9800); }
-    .red-glow   { background: linear-gradient(135deg, #C62828, #F44336); }
-    .deepred-glow { background: linear-gradient(135deg, #B71C1C, #D32F2F); }
-    .rainbow-glow {
-      background: linear-gradient(135deg, #ff0000, #ff8000, #ffff00, #80ff00, #00ff00, #00ff80, #00ffff, #0080ff, #0000ff, #8000ff, #ff00ff, #ff0080);
-      background-size: 400% 400%;
-      animation: rainbowShine 4s linear infinite, shineBar 3s linear infinite;
-    }
-
-    @keyframes rainbowShine {
-      0% { background-position: 0% 50%; }
-      100% { background-position: 400% 50%; }
-    }
-
-    .table-container {
-      background: rgba(255,255,255,0.1);
-      backdrop-filter: blur(15px);
-      border-radius: 20px;
+    /* Team Table */
+    .team-section {
+      background: rgba(255,255,255,0.02);
+      backdrop-filter: blur(20px);
+      border-radius: 25px;
       padding: 0;
-      border: 1px solid rgba(255,255,255,0.2);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      border: 2px solid rgba(255,255,255,0.1);
+      box-shadow: 0 15px 50px rgba(0,0,0,0.2);
       overflow: hidden;
       position: relative;
     }
 
-    .table-container::before {
+    .team-section::before {
       content: '';
       position: absolute;
       top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
-      animation: tableShimmer 6s ease-in-out infinite;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #FFD700, #FF6B6B, #4ECDC4, #45B7D1, #FFD700);
+      background-size: 200% 100%;
+      animation: topBorderFlow 3s linear infinite;
     }
 
-    @keyframes tableShimmer {
-      0% { left: -100%; }
-      50% { left: 100%; }
-      100% { left: 100%; }
+    @keyframes topBorderFlow {
+      0% { background-position: 0% 0%; }
+      100% { background-position: 200% 0%; }
+    }
+
+    .team-title {
+      text-align: center;
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: #FFD700;
+      padding: 25px;
+      margin: 0;
+      text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+      background: rgba(255,255,255,0.05);
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 0;
       font-size: 15px;
       position: relative;
       z-index: 2;
     }
 
     th {
-      background: linear-gradient(145deg, #4CAF50, #45a049);
+      background: linear-gradient(145deg, rgba(255, 215, 0, 0.2), rgba(255, 215, 0, 0.1));
       color: white;
-      padding: 16px 12px;
+      padding: 20px 15px;
       text-align: center;
-      font-weight: 600;
+      font-weight: 700;
       font-size: 14px;
-      text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
       border: none;
       position: sticky;
       top: 0;
-      z-index: 100;
-    }
-
-    th:first-child {
-      border-top-left-radius: 20px;
-    }
-
-    th:last-child {
-      border-top-right-radius: 20px;
+      z-index: 10;
+      backdrop-filter: blur(15px);
+      border-bottom: 2px solid rgba(255, 215, 0, 0.3);
     }
 
     td {
-      padding: 14px 12px;
+      padding: 15px;
       text-align: center;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
       transition: all 0.3s ease;
+      position: relative;
       color: white;
-      font-weight: 500;
+    }
+
+    tr {
+      transition: all 0.3s ease;
+      position: relative;
     }
 
     tr:hover {
       background: linear-gradient(90deg, 
-        rgba(76, 175, 80, 0.1), 
-        rgba(76, 175, 80, 0.2), 
-        rgba(76, 175, 80, 0.1));
+        rgba(255, 215, 0, 0.08), 
+        rgba(255, 215, 0, 0.15), 
+        rgba(255, 215, 0, 0.08));
       transform: scale(1.01);
-      box-shadow: 0 2px 10px rgba(76, 175, 80, 0.2);
-    }
-
-    tr:last-child td:first-child {
-      border-bottom-left-radius: 20px;
-    }
-
-    tr:last-child td:last-child {
-      border-bottom-right-radius: 20px;
+      box-shadow: 0 5px 25px rgba(255, 215, 0, 0.2);
     }
 
     .catchmon-image {
@@ -335,13 +491,38 @@
       border-radius: 12px;
       transition: all 0.3s ease;
       box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-      border: 2px solid rgba(255,255,255,0.2);
+      border: 2px solid rgba(255,255,255,0.1);
     }
 
     .catchmon-image:hover {
-      transform: scale(1.1);
+      transform: scale(1.15);
       box-shadow: 0 8px 25px rgba(0,0,0,0.3);
       border-color: rgba(76, 175, 80, 0.5);
+    }
+
+    .catchmon-name {
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: white;
+    }
+
+    .points-cell {
+      font-weight: 800;
+      color: #FFD700;
+      font-size: 1.2rem;
+      text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    }
+
+    .level-cell {
+      font-weight: 700;
+      color: #4ECDC4;
+      font-size: 1.1rem;
+    }
+
+    .stats-cell {
+      font-weight: 600;
+      color: #FF6B6B;
+      font-size: 1rem;
     }
 
     a {
@@ -356,25 +537,6 @@
       text-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
     }
 
-    .points-cell {
-      font-weight: 700;
-      color: #4CAF50;
-      text-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
-      font-size: 16px;
-    }
-
-    .level-cell {
-      font-weight: 600;
-      color: #FFD700;
-      text-shadow: 0 0 5px rgba(255, 215, 0, 0.3);
-    }
-
-    .stats-cell {
-      font-weight: 600;
-      color: #87CEEB;
-      text-shadow: 0 0 5px rgba(135, 206, 235, 0.3);
-    }
-
     /* Donation Tier Styles */
     .catcher-name {
       display: inline-block;
@@ -384,25 +546,28 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       animation: shine 3s linear infinite;
-      text-shadow: 0 0 4px rgba(255, 255, 255, 0);
     }
 
     .king {
       background-image: linear-gradient(90deg, #ffd700, #ffffff, #ffd700);
     }
+
     .flame {
       background-image: linear-gradient(90deg, #ff0000, #ffffff, #ff0000);
     }
+
     .diamond {
       background-image: linear-gradient(90deg, #00bfff, #ffffff, #00bfff);
     }
+
     .shine {
       background-image: linear-gradient(90deg, #32cd32, #ffffff, #32cd32);
     }
+
     .normal {
       color: white;
-      text-shadow: 0 0 5px rgba(255,255,255,0.5);
-      font-weight: 600;
+      text-shadow: 0 0 10px rgba(255,255,255,0.5);
+      font-weight: 700;
       background: none;
       -webkit-text-fill-color: inherit;
       background-clip: unset;
@@ -419,9 +584,11 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100px;
+      height: 200px;
       color: rgba(255,255,255,0.8);
       font-size: 18px;
+      position: relative;
+      z-index: 2;
     }
 
     .loading::after {
@@ -429,7 +596,7 @@
       width: 24px;
       height: 24px;
       border: 3px solid rgba(255,255,255,0.3);
-      border-top: 3px solid white;
+      border-top: 3px solid #FFD700;
       border-radius: 50%;
       margin-left: 15px;
       animation: spin 1s linear infinite;
@@ -439,41 +606,60 @@
       to { transform: rotate(360deg); }
     }
 
+    .error-message {
+      text-align: center;
+      padding: 60px;
+      color: rgba(255,255,255,0.8);
+      font-size: 18px;
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(15px);
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.1);
+      position: relative;
+      z-index: 2;
+    }
+
     /* Mobile Optimizations */
     @media (max-width: 768px) {
       .container { 
         padding: 15px; 
       }
 
-      .top-bar {
+      .header-section {
         flex-direction: column;
-        gap: 15px;
+        gap: 20px;
         text-align: center;
-        padding: 20px;
+        padding: 25px 20px;
+      }
+
+      .header-content {
+        flex-direction: column;
+        gap: 20px;
       }
       
       h1 { 
-        font-size: clamp(1.5rem, 6vw, 1.8rem); 
+        font-size: clamp(1.8rem, 8vw, 2.5rem); 
       }
 
-      h2 {
-        font-size: clamp(0.9rem, 4vw, 1rem);
+      .subtitle {
+        font-size: clamp(0.9rem, 4vw, 1.2rem);
       }
 
-      .stats-section,
-      .table-container {
-        padding: 20px 15px;
-        margin-bottom: 20px;
+      .stats-section {
+        grid-template-columns: 1fr;
+        gap: 20px;
       }
 
-      .bar-container {
-        height: 28px;
-        max-width: 100%;
+      .stat-card {
+        padding: 20px;
       }
 
-      .level-label {
-        font-size: 14px;
-        margin-top: 10px;
+      .level-section {
+        padding: 25px 20px;
+      }
+
+      .level-bar-container {
+        height: 35px;
       }
 
       table { 
@@ -481,12 +667,12 @@
       }
       
       th, td { 
-        padding: 10px 8px; 
+        padding: 12px 8px; 
       }
 
       .catchmon-image {
-        width: 64px;
-        height: 64px;
+        width: 60px;
+        height: 60px;
       }
 
       .points-cell,
@@ -501,19 +687,16 @@
         padding: 10px; 
       }
 
-      .stats-section,
-      .table-container {
-        padding: 15px 10px;
-        margin-bottom: 15px;
+      .stat-card {
+        padding: 15px;
       }
 
-      .bar-container {
-        height: 24px;
+      .level-section {
+        padding: 20px 15px;
       }
 
-      .level-label {
-        font-size: 12px;
-        margin-top: 8px;
+      .level-bar-container {
+        height: 30px;
       }
 
       table { 
@@ -521,17 +704,17 @@
       }
       
       th, td { 
-        padding: 8px 6px; 
+        padding: 10px 6px; 
       }
 
       .catchmon-image {
-        width: 56px;
-        height: 56px;
+        width: 50px;
+        height: 50px;
       }
 
       .catchdex-button {
-        padding: 10px 20px;
-        font-size: 14px;
+        padding: 12px 24px;
+        font-size: 1rem;
       }
 
       .points-cell,
@@ -543,34 +726,68 @@
   </style>
 </head>
 <body>
+  <!-- Animated Background -->
+  <div class="bg-effects" id="bgEffects"></div>
+
   <div class="container">
-    <div class="top-bar">
-      <a class="back-button" href="javascript:history.back()">← Back</a>
-      <div>
-        <h1 id="catcherTitle">Catcher's Catchmon</h1>
-        <h2 id="totalPoints">Loading...</h2>
+    <!-- Header Section -->
+    <div class="header-section">
+      <div class="header-content">
+        <a class="back-button" href="javascript:history.back()">← Back</a>
+        <div class="title-section">
+          <h1 id="catcherTitle">🎮 Elite Catcher Profile</h1>
+          <div class="subtitle" id="totalPoints">Loading...</div>
+        </div>
+        <div></div> <!-- Spacer for flex layout -->
       </div>
-      <div></div> <!-- Spacer for flex layout -->
     </div>
 
-    <div class="catchdex-button-container">
+    <!-- Stats Cards -->
+    <div class="stats-section">
+      <div class="stat-card">
+        <div class="stat-card-content">
+          <div class="stat-title">🏆 Total Points</div>
+          <div class="stat-value" id="statPoints">0</div>
+          <div class="stat-description">Combined power of all Catchmon</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-content">
+          <div class="stat-title">🐲 Team Size</div>
+          <div class="stat-value" id="statTeam">0</div>
+          <div class="stat-description">Catchmon in collection</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-content">
+          <div class="stat-title">⚡ Player Level</div>
+          <div class="stat-value" id="statLevel">1</div>
+          <div class="stat-description">Based on total points earned</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Level Progress -->
+    <div class="level-section">
+      <div class="level-title">Experience Progress</div>
+      <div class="level-bar-container">
+        <div class="level-bar" id="levelFill">
+          <span id="levelPercentText">0%</span>
+        </div>
+      </div>
+      <div class="level-text" id="levelLabel">Level 1 – 0 / 100 XP</div>
+    </div>
+
+    <!-- Catchdex Button -->
+    <div class="catchdex-section">
       <a id="catchdexLink" href="#" class="catchdex-button">
-        🧾 Catchdex anzeigen
+        📘 View Complete Catchdex
       </a>
     </div>
 
-    <div class="stats-section">
-      <div class="levelbar-wrapper">
-        <div class="bar-container">
-          <div class="bar-fill" id="levelFill">
-            <div class="shine-overlay"></div>
-          </div>
-        </div>
-        <div class="level-label" id="levelLabel">Level ? – ? / ?</div>
-      </div>
-    </div>
-
-    <div class="table-container">
+    <!-- Team Table -->
+    <div class="team-section">
+      <h2 class="team-title">🌟 Elite Team Roster</h2>
       <table>
         <thead>
           <tr>
@@ -582,13 +799,60 @@
           </tr>
         </thead>
         <tbody id="teamTable">
-          <tr><td colspan="5" class="loading">Loading</td></tr>
+          <tr><td colspan="5" class="loading">Loading Elite Team</td></tr>
         </tbody>
       </table>
     </div>
   </div>
 
   <script>
+    // Create animated background effects
+    function createTrophy() {
+      const trophies = ['🏆', '🥇', '👑', '⭐', '💎', '🔥', '⚡'];
+      const trophy = document.createElement('div');
+      trophy.className = 'trophy-float';
+      trophy.textContent = trophies[Math.floor(Math.random() * trophies.length)];
+      trophy.style.left = Math.random() * 100 + '%';
+      trophy.style.animationDuration = (Math.random() * 8 + 12) + 's';
+      trophy.style.animationDelay = Math.random() * 3 + 's';
+      
+      document.getElementById('bgEffects').appendChild(trophy);
+      
+      setTimeout(() => {
+        if (trophy.parentNode) {
+          trophy.parentNode.removeChild(trophy);
+        }
+      }, 20000);
+    }
+
+    function createEnergyOrb() {
+      const orb = document.createElement('div');
+      orb.className = 'energy-orb';
+      orb.style.left = Math.random() * 100 + '%';
+      orb.style.animationDuration = (Math.random() * 6 + 8) + 's';
+      orb.style.animationDelay = Math.random() * 2 + 's';
+      
+      document.getElementById('bgEffects').appendChild(orb);
+      
+      setTimeout(() => {
+        if (orb.parentNode) {
+          orb.parentNode.removeChild(orb);
+        }
+      }, 15000);
+    }
+
+    // Start background animations
+    setInterval(createTrophy, 4000);
+    setInterval(createEnergyOrb, 1000);
+
+    // Initial effects
+    for (let i = 0; i < 3; i++) {
+      setTimeout(createTrophy, i * 2000);
+    }
+    for (let i = 0; i < 8; i++) {
+      setTimeout(createEnergyOrb, i * 500);
+    }
+
     function getParam(name) {
       return new URLSearchParams(window.location.search).get(name);
     }
@@ -618,21 +882,26 @@
       return Math.pow(level, 1.666) * 500;
     }
 
-    function getLevelColor(level) {
-      if (level >= 50) return "rainbow-glow";
-      if (level >= 40) return "deepred-glow";
-      if (level >= 35) return "red-glow";
-      if (level >= 30) return "orange-glow";
-      if (level >= 25) return "yellow-glow";
-      if (level >= 20) return "blue-glow";
-      if (level >= 15) return "green-glow";
-      if (level >= 10) return "lightgreen-glow";
-      return "gray";
+function getLevelColor(level) {
+      if (level >= 50) return "level-rainbow";
+      if (level >= 40) return "level-deepred";
+      if (level >= 35) return "level-red";
+      if (level >= 30) return "level-orange";
+      if (level >= 25) return "level-yellow";
+      if (level >= 20) return "level-blue";
+      if (level >= 15) return "level-cyan";
+      if (level >= 10) return "level-green";
+      if (level >= 5) return "level-lightgreen";
+      return "level-gray";
     }
 
     async function loadCatcherData() {
       const name = getParam("name");
-      if (!name) return;
+      if (!name) {
+        document.getElementById("teamTable").innerHTML = 
+          '<tr><td colspan="5" class="error-message">No trainer specified</td></tr>';
+        return;
+      }
 
       try {
         const res = await fetch("catcher.json");
@@ -643,63 +912,118 @@
         
         if (!catcher) {
           document.getElementById("teamTable").innerHTML = 
-            '<tr><td colspan="5">Trainer not found</td></tr>';
+            '<tr><td colspan="5" class="error-message">Trainer not found</td></tr>';
           return;
         }
 
         const tier = getDonationTier(catcher.donation || 0);
-        document.getElementById("catcherTitle").innerHTML = `${styleCatcherName(name, tier)}'s Catchmon`;
+        const styledName = styleCatcherName(name, tier);
+        document.getElementById("catcherTitle").innerHTML = `🎮 ${styledName}`;
 
         const team = catcher.team || [];
         const sorted = team.slice().sort((a, b) => calcPoints(b) - calcPoints(a));
         const totalPoints = sorted.reduce((sum, p) => sum + calcPoints(p), 0);
         
-        document.getElementById("totalPoints").textContent = `Total Points: ${totalPoints.toLocaleString()}`;
-
+        // Update stats cards with animations
+        animateNumber('statPoints', totalPoints);
+        animateNumber('statTeam', sorted.length);
+        
         const level = getPlayerLevel(totalPoints);
+        animateNumber('statLevel', level);
+        
+        document.getElementById("totalPoints").textContent = `${totalPoints.toLocaleString()} Total Points`;
+
+        // Level progress bar
         const xpNow = totalPoints;
         const xpPrev = getXpForLevel(level);
         const xpNext = getXpForLevel(level + 1);
-        const percent = Math.min(100, ((xpNow - xpPrev) / (xpNext - xpPrev)) * 100).toFixed(1);
+        const percent = Math.min(100, ((xpNow - xpPrev) / (xpNext - xpPrev)) * 100);
 
         const fill = document.getElementById("levelFill");
-        fill.style.width = `${percent}%`;
-        fill.className = `bar-fill ${getLevelColor(level)}`;
-        document.getElementById("levelLabel").textContent = `Level ${level} – ${Math.floor(xpNow).toLocaleString()} / ${Math.floor(xpNext).toLocaleString()} XP`;
+        const levelColorClass = getLevelColor(level);
+        
+        setTimeout(() => {
+          fill.style.width = `${percent.toFixed(1)}%`;
+          fill.className = `level-bar ${levelColorClass}`;
+          document.getElementById("levelPercentText").textContent = `${percent.toFixed(1)}%`;
+        }, 500);
+        
+        document.getElementById("levelLabel").textContent = 
+          `Level ${level} – ${Math.floor(xpNow).toLocaleString()} / ${Math.floor(xpNext).toLocaleString()} XP`;
 
+        // Team table
         const tbody = document.getElementById("teamTable");
         tbody.innerHTML = "";
 
         if (sorted.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="5">No Catchmon yet</td></tr>';
+          tbody.innerHTML = '<tr><td colspan="5" class="error-message">No Catchmon in team yet</td></tr>';
           return;
         }
 
-        for (const p of sorted) {
+        sorted.forEach((p, index) => {
           const row = document.createElement("tr");
-          const sumStats = Object.values(p.stats).reduce((a, b) => a + b, 0);
+          const sumStats = Object.values(p.stats || {}).reduce((a, b) => a + b, 0);
           const points = calcPoints(p);
           const catchLink = `dex_detail.html?name=${encodeURIComponent(p.name)}`;
 
+          // Add entrance animation delay
+          row.style.opacity = '0';
+          row.style.transform = 'translateY(20px)';
+          
           row.innerHTML = `
             <td><a href="${catchLink}"><img class="catchmon-image" src="${p.sprite}" alt="${p.name}"></a></td>
-            <td><a href="${catchLink}">${p.name}</a></td>
+            <td class="catchmon-name"><a href="${catchLink}">${p.name}</a></td>
             <td class="level-cell">${p.level}</td>
             <td class="stats-cell">${sumStats.toLocaleString()}</td>
             <td class="points-cell">${points.toLocaleString()}</td>
           `;
           tbody.appendChild(row);
-        }
+
+          // Animate row entrance
+          setTimeout(() => {
+            row.style.transition = 'all 0.5s ease';
+            row.style.opacity = '1';
+            row.style.transform = 'translateY(0)';
+          }, index * 100);
+        });
         
         document.getElementById("catchdexLink").href = `catchdex_catcher.html?name=${encodeURIComponent(name)}`;
 
       } catch (error) {
         console.error('Error loading catcher data:', error);
         document.getElementById("teamTable").innerHTML = 
-          '<tr><td colspan="5">Error loading data</td></tr>';
+          '<tr><td colspan="5" class="error-message">Error loading data. Please try again later.</td></tr>';
       }
     }
 
+    // Animate numbers counting up
+    function animateNumber(elementId, targetNumber) {
+      const element = document.getElementById(elementId);
+      const startNumber = 0;
+      const duration = 2000;
+      const startTime = Date.now();
+
+      function updateNumber() {
+        const now = Date.now();
+        const progress = Math.min((now - startTime) / duration, 1);
+        const easeProgress = 1 - Math.pow(1 - progress, 3); // Ease out cubic
+        const currentNumber = Math.floor(startNumber + (targetNumber - startNumber) * easeProgress);
+        
+        if (elementId === 'statPoints') {
+          element.textContent = currentNumber.toLocaleString();
+        } else {
+          element.textContent = currentNumber;
+        }
+        
+        if (progress < 1) {
+          requestAnimationFrame(updateNumber);
+        }
+      }
+      
+      updateNumber();
+    }
+
+    // Load data on page load
     loadCatcherData();
   </script>
 </body>

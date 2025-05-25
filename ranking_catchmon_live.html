@@ -2,207 +2,433 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>🏆 Strongest Catchmon</title>
+  <title>🐲 Legendary Catchmon Arena</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="utils.js"></script>
   <style>
     * {
       box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: radial-gradient(ellipse at center, #1a1a2e 0%, #16213e 30%, #0f0f23 70%, #000000 100%);
       margin: 0;
       padding: 0;
       min-height: 100vh;
-      color: #333;
+      color: white;
+      overflow-x: hidden;
+    }
+
+    /* Animated Background */
+    .bg-effects {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      opacity: 0.4;
+    }
+
+    .trophy-float {
+      position: absolute;
+      font-size: 2rem;
+      opacity: 0.3;
+      animation: floatTrophy 15s linear infinite;
+      pointer-events: none;
+    }
+
+    @keyframes floatTrophy {
+      0% {
+        transform: translateY(100vh) rotate(0deg) scale(0.5);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.3;
+      }
+      90% {
+        opacity: 0.3;
+      }
+      100% {
+        transform: translateY(-100px) rotate(360deg) scale(0.8);
+        opacity: 0;
+      }
+    }
+
+    .energy-orb {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background: radial-gradient(circle, #FFD700, #FFA500);
+      border-radius: 50%;
+      animation: orbFloat 12s linear infinite;
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+    }
+
+    @keyframes orbFloat {
+      0% {
+        transform: translateY(100vh) translateX(0);
+        opacity: 0;
+      }
+      20% {
+        opacity: 0.8;
+      }
+      80% {
+        opacity: 0.8;
+      }
+      100% {
+        transform: translateY(-100px) translateX(50px);
+        opacity: 0;
+      }
     }
 
     .container {
       max-width: 1400px;
       margin: auto;
       padding: 20px;
+      position: relative;
+      z-index: 1;
     }
 
-    .top-bar {
+    /* Header Section */
+    .header-section {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 30px;
-      background: rgba(255,255,255,0.1);
-      backdrop-filter: blur(10px);
-      border-radius: 16px;
-      padding: 15px 20px;
-      border: 1px solid rgba(255,255,255,0.2);
+      margin-bottom: 40px;
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(15px);
+      border-radius: 20px;
+      padding: 20px 30px;
+      border: 2px solid rgba(255,255,255,0.1);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header-section::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, 
+        transparent, 
+        rgba(255, 215, 0, 0.1), 
+        transparent, 
+        rgba(255, 215, 0, 0.1), 
+        transparent);
+      animation: headerShine 8s linear infinite;
+    }
+
+    @keyframes headerShine {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .header-content {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
     }
 
     .back-button {
       font-size: 16px;
       text-decoration: none;
       color: white;
-      font-weight: 600;
-      padding: 12px 20px;
-      border-radius: 12px;
-      background: linear-gradient(145deg, rgba(255,255,255,0.2), rgba(255,255,255,0.1));
-      border: 1px solid rgba(255,255,255,0.3);
-      transition: all 0.3s ease;
+      font-weight: 700;
+      padding: 15px 25px;
+      border-radius: 15px;
+      background: linear-gradient(145deg, rgba(255,255,255,0.15), rgba(255,255,255,0.08));
+      border: 2px solid rgba(255,255,255,0.2);
+      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
       backdrop-filter: blur(10px);
+      box-shadow: 0 5px 20px rgba(0,0,0,0.2);
     }
 
     .back-button:hover {
-      transform: translateY(-2px);
-      background: linear-gradient(145deg, rgba(255,255,255,0.3), rgba(255,255,255,0.2));
-      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      transform: translateY(-3px) scale(1.02);
+      background: linear-gradient(145deg, rgba(255,255,255,0.25), rgba(255,255,255,0.15));
+      box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+      border-color: rgba(255,255,255,0.4);
     }
 
     h1 {
       text-align: center;
-      margin: 0;
-      font-size: clamp(2rem, 5vw, 2.5rem);
-      background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
+      flex: 1;
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      background: linear-gradient(45deg, #FFD700, #FF6B6B, #4ECDC4, #45B7D1, #FFD700);
       background-size: 300% 300%;
       background-clip: text;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      animation: gradientShift 3s ease-in-out infinite;
-      font-weight: 800;
+      animation: gradientShift 4s ease-in-out infinite;
+      font-weight: 900;
+      text-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+      letter-spacing: -1px;
     }
 
     @keyframes gradientShift {
       0%, 100% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
+      25% { background-position: 100% 50%; }
+      50% { background-position: 100% 100%; }
+      75% { background-position: 0% 100%; }
     }
 
-    .controls {
+    /* Controls Section */
+    .controls-section {
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(15px);
+      border-radius: 20px;
+      padding: 25px;
+      margin-bottom: 30px;
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .controls-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+      animation: controlsShine 6s linear infinite;
+    }
+
+    @keyframes controlsShine {
+      0% { left: -100%; }
+      50% { left: 100%; }
+      100% { left: 100%; }
+    }
+
+    .controls-content {
+      position: relative;
+      z-index: 2;
       text-align: center;
-      margin: 30px 0;
-      background: rgba(255,255,255,0.1);
-      backdrop-filter: blur(10px);
-      border-radius: 16px;
-      padding: 20px;
-      border: 1px solid rgba(255,255,255,0.2);
     }
 
-    .controls label {
+    .controls-content label {
       display: inline-flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
       font-size: 16px;
       font-weight: 600;
       color: white;
       cursor: pointer;
-      padding: 12px 20px;
+      padding: 15px 25px;
       background: rgba(255,255,255,0.1);
       border-radius: 25px;
       transition: all 0.3s ease;
       border: 1px solid rgba(255,255,255,0.2);
+      backdrop-filter: blur(10px);
     }
 
-    .controls label:hover {
+    .controls-content label:hover {
       background: rgba(255,255,255,0.2);
       transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(0,0,0,0.2);
     }
 
-    .controls input[type="checkbox"] {
+    .controls-content input[type="checkbox"] {
       width: 20px;
       height: 20px;
-      accent-color: #4CAF50;
+      accent-color: #FFD700;
       cursor: pointer;
     }
 
-    .table-container {
-      background: rgba(255,255,255,0.95);
-      backdrop-filter: blur(10px);
-      border-radius: 20px;
+    /* Table Section */
+    .table-section {
+      background: rgba(255,255,255,0.02);
+      backdrop-filter: blur(20px);
+      border-radius: 25px;
       padding: 0;
-      border: 1px solid rgba(255,255,255,0.2);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      border: 2px solid rgba(255,255,255,0.1);
+      box-shadow: 0 15px 50px rgba(0,0,0,0.2);
       overflow: hidden;
+      position: relative;
+    }
+
+    .table-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #FFD700, #FF6B6B, #4ECDC4, #45B7D1, #FFD700);
+      background-size: 200% 100%;
+      animation: topBorderFlow 3s linear infinite;
+    }
+
+    @keyframes topBorderFlow {
+      0% { background-position: 0% 0%; }
+      100% { background-position: 200% 0%; }
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
       font-size: 15px;
+      position: relative;
+      z-index: 2;
     }
 
     th {
-      background: linear-gradient(145deg, #4CAF50, #45a049);
+      background: linear-gradient(145deg, rgba(255, 215, 0, 0.2), rgba(255, 215, 0, 0.1));
       color: white;
-      padding: 16px 12px;
+      padding: 20px 15px;
       text-align: center;
-      font-weight: 600;
+      font-weight: 700;
       font-size: 14px;
-      text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
       border: none;
       position: sticky;
       top: 0;
       z-index: 10;
+      backdrop-filter: blur(15px);
+      border-bottom: 2px solid rgba(255, 215, 0, 0.3);
     }
 
     td {
-      padding: 12px;
+      padding: 15px;
       text-align: center;
-      border-bottom: 1px solid rgba(0,0,0,0.08);
-      transition: all 0.2s ease;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      transition: all 0.3s ease;
+      position: relative;
+      color: white;
     }
 
     tr {
-      transition: all 0.2s ease;
+      transition: all 0.3s ease;
+      position: relative;
     }
 
     tr:hover {
-      background: linear-gradient(90deg, rgba(76, 175, 80, 0.05), rgba(76, 175, 80, 0.1), rgba(76, 175, 80, 0.05));
+      background: linear-gradient(90deg, 
+        rgba(255, 215, 0, 0.08), 
+        rgba(255, 215, 0, 0.15), 
+        rgba(255, 215, 0, 0.08));
       transform: scale(1.01);
+      box-shadow: 0 5px 25px rgba(255, 215, 0, 0.2);
     }
 
-    .gold { 
-      background: linear-gradient(90deg, rgba(255, 215, 0, 0.1), rgba(255, 215, 0, 0.2), rgba(255, 215, 0, 0.1));
-      font-weight: bold;
-      box-shadow: inset 0 0 0 2px rgba(255, 215, 0, 0.3);
-    }
-
-    .silver { 
-      background: linear-gradient(90deg, rgba(192, 192, 192, 0.1), rgba(192, 192, 192, 0.2), rgba(192, 192, 192, 0.1));
-      font-weight: bold;
-      box-shadow: inset 0 0 0 2px rgba(192, 192, 192, 0.3);
-    }
-
-    .bronze { 
-      background: linear-gradient(90deg, rgba(205, 127, 50, 0.1), rgba(205, 127, 50, 0.2), rgba(205, 127, 50, 0.1));
-      font-weight: bold;
-      box-shadow: inset 0 0 0 2px rgba(205, 127, 50, 0.3);
-    }
-
+    /* Rank Badges */
     .rank-badge {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 35px;
-      height: 35px;
+      width: 45px;
+      height: 45px;
       border-radius: 50%;
-      font-weight: bold;
+      font-weight: 900;
+      font-size: 1.1rem;
       color: white;
-      text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+      text-shadow: 0 2px 4px rgba(0,0,0,0.4);
+      position: relative;
+      overflow: hidden;
     }
 
-    .rank-1 { background: linear-gradient(45deg, #ffd700, #ffed4e); color: #333; text-shadow: none; }
-    .rank-2 { background: linear-gradient(45deg, #c0c0c0, #e8e8e8); color: #333; text-shadow: none; }
-    .rank-3 { background: linear-gradient(45deg, #cd7f32, #daa520); }
-    .rank-other { background: linear-gradient(45deg, #6c757d, #495057); }
+    .rank-badge::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      animation: badgeShine 3s linear infinite;
+    }
+
+    @keyframes badgeShine {
+      0% { left: -100%; }
+      50% { left: 100%; }
+      100% { left: 100%; }
+    }
+
+    .rank-1 { 
+      background: linear-gradient(45deg, #FFD700, #FFA500);
+      box-shadow: 0 0 25px rgba(255, 215, 0, 0.6);
+      animation: goldPulse 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes goldPulse {
+      0% { box-shadow: 0 0 25px rgba(255, 215, 0, 0.6); }
+      100% { box-shadow: 0 0 40px rgba(255, 215, 0, 0.9); }
+    }
+
+    .rank-2 { 
+      background: linear-gradient(45deg, #C0C0C0, #E8E8E8);
+      color: #333;
+      text-shadow: 0 1px 2px rgba(255,255,255,0.5);
+      box-shadow: 0 0 20px rgba(192, 192, 192, 0.5);
+    }
+
+    .rank-3 { 
+      background: linear-gradient(45deg, #CD7F32, #DAA520);
+      box-shadow: 0 0 20px rgba(205, 127, 50, 0.5);
+    }
+
+    .rank-other { 
+      background: linear-gradient(45deg, rgba(108, 117, 125, 0.8), rgba(73, 80, 87, 0.8));
+      backdrop-filter: blur(10px);
+    }
+
+    /* Medal Icons for Top 3 */
+    .rank-1::after { content: '👑'; position: absolute; top: -8px; right: -8px; font-size: 1.2rem; }
+    .rank-2::after { content: '🥈'; position: absolute; top: -6px; right: -6px; font-size: 1rem; }
+    .rank-3::after { content: '🥉'; position: absolute; top: -6px; right: -6px; font-size: 1rem; }
+
+    /* Special Row Styling */
+    .gold-row { 
+      background: linear-gradient(90deg, 
+        rgba(255, 215, 0, 0.1), 
+        rgba(255, 215, 0, 0.2), 
+        rgba(255, 215, 0, 0.1));
+      border: 2px solid rgba(255, 215, 0, 0.3);
+      box-shadow: 0 0 30px rgba(255, 215, 0, 0.2);
+    }
+
+    .silver-row { 
+      background: linear-gradient(90deg, 
+        rgba(192, 192, 192, 0.1), 
+        rgba(192, 192, 192, 0.2), 
+        rgba(192, 192, 192, 0.1));
+      border: 2px solid rgba(192, 192, 192, 0.3);
+    }
+
+    .bronze-row { 
+      background: linear-gradient(90deg, 
+        rgba(205, 127, 50, 0.1), 
+        rgba(205, 127, 50, 0.2), 
+        rgba(205, 127, 50, 0.1));
+      border: 2px solid rgba(205, 127, 50, 0.3);
+    }
 
     img.catchmon-sprite {
-      width: 60px;
-      height: 60px;
+      width: 80px;
+      height: 80px;
       object-fit: contain;
-      border-radius: 8px;
-      transition: transform 0.2s ease;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      border-radius: 12px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      border: 2px solid rgba(255,255,255,0.1);
     }
 
     img.catchmon-sprite:hover {
-      transform: scale(1.1);
+      transform: scale(1.15);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+      border-color: rgba(76, 175, 80, 0.5);
     }
 
     a {
@@ -214,30 +440,51 @@
 
     a:hover {
       color: #4CAF50;
+      text-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
     }
 
     .name-cell {
-      font-weight: bold;
-      font-size: 16px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: white;
     }
 
     .points-cell {
-      font-weight: bold;
-      color: #4CAF50;
-      font-size: 16px;
+      font-weight: 800;
+      color: #FFD700;
+      font-size: 1.2rem;
+      text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    }
+
+    .level-cell {
+      font-weight: 700;
+      color: #4ECDC4;
+      font-size: 1.1rem;
+    }
+
+    .stats-cell {
+      font-weight: 600;
+      color: #FF6B6B;
+      font-size: 1rem;
     }
 
     .shiny-badge {
-      font-size: 20px;
-      filter: drop-shadow(0 0 4px rgba(255, 215, 0, 0.6));
+      font-size: 24px;
+      filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.8));
       animation: sparkle 2s ease-in-out infinite alternate;
     }
 
     @keyframes sparkle {
-      from { transform: scale(1); }
-      to { transform: scale(1.1); }
+      from { transform: scale(1) rotate(0deg); }
+      to { transform: scale(1.2) rotate(15deg); }
     }
 
+    .catcher-cell {
+      font-weight: 700;
+      font-size: 1rem;
+    }
+
+    /* Donation Tier Styles */
     .catcher-name {
       display: inline-block;
       font-weight: bold;
@@ -265,9 +512,9 @@
     }
 
     .normal {
-      color: #444;
-      text-shadow: none;
-      font-weight: 600;
+      color: white;
+      text-shadow: 0 0 5px rgba(255,255,255,0.5);
+      font-weight: 700;
       background: none;
       -webkit-text-fill-color: inherit;
       background-clip: unset;
@@ -278,22 +525,24 @@
       to { background-position: -200% center; }
     }
 
+    /* Loading Animation */
     .loading {
       text-align: center;
-      padding: 40px;
-      color: #666;
-      font-size: 16px;
+      padding: 60px;
+      color: rgba(255,255,255,0.8);
+      font-size: 18px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
     }
 
-    .loading::after {
-      content: '';
-      display: inline-block;
-      width: 20px;
-      height: 20px;
-      border: 2px solid #e0e0e0;
-      border-top: 2px solid #4CAF50;
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid rgba(255,255,255,0.2);
+      border-top: 4px solid #FFD700;
       border-radius: 50%;
-      margin-left: 10px;
       animation: spin 1s linear infinite;
     }
 
@@ -301,9 +550,46 @@
       to { transform: rotate(360deg); }
     }
 
-    /* Mobile Optimierungen */
+    .error-message {
+      text-align: center;
+      padding: 60px;
+      color: rgba(255,255,255,0.8);
+      font-size: 18px;
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(15px);
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.1);
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Floating Action Button */
+    .refresh-fab {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(45deg, #4ECDC4, #44A08D);
+      border: none;
+      border-radius: 50%;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+      z-index: 1000;
+      backdrop-filter: blur(10px);
+    }
+
+    .refresh-fab:hover {
+      transform: scale(1.1) rotate(180deg);
+      box-shadow: 0 12px 35px rgba(78, 205, 196, 0.4);
+    }
+
+    /* Mobile Optimizations */
     @media (max-width: 1024px) {
-      th:nth-child(7), td:nth-child(7) { display: none; } /* Stat Sum ausblenden */
+      th:nth-child(6), td:nth-child(6) { display: none; } /* Level ausblenden */
     }
 
     @media (max-width: 768px) {
@@ -311,10 +597,25 @@
         padding: 15px; 
       }
       
-      .top-bar {
+      .header-section {
         flex-direction: column;
-        gap: 15px;
+        gap: 20px;
         text-align: center;
+        padding: 25px 20px;
+      }
+
+      .header-content {
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .controls-section {
+        padding: 20px 15px;
+      }
+
+      .controls-content label {
+        padding: 12px 20px;
+        font-size: 15px;
       }
 
       table { 
@@ -322,22 +623,29 @@
       }
       
       th, td { 
-        padding: 8px 4px; 
+        padding: 12px 8px; 
       }
 
       img.catchmon-sprite {
-        width: 40px;
-        height: 40px;
+        width: 60px;
+        height: 60px;
       }
 
       .rank-badge {
-        width: 30px;
-        height: 30px;
-        font-size: 12px;
+        width: 35px;
+        height: 35px;
+        font-size: 0.9rem;
       }
 
-      /* Level und Stat Sum auf Mobile ausblenden */
-      th:nth-child(6), td:nth-child(6),
+      .name-cell {
+        font-size: 1rem;
+      }
+
+      .points-cell {
+        font-size: 1.1rem;
+      }
+
+      /* Auf Mobile Stats Sum ausblenden */
       th:nth-child(7), td:nth-child(7) { 
         display: none; 
       }
@@ -349,11 +657,11 @@
       }
 
       h1 { 
-        font-size: 1.8rem; 
+        font-size: 2rem; 
       }
 
-      .controls {
-        padding: 15px;
+      .controls-section {
+        padding: 15px 10px;
       }
 
       table { 
@@ -361,21 +669,35 @@
       }
 
       th, td { 
-        padding: 6px 2px; 
+        padding: 10px 6px; 
       }
 
       img.catchmon-sprite {
-        width: 35px;
-        height: 35px;
+        width: 50px;
+        height: 50px;
       }
 
-      /* Auf sehr kleinen Screens nur die wichtigsten Spalten zeigen */
+      .rank-badge {
+        width: 30px;
+        height: 30px;
+        font-size: 0.8rem;
+      }
+
+      .refresh-fab {
+        width: 50px;
+        height: 50px;
+        bottom: 20px;
+        right: 20px;
+        font-size: 1.3rem;
+      }
+
+      /* Auf sehr kleinen Screens nur wichtigste Spalten */
       th:nth-child(4), td:nth-child(4) { display: none; } /* Catcher ausblenden */
     }
 
-    /* Scrollbare Tabelle für sehr breite Inhalte */
+    /* Scrollable table für sehr breite Inhalte */
     @media (max-width: 600px) {
-      .table-container {
+      .table-section {
         overflow-x: auto;
       }
       
@@ -386,21 +708,31 @@
   </style>
 </head>
 <body>
+  <!-- Animated Background -->
+  <div class="bg-effects" id="bgEffects"></div>
+
   <div class="container">
-    <div class="top-bar">
-      <a class="back-button" href="javascript:history.back()">← Back</a>
-      <h1>🏆 Strongest Catchmon</h1>
-      <div></div> <!-- Spacer for flex layout -->
+    <!-- Header Section -->
+    <div class="header-section">
+      <div class="header-content">
+        <a class="back-button" href="javascript:history.back()">← Back</a>
+        <h1>🐲 Legendary Catchmon Arena</h1>
+        <div></div> <!-- Spacer for flex layout -->
+      </div>
     </div>
 
-    <div class="controls">
-      <label>
-        <input type="checkbox" id="caughtOnly" onchange="renderTable()">
-        Show caught only
-      </label>
+    <!-- Controls Section -->
+    <div class="controls-section">
+      <div class="controls-content">
+        <label>
+          <input type="checkbox" id="caughtOnly" onchange="renderTable()">
+          Show caught only
+        </label>
+      </div>
     </div>
 
-    <div class="table-container">
+    <!-- Rankings Table -->
+    <div class="table-section">
       <table>
         <thead>
           <tr>
@@ -415,13 +747,66 @@
           </tr>
         </thead>
         <tbody id="rankingBody">
-          <tr><td colspan="8" class="loading">Loading</td></tr>
+          <tr><td colspan="8" class="loading">
+            <div class="loading-spinner"></div>
+            <div>Loading Legendary Catchmon...</div>
+          </td></tr>
         </tbody>
       </table>
     </div>
   </div>
 
+  <!-- Floating Refresh Button -->
+  <button class="refresh-fab" onclick="forceRefresh()" title="Refresh Rankings">🔄</button>
+
   <script>
+    // Create animated background effects
+    function createTrophy() {
+      const trophies = ['🐲', '⚡', '🔥', '💎', '✨', '🌟', '👑'];
+      const trophy = document.createElement('div');
+      trophy.className = 'trophy-float';
+      trophy.textContent = trophies[Math.floor(Math.random() * trophies.length)];
+      trophy.style.left = Math.random() * 100 + '%';
+      trophy.style.animationDuration = (Math.random() * 8 + 12) + 's';
+      trophy.style.animationDelay = Math.random() * 3 + 's';
+      
+      document.getElementById('bgEffects').appendChild(trophy);
+      
+      setTimeout(() => {
+        if (trophy.parentNode) {
+          trophy.parentNode.removeChild(trophy);
+        }
+      }, 20000);
+    }
+
+    function createEnergyOrb() {
+      const orb = document.createElement('div');
+      orb.className = 'energy-orb';
+      orb.style.left = Math.random() * 100 + '%';
+      orb.style.animationDuration = (Math.random() * 6 + 8) + 's';
+      orb.style.animationDelay = Math.random() * 2 + 's';
+      
+      document.getElementById('bgEffects').appendChild(orb);
+      
+      setTimeout(() => {
+        if (orb.parentNode) {
+          orb.parentNode.removeChild(orb);
+        }
+      }, 15000);
+    }
+
+    // Start background animations
+    setInterval(createTrophy, 4000);
+    setInterval(createEnergyOrb, 1000);
+
+    // Initial effects
+    for (let i = 0; i < 3; i++) {
+      setTimeout(createTrophy, i * 2000);
+    }
+    for (let i = 0; i < 8; i++) {
+      setTimeout(createEnergyOrb, i * 500);
+    }
+
     let allCatchmon = [];
     let catcherDonations = {};
 
@@ -440,8 +825,15 @@
       return 'rank-other';
     }
 
+    function getRowClass(index) {
+      if (index === 0) return 'gold-row';
+      if (index === 1) return 'silver-row';
+      if (index === 2) return 'bronze-row';
+      return '';
+    }
+
     function updateData() {
-      fetch("catcher.json")
+      fetch("catcher.json?" + Date.now())
         .then(r => {
           if (!r.ok) throw new Error('Network response was not ok');
           return r.json();
@@ -450,6 +842,7 @@
           allCatchmon = [];
           catcherDonations = {};
 
+          // Load all caught catchmon
           for (const [catcher, info] of Object.entries(data.catcher || {})) {
             catcherDonations[catcher] = info.donation || 0;
             (info.team || []).forEach(c => {
@@ -468,7 +861,8 @@
             });
           }
 
-          (data.seen || []).forEach(c => {
+          // Load escaped catchmon
+          (data.escaped || []).forEach(c => {
             allCatchmon.push({
               catcher: null,
               name: c.name,
@@ -488,7 +882,7 @@
         .catch(error => {
           console.error('Error loading data:', error);
           document.getElementById("rankingBody").innerHTML = 
-            '<tr><td colspan="8" class="loading">Error loading data</td></tr>';
+            '<tr><td colspan="8" class="error-message">Error loading data. Please try again later.</td></tr>';
         });
     }
 
@@ -502,41 +896,198 @@
         .filter(p => !showCaughtOnly || p.caught)
         .sort((a, b) => b.points - a.points);
 
-      if (visible.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="8" class="loading">No data available</td></tr>';
+if (visible.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" class="loading"><div class="loading-spinner"></div><div>No Catchmon found</div></td></tr>';
         return;
       }
 
       visible.forEach((p, index) => {
         const tr = document.createElement("tr");
         const rank = index + 1;
+        const rankClass = getRankClass(index);
+        const rowClass = getRowClass(index);
 
-        if (index === 0) tr.classList.add("gold");
-        else if (index === 1) tr.classList.add("silver");
-        else if (index === 2) tr.classList.add("bronze");
+        if (rowClass) tr.classList.add(rowClass);
 
         const catcherCell = p.caught
           ? getStyledCatcherName(p.catcher, catcherDonations[p.catcher] || 0)
           : "–";
 
-        const rankBadge = `<div class="rank-badge ${getRankClass(index)}">${rank}</div>`;
+        const rankBadge = `<div class="rank-badge ${rankClass}">${rank}</div>`;
+
+        // Add entrance animation delay
+        tr.style.opacity = '0';
+        tr.style.transform = 'translateY(20px)';
 
         tr.innerHTML = `
           <td>${rankBadge}</td>
           <td><a href="dex_detail.html?name=${encodeURIComponent(p.name)}"><img class="catchmon-sprite" src="${p.sprite}" alt="${p.name}"></a></td>
           <td class="name-cell"><a href="dex_detail.html?name=${encodeURIComponent(p.name)}">${p.name}</a></td>
-          <td>${catcherCell}</td>
+          <td class="catcher-cell">${catcherCell}</td>
           <td class="points-cell">${p.points.toLocaleString()}</td>
-          <td>${p.level}</td>
-          <td>${p.statSum.toLocaleString()}</td>
+          <td class="level-cell">${p.level}</td>
+          <td class="stats-cell">${p.statSum.toLocaleString()}</td>
           <td>${p.shiny ? '<span class="shiny-badge">✨</span>' : ""}</td>
         `;
         tbody.appendChild(tr);
+
+        // Animate row entrance
+        setTimeout(() => {
+          tr.style.transition = 'all 0.5s ease';
+          tr.style.opacity = '1';
+          tr.style.transform = 'translateY(0)';
+        }, index * 50);
       });
+
+      // Add sparkle effects to top 3
+      setTimeout(() => {
+        const topRows = tbody.querySelectorAll('.gold-row, .silver-row, .bronze-row');
+        topRows.forEach(row => {
+          if (Math.random() < 0.3) {
+            createRowSparkles(row);
+          }
+        });
+      }, 1000);
     }
 
+    function createRowSparkles(row) {
+      const rect = row.getBoundingClientRect();
+      const sparkles = ['✨', '💫', '⭐', '🌟'];
+      
+      for (let i = 0; i < 3; i++) {
+        const sparkle = document.createElement('div');
+        sparkle.textContent = sparkles[Math.floor(Math.random() * sparkles.length)];
+        sparkle.style.position = 'fixed';
+        sparkle.style.left = (rect.left + Math.random() * rect.width) + 'px';
+        sparkle.style.top = (rect.top + Math.random() * rect.height) + 'px';
+        sparkle.style.pointerEvents = 'none';
+        sparkle.style.zIndex = '9999';
+        sparkle.style.fontSize = '1.5rem';
+        sparkle.style.animation = 'sparkleFloat 2s ease-out forwards';
+        sparkle.style.color = '#FFD700';
+        sparkle.style.textShadow = '0 0 8px #FFD700';
+        
+        document.body.appendChild(sparkle);
+        
+        setTimeout(() => {
+          if (sparkle.parentNode) {
+            sparkle.parentNode.removeChild(sparkle);
+          }
+        }, 2000);
+      }
+    }
+
+    // Add sparkle animation
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes sparkleFloat {
+        0% { 
+          opacity: 1; 
+          transform: translateY(0) scale(1) rotate(0deg); 
+        }
+        100% { 
+          opacity: 0; 
+          transform: translateY(-100px) scale(0.3) rotate(360deg); 
+        }
+      }
+    `;
+    document.head.appendChild(style);
+
+    function forceRefresh() {
+      const fab = document.querySelector('.refresh-fab');
+      fab.style.transform = 'scale(1.2) rotate(720deg)';
+      fab.style.boxShadow = '0 15px 50px rgba(78, 205, 196, 0.8)';
+      
+      setTimeout(() => {
+        fab.style.transform = '';
+        fab.style.boxShadow = '';
+      }, 800);
+
+      // Show loading state
+      document.getElementById("rankingBody").innerHTML = 
+        '<tr><td colspan="8" class="loading"><div class="loading-spinner"></div><div>Refreshing rankings...</div></td></tr>';
+      
+      updateData();
+    }
+
+    // Add click effects to table rows
+    document.addEventListener('click', function(e) {
+      if (e.target.closest('tr') && e.target.closest('tbody')) {
+        const row = e.target.closest('tr');
+        createClickEffect(e.pageX, e.pageY);
+        
+        // Row flash effect
+        row.style.background = 'rgba(255, 215, 0, 0.3)';
+        setTimeout(() => {
+          row.style.background = '';
+        }, 300);
+      }
+    });
+
+    function createClickEffect(x, y) {
+      const colors = ['#FFD700', '#FF6B6B', '#4ECDC4', '#45B7D1'];
+      
+      for (let i = 0; i < 8; i++) {
+        const particle = document.createElement('div');
+        particle.style.position = 'fixed';
+        particle.style.left = x + 'px';
+        particle.style.top = y + 'px';
+        particle.style.width = '8px';
+        particle.style.height = '8px';
+        particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        particle.style.borderRadius = '50%';
+        particle.style.pointerEvents = 'none';
+        particle.style.zIndex = '9999';
+        particle.style.boxShadow = '0 0 10px currentColor';
+        
+        const angle = (i / 8) * Math.PI * 2;
+        const velocity = 100 + Math.random() * 50;
+        const vx = Math.cos(angle) * velocity;
+        const vy = Math.sin(angle) * velocity;
+        
+        particle.style.animation = `clickParticle 1s ease-out forwards`;
+        particle.style.setProperty('--vx', vx + 'px');
+        particle.style.setProperty('--vy', vy + 'px');
+        
+        document.body.appendChild(particle);
+        
+        setTimeout(() => {
+          if (particle.parentNode) {
+            particle.parentNode.removeChild(particle);
+          }
+        }, 1000);
+      }
+    }
+
+    // Add click particle animation
+    style.textContent += `
+      @keyframes clickParticle {
+        0% { 
+          opacity: 1; 
+          transform: translate(0, 0) scale(1); 
+        }
+        100% { 
+          opacity: 0; 
+          transform: translate(var(--vx), var(--vy)) scale(0.3); 
+        }
+      }
+    `;
+
+    // Periodic sparkle effects on top 3
+    setInterval(() => {
+      const topRows = document.querySelectorAll('.gold-row, .silver-row, .bronze-row');
+      topRows.forEach(row => {
+        if (Math.random() < 0.2) {
+          createRowSparkles(row);
+        }
+      });
+    }, 10000);
+
+    // Auto-refresh every 5 seconds
+    setInterval(updateData, 10000);
+
+    // Initial load
     updateData();
-    setInterval(updateData, 5000);
   </script>
 </body>
 </html>

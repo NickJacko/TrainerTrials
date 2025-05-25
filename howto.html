@@ -2,87 +2,205 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>How To Play – Catchmon Catcher</title>
+  <title>🧠 How to Play – Catchmon Arena</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     * {
       box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      margin: 0;
-      padding: 0;
+      background: radial-gradient(ellipse at center, #1a1a2e 0%, #16213e 30%, #0f0f23 70%, #000000 100%);
+      color: white;
+      overflow-x: hidden;
       min-height: 100vh;
-      color: #333;
+    }
+
+    /* Animated Background Effects */
+    .bg-effects {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      opacity: 0.3;
+    }
+
+    .floating-catchmon {
+      position: absolute;
+      width: 50px;
+      height: 50px;
+      opacity: 0.4;
+      animation: floatCatchmon 15s linear infinite;
+      pointer-events: none;
+    }
+
+    .floating-catchmon img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: brightness(1.5) drop-shadow(0 0 8px rgba(255,255,255,0.3));
+    }
+
+    @keyframes floatCatchmon {
+      0% {
+        transform: translateY(100vh) translateX(0) rotate(0deg) scale(0.5);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.5;
+      }
+      50% {
+        opacity: 0.7;
+        transform: translateY(50vh) translateX(20px) rotate(180deg) scale(1);
+      }
+      90% {
+        opacity: 0.5;
+      }
+      100% {
+        transform: translateY(-100px) translateX(0) rotate(360deg) scale(0.3);
+        opacity: 0;
+      }
+    }
+
+    .energy-orb {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: radial-gradient(circle, #FFD700, #FFA500);
+      border-radius: 50%;
+      animation: orbFloat 12s linear infinite;
+      box-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+    }
+
+    @keyframes orbFloat {
+      0% {
+        transform: translateY(100vh) translateX(0);
+        opacity: 0;
+      }
+      20% {
+        opacity: 0.8;
+      }
+      80% {
+        opacity: 0.8;
+      }
+      100% {
+        transform: translateY(-100px) translateX(30px);
+        opacity: 0;
+      }
     }
 
     .container {
-      max-width: 1000px;
+      max-width: 1200px;
       margin: auto;
       padding: 20px;
+      position: relative;
+      z-index: 1;
     }
 
-    .top-bar {
+    /* Header Section */
+    .header-section {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 30px;
-      background: rgba(255,255,255,0.1);
-      backdrop-filter: blur(10px);
-      border-radius: 16px;
-      padding: 15px 20px;
-      border: 1px solid rgba(255,255,255,0.2);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+      margin-bottom: 40px;
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(15px);
+      border-radius: 20px;
+      padding: 20px 30px;
+      border: 2px solid rgba(255,255,255,0.1);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header-section::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, 
+        transparent, 
+        rgba(255, 215, 0, 0.1), 
+        transparent, 
+        rgba(255, 215, 0, 0.1), 
+        transparent);
+      animation: headerShine 6s linear infinite;
+    }
+
+    @keyframes headerShine {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .header-content {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
     }
 
     .back-button {
       font-size: 16px;
       text-decoration: none;
       color: white;
-      font-weight: 600;
-      padding: 12px 20px;
-      border-radius: 12px;
-      background: linear-gradient(145deg, rgba(255,255,255,0.2), rgba(255,255,255,0.1));
-      border: 1px solid rgba(255,255,255,0.3);
-      transition: all 0.3s ease;
+      font-weight: 700;
+      padding: 15px 25px;
+      border-radius: 15px;
+      background: linear-gradient(145deg, rgba(255,255,255,0.15), rgba(255,255,255,0.08));
+      border: 2px solid rgba(255,255,255,0.2);
+      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
       backdrop-filter: blur(10px);
+      box-shadow: 0 5px 20px rgba(0,0,0,0.2);
     }
 
     .back-button:hover {
-      transform: translateY(-2px);
-      background: linear-gradient(145deg, rgba(255,255,255,0.3), rgba(255,255,255,0.2));
-      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      transform: translateY(-3px) scale(1.02);
+      background: linear-gradient(145deg, rgba(255,255,255,0.25), rgba(255,255,255,0.15));
+      box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+      border-color: rgba(255,255,255,0.4);
     }
 
     h1 {
       text-align: center;
-      margin: 0;
-      font-size: clamp(2rem, 6vw, 3rem);
-      background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
+      flex: 1;
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      background: linear-gradient(45deg, #FFD700, #FF6B6B, #4ECDC4, #45B7D1, #FFD700);
       background-size: 300% 300%;
       background-clip: text;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      animation: gradientShift 3s ease-in-out infinite;
-      font-weight: 800;
+      animation: gradientShift 4s ease-in-out infinite;
+      font-weight: 900;
+      text-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+      letter-spacing: -1px;
     }
 
     @keyframes gradientShift {
       0%, 100% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
+      25% { background-position: 100% 50%; }
+      50% { background-position: 100% 100%; }
+      75% { background-position: 0% 100%; }
     }
 
+    /* Hero Section with 3D Catchmon */
     .hero-section {
       text-align: center;
-      margin-bottom: 40px;
-      background: rgba(255,255,255,0.1);
-      backdrop-filter: blur(15px);
-      border-radius: 20px;
-      padding: 30px;
-      border: 1px solid rgba(255,255,255,0.2);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      margin-bottom: 60px;
+      background: rgba(255,255,255,0.03);
+      backdrop-filter: blur(20px);
+      border-radius: 30px;
+      padding: 50px 30px;
+      border: 2px solid rgba(255,255,255,0.1);
+      box-shadow: 0 15px 50px rgba(0,0,0,0.2);
       position: relative;
       overflow: hidden;
     }
@@ -94,7 +212,7 @@
       left: -100%;
       width: 100%;
       height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
       animation: heroShimmer 4s ease-in-out infinite;
     }
 
@@ -104,72 +222,101 @@
       100% { left: 100%; }
     }
 
-    .sprite-container {
+    .catchmon-showcase {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin-bottom: 30px;
       position: relative;
-      display: inline-block;
-      margin-bottom: 20px;
       z-index: 2;
     }
 
-    .sprite {
-      width: 150px;
-      height: 150px;
+    .showcase-catchmon {
+      position: relative;
+      transition: transform 0.3s ease;
+    }
+
+    .showcase-catchmon:hover {
+      transform: translateY(-10px) scale(1.1);
+    }
+
+    .showcase-catchmon img {
+      width: 120px;
+      height: 120px;
       object-fit: contain;
       border-radius: 20px;
       box-shadow: 
-        0 10px 30px rgba(0,0,0,0.3),
-        0 0 50px rgba(255,215,0,0.3);
+        0 15px 35px rgba(0,0,0,0.4),
+        0 0 60px rgba(255,215,0,0.3);
       border: 3px solid rgba(255,215,0,0.4);
       animation: floatSprite 4s ease-in-out infinite alternate;
-      transition: all 0.3s ease;
+      filter: brightness(1.2) contrast(1.1);
     }
 
     @keyframes floatSprite {
       0% { 
-        transform: translateY(0px) scale(1);
+        transform: translateY(0px);
         box-shadow: 
-          0 10px 30px rgba(0,0,0,0.3),
-          0 0 50px rgba(255,215,0,0.3);
+          0 15px 35px rgba(0,0,0,0.4),
+          0 0 60px rgba(255,215,0,0.3);
       }
       100% { 
-        transform: translateY(-10px) scale(1.05);
+        transform: translateY(-8px);
         box-shadow: 
-          0 20px 40px rgba(0,0,0,0.4),
-          0 0 70px rgba(255,215,0,0.5);
+          0 25px 45px rgba(0,0,0,0.5),
+          0 0 80px rgba(255,215,0,0.5);
       }
     }
 
-    .sprite:hover {
-      transform: translateY(-15px) scale(1.1);
-      box-shadow: 
-        0 25px 50px rgba(0,0,0,0.5),
-        0 0 80px rgba(255,215,0,0.6);
+    .rarity-tag {
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 10px;
+      font-weight: 800;
+      color: white;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+      border: 1px solid rgba(255,255,255,0.3);
     }
+
+    .common { background: linear-gradient(45deg, #9E9E9E, #BDBDBD); }
+    .rare { background: linear-gradient(45deg, #2196F3, #64B5F6); }
+    .mythical { background: linear-gradient(45deg, #9C27B0, #BA68C8); }
 
     .intro-text {
-      font-size: 18px;
+      font-size: 20px;
       color: rgba(255,255,255,0.9);
-      margin-bottom: 20px;
+      margin-bottom: 30px;
       font-weight: 500;
-      text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+      text-shadow: 0 2px 10px rgba(0,0,0,0.5);
       position: relative;
       z-index: 2;
+      line-height: 1.6;
     }
 
+    .intro-highlight {
+      color: #FFD700;
+      font-weight: 700;
+      text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    }
+
+    /* Epic Step Cards */
     .steps-container {
       display: grid;
-      gap: 25px;
-      margin-bottom: 40px;
+      gap: 40px;
+      margin-bottom: 60px;
     }
 
     .step-card {
-      background: rgba(255,255,255,0.1);
-      backdrop-filter: blur(15px);
-      border-radius: 20px;
-      padding: 25px;
-      border: 1px solid rgba(255,255,255,0.2);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-      transition: all 0.3s ease;
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(20px);
+      border-radius: 25px;
+      padding: 35px;
+      border: 2px solid rgba(255,255,255,0.1);
+      box-shadow: 0 15px 50px rgba(0,0,0,0.2);
+      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
       position: relative;
       overflow: hidden;
     }
@@ -182,7 +329,7 @@
       width: 100%;
       height: 100%;
       background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-      transition: left 0.5s;
+      transition: left 0.6s;
     }
 
     .step-card:hover::before {
@@ -190,53 +337,49 @@
     }
 
     .step-card:hover {
-      transform: translateY(-5px) scale(1.02);
-      box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+      transform: translateY(-10px) scale(1.02);
+      box-shadow: 0 25px 70px rgba(0,0,0,0.3);
       border-color: rgba(255,255,255,0.3);
     }
 
     .step-header {
       display: flex;
       align-items: center;
-      gap: 15px;
-      margin-bottom: 15px;
+      gap: 20px;
+      margin-bottom: 20px;
       position: relative;
       z-index: 2;
     }
 
     .step-icon {
-      width: 60px;
-      height: 60px;
+      width: 80px;
+      height: 80px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 24px;
+      font-size: 32px;
       font-weight: 800;
       color: white;
-      text-shadow: 0 2px 5px rgba(0,0,0,0.3);
+      text-shadow: 0 2px 5px rgba(0,0,0,0.5);
       flex-shrink: 0;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
       position: relative;
+      animation: iconPulse 3s ease-in-out infinite alternate;
     }
 
     .step-icon::before {
       content: '';
       position: absolute;
-      top: -2px;
-      left: -2px;
-      right: -2px;
-      bottom: -2px;
+      top: -3px;
+      left: -3px;
+      right: -3px;
+      bottom: -3px;
       border-radius: 50%;
-      background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
-      background-size: 300% 300%;
-      animation: iconGradient 3s ease-in-out infinite;
+      background: linear-gradient(45deg, #FFD700, #FF6B6B, #4ECDC4, #45B7D1, #FFD700);
+      background-size: 400% 400%;
+      animation: iconGradient 4s ease-in-out infinite;
       z-index: -1;
-    }
-
-    @keyframes iconGradient {
-      0%, 100% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
     }
 
     .step-icon::after {
@@ -248,6 +391,7 @@
       bottom: 0;
       border-radius: 50%;
       background: rgba(0,0,0,0.8);
+      backdrop-filter: blur(5px);
     }
 
     .step-icon span {
@@ -255,34 +399,176 @@
       z-index: 2;
     }
 
+    @keyframes iconGradient {
+      0%, 100% { background-position: 0% 50%; }
+      25% { background-position: 100% 50%; }
+      50% { background-position: 100% 100%; }
+      75% { background-position: 0% 100%; }
+    }
+
+    @keyframes iconPulse {
+      0% { 
+        transform: scale(1);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      }
+      100% { 
+        transform: scale(1.05);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+      }
+    }
+
+    .step-content {
+      flex: 1;
+    }
+
     .step-title {
-      font-size: 20px;
-      font-weight: 700;
+      font-size: 24px;
+      font-weight: 800;
       color: white;
-      margin: 0;
-      text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+      margin-bottom: 15px;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+      position: relative;
+      z-index: 2;
     }
 
     .step-description {
       color: rgba(255,255,255,0.9);
-      font-size: 16px;
-      line-height: 1.6;
-      margin: 0;
+      font-size: 18px;
+      line-height: 1.7;
+      margin-bottom: 20px;
       font-weight: 500;
       position: relative;
       z-index: 2;
     }
 
-    .footer-section {
-      background: rgba(255,255,255,0.1);
-      backdrop-filter: blur(15px);
+    .step-tips {
+      background: rgba(255, 215, 0, 0.1);
+      border-left: 4px solid #FFD700;
+      padding: 15px 20px;
+      border-radius: 0 10px 10px 0;
+      margin-top: 20px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .step-tips strong {
+      color: #FFD700;
+      text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+    }
+
+    /* Interactive Features */
+    .interactive-demo {
+      background: rgba(255,255,255,0.03);
       border-radius: 20px;
       padding: 30px;
+      margin: 30px 0;
+      border: 2px solid rgba(255,255,255,0.1);
       text-align: center;
-      border: 1px solid rgba(255,255,255,0.2);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
       position: relative;
       overflow: hidden;
+    }
+
+    .demo-button {
+      background: linear-gradient(45deg, #4ECDC4, #44A08D);
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 25px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 25px rgba(78, 205, 196, 0.3);
+      margin: 10px;
+    }
+
+    .demo-button:hover {
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 12px 35px rgba(78, 205, 196, 0.5);
+    }
+
+    .demo-result {
+      margin-top: 20px;
+      padding: 20px;
+      background: rgba(76, 175, 80, 0.2);
+      border-radius: 15px;
+      border: 2px solid rgba(76, 175, 80, 0.3);
+      color: white;
+      font-weight: 600;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.5s ease;
+    }
+
+    .demo-result.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Stats Visualization */
+    .stats-demo {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+      gap: 15px;
+      margin: 20px 0;
+    }
+
+    .stat-bar {
+      text-align: center;
+      position: relative;
+    }
+
+    .stat-name {
+      font-size: 12px;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 8px;
+    }
+
+    .stat-visual {
+      height: 80px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 8px;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .stat-fill {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      transition: all 1s ease;
+      border-radius: 0 0 8px 8px;
+      display: flex;
+      align-items: end;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: 12px;
+      padding-bottom: 5px;
+    }
+
+    .stat-value {
+      font-size: 12px;
+      font-weight: 700;
+      margin-top: 5px;
+      color: white;
+    }
+
+    /* Footer Section */
+    .footer-section {
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(15px);
+      border-radius: 25px;
+      padding: 40px;
+      text-align: center;
+      border: 2px solid rgba(255,255,255,0.1);
+      box-shadow: 0 15px 50px rgba(0,0,0,0.2);
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 40px;
     }
 
     .footer-section::before {
@@ -292,7 +578,7 @@
       left: -100%;
       width: 100%;
       height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
       animation: footerShimmer 5s ease-in-out infinite;
     }
 
@@ -303,55 +589,67 @@
     }
 
     .footer-text {
-      font-size: 20px;
-      font-weight: 600;
+      font-size: 24px;
+      font-weight: 700;
       color: white;
-      margin: 0;
-      text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+      margin-bottom: 20px;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.5);
       position: relative;
       z-index: 2;
     }
 
     .footer-emojis {
-      font-size: 28px;
-      margin: 15px 0;
+      font-size: 36px;
+      margin: 20px 0;
       display: block;
       animation: emojiFloat 3s ease-in-out infinite alternate;
       position: relative;
       z-index: 2;
+      filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5));
     }
 
     @keyframes emojiFloat {
       0% { transform: translateY(0px); }
-      100% { transform: translateY(-5px); }
+      100% { transform: translateY(-8px); }
     }
 
-    /* Special Effects */
-    .sparkle {
-      position: absolute;
-      width: 4px;
-      height: 4px;
-      background: white;
-      border-radius: 50%;
-      animation: sparkleFloat 4s ease-in-out infinite;
-      pointer-events: none;
+    .cta-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 30px;
+      flex-wrap: wrap;
+      position: relative;
+      z-index: 2;
     }
 
-    @keyframes sparkleFloat {
-      0%, 100% { 
-        opacity: 0;
-        transform: translateY(20px) scale(0.5);
-      }
-      50% { 
-        opacity: 1;
-        transform: translateY(-20px) scale(1);
-      }
+    .cta-button {
+      background: linear-gradient(45deg, #FF6B6B, #FF4757);
+      color: white;
+      text-decoration: none;
+      padding: 15px 30px;
+      border-radius: 25px;
+      font-weight: 700;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 25px rgba(255, 107, 107, 0.3);
+      border: 2px solid rgba(255,255,255,0.1);
     }
 
-    .sparkle:nth-child(1) { top: 20%; left: 10%; animation-delay: 0s; }
-    .sparkle:nth-child(2) { top: 60%; left: 90%; animation-delay: 1s; }
-    .sparkle:nth-child(3) { top: 80%; left: 20%; animation-delay: 2s; }
-    .sparkle:nth-child(4) { top: 30%; left: 80%; animation-delay: 0.5s; }
+    .cta-button:hover {
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 12px 35px rgba(255, 107, 107, 0.5);
+      border-color: rgba(255,255,255,0.3);
+    }
+
+    .cta-button.secondary {
+      background: linear-gradient(45deg, #4ECDC4, #44A08D);
+      box-shadow: 0 8px 25px rgba(78, 205, 196, 0.3);
+    }
+
+    .cta-button.secondary:hover {
+      box-shadow: 0 12px 35px rgba(78, 205, 196, 0.5);
+    }
 
     /* Mobile Optimizations */
     @media (max-width: 768px) {
@@ -359,60 +657,74 @@
         padding: 15px;
       }
 
-      .top-bar {
+      .header-section {
         flex-direction: column;
-        gap: 15px;
+        gap: 20px;
         text-align: center;
-        padding: 20px;
+        padding: 25px 20px;
+      }
+
+      .header-content {
+        flex-direction: column;
+        gap: 20px;
       }
 
       h1 {
-        font-size: clamp(1.8rem, 8vw, 2.5rem);
+        font-size: clamp(2rem, 8vw, 3rem);
       }
 
-      .hero-section,
-      .step-card,
-      .footer-section {
-        padding: 20px;
-        margin-bottom: 20px;
+      .hero-section {
+        padding: 30px 20px;
       }
 
-      .sprite {
-        width: 120px;
-        height: 120px;
+      .catchmon-showcase {
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
       }
 
-      .intro-text {
-        font-size: 16px;
+      .showcase-catchmon img {
+        width: 100px;
+        height: 100px;
+      }
+
+      .step-card {
+        padding: 25px 20px;
       }
 
       .step-header {
         flex-direction: column;
         text-align: center;
-        gap: 12px;
+        gap: 15px;
       }
 
       .step-icon {
-        width: 50px;
-        height: 50px;
-        font-size: 20px;
+        width: 60px;
+        height: 60px;
+        font-size: 24px;
       }
 
       .step-title {
-        font-size: 18px;
+        font-size: 20px;
       }
 
       .step-description {
-        font-size: 15px;
+        font-size: 16px;
         text-align: center;
       }
 
-      .footer-text {
-        font-size: 18px;
+      .stats-demo {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
       }
 
-      .footer-emojis {
-        font-size: 24px;
+      .stat-visual {
+        height: 60px;
+      }
+
+      .cta-buttons {
+        flex-direction: column;
+        align-items: center;
       }
     }
 
@@ -424,27 +736,15 @@
       .hero-section,
       .step-card,
       .footer-section {
-        padding: 15px;
-        margin-bottom: 15px;
-      }
-
-      .sprite {
-        width: 100px;
-        height: 100px;
+        padding: 20px 15px;
       }
 
       .intro-text {
-        font-size: 14px;
-      }
-
-      .step-icon {
-        width: 45px;
-        height: 45px;
-        font-size: 18px;
+        font-size: 16px;
       }
 
       .step-title {
-        font-size: 16px;
+        font-size: 18px;
       }
 
       .step-description {
@@ -452,141 +752,559 @@
       }
 
       .footer-text {
-        font-size: 16px;
+        font-size: 20px;
       }
 
       .footer-emojis {
-        font-size: 20px;
+        font-size: 28px;
       }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="sparkle"></div>
-    <div class="sparkle"></div>
-    <div class="sparkle"></div>
-    <div class="sparkle"></div>
+  <!-- Animated Background -->
+  <div class="bg-effects" id="bgEffects"></div>
 
-    <div class="top-bar">
-      <a class="back-button" href="javascript:history.back()">← Back</a>
-      <h1>🧠 How to Play Catchmon Catcher</h1>
-      <div></div> <!-- Spacer for flex layout -->
+  <div class="container">
+    <!-- Header Section -->
+    <div class="header-section">
+      <div class="header-content">
+        <a class="back-button" href="javascript:history.back()">← Back</a>
+        <h1>🧠 Master the Arena</h1>
+        <div></div> <!-- Spacer -->
+      </div>
     </div>
 
+    <!-- Hero Section -->
     <div class="hero-section">
-      <div class="sprite-container">
-        <img class="sprite" src="catchmon/Common/Zapkit.png" alt="Zapkit">
+      <div class="catchmon-showcase">
+        <div class="showcase-catchmon">
+          <img src="catchmon/Common/Zapkit.png" alt="Zapkit">
+          <div class="rarity-tag common">COMMON</div>
+        </div>
+        <div class="showcase-catchmon">
+          <img src="catchmon/Rare/Mindferno.png" alt="Mindferno">
+          <div class="rarity-tag rare">RARE</div>
+        </div>
+        <div class="showcase-catchmon">
+          <img src="catchmon/Mythical/Myrelith.png" alt="Myrelith">
+          <div class="rarity-tag mythical">MYTHICAL</div>
+        </div>
       </div>
       <p class="intro-text">
-        Welcome to the ultimate Catchmon experience! Master the art of catching, evolving, and battling your way to the top!
+        Welcome to the <span class="intro-highlight">ultimate Catchmon experience</span>! Master the art of catching, evolving, and battling your way to legendary status in the most epic arena ever created!
       </p>
     </div>
 
+    <!-- Epic Steps -->
     <div class="steps-container">
+      <!-- Step 1: Live Spawns -->
       <div class="step-card">
         <div class="step-header">
           <div class="step-icon">
             <span>⚡</span>
           </div>
-          <h3 class="step-title">Live Spawns</h3>
+          <div class="step-content">
+            <h3 class="step-title">⚡ Epic Live Spawns</h3>
+            <p class="step-description">
+              Every 15 seconds, a wild Catchmon materializes from the digital void! Each creature spawns with randomly generated stats, levels, and rarities. From common creatures to legendary beasts – you never know what will appear next!
+            </p>
+            <div class="step-tips">
+              <strong>Pro Tip:</strong> Rarer Catchmon have lower spawn rates but incredible power! Keep your eyes peeled for those mythical creatures!
+            </div>
+          </div>
         </div>
-        <p class="step-description">
-          A wild Catchmon spawns every 2 minutes during live streams! Each one has randomly generated stats, level, and rarity. Stay alert and be ready to catch!
-        </p>
+        
+        <div class="interactive-demo">
+          <h4>🎯 Spawn Simulator</h4>
+          <p>Click to simulate a wild Catchmon spawn!</p>
+          <button class="demo-button" onclick="simulateSpawn()">Generate Wild Catchmon</button>
+          <div class="demo-result" id="spawnResult"></div>
+        </div>
       </div>
 
+      <!-- Step 2: Heart-Powered Catching -->
       <div class="step-card">
         <div class="step-header">
           <div class="step-icon">
             <span>❤️</span>
           </div>
-          <h3 class="step-title">Catch Mechanism</h3>
+          <div class="step-content">
+            <h3 class="step-title">❤️ Heart-Powered Catching</h3>
+            <p class="step-description">
+              The power of community drives everything! Viewers send hearts during live streams, and each heart acts like a lottery ticket. The more hearts you send, the higher your chance to catch that epic Catchmon!
+            </p>
+            <div class="step-tips">
+              <strong>Strategy:</strong> Team up with other viewers! Global heart count boosts everyone's catch rates. Cooperation leads to victory!
+            </div>
+          </div>
         </div>
-        <p class="step-description">
-          Viewers like the stream to catch Catchmon! Every like acts as a lottery ticket. The more likes you send, the higher your chance to catch that wild Catchmon!
-        </p>
+
+        <div class="interactive-demo">
+          <h4>💝 Catch Rate Calculator</h4>
+          <p>See how hearts affect your catching power!</p>
+          <button class="demo-button" onclick="calculateCatchRate()">Calculate My Chances</button>
+          <div class="demo-result" id="catchResult"></div>
+        </div>
       </div>
 
+      <!-- Step 3: Fusion Evolution -->
       <div class="step-card">
         <div class="step-header">
           <div class="step-icon">
             <span>🔥</span>
           </div>
-          <h3 class="step-title">Fusion Evolution</h3>
+          <div class="step-content">
+            <h3 class="step-title">🔥 Fusion Evolution System</h3>
+            <p class="step-description">
+              When you catch identical Catchmon, they automatically fuse together in an explosive evolution! Stats combine, power multiplies, and your creature ascends to its next evolutionary stage with devastating new abilities!
+            </p>
+            <div class="step-tips">
+              <strong>Evolution Secret:</strong> Combined stats can exceed natural limits! A perfectly evolved Catchmon can have stats over 200!
+            </div>
+          </div>
         </div>
-        <p class="step-description">
-          When you catch two of the same Catchmon, they automatically fuse and evolve to the next stage! Watch your team grow stronger with each evolution.
-        </p>
+
+        <div class="interactive-demo">
+          <h4>⚡ Evolution Simulator</h4>
+          <p>Watch two Catchmon fuse into ultimate power!</p>
+          <button class="demo-button" onclick="simulateEvolution()">Trigger Evolution</button>
+          <div class="demo-result" id="evolutionResult">
+            <div class="stats-demo" id="statsDemo"></div>
+          </div>
+        </div>
       </div>
 
+      <!-- Step 4: Strategic Team Building -->
       <div class="step-card">
         <div class="step-header">
           <div class="step-icon">
             <span>💪</span>
           </div>
-          <h3 class="step-title">Stats & Power</h3>
-        </div>
-        <p class="step-description">
-          Stats of both Catchmon are combined during evolution. There's no 31 cap – evolved Catchmon can become incredibly powerful with combined stats!
-        </p>
-      </div>
-
-      <div class="step-card">
-        <div class="step-header">
-          <div class="step-icon">
-            <span>🎯</span>
+          <div class="step-content">
+            <h3 class="step-title">💪 Strategic Team Building</h3>
+            <p class="step-description">
+              Master the 3-per-stage limit! You can only hold 3 Catchmon of each
+              <p class="step-description">
+              Master the 3-per-stage limit! You can only hold 3 Catchmon of each evolutionary stage. New catches must be stronger than your weakest to join your team, or trigger evolution. Strategic management is key to building the ultimate squad!
+            </p>
+            <div class="step-tips">
+              <strong>Team Strategy:</strong> Keep your weakest members as evolution fuel, but don't let powerful catches slip away!
+            </div>
           </div>
-          <h3 class="step-title">Stage Limit</h3>
         </div>
-        <p class="step-description">
-          You can only hold 3 Catchmon per evolution stage. New catches won't be added unless they're strong enough to replace weaker ones or trigger evolution!
-        </p>
+
+        <div class="interactive-demo">
+          <h4>🏗️ Team Optimizer</h4>
+          <p>Build your perfect team composition!</p>
+          <button class="demo-button" onclick="optimizeTeam()">Optimize Squad</button>
+          <div class="demo-result" id="teamResult"></div>
+        </div>
       </div>
 
+      <!-- Step 5: Shiny Hunting -->
       <div class="step-card">
         <div class="step-header">
           <div class="step-icon">
             <span>✨</span>
           </div>
-          <h3 class="step-title">Shiny Catchmon</h3>
+          <div class="step-content">
+            <h3 class="step-title">✨ Legendary Shiny Hunting</h3>
+            <p class="step-description">
+              Ultra-rare shiny Catchmon appear with mind-blowing rarity! These crystalline creatures provide massive point bonuses and are the ultimate status symbols. Catching one is a legendary achievement that marks you as a true master!
+            </p>
+            <div class="step-tips">
+              <strong>Shiny Facts:</strong> 1 in 10,000,000 spawn rate! Shiny Catchmon give 10,000+ bonus points and eternal bragging rights!
+            </div>
+          </div>
         </div>
-        <p class="step-description">
-          Rare and incredibly powerful! Shiny Catchmon are extremely rare spawns that give massive bonus points. Catching one is a true badge of honor!
-        </p>
+
+        <div class="interactive-demo">
+          <h4>🌟 Shiny Detector</h4>
+          <p>Test your shiny-hunting luck!</p>
+          <button class="demo-button" onclick="testShinyLuck()">Hunt for Shinies</button>
+          <div class="demo-result" id="shinyResult"></div>
+        </div>
       </div>
 
+      <!-- Step 6: Leaderboard Domination -->
       <div class="step-card">
         <div class="step-header">
           <div class="step-icon">
             <span>🏆</span>
           </div>
-          <h3 class="step-title">Climb the Rankings</h3>
+          <div class="step-content">
+            <h3 class="step-title">🏆 Leaderboard Domination</h3>
+            <p class="step-description">
+              Climb the rankings through strategic evolution, powerful catches, and point optimization! Compete with trainers worldwide to claim your throne. Rankings update in real-time - every catch counts toward your legend!
+            </p>
+            <div class="step-tips">
+              <strong>Ranking Secret:</strong> Points = (Level × 100 + Stat Sum + Shiny Bonus) × Rarity Multiplier. Master this formula!
+            </div>
+          </div>
         </div>
-        <p class="step-description">
-          Evolve strategically, collect the strongest team, and dominate the leaderboard! Compete with other trainers to become the ultimate Catchmon Master!
-        </p>
+
+        <div class="interactive-demo">
+          <h4>📊 Point Calculator</h4>
+          <p>Calculate the true power of your catches!</p>
+          <button class="demo-button" onclick="calculatePoints()">Analyze Power Level</button>
+          <div class="demo-result" id="pointsResult"></div>
+        </div>
       </div>
 
+      <!-- Step 7: Donation Power-Ups -->
       <div class="step-card">
         <div class="step-header">
           <div class="step-icon">
             <span>💎</span>
           </div>
-          <h3 class="step-title">Donation Bonuses</h3>
+          <div class="step-content">
+            <h3 class="step-title">💎 Donation Power-Ups</h3>
+            <p class="step-description">
+              Support the stream and unlock game-changing multipliers! Donations grant powerful heart multipliers and unlock exclusive visual effects. From Shine (2x) to King (5x) - dominate with style and power!
+            </p>
+            <div class="step-tips">
+              <strong>Power Tiers:</strong> 
+              ✨ Shine (100+ coins): 2x multiplier<br>
+              💎 Diamond (250+ coins): 3x multiplier<br>
+              🔥 Flame (500+ coins): 4x multiplier<br>
+              👑 King (2500+ coins): 5x multiplier + Lightning effects!
+            </div>
+          </div>
         </div>
-        <p class="step-description">
-          Support the stream with donations to get powerful like multipliers! Higher donations give better catch rates and unlock exclusive visual effects when you catch Catchmon!
-        </p>
+
+        <div class="interactive-demo">
+          <h4>⚡ Power Multiplier Demo</h4>
+          <p>See how donations amplify your catching power!</p>
+          <button class="demo-button" onclick="showPowerTiers()">View Power Tiers</button>
+          <div class="demo-result" id="powerResult"></div>
+        </div>
+      </div>
+
+      <!-- Step 8: Advanced Strategies -->
+      <div class="step-card">
+        <div class="step-header">
+          <div class="step-icon">
+            <span>🧮</span>
+          </div>
+          <div class="step-content">
+            <h3 class="step-title">🧮 Master Strategies</h3>
+            <p class="step-description">
+              Advanced techniques separate legends from beginners! Learn evolution timing, stat optimization, rarity hunting, and team synergy. Master the meta-game and become an unstoppable force in the arena!
+            </p>
+            <div class="step-tips">
+              <strong>Pro Strategies:</strong> 
+              • Save weak Catchmon for evolution fuel<br>
+              • Target base forms for evolution chains<br>
+              • Time your hearts during rare spawns<br>
+              • Build balanced teams across all rarities
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
+    <!-- Footer Section -->
     <div class="footer-section">
-      <div class="footer-emojis">🌟 ⚡ 🎮 ✨ 🏆</div>
+      <div class="footer-emojis">🌟 ⚡ 🎮 ✨ 🏆 💎 🔥 👑</div>
       <p class="footer-text">
-        Every like brings you closer – team up, catch 'em all, and shine at the top!
+        Every heart brings you closer to legendary status!
       </p>
+      <p style="font-size: 18px; opacity: 0.9; position: relative; z-index: 2; margin-bottom: 20px;">
+        Join the arena, catch epic creatures, and forge your legend!
+      </p>
+      
+      <div class="cta-buttons">
+        <a href="index.html" class="cta-button">🎮 Enter the Arena</a>
+        <a href="donations.html" class="cta-button secondary">💖 Power Up Now</a>
+      </div>
     </div>
   </div>
+
+  <script>
+    // Create floating background effects
+    function createFloatingCatchmon() {
+      const catchmonSprites = [
+        'catchmon/Common/Zapkit.png',
+        'catchmon/Common/Flurrie.png',
+        'catchmon/Rare/Mindferno.png',
+        'catchmon/Starter/Flaumi.png',
+        'catchmon/Common/Glissalune.png',
+        'catchmon/Mythical/Myrelith.png'
+      ];
+
+      const catchmon = document.createElement('div');
+      catchmon.className = 'floating-catchmon';
+      catchmon.style.left = Math.random() * 100 + '%';
+      catchmon.style.animationDuration = (Math.random() * 6 + 10) + 's';
+      catchmon.style.animationDelay = Math.random() * 3 + 's';
+      
+      const img = document.createElement('img');
+      img.src = catchmonSprites[Math.floor(Math.random() * catchmonSprites.length)];
+      img.alt = 'Floating Catchmon';
+      catchmon.appendChild(img);
+      
+      document.getElementById('bgEffects').appendChild(catchmon);
+      
+      setTimeout(() => {
+        if (catchmon.parentNode) {
+          catchmon.parentNode.removeChild(catchmon);
+        }
+      }, 16000);
+    }
+
+    function createEnergyOrb() {
+      const orb = document.createElement('div');
+      orb.className = 'energy-orb';
+      orb.style.left = Math.random() * 100 + '%';
+      orb.style.animationDuration = (Math.random() * 4 + 8) + 's';
+      orb.style.animationDelay = Math.random() * 2 + 's';
+      
+      document.getElementById('bgEffects').appendChild(orb);
+      
+      setTimeout(() => {
+        if (orb.parentNode) {
+          orb.parentNode.removeChild(orb);
+        }
+      }, 12000);
+    }
+
+    // Start background animations
+    setInterval(createFloatingCatchmon, 6000);
+    setInterval(createEnergyOrb, 800);
+
+    // Initial effects
+    for (let i = 0; i < 3; i++) {
+      setTimeout(createFloatingCatchmon, i * 2000);
+    }
+    for (let i = 0; i < 8; i++) {
+      setTimeout(createEnergyOrb, i * 300);
+    }
+
+    // Interactive Demo Functions
+    function simulateSpawn() {
+      const rarities = ['Common', 'Rare', 'Legendary', 'Mythical', 'God'];
+      const weights = [70, 20, 5, 3, 2];
+      const names = ['Zapkit', 'Mindferno', 'Chronavelle', 'Myrelith', 'Xandryth'];
+      
+      let totalWeight = weights.reduce((a, b) => a + b, 0);
+      let random = Math.random() * totalWeight;
+      let selectedIndex = 0;
+      
+      for (let i = 0; i < weights.length; i++) {
+        random -= weights[i];
+        if (random <= 0) {
+          selectedIndex = i;
+          break;
+        }
+      }
+      
+      const level = Math.floor(Math.random() * 100) + 1;
+      const shiny = Math.random() < 0.0001;
+      const result = document.getElementById('spawnResult');
+      
+      result.innerHTML = `
+        <h4>${shiny ? '✨ SHINY ✨' : ''} ${names[selectedIndex]} appeared!</h4>
+        <p><strong>Rarity:</strong> ${rarities[selectedIndex]}</p>
+        <p><strong>Level:</strong> ${level}</p>
+        <p><strong>Spawn Rate:</strong> ${weights[selectedIndex]}%</p>
+        ${shiny ? '<p style="color: #FFD700;"><strong>⚡ ULTRA RARE SHINY! ⚡</strong></p>' : ''}
+      `;
+      result.classList.add('show');
+    }
+
+    function calculateCatchRate() {
+      const hearts = Math.floor(Math.random() * 50) + 1;
+      const multiplier = Math.random() < 0.1 ? 5 : Math.random() < 0.2 ? 3 : 1;
+      const baseRate = 0.01;
+      const catchChance = Math.min(hearts * multiplier * baseRate, 0.95);
+      
+      const result = document.getElementById('catchResult');
+      result.innerHTML = `
+        <h4>🎯 Your Catch Analysis</h4>
+        <p><strong>Hearts Sent:</strong> ${hearts} ❤️</p>
+        <p><strong>Multiplier:</strong> ${multiplier}x ${multiplier > 1 ? '(Donation Bonus!)' : ''}</p>
+        <p><strong>Catch Chance:</strong> ${(catchChance * 100).toFixed(1)}%</p>
+        <p style="color: ${catchChance > 0.5 ? '#4CAF50' : catchChance > 0.2 ? '#FF9800' : '#F44336'};">
+          ${catchChance > 0.5 ? '🎉 Excellent odds!' : catchChance > 0.2 ? '⚡ Good chance!' : '💪 Keep sending hearts!'}
+        </p>
+      `;
+      result.classList.add('show');
+    }
+
+    function simulateEvolution() {
+      const stats1 = {ATK: 15, DEF: 22, SPD: 18, WIS: 25, CHA: 20, LUK: 12};
+      const stats2 = {ATK: 18, DEF: 15, SPD: 28, WIS: 14, CHA: 31, LUK: 22};
+      const evolved = {};
+      
+      Object.keys(stats1).forEach(stat => {
+        evolved[stat] = stats1[stat] + stats2[stat];
+      });
+      
+      const result = document.getElementById('evolutionResult');
+      const statsDemo = document.getElementById('statsDemo');
+      
+      result.innerHTML = `
+        <h4>⚡ EVOLUTION COMPLETE! ⚡</h4>
+        <p><strong>Zapkit + Zapkit → Voltera!</strong></p>
+        <p>Stats combined and power increased!</p>
+      `;
+      
+      statsDemo.innerHTML = '';
+      Object.entries(evolved).forEach(([stat, value]) => {
+        const color = value >= 50 ? '#4CAF50' : value >= 40 ? '#FF9800' : value >= 30 ? '#2196F3' : '#9E9E9E';
+        const height = Math.min((value / 62) * 100, 100);
+        
+        statsDemo.innerHTML += `
+          <div class="stat-bar">
+            <div class="stat-name">${stat}</div>
+            <div class="stat-visual">
+              <div class="stat-fill" style="height: ${height}%; background: linear-gradient(to top, ${color}, ${color}aa);">
+              </div>
+            </div>
+            <div class="stat-value">${value}</div>
+          </div>
+        `;
+      });
+      
+      result.classList.add('show');
+    }
+
+    function optimizeTeam() {
+      const team = [
+        {name: 'Voltera', power: 15000, stage: 2},
+        {name: 'Zapkit', power: 2000, stage: 1},
+        {name: 'Zapkit', power: 1800, stage: 1},
+        {name: 'Voltera', power: 12000, stage: 2}
+      ];
+      
+      const result = document.getElementById('teamResult');
+      result.innerHTML = `
+        <h4>🏗️ Team Optimization Complete!</h4>
+        <p><strong>Recommended Action:</strong> Keep strongest Voltera (15,000 power)</p>
+        <p><strong>Evolution Ready:</strong> 2x Zapkit can evolve!</p>
+        <p><strong>Team Strength:</strong> 30,800 total power</p>
+        <p style="color: #4CAF50;">✅ Perfectly balanced for maximum efficiency!</p>
+      `;
+      result.classList.add('show');
+    }
+
+    function testShinyLuck() {
+      const attempts = Math.floor(Math.random() * 1000000) + 1;
+      const isShiny = Math.random() < 0.0001;
+      
+      const result = document.getElementById('shinyResult');
+      result.innerHTML = `
+        <h4>🌟 Shiny Hunt Results</h4>
+        <p><strong>Attempts:</strong> ${attempts.toLocaleString()}</p>
+        <p><strong>Result:</strong> ${isShiny ? 
+          '✨ INCREDIBLE! You found a SHINY! ✨' : 
+          '💫 No shiny yet... keep hunting!'}</p>
+        <p><strong>Odds:</strong> 1 in 10,000,000 per spawn</p>
+        ${isShiny ? 
+          '<p style="color: #FFD700;">🏆 LEGENDARY ACHIEVEMENT UNLOCKED! 🏆</p>' : 
+          '<p>🔮 Patience, young trainer... legends are rare!</p>'}
+      `;
+      result.classList.add('show');
+    }
+
+    function calculatePoints() {
+      const level = Math.floor(Math.random() * 100) + 1;
+      const statSum = Math.floor(Math.random() * 186) + 0; // 0-186 (6 stats × 31 max)
+      const shiny = Math.random() < 0.1;
+      const rarities = ['Common', 'Rare', 'Legendary', 'Mythical'];
+      const multipliers = [1.0, 2.0, 5.0, 4.0];
+      const rarity = rarities[Math.floor(Math.random() * rarities.length)];
+      const multiplier = multipliers[rarities.indexOf(rarity)];
+      
+      const basePoints = level * 100;
+      const shinyBonus = shiny ? 10000 : 0;
+      const totalPoints = Math.floor((basePoints + statSum + shinyBonus) * multiplier);
+      
+      const result = document.getElementById('pointsResult');
+      result.innerHTML = `
+        <h4>📊 Power Analysis Complete!</h4>
+        <p><strong>Level:</strong> ${level} (${basePoints} base points)</p>
+        <p><strong>Stat Sum:</strong> ${statSum} points</p>
+        <p><strong>Rarity:</strong> ${rarity} (${multiplier}x multiplier)</p>
+        ${shiny ? '<p><strong>Shiny Bonus:</strong> +10,000 points ✨</p>' : ''}
+        <p style="font-size: 1.2em; color: #FFD700;"><strong>Total Power: ${totalPoints.toLocaleString()} points!</strong></p>
+      `;
+      result.classList.add('show');
+    }
+
+    function showPowerTiers() {
+      const result = document.getElementById('powerResult');
+      result.innerHTML = `
+        <h4>⚡ Donation Power Tiers</h4>
+        <div style="text-align: left; margin: 15px 0;">
+          <p><strong>✨ Shine Tier (100+ coins):</strong> 2x heart multiplier</p>
+          <p><strong>💎 Diamond Tier (250+ coins):</strong> 3x heart multiplier</p>
+          <p><strong>🔥 Flame Tier (500+ coins):</strong> 4x heart multiplier</p>
+          <p><strong>👑 King Tier (2500+ coins):</strong> 5x heart multiplier + Lightning effects!</p>
+        </div>
+        <p style="color: #FFD700;">💡 Higher tiers = Better catch rates + Epic visual effects!</p>
+      `;
+      result.classList.add('show');
+    }
+
+    // Add click effects to all buttons
+    document.addEventListener('click', function(e) {
+      if (e.target.classList.contains('demo-button') || e.target.classList.contains('cta-button')) {
+        createClickEffect(e.pageX, e.pageY);
+      }
+    });
+
+    function createClickEffect(x, y) {
+      const colors = ['#FFD700', '#FF6B6B', '#4ECDC4', '#45B7D1'];
+      
+      for (let i = 0; i < 8; i++) {
+        const particle = document.createElement('div');
+        particle.style.position = 'fixed';
+        particle.style.left = x + 'px';
+        particle.style.top = y + 'px';
+        particle.style.width = '6px';
+        particle.style.height = '6px';
+        particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        particle.style.borderRadius = '50%';
+        particle.style.pointerEvents = 'none';
+        particle.style.zIndex = '9999';
+        particle.style.boxShadow = '0 0 10px currentColor';
+        
+        const angle = (i / 8) * Math.PI * 2;
+        const velocity = 80 + Math.random() * 40;
+        const vx = Math.cos(angle) * velocity;
+        const vy = Math.sin(angle) * velocity;
+        
+        particle.style.animation = `clickParticle 1s ease-out forwards`;
+        particle.style.setProperty('--vx', vx + 'px');
+        particle.style.setProperty('--vy', vy + 'px');
+        
+        document.body.appendChild(particle);
+        
+        setTimeout(() => {
+          if (particle.parentNode) {
+            particle.parentNode.removeChild(particle);
+          }
+        }, 1000);
+      }
+    }
+
+    // Add particle animation
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes clickParticle {
+        0% { 
+          opacity: 1; 
+          transform: translate(0, 0) scale(1); 
+        }
+        100% { 
+          opacity: 0; 
+          transform: translate(var(--vx), var(--vy)) scale(0.3); 
+        }
+      }
+    `;
+    document.head.appendChild(style);
+  </script>
 </body>
 </html>
