@@ -1,6 +1,6 @@
 {
   "flurrie": {
-    "escaped": 1,
+    "escaped": 2,
     "caught": 1
   },
   "ripplee": {
@@ -16,7 +16,7 @@
     "caught": 2
   },
   "rockoon": {
-    "escaped": 0,
+    "escaped": 1,
     "caught": 1
   },
   "wyrmling": {
@@ -28,6 +28,10 @@
     "caught": 1
   },
   "psypus": {
+    "escaped": 0,
+    "caught": 1
+  },
+  "flaumi": {
     "escaped": 0,
     "caught": 1
   },
@@ -68,7 +72,7 @@
     "caught": 0
   },
   "rhinubi": {
-    "escaped": 1,
+    "escaped": 2,
     "caught": 0
   },
   "aquaril": {
