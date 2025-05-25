@@ -189,7 +189,33 @@
     },
     "fire": {
       "coins": 200,
-      "team": [],
+      "team": [
+        {
+          "name": "Mabbit",
+          "level": 50,
+          "rarity": "Common",
+          "shiny": false,
+          "stats": {
+            "ATK": 27,
+            "DEF": 7,
+            "SPD": 5,
+            "WIS": 16,
+            "CHA": 8,
+            "LUK": 19
+          },
+          "sprite": "catchmon/Common/Mabbit.png",
+          "stage": 1,
+          "evolution_line": [
+            "Mabbit",
+            "Mabteen",
+            "Mabboss"
+          ],
+          "categories": [
+            "Common"
+          ],
+          "gesamtpunkte": 5082
+        }
+      ],
       "donation": 500
     }
   },
@@ -201,7 +227,8 @@
     "Zapkit": 1,
     "Spikrit": 2,
     "Rockoon": 1,
-    "Wyrmling": 1
+    "Wyrmling": 1,
+    "Mabbit": 1
   },
   "escaped": [
     {
