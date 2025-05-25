@@ -433,7 +433,7 @@
       "team": []
     },
     "a": {
-      "coins": 2000,
+      "coins": 2020,
       "team": [
         {
           "name": "Venametis",
@@ -653,7 +653,7 @@
     "Ripplee": 3,
     "Glissalune": 2,
     "Zapkit": 1,
-    "Spikrit": 2,
+    "Spikrit": 3,
     "Rockoon": 1,
     "Wyrmling": 3,
     "Mabbit": 2,
@@ -6503,6 +6503,32 @@
         "Common"
       ],
       "gesamtpunkte": 1374,
+      "catcher": null
+    },
+    {
+      "name": "Spikrit",
+      "level": 6,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "ATK": 25,
+        "DEF": 13,
+        "SPD": 26,
+        "WIS": 2,
+        "CHA": 7,
+        "LUK": 30
+      },
+      "sprite": "catchmon/Common/Spikrit.png",
+      "stage": 1,
+      "evolution_line": [
+        "Spikrit",
+        "Gravogorn",
+        "Terrarokh"
+      ],
+      "categories": [
+        "Common"
+      ],
+      "gesamtpunkte": 703,
       "catcher": null
     }
   ]

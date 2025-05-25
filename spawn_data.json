@@ -1,21 +1,21 @@
 {
-  "name": "Mabbit",
-  "level": 13,
+  "name": "Lumibun",
+  "level": 43,
   "rarity": "Common",
   "shiny": false,
-  "sprite": "catchmon/Common/Mabbit.png",
+  "sprite": "catchmon/Common/Lumibun.png",
   "stats": {
-    "ATK": 1,
-    "DEF": 28,
-    "SPD": 4,
-    "WIS": 13,
-    "CHA": 2,
-    "LUK": 26
+    "ATK": 5,
+    "DEF": 20,
+    "SPD": 23,
+    "WIS": 9,
+    "CHA": 26,
+    "LUK": 18
   },
-  "result": "escaped",
+  "result": null,
   "winner": null,
   "donation": 0,
-  "duration": 5.0,
-  "timestamp": 1748192494,
-  "spawn_start": null
+  "duration": 3.0,
+  "timestamp": 1748194971,
+  "spawn_start": 1748194971
 }
