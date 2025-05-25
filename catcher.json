@@ -217,6 +217,11 @@
         }
       ],
       "donation": 500
+    },
+    "water": {
+      "coins": 0,
+      "team": [],
+      "donation": 250
     }
   },
   "encounters": {
@@ -407,6 +412,106 @@
         "Common"
       ],
       "gesamtpunkte": 5609,
+      "catcher": null
+    },
+    {
+      "name": "Wyrmling",
+      "level": 3,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "ATK": 28,
+        "DEF": 30,
+        "SPD": 20,
+        "WIS": 27,
+        "CHA": 12,
+        "LUK": 10
+      },
+      "sprite": "catchmon/Common/Wyrmling.png",
+      "stage": 1,
+      "evolution_line": [
+        "Wyrmling"
+      ],
+      "categories": [
+        "Common"
+      ],
+      "gesamtpunkte": 427,
+      "catcher": null
+    },
+    {
+      "name": "Spikrit",
+      "level": 52,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "ATK": 17,
+        "DEF": 0,
+        "SPD": 26,
+        "WIS": 19,
+        "CHA": 9,
+        "LUK": 31
+      },
+      "sprite": "catchmon/Common/Spikrit.png",
+      "stage": 1,
+      "evolution_line": [
+        "Spikrit",
+        "Gravogorn",
+        "Terrarokh"
+      ],
+      "categories": [
+        "Common"
+      ],
+      "gesamtpunkte": 5302,
+      "catcher": null
+    },
+    {
+      "name": "Crylette",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "ATK": 0,
+        "DEF": 30,
+        "SPD": 28,
+        "WIS": 12,
+        "CHA": 8,
+        "LUK": 21
+      },
+      "sprite": "catchmon/Common/Crylette.png",
+      "stage": 1,
+      "evolution_line": [
+        "Crylette",
+        "Glacelyra"
+      ],
+      "categories": [
+        "Common"
+      ],
+      "gesamtpunkte": 199,
+      "catcher": null
+    },
+    {
+      "name": "Ripplee",
+      "level": 2,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "ATK": 31,
+        "DEF": 30,
+        "SPD": 26,
+        "WIS": 30,
+        "CHA": 26,
+        "LUK": 6
+      },
+      "sprite": "catchmon/Common/Ripplee.png",
+      "stage": 1,
+      "evolution_line": [
+        "Ripplee",
+        "Volfreeze"
+      ],
+      "categories": [
+        "Common"
+      ],
+      "gesamtpunkte": 349,
       "catcher": null
     }
   ]

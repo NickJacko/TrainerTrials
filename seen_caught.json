@@ -4,7 +4,7 @@
     "caught": 1
   },
   "ripplee": {
-    "escaped": 0,
+    "escaped": 1,
     "caught": 1
   },
   "glissalune": {
@@ -44,6 +44,14 @@
     "caught": 0
   },
   "duskaran": {
+    "escaped": 1,
+    "caught": 0
+  },
+  "crylette": {
+    "escaped": 1,
+    "caught": 0
+  },
+  "flambini": {
     "escaped": 1,
     "caught": 0
   }
