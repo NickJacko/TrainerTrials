@@ -220,7 +220,33 @@
     },
     "water": {
       "coins": 200,
-      "team": [],
+      "team": [
+        {
+          "name": "Psypus",
+          "level": 24,
+          "rarity": "Common",
+          "shiny": false,
+          "stats": {
+            "ATK": 7,
+            "DEF": 15,
+            "SPD": 16,
+            "WIS": 25,
+            "CHA": 22,
+            "LUK": 1
+          },
+          "sprite": "catchmon/Common/Psypus.png",
+          "stage": 1,
+          "evolution_line": [
+            "Psypus",
+            "Hypnoctus",
+            "Hypnoctob"
+          ],
+          "categories": [
+            "Common"
+          ],
+          "gesamtpunkte": 2486
+        }
+      ],
       "donation": 250
     },
     "": {
@@ -237,7 +263,8 @@
     "Spikrit": 2,
     "Rockoon": 1,
     "Wyrmling": 1,
-    "Mabbit": 1
+    "Mabbit": 1,
+    "Psypus": 1
   },
   "escaped": [
     {

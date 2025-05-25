@@ -27,6 +27,10 @@
     "escaped": 0,
     "caught": 1
   },
+  "psypus": {
+    "escaped": 0,
+    "caught": 1
+  },
   "fairypup": {
     "escaped": 1,
     "caught": 0
@@ -36,7 +40,7 @@
     "caught": 0
   },
   "zappiri": {
-    "escaped": 2,
+    "escaped": 3,
     "caught": 0
   },
   "zapkit": {
@@ -64,6 +68,10 @@
     "caught": 0
   },
   "rhinubi": {
+    "escaped": 1,
+    "caught": 0
+  },
+  "aquaril": {
     "escaped": 1,
     "caught": 0
   }
