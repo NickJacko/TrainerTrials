@@ -2,88 +2,286 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Live Hub</title>
+  <title>🎮 Live Hub - Catchmon Arena</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="utils.js"></script>
   <style>
     * {
       box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: radial-gradient(ellipse at center, #1a1a2e 0%, #16213e 30%, #0f0f23 70%, #000000 100%);
       margin: 0;
       padding: 0;
       min-height: 100vh;
-      color: #333;
+      color: white;
+      overflow-x: hidden;
+    }
+
+    /* Animated Background Particles */
+    .bg-particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      opacity: 0.6;
+    }
+
+    .particle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: linear-gradient(45deg, #667eea, #764ba2);
+      border-radius: 50%;
+      animation: floatParticle linear infinite;
+    }
+
+    @keyframes floatParticle {
+      0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 1;
+      }
+      90% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-100px) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    /* Floating Catchmon */
+    .floating-catchmon {
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      opacity: 0.3;
+      animation: floatCatchmon 12s linear infinite;
+      pointer-events: none;
+    }
+
+    .floating-catchmon img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: brightness(1.5) drop-shadow(0 0 10px rgba(255,255,255,0.3));
+    }
+
+    @keyframes floatCatchmon {
+      0% {
+        transform: translateY(100vh) translateX(0) rotate(0deg) scale(0.5);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.4;
+      }
+      50% {
+        opacity: 0.6;
+        transform: translateY(50vh) translateX(20px) rotate(180deg) scale(1);
+      }
+      90% {
+        opacity: 0.4;
+      }
+      100% {
+        transform: translateY(-100px) translateX(0) rotate(360deg) scale(0.3);
+        opacity: 0;
+      }
     }
 
     .container {
       max-width: 1200px;
       margin: auto;
       padding: 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Hero Section */
+    .hero {
+      text-align: center;
+      margin-bottom: 60px;
+      padding: 60px 20px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 30px;
+      backdrop-filter: blur(20px);
+      border: 2px solid rgba(255,255,255,0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, 
+        transparent, 
+        rgba(102, 126, 234, 0.1), 
+        transparent, 
+        rgba(118, 75, 162, 0.1), 
+        transparent);
+      animation: heroShine 6s linear infinite;
+    }
+
+    @keyframes heroShine {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
     }
 
     h1 {
-      text-align: center;
-      margin: 0 0 40px 0;
-      font-size: clamp(2rem, 5vw, 3rem);
-      background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
-      background-size: 300% 300%;
+      margin: 0 0 20px 0;
+      font-size: clamp(3rem, 8vw, 6rem);
+      background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #ffeaa7);
+      background-size: 400% 400%;
       background-clip: text;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      animation: gradientShift 3s ease-in-out infinite;
+      animation: gradientShift 4s ease-in-out infinite;
       text-shadow: 0 4px 20px rgba(0,0,0,0.3);
-      font-weight: 800;
+      font-weight: 900;
+      letter-spacing: -2px;
     }
 
     @keyframes gradientShift {
       0%, 100% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
+      25% { background-position: 100% 50%; }
+      50% { background-position: 100% 100%; }
+      75% { background-position: 0% 100%; }
+    }
+
+    .hero-subtitle {
+      font-size: clamp(1.2rem, 3vw, 2rem);
+      margin-bottom: 40px;
+      opacity: 0.9;
+      font-weight: 300;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    }
+
+    .live-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255, 0, 0, 0.2);
+      backdrop-filter: blur(10px);
+      padding: 12px 25px;
+      border-radius: 25px;
+      border: 2px solid rgba(255, 0, 0, 0.3);
+      font-weight: 700;
+      font-size: 1.1rem;
+      margin-bottom: 30px;
+      animation: livePulse 2s ease-in-out infinite;
+      box-shadow: 0 5px 25px rgba(255, 0, 0, 0.3);
+    }
+
+    .live-dot {
+      width: 12px;
+      height: 12px;
+      background: #ff0000;
+      border-radius: 50%;
+      animation: pulse 1.5s ease-in-out infinite;
+      box-shadow: 0 0 10px #ff0000;
+    }
+
+    @keyframes livePulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.7; transform: scale(1.2); }
+    }
+
+    /* Section Styling */
+    .section {
+      margin-bottom: 80px;
+      background: rgba(255,255,255,0.03);
+      backdrop-filter: blur(15px);
+      border-radius: 25px;
+      padding: 40px 20px;
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+      animation: sectionShine 8s linear infinite;
+    }
+
+    @keyframes sectionShine {
+      0% { left: -100%; }
+      50% { left: 100%; }
+      100% { left: 100%; }
     }
 
     h2 {
       text-align: center;
-      margin: 0 0 30px 0;
-      font-size: clamp(1.5rem, 4vw, 2rem);
+      margin: 0 0 40px 0;
+      font-size: clamp(2rem, 5vw, 3rem);
       color: white;
       text-shadow: 0 2px 10px rgba(0,0,0,0.5);
-      font-weight: 600;
+      font-weight: 700;
+      position: relative;
+      z-index: 2;
     }
 
-    .section {
-      margin-bottom: 60px;
-      background: rgba(255,255,255,0.1);
-      backdrop-filter: blur(10px);
-      border-radius: 20px;
-      padding: 30px 20px;
-      border: 1px solid rgba(255,255,255,0.2);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    .section-subtitle {
+      text-align: center;
+      font-size: 1.2rem;
+      opacity: 0.8;
+      margin-bottom: 30px;
+      font-weight: 300;
     }
 
+    /* Card Grid */
     .card-row {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 20px;
-      max-width: 800px;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+      max-width: 1000px;
       margin: 0 auto;
       align-items: end;
+      position: relative;
+      z-index: 2;
     }
 
     .card {
-      background: linear-gradient(145deg, #ffffff, #f0f0f0);
-      border-radius: 16px;
-      padding: 20px;
+      background: linear-gradient(145deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+      border-radius: 20px;
+      padding: 30px;
       text-align: center;
       position: relative;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      border: 2px solid transparent;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      border: 2px solid rgba(255,255,255,0.1);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
       text-decoration: none;
       color: inherit;
       overflow: hidden;
+      backdrop-filter: blur(15px);
     }
 
     .card::before {
@@ -93,8 +291,8 @@
       left: -100%;
       width: 100%;
       height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-      transition: left 0.5s;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.6s;
     }
 
     .card:hover::before {
@@ -102,58 +300,99 @@
     }
 
     .card:hover {
-      transform: translateY(-8px) scale(1.02);
-      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+      transform: translateY(-15px) scale(1.03);
+      box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+      border-color: rgba(255,255,255,0.3);
     }
 
     .card.medal-1 {
-      transform: translateY(-10px) scale(1.08);
-      background: linear-gradient(145deg, #fff9c4, #ffd700);
-      border: 3px solid #ffb300;
-      box-shadow: 0 15px 35px rgba(255,215,0,0.4);
+      transform: translateY(-15px) scale(1.08);
+      background: linear-gradient(145deg, rgba(255, 215, 0, 0.2), rgba(255, 215, 0, 0.1));
+      border: 3px solid rgba(255, 215, 0, 0.5);
+      box-shadow: 0 20px 60px rgba(255,215,0,0.4);
       z-index: 3;
+      position: relative;
+    }
+
+    .card.medal-1::after {
+      content: '👑';
+      position: absolute;
+      top: -15px;
+      right: -15px;
+      font-size: 2.5rem;
+      animation: crownFloat 3s ease-in-out infinite alternate;
+      filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.8));
+    }
+
+    @keyframes crownFloat {
+      0% { transform: translateY(0px) rotate(-5deg); }
+      100% { transform: translateY(-8px) rotate(5deg); }
     }
 
     .card.medal-1:hover {
-      transform: translateY(-15px) scale(1.12);
-      box-shadow: 0 25px 50px rgba(255,215,0,0.5);
+      transform: translateY(-20px) scale(1.12);
+      box-shadow: 0 30px 80px rgba(255,215,0,0.6);
     }
 
     .card.medal-2 {
-      transform: translateY(-5px) scale(1.04);
-      background: linear-gradient(145deg, #f8f8f8, #e8e8e8);
-      border: 3px solid #c0c0c0;
+      transform: translateY(-8px) scale(1.04);
+      background: linear-gradient(145deg, rgba(192, 192, 192, 0.15), rgba(192, 192, 192, 0.08));
+      border: 3px solid rgba(192, 192, 192, 0.4);
       z-index: 2;
     }
 
+    .card.medal-2::after {
+      content: '🥈';
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      font-size: 2rem;
+    }
+
     .card.medal-3 {
-      background: linear-gradient(145deg, #ffeaa7, #fdcb6e);
-      border: 3px solid #cd7f32;
+      background: linear-gradient(145deg, rgba(205, 127, 50, 0.15), rgba(205, 127, 50, 0.08));
+      border: 3px solid rgba(205, 127, 50, 0.4);
       z-index: 1;
+    }
+
+    .card.medal-3::after {
+      content: '🥉';
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      font-size: 2rem;
     }
 
     .badge {
       position: absolute;
-      top: -12px;
-      left: -12px;
-      width: 40px;
-      height: 40px;
+      top: -15px;
+      left: -15px;
+      width: 50px;
+      height: 50px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 16px;
+      font-size: 18px;
       font-weight: 800;
       color: white;
-      text-shadow: 0 1px 3px rgba(0,0,0,0.5);
-      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+      box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+      z-index: 4;
     }
 
     .medal-1 .badge { 
       background: linear-gradient(45deg, #ffd700, #ffed4e);
       color: #333;
       text-shadow: none;
+      animation: goldPulse 2s ease-in-out infinite alternate;
     }
+
+    @keyframes goldPulse {
+      0% { box-shadow: 0 5px 20px rgba(255, 215, 0, 0.3); }
+      100% { box-shadow: 0 8px 30px rgba(255, 215, 0, 0.6); }
+    }
+
     .medal-2 .badge { 
       background: linear-gradient(45deg, #c0c0c0, #e8e8e8);
       color: #333;
@@ -163,30 +402,60 @@
       background: linear-gradient(45deg, #cd7f32, #daa520);
     }
 
+    .card-content {
+      position: relative;
+      z-index: 2;
+    }
+
+    .card-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 15px;
+      color: white;
+    }
+
+    .card-stats {
+      font-size: 1.1rem;
+      opacity: 0.9;
+      margin-bottom: 10px;
+    }
+
+    .points-highlight {
+      font-size: 1.8rem;
+      font-weight: 900;
+      color: #FFD700;
+      text-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+      margin-top: 10px;
+    }
+
+    /* Navigation Links */
     .main-links {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 16px;
-      margin: 40px 0;
-      max-width: 800px;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin: 50px 0;
+      max-width: 1000px;
       margin-left: auto;
       margin-right: auto;
+      position: relative;
+      z-index: 2;
     }
 
     .main-links a {
-      padding: 16px 24px;
-      background: linear-gradient(145deg, #4CAF50, #45a049);
+      padding: 25px 30px;
+      background: linear-gradient(145deg, rgba(76, 175, 80, 0.8), rgba(69, 160, 73, 0.8));
       color: white;
       text-decoration: none;
-      border-radius: 12px;
-      font-size: 16px;
-      font-weight: 600;
+      border-radius: 20px;
+      font-size: 1.2rem;
+      font-weight: 700;
       text-align: center;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
-      border: none;
+      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      box-shadow: 0 8px 25px rgba(76, 175, 80, 0.3);
+      border: 2px solid rgba(255,255,255,0.1);
       position: relative;
       overflow: hidden;
+      backdrop-filter: blur(10px);
     }
 
     .main-links a::before {
@@ -197,7 +466,7 @@
       width: 100%;
       height: 100%;
       background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-      transition: left 0.4s;
+      transition: left 0.5s;
     }
 
     .main-links a:hover::before {
@@ -205,34 +474,60 @@
     }
 
     .main-links a:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
-      background: linear-gradient(145deg, #45a049, #3d8b40);
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 15px 40px rgba(76, 175, 80, 0.5);
+      background: linear-gradient(145deg, rgba(69, 160, 73, 0.9), rgba(61, 139, 64, 0.9));
+      border-color: rgba(255,255,255,0.3);
     }
 
     .main-links a:active {
-      transform: translateY(-1px);
+      transform: translateY(-4px) scale(1.01);
     }
 
+    /* Special link styling */
+    .main-links a[href*="donations"] {
+      background: linear-gradient(145deg, rgba(255, 215, 0, 0.8), rgba(255, 193, 7, 0.8));
+      box-shadow: 0 8px 25px rgba(255, 215, 0, 0.3);
+      animation: donateGlow 3s ease-in-out infinite;
+    }
+
+    .main-links a[href*="donations"]:hover {
+      background: linear-gradient(145deg, rgba(255, 193, 7, 0.9), rgba(255, 171, 64, 0.9));
+      box-shadow: 0 15px 40px rgba(255, 215, 0, 0.5);
+    }
+
+    @keyframes donateGlow {
+      0%, 100% { box-shadow: 0 8px 25px rgba(255, 215, 0, 0.3); }
+      50% { box-shadow: 0 12px 35px rgba(255, 215, 0, 0.5); }
+    }
+
+    /* Footer */
     .legal-links {
       text-align: center;
-      margin-top: 60px;
-      padding-top: 20px;
-      border-top: 1px solid rgba(255,255,255,0.2);
+      margin-top: 80px;
+      padding-top: 30px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      position: relative;
+      z-index: 2;
     }
 
     .legal-links a {
-      color: rgba(255,255,255,0.7);
+      color: rgba(255,255,255,0.6);
       text-decoration: none;
-      font-size: 12px;
-      margin: 0 15px;
-      transition: color 0.3s ease;
+      font-size: 14px;
+      margin: 0 20px;
+      transition: all 0.3s ease;
+      padding: 8px 15px;
+      border-radius: 10px;
     }
 
     .legal-links a:hover {
       color: rgba(255,255,255,0.9);
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
     }
 
+    /* Donation Tier Styles */
     .catcher-name {
       display: inline-block;
       font-weight: bold;
@@ -244,25 +539,25 @@
     }
 
     .king {
-      background-image: linear-gradient(90deg, #ffd700, white, #ffd700);
+      background-image: linear-gradient(90deg, #ffd700, #ffffff, #ffd700);
     }
 
     .flame {
-      background-image: linear-gradient(90deg, #ff0000, white, #ff0000);
+      background-image: linear-gradient(90deg, #ff0000, #ffffff, #ff0000);
     }
 
     .diamond {
-      background-image: linear-gradient(90deg, deepskyblue, white, deepskyblue);
+      background-image: linear-gradient(90deg, #00bfff, #ffffff, #00bfff);
     }
 
     .shine {
-      background-image: linear-gradient(90deg, limegreen, white, limegreen);
+      background-image: linear-gradient(90deg, #32cd32, #ffffff, #32cd32);
     }
 
     .normal {
-      color: #444;
-      font-weight: 600;
-      text-shadow: none;
+      color: white;
+      font-weight: 700;
+      text-shadow: 0 0 10px rgba(255,255,255,0.5);
       background: none;
       -webkit-text-fill-color: inherit;
       background-clip: unset;
@@ -275,56 +570,146 @@
       }
     }
 
-    /* Mobile Optimierungen */
+    /* Loading Animation */
+    .loading {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 150px;
+      color: rgba(255,255,255,0.8);
+      font-size: 18px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .loading::after {
+      content: '';
+      width: 25px;
+      height: 25px;
+      border: 3px solid rgba(255,255,255,0.3);
+      border-top: 3px solid white;
+      border-radius: 50%;
+      margin-left: 15px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Floating Action Buttons */
+    .floating-actions {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      z-index: 1000;
+    }
+
+    .fab {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+      backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .fab.donate {
+      background: linear-gradient(45deg, #FFD700, #FFA500);
+      animation: fabPulse 3s ease-in-out infinite;
+    }
+
+    .fab.live {
+      background: linear-gradient(45deg, #FF6B6B, #FF4757);
+    }
+
+    .fab:hover {
+      transform: scale(1.1);
+      box-shadow: 0 12px 35px rgba(0,0,0,0.4);
+    }
+
+    @keyframes fabPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    /* Mobile Optimizations */
     @media (max-width: 768px) {
       .container {
         padding: 15px;
       }
 
+      .hero {
+        padding: 40px 15px;
+        margin-bottom: 40px;
+      }
+
       .section {
-        padding: 20px 15px;
+        padding: 30px 15px;
         margin-bottom: 40px;
       }
 
       .card-row {
         grid-template-columns: 1fr;
-        gap: 15px;
-        max-width: 300px;
+        gap: 20px;
+        max-width: 400px;
       }
 
       .card {
-        padding: 16px;
+        padding: 25px 20px;
       }
 
       .card.medal-1 {
-        transform: translateY(-5px) scale(1.05);
+        transform: translateY(-8px) scale(1.05);
       }
 
       .card.medal-1:hover {
-        transform: translateY(-8px) scale(1.08);
+        transform: translateY(-12px) scale(1.08);
       }
 
       .card.medal-2 {
-        transform: translateY(-3px) scale(1.02);
+        transform: translateY(-5px) scale(1.02);
       }
 
       .main-links {
         grid-template-columns: 1fr;
-        gap: 12px;
+        gap: 15px;
+        margin: 30px 0;
       }
 
       .main-links a {
-        font-size: 15px;
-        padding: 14px 20px;
+        font-size: 1.1rem;
+        padding: 20px 25px;
       }
 
       .legal-links {
-        margin-top: 40px;
+        margin-top: 50px;
       }
 
       .legal-links a {
         display: block;
-        margin: 5px 0;
+        margin: 8px 0;
+      }
+
+      .floating-actions {
+        bottom: 20px;
+        right: 20px;
+      }
+
+      .fab {
+        width: 55px;
+        height: 55px;
+        font-size: 1.3rem;
       }
     }
 
@@ -333,79 +718,72 @@
         padding: 10px;
       }
 
-      h1 {
-        margin-bottom: 30px;
+      .hero {
+        padding: 30px 10px;
       }
 
       .section {
-        padding: 15px 10px;
-        margin-bottom: 30px;
+        padding: 25px 10px;
       }
 
       .card {
-        padding: 12px;
+        padding: 20px 15px;
         font-size: 14px;
       }
 
       .badge {
-        width: 35px;
-        height: 35px;
+        width: 40px;
+        height: 40px;
         font-size: 14px;
-        top: -10px;
-        left: -10px;
+        top: -12px;
+        left: -12px;
       }
-    }
-
-    /* Loading Animation */
-    .loading {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100px;
-      color: rgba(255,255,255,0.8);
-      font-size: 16px;
-    }
-
-    .loading::after {
-      content: '';
-      width: 20px;
-      height: 20px;
-      border: 2px solid rgba(255,255,255,0.3);
-      border-top: 2px solid white;
-      border-radius: 50%;
-      margin-left: 10px;
-      animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
     }
   </style>
 </head>
 <body>
+  <!-- Animated Background -->
+  <div class="bg-particles" id="bgParticles"></div>
+
   <div class="container">
-    <h1>🎮 Live Hub</h1>
+    <!-- Hero Section -->
+    <div class="hero">
+      <div class="hero-content">
+        <h1>🎮 Live Hub</h1>
+        <p class="hero-subtitle">The Ultimate Catchmon Arena Experience</p>
+        
+        <div class="live-status">
+          <div class="live-dot"></div>
+          <span>LIVE NOW - Join the Action!</span>
+        </div>
+      </div>
+    </div>
 
+    <!-- Top Catchers Section -->
     <div class="section">
-      <h2>🏆 Top 3 Catcher</h2>
+      <h2>🏆 Elite Catchers</h2>
+      <p class="section-subtitle">The most powerful trainers in the arena</p>
       <div id="catcherRow" class="card-row">
-        <div class="loading">Loading</div>
+        <div class="loading">Loading Champions</div>
       </div>
     </div>
 
+    <!-- Top Catchmon Section -->
     <div class="section">
-      <h2>🔥 Top 3 Catchmon</h2>
+      <h2>🐲 Legendary Catchmon</h2>
+      <p class="section-subtitle">The strongest creatures ever caught</p>
       <div id="catchmonRow" class="card-row">
-        <div class="loading">Loading</div>
+        <div class="loading">Loading Legends</div>
       </div>
     </div>
 
+    <!-- Navigation Links -->
     <div class="main-links">
-      <a href="catchdex_live.html">📘 Catchdex</a>
-      <a href="catcher_ranking_live.html">🏅 Catcher Ranking</a>
-      <a href="ranking_catchmon_live.html">🐲 Catchmon Ranking</a>
-      <a href="howto.html">🧠 HowTo?</a>
-      <a href="donations.html">💖 Donate</a>
+      <a href="catchdex_live.html">📘 Explore Catchdex</a>
+      <a href="catcher_ranking_live.html">🏅 Catcher Rankings</a>
+      <a href="ranking_catchmon_live.html">🐲 Catchmon Rankings</a>
+      <a href="howto.html">🧠 Learn to Play</a>
+      <a href="donations.html">💖 Power Up with Donations</a>
     </div>
 
     <div class="legal-links">
@@ -414,7 +792,78 @@
     </div>
   </div>
 
+  <!-- Floating Action Buttons -->
+  <div class="floating-actions">
+    <button class="fab donate" onclick="window.open('donations.html')" title="Donate Now">💰</button>
+    <button class="fab live" onclick="openLiveStream()" title="Watch Live">📺</button>
+  </div>
+
   <script>
+    // Create animated background particles
+    function createParticle() {
+      const particle = document.createElement('div');
+      particle.className = 'particle';
+      particle.style.left = Math.random() * 100 + '%';
+      particle.style.animationDuration = (Math.random() * 8 + 10) + 's';
+      particle.style.animationDelay = Math.random() * 5 + 's';
+      
+      // Random colors
+      const colors = ['#667eea', '#764ba2', '#4ecdc4', '#45b7d1', '#96ceb4'];
+      particle.style.background = `linear-gradient(45deg, ${colors[Math.floor(Math.random() * colors.length)]}, ${colors[Math.floor(Math.random() * colors.length)]})`;
+      
+      document.getElementById('bgParticles').appendChild(particle);
+      
+      setTimeout(() => {
+        if (particle.parentNode) {
+          particle.parentNode.removeChild(particle);
+        }
+      }, 15000);
+    }
+
+    // Create floating Catchmon
+    function createFloatingCatchmon() {
+      const catchmonSprites = [
+        'catchmon/Common/Zapkit.png',
+        'catchmon/Common/Flurrie.png',
+        'catchmon/Rare/Mindferno.png',
+        'catchmon/Starter/Flaumi.png',
+        'catchmon/Common/Glissalune.png'
+      ];
+
+      const catchmon = document.createElement('div');
+      catchmon.className = 'floating-catchmon';
+      catchmon.style.left = Math.random() * 100 + '%';
+      catchmon.style.animationDuration = (Math.random() * 6 + 10) + 's';
+      catchmon.style.animationDelay = Math.random() * 3 + 's';
+      
+      const img = document.createElement('img');
+      img.src = catchmonSprites[Math.floor(Math.random() * catchmonSprites.length)];
+      img.alt = 'Floating Catchmon';
+      catchmon.appendChild(img);
+      
+      document.getElementById('bgParticles').appendChild(catchmon);
+      
+      setTimeout(() => {
+        if (catchmon.parentNode) {
+          catchmon.parentNode.removeChild(catchmon);
+        }
+      }, 15000);
+    }
+
+    // Start background animations
+    setInterval(createParticle, 500);
+    setInterval(createFloatingCatchmon, 8000);
+
+    // Initial particles
+    for (let i = 0; i < 10; i++) {
+      setTimeout(createParticle, i * 200);
+    }
+
+    // Initial floating catchmon
+    for (let i = 0; i < 3; i++) {
+      setTimeout(createFloatingCatchmon, i * 3000);
+    }
+
     function calcPoints(p) {
       return p.gesamtpunkte ?? 0;
     }
@@ -423,11 +872,11 @@
       const wrapper = document.createElement("a");
       wrapper.href = link;
       wrapper.className = `card ${medalClass}`;
-      wrapper.innerHTML = `<div class="badge">${place}</div>${html}`;
+      wrapper.innerHTML = `<div class="badge">${place}</div><div class="card-content">${html}</div>`;
       return wrapper;
     }
 
-    function displayTop3Row(container, entries, renderFn, getLinkFn) {
+function displayTop3Row(container, entries, renderFn, getLinkFn) {
       container.innerHTML = "";
       
       if (!entries || entries.length === 0) {
@@ -444,7 +893,107 @@
         if (!entry) return;
         container.appendChild(createCard(renderFn(entry), classes[idx], places[idx], getLinkFn(entry)));
       });
+
+      // Add click effects to cards
+      container.querySelectorAll('.card').forEach(card => {
+        card.addEventListener('mouseenter', function() {
+          createSparkleEffect(this);
+        });
+        
+        card.addEventListener('click', function(e) {
+          createClickEffect(e.pageX, e.pageY);
+        });
+      });
     }
+
+    function createSparkleEffect(element) {
+      const rect = element.getBoundingClientRect();
+      const sparkles = ['✨', '💫', '⭐', '🌟', '💎'];
+      
+      for (let i = 0; i < 3; i++) {
+        const sparkle = document.createElement('div');
+        sparkle.textContent = sparkles[Math.floor(Math.random() * sparkles.length)];
+        sparkle.style.position = 'fixed';
+        sparkle.style.left = (rect.left + Math.random() * rect.width) + 'px';
+        sparkle.style.top = (rect.top + Math.random() * rect.height) + 'px';
+        sparkle.style.pointerEvents = 'none';
+        sparkle.style.zIndex = '9999';
+        sparkle.style.fontSize = '1.5rem';
+        sparkle.style.animation = 'sparkleFloat 2s ease-out forwards';
+        sparkle.style.color = '#FFD700';
+        sparkle.style.textShadow = '0 0 10px #FFD700';
+        
+        document.body.appendChild(sparkle);
+        
+        setTimeout(() => {
+          if (sparkle.parentNode) {
+            sparkle.parentNode.removeChild(sparkle);
+          }
+        }, 2000);
+      }
+    }
+
+    function createClickEffect(x, y) {
+      const colors = ['#FFD700', '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4'];
+      
+      for (let i = 0; i < 8; i++) {
+        const particle = document.createElement('div');
+        particle.style.position = 'fixed';
+        particle.style.left = x + 'px';
+        particle.style.top = y + 'px';
+        particle.style.width = '8px';
+        particle.style.height = '8px';
+        particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        particle.style.borderRadius = '50%';
+        particle.style.pointerEvents = 'none';
+        particle.style.zIndex = '9999';
+        particle.style.boxShadow = '0 0 10px currentColor';
+        
+        const angle = (i / 8) * Math.PI * 2;
+        const velocity = 100 + Math.random() * 50;
+        const vx = Math.cos(angle) * velocity;
+        const vy = Math.sin(angle) * velocity;
+        
+        particle.style.animation = `clickParticle 1s ease-out forwards`;
+        particle.style.setProperty('--vx', vx + 'px');
+        particle.style.setProperty('--vy', vy + 'px');
+        
+        document.body.appendChild(particle);
+        
+        setTimeout(() => {
+          if (particle.parentNode) {
+            particle.parentNode.removeChild(particle);
+          }
+        }, 1000);
+      }
+    }
+
+    // Add particle animations to CSS
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes sparkleFloat {
+        0% { 
+          opacity: 1; 
+          transform: translateY(0) scale(1) rotate(0deg); 
+        }
+        100% { 
+          opacity: 0; 
+          transform: translateY(-100px) scale(0.3) rotate(360deg); 
+        }
+      }
+      
+      @keyframes clickParticle {
+        0% { 
+          opacity: 1; 
+          transform: translate(0, 0) scale(1); 
+        }
+        100% { 
+          opacity: 0; 
+          transform: translate(var(--vx), var(--vy)) scale(0.3); 
+        }
+      }
+    `;
+    document.head.appendChild(style);
 
     function updateHomepage() {
       fetch("catcher.json")
@@ -471,8 +1020,11 @@
             .sort((a, b) => b.points - a.points)
             .slice(0, 3);
 
-          const renderCatcher = t =>
-            `${getStyledCatcherName(t.name, t.donation)}<br><strong>${t.points.toLocaleString()} Punkte</strong>`;
+          const renderCatcher = t => `
+            <div class="card-title">${getStyledCatcherName(t.name, t.donation)}</div>
+            <div class="card-stats">${t.team.length} Catchmon</div>
+            <div class="points-highlight">${t.points.toLocaleString()} Points</div>
+          `;
 
           displayTop3Row(
             CatcherRow,
@@ -498,10 +1050,12 @@
           const renderCatchmon = p => {
             const shiny = p.shiny ? "✨ " : "";
             return `
-              <strong>${shiny}${p.name}</strong><br>
-              <span style="color: #666;">Lv ${p.level}</span><br>
-              <strong>${p.points.toLocaleString()} Punkte</strong><br>
-              <small>${getStyledCatcherName(p.catcher, p.donation || 0)}</small>
+              <div class="card-title">${shiny}${p.name}</div>
+              <div class="card-stats">Level ${p.level} • ${p.rarity}</div>
+              <div class="points-highlight">${p.points.toLocaleString()} Points</div>
+              <div style="font-size: 0.9rem; opacity: 0.8; margin-top: 8px;">
+                ${getStyledCatcherName(p.catcher, p.donation || 0)}
+              </div>
             `;
           };
 
@@ -519,11 +1073,95 @@
         });
     }
 
-    // Initial load
+    // Live stream function
+    function openLiveStream() {
+      const fab = document.querySelector('.fab.live');
+      fab.style.transform = 'scale(1.2) rotate(360deg)';
+      fab.style.boxShadow = '0 15px 50px rgba(255, 107, 107, 0.8)';
+      
+      setTimeout(() => {
+        fab.style.transform = '';
+        fab.style.boxShadow = '';
+      }, 600);
+
+      // Replace with your actual live stream URL
+      alert('🔴 LIVE NOW!\n\nJoin the epic Catchmon battles!\n\n🎮 Like the stream to catch amazing creatures and climb the leaderboards!');
+      
+      // Example: window.open('https://your-stream-url.com', '_blank');
+    }
+
+    // Add hover effects to navigation links
+    document.querySelectorAll('.main-links a').forEach(link => {
+      link.addEventListener('mouseenter', function() {
+        createSparkleEffect(this);
+      });
+      
+      link.addEventListener('click', function(e) {
+        createClickEffect(e.pageX, e.pageY);
+      });
+    });
+
+    // Add floating action button effects
+    document.querySelectorAll('.fab').forEach(fab => {
+      fab.addEventListener('click', function(e) {
+        createClickEffect(e.pageX, e.pageY);
+      });
+    });
+
+    // Parallax effect on scroll
+    window.addEventListener('scroll', () => {
+      const scrolled = window.pageYOffset;
+      const parallax = document.querySelector('.hero');
+      if (parallax) {
+        parallax.style.transform = `translateY(${scrolled * 0.3}px)`;
+      }
+    });
+
+    // Dynamic live status updates
+    function updateLiveStatus() {
+      const liveStatus = document.querySelector('.live-status');
+      const messages = [
+        '🔴 LIVE NOW - Epic Battles!',
+        '⚡ Wild Catchmon Appearing!',
+        '🎯 Like to Catch!',
+        '🏆 Leaderboard Battle!',
+        '✨ Shiny Hunt Active!'
+      ];
+      
+      let currentIndex = 0;
+      setInterval(() => {
+        liveStatus.innerHTML = `
+          <div class="live-dot"></div>
+          <span>${messages[currentIndex]}</span>
+        `;
+        currentIndex = (currentIndex + 1) % messages.length;
+      }, 5000);
+    }
+
+    // Initialize everything
     updateHomepage();
+    updateLiveStatus();
     
     // Auto-refresh every 10 seconds
     setInterval(updateHomepage, 10000);
+
+    // Add some initial sparkles to hero
+    setTimeout(() => {
+      const hero = document.querySelector('.hero');
+      if (hero) {
+        createSparkleEffect(hero);
+      }
+    }, 2000);
+
+    // Periodic sparkle effects
+    setInterval(() => {
+      const elements = document.querySelectorAll('.card.medal-1');
+      elements.forEach(el => {
+        if (Math.random() < 0.3) {
+          createSparkleEffect(el);
+        }
+      });
+    }, 8000);
   </script>
 </body>
 </html>

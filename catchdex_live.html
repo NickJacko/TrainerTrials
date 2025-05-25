@@ -4,91 +4,397 @@
   <meta charset="UTF-8" />
   <title>📘 Catchdex</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="utils.js"></script>
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: Arial, sans-serif;
-      background: #f2f2f2;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       margin: 0;
       padding: 0;
+      min-height: 100vh;
+      color: #333;
     }
 
     .container {
-      max-width: 960px;
+      max-width: 1200px;
       margin: auto;
-      padding: 24px;
+      padding: 20px;
     }
 
     .top-bar {
       display: flex;
       align-items: center;
-      gap: 12px;
-      margin-bottom: 10px;
+      justify-content: space-between;
+      margin-bottom: 30px;
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      padding: 15px 20px;
+      border: 1px solid rgba(255,255,255,0.2);
     }
 
     .back-button {
       font-size: 16px;
       text-decoration: none;
-      color: #555;
-      font-weight: bold;
-      padding: 6px 12px;
-      border-radius: 6px;
-      background: #e0e0e0;
-      transition: background 0.2s ease;
+      color: white;
+      font-weight: 600;
+      padding: 12px 20px;
+      border-radius: 12px;
+      background: linear-gradient(145deg, rgba(255,255,255,0.2), rgba(255,255,255,0.1));
+      border: 1px solid rgba(255,255,255,0.3);
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
     }
 
     .back-button:hover {
-      background: #ccc;
+      transform: translateY(-2px);
+      background: linear-gradient(145deg, rgba(255,255,255,0.3), rgba(255,255,255,0.2));
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
     }
 
     h1 {
       text-align: center;
-      margin: 12px 0 16px;
-      font-size: 26px;
+      margin: 0;
+      font-size: clamp(2rem, 5vw, 2.5rem);
+      background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
+      background-size: 300% 300%;
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: gradientShift 3s ease-in-out infinite;
+      font-weight: 800;
+    }
+
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .search-container {
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 30px;
+      border: 1px solid rgba(255,255,255,0.2);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
     }
 
     input {
       width: 100%;
-      max-width: 400px;
-      margin: 10px auto 20px;
-      padding: 10px;
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 15px 20px;
       font-size: 16px;
       display: block;
-      border: 1px solid #ccc;
-      border-radius: 6px;
+      border: 2px solid rgba(255,255,255,0.2);
+      border-radius: 25px;
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+      color: white;
+      transition: all 0.3s ease;
+    }
+
+    input::placeholder {
+      color: rgba(255,255,255,0.7);
+    }
+
+    input:focus {
+      outline: none;
+      border-color: rgba(255,255,255,0.5);
+      background: rgba(255,255,255,0.15);
+      box-shadow: 0 0 20px rgba(255,255,255,0.2);
+    }
+
+    .rarity-section {
+      margin-bottom: 40px;
+    }
+
+    .rarity-header {
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(15px);
+      border-radius: 20px;
+      padding: 20px;
+      margin-bottom: 20px;
+      text-align: center;
+      border: 2px solid rgba(255,255,255,0.2);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .rarity-header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      animation: headerShimmer 4s ease-in-out infinite;
+    }
+
+    @keyframes headerShimmer {
+      0% { left: -100%; }
+      50% { left: 100%; }
+      100% { left: 100%; }
+    }
+
+    .rarity-title {
+      font-size: clamp(1.5rem, 4vw, 2rem);
+      font-weight: 800;
+      margin: 0;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Rarity Specific Styles */
+    .starter .rarity-title {
+      background: linear-gradient(45deg, #4CAF50, #81C784, #A5D6A7);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 20px rgba(76, 175, 80, 0.3);
+    }
+
+    .common .rarity-title {
+      background: linear-gradient(45deg, #9E9E9E, #BDBDBD, #E0E0E0);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 20px rgba(158, 158, 158, 0.3);
+    }
+
+    .rare .rarity-title {
+      background: linear-gradient(45deg, #2196F3, #64B5F6, #90CAF9);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 20px rgba(33, 150, 243, 0.3);
+    }
+
+    .legendary .rarity-title {
+      background: linear-gradient(45deg, #FF9800, #FFB74D, #FFCC02);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 20px rgba(255, 152, 0, 0.3);
+      animation: legendaryPulse 2s ease-in-out infinite alternate;
+    }
+
+    .mythical .rarity-title {
+      background: linear-gradient(45deg, #9C27B0, #BA68C8, #CE93D8);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 20px rgba(156, 39, 176, 0.3);
+      animation: mythicalPulse 2.5s ease-in-out infinite alternate;
+    }
+
+    .god .rarity-title {
+      background: linear-gradient(45deg, #000000, #424242, #616161, #000000);
+      background-size: 200% auto;
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: godEffect 3s linear infinite;
+      filter: drop-shadow(0 0 10px rgba(0,0,0,0.8));
+      position: relative;
+    }
+
+    .god .rarity-header {
+      background: linear-gradient(135deg, 
+        rgba(0,0,0,0.3) 0%, 
+        rgba(64,0,64,0.2) 25%, 
+        rgba(0,0,0,0.4) 50%, 
+        rgba(64,0,64,0.2) 75%, 
+        rgba(0,0,0,0.3) 100%);
+      border: 2px solid rgba(0,0,0,0.5);
+      box-shadow: 
+        0 0 30px rgba(0,0,0,0.5),
+        inset 0 0 20px rgba(255,255,255,0.1);
+    }
+
+    @keyframes legendaryPulse {
+      0% { 
+        filter: brightness(1) drop-shadow(0 0 10px rgba(255, 152, 0, 0.3));
+        transform: scale(1);
+      }
+      100% { 
+        filter: brightness(1.3) drop-shadow(0 0 25px rgba(255, 152, 0, 0.6));
+        transform: scale(1.02);
+      }
+    }
+
+    @keyframes mythicalPulse {
+      0% { 
+        filter: brightness(1) drop-shadow(0 0 15px rgba(156, 39, 176, 0.3));
+        transform: scale(1);
+      }
+      100% { 
+        filter: brightness(1.4) drop-shadow(0 0 30px rgba(156, 39, 176, 0.7));
+        transform: scale(1.03);
+      }
+    }
+
+    @keyframes godEffect {
+      0% { 
+        background-position: 0% 50%;
+        filter: drop-shadow(0 0 10px rgba(0,0,0,0.8));
+      }
+      50% {
+        filter: drop-shadow(0 0 20px rgba(128,0,128,0.6));
+      }
+      100% { 
+        background-position: 200% 50%;
+        filter: drop-shadow(0 0 10px rgba(0,0,0,0.8));
+      }
     }
 
     .grid {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 16px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 20px;
+      justify-items: center;
     }
 
     .card {
-      background: white;
-      border-radius: 8px;
-      width: 130px;
-      min-height: 200px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      padding: 10px;
+      background: linear-gradient(145deg, #ffffff, #f0f0f0);
+      border-radius: 16px;
+      width: 150px;
+      min-height: 220px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      padding: 15px;
       text-align: center;
-      transition: transform 0.2s ease;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       display: flex;
       flex-direction: column;
-      justify-content: flex-start;
+      justify-content: space-between;
       align-items: center;
+      border: 2px solid transparent;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+      transition: left 0.5s;
+    }
+
+    .card:hover::before {
+      left: 100%;
     }
 
     .card:hover {
-      transform: scale(1.05);
-      background: #e6f7ff;
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+      border-color: rgba(76, 175, 80, 0.3);
+    }
+
+    /* God Card Special Effects */
+    .god .card {
+      background: linear-gradient(145deg, #1a1a1a, #2d2d2d);
+      border: 2px solid rgba(128,0,128,0.3);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+      position: relative;
+    }
+
+    .god .card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(45deg, 
+        transparent 30%, 
+        rgba(128,0,128,0.1) 50%, 
+        transparent 70%);
+      animation: godCardGlow 4s ease-in-out infinite;
+      pointer-events: none;
+      border-radius: 16px;
+    }
+
+    @keyframes godCardGlow {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.7; }
+    }
+
+    .god .card:hover {
+      border-color: rgba(128,0,128,0.6);
+      box-shadow: 0 20px 40px rgba(128,0,128,0.3);
     }
 
     .card img {
       width: 100px;
       height: 100px;
       object-fit: contain;
-      margin-bottom: 6px;
+      margin-bottom: 10px;
+      transition: transform 0.3s ease;
+      border-radius: 8px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .card:hover img {
+      transform: scale(1.1);
+    }
+
+    /* God Image Effects */
+    .god .card img {
+      filter: brightness(0.6) contrast(1.5) saturate(0.8);
+      position: relative;
+      border: 2px solid rgba(128,0,128,0.3);
+      box-shadow: 0 0 15px rgba(128,0,128,0.4);
+    }
+
+    .god .card::before {
+      content: '⚡ DIVINE POWER ⚡';
+      position: absolute;
+      top: 45%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #DAA520;
+      font-weight: 900;
+      font-size: 10px;
+      z-index: 3;
+      text-shadow: 
+        0 0 10px rgba(218, 165, 32, 0.8),
+        0 0 20px rgba(255, 215, 0, 0.6);
+      letter-spacing: 1px;
+      text-align: center;
+      line-height: 1.2;
+      animation: divineGlow 3s ease-in-out infinite alternate;
+      background: rgba(0,0,0,0.7);
+      padding: 3px 6px;
+      border-radius: 8px;
+      border: 1px solid rgba(218, 165, 32, 0.5);
+    }
+
+    @keyframes divineGlow {
+      0% { 
+        opacity: 0.8;
+        text-shadow: 
+          0 0 10px rgba(218, 165, 32, 0.8),
+          0 0 20px rgba(255, 215, 0, 0.6);
+      }
+      100% { 
+        opacity: 1;
+        text-shadow: 
+          0 0 15px rgba(218, 165, 32, 1),
+          0 0 30px rgba(255, 215, 0, 0.8),
+          0 0 40px rgba(255, 255, 255, 0.4);
+      }
     }
 
     .card a {
@@ -96,29 +402,198 @@
       color: black;
       font-weight: bold;
       display: block;
+      position: relative;
+      z-index: 2;
     }
 
-    .small {
+    .god .card a {
+      color: #800080;
+    }
+
+    .card .id-name {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #333;
+      line-height: 1.2;
+      position: relative;
+      z-index: 2;
+    }
+
+    .god .card .id-name {
+      color: #800080;
+      text-shadow: 0 0 5px rgba(128,0,128,0.5);
+    }
+
+    .card .stats {
       font-size: 12px;
-      color: #777;
+      color: #666;
+      font-weight: 500;
+      position: relative;
+      z-index: 2;
     }
 
+    .god .card .stats {
+      color: #800080;
+      opacity: 0.8;
+    }
+
+    .loading {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 200px;
+      color: rgba(255,255,255,0.8);
+      font-size: 18px;
+    }
+
+    .loading::after {
+      content: '';
+      width: 24px;
+      height: 24px;
+      border: 3px solid rgba(255,255,255,0.3);
+      border-top: 3px solid white;
+      border-radius: 50%;
+      margin-left: 15px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .rarity-count {
+      background: rgba(255,255,255,0.2);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.9);
+      margin-top: 10px;
+      display: inline-block;
+    }
+
+    /* Mobile Optimizations */
     @media (max-width: 768px) {
       .container {
-        padding: 16px;
+        padding: 15px;
       }
 
-      h1 {
-        font-size: 22px;
+      .top-bar {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+        padding: 20px;
+      }
+
+      .search-container {
+        padding: 15px;
+        margin-bottom: 20px;
+      }
+
+      input {
+        padding: 12px 16px;
+        font-size: 15px;
+      }
+
+      .rarity-section {
+        margin-bottom: 30px;
+      }
+
+      .rarity-header {
+        padding: 15px;
+        margin-bottom: 15px;
+      }
+
+      .rarity-title {
+        font-size: clamp(1.2rem, 5vw, 1.6rem);
+      }
+
+      .grid {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 15px;
       }
 
       .card {
-        width: 100px;
+        width: 120px;
+        min-height: 180px;
+        padding: 12px;
       }
 
       .card img {
         width: 80px;
         height: 80px;
+        margin-bottom: 8px;
+      }
+
+      .card .id-name {
+        font-size: 12px;
+        margin-bottom: 6px;
+      }
+
+      .card .stats {
+        font-size: 10px;
+      }
+
+      .god .card::before {
+        font-size: 10px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 10px;
+      }
+
+      .search-container {
+        padding: 12px;
+        margin-bottom: 15px;
+      }
+
+      input {
+        padding: 10px 14px;
+        font-size: 14px;
+      }
+
+      .rarity-header {
+        padding: 12px;
+      }
+
+      .grid {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 12px;
+      }
+
+      .card {
+        width: 100px;
+        min-height: 160px;
+        padding: 10px;
+      }
+
+      .card img {
+        width: 70px;
+        height: 70px;
+        margin-bottom: 6px;
+      }
+
+      .card .id-name {
+        font-size: 11px;
+        margin-bottom: 4px;
+      }
+
+      .card .stats {
+        font-size: 9px;
+      }
+
+      .god .card::before {
+        font-size: 7px;
+        padding: 3px 6px;
+        letter-spacing: 0.3px;
+      }
+
+      .rarity-count {
+        font-size: 12px;
+        padding: 6px 12px;
       }
     }
   </style>
@@ -127,53 +602,146 @@
   <div class="container">
     <div class="top-bar">
       <a class="back-button" href="javascript:history.back()">← Back</a>
+      <h1>📘 Catchdex</h1>
+      <div></div> <!-- Spacer for flex layout -->
     </div>
 
-    <h1>📘 Catchdex</h1>
-    <input type="text" id="searchInput" onkeyup="filterDex()" placeholder="Search Catchmon...">
-    <div class="grid" id="dexGrid"></div>
+    <div class="search-container">
+      <input type="text" id="searchInput" onkeyup="filterDex()" placeholder="Search Catchmon...">
+    </div>
+
+    <div id="dexContainer"></div>
   </div>
 
   <script>
+    const rarityOrder = ["Starter", "Common", "Rare", "Legendary", "Mythical", "God"];
+    const rarityEmojis = {
+      "Starter": "🌱",
+      "Common": "⚪",
+      "Rare": "🔵", 
+      "Legendary": "🟡",
+      "Mythical": "🟣",
+      "God": "⚫"
+    };
+
     function capitalize(str) {
       return str.charAt(0).toUpperCase() + str.slice(1);
     }
 
+    function censorGodName(name) {
+      // Mysteriöse Zensur die neugierig macht
+      return "??? ??? ???";
+    }
+
     function filterDex() {
       const input = document.getElementById("searchInput").value.toLowerCase();
-      const cards = document.querySelectorAll(".card");
-      cards.forEach(card => {
-        const name = card.innerText.toLowerCase();
-        card.style.display = name.includes(input) ? "" : "none";
+      const sections = document.querySelectorAll(".rarity-section");
+      
+      sections.forEach(section => {
+        const cards = section.querySelectorAll(".card");
+        let hasVisibleCards = false;
+        
+        cards.forEach(card => {
+          const name = card.innerText.toLowerCase();
+          const isVisible = name.includes(input);
+          card.style.display = isVisible ? "" : "none";
+          if (isVisible) hasVisibleCards = true;
+        });
+        
+        // Verstecke ganze Sektion wenn keine Karten sichtbar sind
+        section.style.display = hasVisibleCards ? "" : "none";
       });
     }
 
-    function buildCards(dexList, seenData, enabledGens) {
-      const container = document.getElementById("dexGrid");
-      container.innerHTML = "";
-
-      const filtered = dexList
-        .filter(p => enabledGens.has(p.gen))
-        .sort((a, b) => a.id - b.id); // ✅ Sortierung nach ID
-
-      filtered.forEach(p => {
+    function buildRaritySection(rarity, pokemons, seenData) {
+      if (pokemons.length === 0) return '';
+      
+      const rarityClass = rarity.toLowerCase();
+      const emoji = rarityEmojis[rarity] || "❓";
+      
+      let cardsHtml = '';
+      pokemons.forEach(p => {
         const name = p.name.toLowerCase();
         const escaped = seenData[name]?.escaped || 0;
         const caught = seenData[name]?.caught || 0;
         const id = String(p.id).padStart(3, "0");
+        
+        // God Catchmon komplett mysteriös machen
+        let displayName = capitalize(p.name);
+        let displayId = id;
+        
+        if (rarity === "God") {
+          displayName = censorGodName(displayName);
+          displayId = "???";
+        }
+        
         const safeName = capitalize(p.name).replace(/ /g, "_");
 
-        const div = document.createElement("div");
-        div.className = "card";
-        div.innerHTML = `
-          <a href="dex_detail.html?name=${safeName}">
-            <img src="${p.sprite}" alt="${capitalize(p.name)}">
-            <div>#${id}<br>${capitalize(p.name)}</div>
-            <div class="small">${escaped} escaped / ${caught} caught</div>
-          </a>
+        cardsHtml += `
+          <div class="card">
+            <a href="dex_detail.html?name=${safeName}">
+              <img src="${p.sprite}" alt="${capitalize(p.name)}">
+              <div class="id-name">#${displayId}<br>${displayName}</div>
+              <div class="stats">${escaped} escaped / ${caught} caught</div>
+            </a>
+          </div>
         `;
-        container.appendChild(div);
       });
+
+      return `
+        <div class="rarity-section ${rarityClass}">
+          <div class="rarity-header">
+            <h2 class="rarity-title">${emoji} ${rarity}</h2>
+            <div class="rarity-count">${pokemons.length} Catchmon</div>
+          </div>
+          <div class="grid">
+            ${cardsHtml}
+          </div>
+        </div>
+      `;
+    }
+
+    function buildSections(dexList, seenData, enabledGens) {
+      const container = document.getElementById("dexContainer");
+      
+      const filtered = dexList
+        .filter(p => enabledGens.has(p.gen))
+        .sort((a, b) => a.id - b.id);
+
+      if (filtered.length === 0) {
+        container.innerHTML = '<div class="loading">No Catchmon found</div>';
+        return;
+      }
+
+      // Gruppiere nach Rarity basierend auf dem Sprite-Pfad
+      const byRarity = {};
+      rarityOrder.forEach(r => byRarity[r] = []);
+
+      filtered.forEach(p => {
+        const parts = p.sprite.split("/");
+        const rarity = parts.length > 1 ? parts[1] : "Common";
+        if (byRarity[rarity]) {
+          byRarity[rarity].push(p);
+        } else {
+          byRarity["Common"].push(p);
+        }
+      });
+
+      // Sortiere jede Rarity nach ID
+      rarityOrder.forEach(r => {
+        if (byRarity[r]) {
+          byRarity[r].sort((a, b) => a.id - b.id);
+        }
+      });
+
+      // Baue HTML für alle Sections
+      let html = '';
+      rarityOrder.forEach(rarity => {
+        const pokemons = byRarity[rarity] || [];
+        html += buildRaritySection(rarity, pokemons, seenData);
+      });
+
+      container.innerHTML = html;
     }
 
     async function updateDex() {
@@ -183,10 +751,12 @@
           fetch("seen_caught.json?" + Date.now()).then(r => r.json()),
           fetch("gen_config.json?" + Date.now()).then(r => r.json())
         ]);
+        
         const enabledGens = new Set(genConfig.enabled_gens || []);
-        buildCards(dexList, seenCaught, enabledGens);
+        buildSections(dexList, seenCaught, enabledGens);
       } catch (err) {
         console.error("Fehler beim Laden der Catchdex-Daten:", err);
+        document.getElementById("dexContainer").innerHTML = '<div class="loading">Error loading data</div>';
       }
     }
 

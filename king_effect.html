@@ -2,285 +2,703 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Lightning Finale</title>
+  <title>Lightning Storm Devastation</title>
   <script src="utils.js"></script>
   <style>
     html, body {
-      margin: 0; padding: 0;
-      background: transparent;
+      margin: 0;
+      padding: 0;
+      background: radial-gradient(ellipse at center, #1a1a2e 0%, #16213e 30%, #0f0f23 70%, #000000 100%);
       overflow: hidden;
-      width: 1080px; height: 1920px;
+      font-family: 'Segoe UI', sans-serif;
+      width: 100vw;
+      height: 100vh;
     }
-    canvas {
-      width: 1080px; height: 1920px;
+
+    #stormCanvas {
       position: fixed;
-      top: 0; left: 0;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 5;
       pointer-events: none;
-      z-index: 999;
     }
-    #whiteFlash {
+
+    #imageContainer {
       position: fixed;
-      top: 0; left: 0;
-      width: 1080px; height: 1920px;
-      background: white;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 320px;
+      height: 320px;
+      z-index: 3;
+      opacity: 1;
+      transition: all 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    #catchImage {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: brightness(1.4) contrast(1.3) drop-shadow(0 0 25px rgba(255, 255, 0, 0.7));
+      border-radius: 20px;
+      transition: all 1.2s ease;
+    }
+
+    #electricOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(circle at 20% 30%, rgba(255, 255, 0, 0.1) 0%, transparent 40%),
+        radial-gradient(circle at 80% 70%, rgba(100, 100, 255, 0.15) 0%, transparent 40%),
+        linear-gradient(45deg, rgba(255, 215, 0, 0.08) 0%, rgba(138, 43, 226, 0.12) 100%);
+      z-index: 6;
       opacity: 0;
-      z-index: 1000;
       pointer-events: none;
-      transition: opacity 0.2s ease;
+      transition: opacity 2s ease;
+      animation: electricPulse 0.5s ease-in-out infinite alternate;
     }
-    #winnerText {
+
+    @keyframes electricPulse {
+      0% { filter: brightness(1); }
+      100% { filter: brightness(1.3); }
+    }
+
+    #flashOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.95);
+      z-index: 8;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.1s ease;
+    }
+
+    #nameContainer {
       position: fixed;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
       text-align: center;
-      z-index: 1001;
+      z-index: 10;
       opacity: 0;
-      transition: opacity 0.6s ease;
-      font-family: 'Segoe UI', sans-serif;
+      pointer-events: none;
+      transition: all 2.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     }
+
     #winnerName {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 16px;
-    }
-    .crown {
-      font-size: clamp(24px, 4vw, 48px);
-    }
-    .winner-name {
-      font-size: clamp(36px, 6vw, 64px);
-      font-weight: bold;
-      background: linear-gradient(90deg, #ffd700, white, #ffd700);
-      background-size: 200% auto;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-      animation: shine 3s linear infinite;
+      font-size: clamp(2.5rem, 9vw, 6rem);
+      font-weight: 900;
+      margin-bottom: 20px;
+      text-shadow: 
+        0 0 15px currentColor,
+        0 0 30px currentColor,
+        0 0 50px currentColor,
+        0 0 80px rgba(255, 215, 0, 0.9),
+        0 0 120px rgba(255, 255, 0, 0.6),
+        0 8px 20px rgba(0,0,0,0.9);
+      animation: lightningGlow 1.8s ease-in-out infinite alternate;
+      letter-spacing: 3px;
       white-space: nowrap;
-      text-shadow: 0 0 8px white;
+      max-width: 90vw;
+      filter: drop-shadow(0 0 20px currentColor);
     }
-    #catchmonLine {
-      font-size: clamp(24px, 4vw, 36px);
-      color: black;
-      margin-top: 10px;
-      text-shadow: 0 0 4px white;
+
+    #catchLine {
+      font-size: clamp(1.8rem, 5vw, 3.2rem);
+      color: #E6E6FA;
+      font-weight: 700;
+      text-shadow: 
+        0 0 20px rgba(230, 230, 250, 0.9),
+        0 0 40px rgba(255, 215, 0, 0.7),
+        0 5px 15px rgba(0,0,0,0.9);
+      animation: thunderPulse 2.5s ease-in-out infinite;
+      letter-spacing: 2px;
+      white-space: nowrap;
+      max-width: 90vw;
     }
+
+    @keyframes lightningGlow {
+      0% { 
+        filter: brightness(1) drop-shadow(0 0 20px currentColor);
+        transform: scale(1) translateY(0);
+      }
+      100% { 
+        filter: brightness(1.8) drop-shadow(0 0 50px currentColor);
+        transform: scale(1.08) translateY(-5px);
+      }
+    }
+
+    @keyframes thunderPulse {
+      0%, 100% { 
+        opacity: 0.85; 
+        transform: translateY(0) scale(1);
+        text-shadow: 
+          0 0 20px rgba(230, 230, 250, 0.9),
+          0 0 40px rgba(255, 215, 0, 0.7),
+          0 5px 15px rgba(0,0,0,0.9);
+      }
+      50% { 
+        opacity: 1; 
+        transform: translateY(-8px) scale(1.04);
+        text-shadow: 
+          0 0 30px rgba(230, 230, 250, 1),
+          0 0 60px rgba(255, 215, 0, 0.9),
+          0 0 80px rgba(255, 255, 255, 0.8),
+          0 5px 15px rgba(0,0,0,0.9);
+      }
+    }
+
+    /* Donation Tier Electric Styles */
     .catcher-name {
       display: inline-block;
-      font-weight: bold;
-      background-size: 200% auto;
+      font-weight: 900;
+      background-size: 400% auto;
       background-clip: text;
+      -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      animation: shine 3s linear infinite;
-      text-shadow: 0 0 4px rgba(255, 255, 255, 0);
+      animation: electricShine 2.5s linear infinite;
     }
+
     .king {
-      background-image: linear-gradient(90deg, #ffd700, white, #ffd700);
+      background-image: linear-gradient(45deg, 
+        #FFD700, #FFF700, #FFFF00, #FFD700, #FFF8DC, #FFD700);
+      color: #FFD700;
     }
+    
     .flame {
-      background-image: linear-gradient(90deg, #ff0000, white, #ff0000);
+      background-image: linear-gradient(45deg, 
+        #FF4500, #FFD700, #FF6347, #FFA500, #FF4500);
+      color: #FF4500;
     }
+    
     .diamond {
-      background-image: linear-gradient(90deg, deepskyblue, white, deepskyblue);
+      background-image: linear-gradient(45deg, 
+        #00BFFF, #FFD700, #87CEEB, #4169E1, #00BFFF);
+      color: #00BFFF;
     }
+    
     .shine {
-      background-image: linear-gradient(90deg, limegreen, white, limegreen);
+      background-image: linear-gradient(45deg, 
+        #32CD32, #FFD700, #90EE90, #228B22, #32CD32);
+      color: #32CD32;
     }
+    
     .normal {
-      color: #fff;
-      font-weight: normal;
-      background: none;
-      -webkit-text-fill-color: inherit;
-      background-clip: unset;
-      animation: none;
+      background-image: linear-gradient(45deg, 
+        #E6E6FA, #FFD700, #FFFFFF, #E6E6FA);
+      color: #E6E6FA;
+      background-size: 400% auto;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      -webkit-background-clip: text;
+      animation: electricShine 2.5s linear infinite;
     }
-    @keyframes shine {
-      to { background-position: -200% center; }
+
+    @keyframes electricShine {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 400% 50%; }
+    }
+
+    /* Lightning Crack Effects */
+    .lightning-crack {
+      position: fixed;
+      width: 4px;
+      background: linear-gradient(90deg, 
+        rgba(255, 255, 255, 0.9) 0%, 
+        rgba(255, 255, 0, 0.8) 50%, 
+        rgba(255, 255, 255, 0.9) 100%);
+      pointer-events: none;
+      z-index: 4;
+      opacity: 0;
+      box-shadow: 
+        0 0 10px rgba(255, 255, 255, 0.8),
+        0 0 20px rgba(255, 255, 0, 0.6),
+        0 0 30px rgba(255, 215, 0, 0.4);
+      animation: lightningStrike 0.3s ease-out forwards;
+    }
+
+    @keyframes lightningStrike {
+      0% { 
+        opacity: 0; 
+        transform: scaleY(0);
+      }
+      20% { 
+        opacity: 1; 
+        transform: scaleY(1);
+      }
+      100% { 
+        opacity: 0; 
+        transform: scaleY(1);
+      }
+    }
+
+    /* Electric Sparks */
+    .electric-spark {
+      position: fixed;
+      width: 6px;
+      height: 6px;
+      background: radial-gradient(circle, #FFFFFF 0%, #FFD700 50%, transparent 100%);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 7;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.9);
+      animation: sparkFly 2s ease-out forwards;
+    }
+
+    @keyframes sparkFly {
+      0% { 
+        opacity: 1; 
+        transform: scale(1);
+        box-shadow: 0 0 15px rgba(255, 255, 255, 0.9);
+      }
+      100% { 
+        opacity: 0; 
+        transform: scale(0.3);
+        box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+      }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      #imageContainer {
+        width: 280px;
+        height: 280px;
+      }
+
+      #winnerName {
+        font-size: clamp(1.8rem, 12vw, 4.5rem);
+        letter-spacing: 2px;
+      }
+
+      #catchLine {
+        font-size: clamp(1.2rem, 8vw, 2.5rem);
+        letter-spacing: 1px;
+      }
     }
   </style>
 </head>
 <body>
-<canvas id="lightningCanvas" width="1080" height="1920"></canvas>
-<div id="whiteFlash"></div>
-<div id="winnerText">
-  <div id="winnerName"></div>
-  <div id="catchmonLine"></div>
-</div>
-<audio id="kingSound" src="sounds/king.mp3" preload="auto"></audio>
+  <canvas id="stormCanvas"></canvas>
+  
+  <div id="imageContainer">
+    <img id="catchImage" src="" alt="Catchmon">
+  </div>
 
-<script>
-const canvas = document.getElementById("lightningCanvas");
-const ctx = canvas.getContext("2d");
-const width = canvas.width;
-const height = canvas.height;
-const flash = document.getElementById("whiteFlash");
-const winnerText = document.getElementById("winnerText");
-const winnerName = document.getElementById("winnerName");
-const catchmonLine = document.getElementById("catchmonLine");
+  <div id="electricOverlay"></div>
+  <div id="flashOverlay"></div>
 
-let bolts = [];
-let boltTimer = 0;
-let flashTriggered = false;
-let stage = 0;
-let soundPlayed = false;
+  <div id="nameContainer">
+    <div id="winnerName">???</div>
+    <div id="catchLine">caught ???!</div>
+  </div>
 
-// King-Sound direkt beim Laden mit halber Lautstärke
-window.addEventListener("DOMContentLoaded", () => {
-  const kingAudio = document.getElementById("kingSound");
-  kingAudio.volume = 0.5;
-  kingAudio.play().catch(() => {
-    console.log("Autoplay blockiert – wird ggf. manuell gestartet.");
-  });
-});
+  <audio id="thunderSound" src="sounds/king.mp3" preload="auto"></audio>
 
-// Winner-Name + Styling
-fetch("spawn_data.json?" + Date.now())
-  .then(res => res.json())
-  .then(data => {
-    const styled = getStyledCatcherName(data.winner || "???", data.donation || 0);
-    winnerName.innerHTML = `<span class="crown">⚡</span>${styled}<span class="crown">⚡</span>`;
-    catchmonLine.textContent = `caught ${data.name || "???"}!`;
-  });
+  <script>
+    const canvas = document.getElementById('stormCanvas');
+    const ctx = canvas.getContext('2d');
+    const imageContainer = document.getElementById('imageContainer');
+    const catchImage = document.getElementById('catchImage');
+    const electricOverlay = document.getElementById('electricOverlay');
+    const flashOverlay = document.getElementById('flashOverlay');
+    const nameContainer = document.getElementById('nameContainer');
+    const winnerName = document.getElementById('winnerName');
+    const catchLine = document.getElementById('catchLine');
 
-const thunderSounds = [
-  new Audio("thunder1.mp3"),
-  new Audio("thunder2.mp3"),
-  new Audio("thunder3.mp3")
-];
+    let stormStarted = false;
+    let lightningBolts = [];
+    let electricParticles = [];
+    let animationTime = 0;
+    let stormIntensity = 0;
 
-function generateBolt(x, y, segments, branchChance = 0.4) {
-  const path = [{ x, y }];
-  const bolt = {
-    path,
-    progress: 0,
-    done: false,
-    thickness: 5 + Math.random() * 5,
-    brightness: 90 + Math.random() * 10,
-    colorShift: Math.random() * 10,
-    children: []
-  };
-  for (let i = 0; i < segments; i++) {
-    const last = path[path.length - 1];
-    const newX = last.x + (Math.random() - 0.5) * 120;
-    const newY = last.y + 40 + Math.random() * 50;
-    const newPoint = { x: newX, y: newY };
-    path.push(newPoint);
-    if (Math.random() < branchChance && i > 2 && i < segments - 2) {
-      const branch = generateBolt(newX, newY, segments - i - 1, 0);
-      bolt.children.push(branch);
+    // Canvas Setup
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
     }
-  }
-  return bolt;
-}
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
 
-function drawBolt(bolt) {
-  const { path, progress, thickness, brightness, colorShift } = bolt;
-  for (let i = 1; i <= progress && i < path.length; i++) {
-    const p1 = path[i - 1];
-    const p2 = path[i];
-    const t = i / path.length;
-    const light = brightness - t * 40;
-    const alpha = 1 - t * 0.6;
-    const hue = 50 + colorShift;
+    // Load spawn data
+    fetch("spawn_data.json?" + Date.now())
+      .then(res => res.json())
+      .then(data => {
+        const styledName = getStyledCatcherName(data.winner || "???", data.donation || 0);
+        const tier = getDonationTier(data.donation || 0);
+        
+        winnerName.innerHTML = styledName;
+        winnerName.className = `catcher-name ${tier}`;
+        catchLine.textContent = `caught ${data.name || "???"}!`;
+        
+        if (data.sprite) {
+          catchImage.src = data.sprite;
+          catchImage.onload = () => {
+            setTimeout(startLightningStorm, 500);
+          };
+        }
+      })
+      .catch(err => {
+        console.error("Error loading spawn data:", err);
+        startLightningStorm();
+      });
 
-    ctx.beginPath();
-    ctx.moveTo(p1.x, p1.y);
-    ctx.lineTo(p2.x, p2.y);
-    ctx.strokeStyle = `hsla(${hue}, 100%, ${light}%, ${alpha})`;
-    ctx.lineWidth = thickness * (1 - t * 0.6);
-    ctx.shadowColor = `hsla(${hue}, 100%, 95%, ${alpha})`;
-    ctx.shadowBlur = 40;
-    ctx.stroke();
-  }
+    // Sound Effect
+    window.addEventListener("DOMContentLoaded", () => {
+      const thunderAudio = document.getElementById("thunderSound");
+      if (thunderAudio) {
+        thunderAudio.volume = 0.7;
+        thunderAudio.play().catch(() => {
+          console.log("Autoplay blocked");
+        });
+      }
+    });
 
-  for (const child of bolt.children) drawBolt(child);
-}
+    // Lightning Bolt Class
+    class LightningBolt {
+      constructor(startX, startY, endX, endY, thickness = 8, branches = 3) {
+        this.segments = [];
+        this.thickness = thickness;
+        this.life = 1.0;
+        this.maxLife = 1.0;
+        this.color = `rgba(255, 255, ${Math.floor(Math.random() * 100 + 155)}, `;
+        this.branches = [];
+        
+        this.generatePath(startX, startY, endX, endY);
+        
+        // Create branches
+        for (let i = 0; i < branches; i++) {
+          if (Math.random() < 0.7 && this.segments.length > 3) {
+            const segmentIndex = Math.floor(Math.random() * (this.segments.length - 2)) + 1;
+            const segment = this.segments[segmentIndex];
+            const branchLength = Math.random() * 200 + 100;
+            const branchAngle = (Math.random() - 0.5) * Math.PI * 0.8;
+            
+            const branchEndX = segment.x + Math.cos(branchAngle) * branchLength;
+            const branchEndY = segment.y + Math.sin(branchAngle) * branchLength;
+            
+            this.branches.push(new LightningBolt(
+              segment.x, segment.y, branchEndX, branchEndY, 
+              thickness * 0.6, 0
+            ));
+          }
+        }
+      }
 
-function updateBolts() {
-  for (const bolt of bolts) {
-    if (!bolt.done) {
-      bolt.progress += 2;
-      if (bolt.progress >= bolt.path.length) {
-        bolt.done = true;
-        flashEffect(150);
+      generatePath(startX, startY, endX, endY) {
+        const distance = Math.sqrt((endX - startX) ** 2 + (endY - startY) ** 2);
+        const segments = Math.floor(distance / 20) + 5;
+        
+        this.segments.push({ x: startX, y: startY });
+        
+        for (let i = 1; i < segments; i++) {
+          const progress = i / segments;
+          const x = startX + (endX - startX) * progress + (Math.random() - 0.5) * 40;
+          const y = startY + (endY - startY) * progress + (Math.random() - 0.5) * 40;
+          this.segments.push({ x, y });
+        }
+        
+        this.segments.push({ x: endX, y: endY });
+      }
+
+      update() {
+        this.life -= 0.08;
+        this.branches.forEach(branch => branch.update());
+        this.branches = this.branches.filter(branch => branch.life > 0);
+        return this.life > 0;
+      }
+
+      draw() {
+        if (this.life <= 0) return;
+        
+        ctx.save();
+        ctx.globalAlpha = this.life;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        
+        // Main bolt glow
+        ctx.strokeStyle = this.color + '0.3)';
+        ctx.lineWidth = this.thickness * 6;
+        ctx.shadowColor = this.color + '0.8)';
+        ctx.shadowBlur = 30;
+        this.drawPath();
+        
+        // Main bolt core
+        ctx.strokeStyle = this.color + '0.9)';
+        ctx.lineWidth = this.thickness * 2;
+        ctx.shadowBlur = 15;
+        this.drawPath();
+        
+        // Bright center
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.95)';
+        ctx.lineWidth = this.thickness * 0.5;
+        ctx.shadowBlur = 5;
+        this.drawPath();
+        
+        ctx.restore();
+        
+        // Draw branches
+        this.branches.forEach(branch => branch.draw());
+      }
+
+      drawPath() {
+        ctx.beginPath();
+        ctx.moveTo(this.segments[0].x, this.segments[0].y);
+        for (let i = 1; i < this.segments.length; i++) {
+          ctx.lineTo(this.segments[i].x, this.segments[i].y);
+        }
+        ctx.stroke();
       }
     }
-    for (const child of bolt.children) {
-      if (!child.done) {
-        child.progress += 2;
-        if (child.progress >= child.path.length) child.done = true;
+
+    // Electric Particle Class
+    class ElectricParticle {
+      constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.vx = (Math.random() - 0.5) * 8;
+        this.vy = (Math.random() - 0.5) * 8;
+        this.life = 1.0;
+        this.size = Math.random() * 4 + 2;
+        this.sparkIntensity = Math.random();
+      }
+
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        this.vx *= 0.98;
+        this.vy *= 0.98;
+        this.life -= 0.02;
+        this.size *= 0.99;
+        return this.life > 0;
+      }
+
+      draw() {
+        ctx.save();
+        ctx.globalAlpha = this.life;
+        
+        const gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size * 3);
+        gradient.addColorStop(0, `rgba(255, 255, 255, ${this.life})`);
+        gradient.addColorStop(0.5, `rgba(255, 255, 0, ${this.life * 0.8})`);
+        gradient.addColorStop(1, `rgba(255, 215, 0, 0)`);
+        
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size * 3, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Bright center
+        ctx.fillStyle = `rgba(255, 255, 255, ${this.life})`;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+        
+        ctx.restore();
       }
     }
-  }
-}
 
-function flashEffect(duration = 200) {
-  flash.style.opacity = "1";
-  setTimeout(() => { flash.style.opacity = "0"; }, duration);
-}
-
-function shakeCanvas(strength = 25, duration = 300) {
-  const end = Date.now() + duration;
-  function shake() {
-    if (Date.now() < end) {
-      const dx = (Math.random() - 0.5) * strength;
-      const dy = (Math.random() - 0.5) * strength;
-      canvas.style.transform = `translate(${dx}px, ${dy}px)`;
-      requestAnimationFrame(shake);
-    } else {
-      canvas.style.transform = "translate(0, 0)";
+    function createScreenFlash(duration = 100) {
+      flashOverlay.style.opacity = '1';
+      setTimeout(() => {
+        flashOverlay.style.opacity = '0';
+      }, duration);
     }
-  }
-  shake();
-}
 
-function triggerLightning() {
-  bolts = [];
-  for (let i = 0; i < 4; i++) {
-    const x = width * (0.2 + 0.2 * i) + (Math.random() - 0.5) * 80;
-    bolts.push(generateBolt(x, 0, 25 + Math.floor(Math.random() * 6)));
-  }
-  shakeCanvas(30, 400);
-  if (!soundPlayed) {
-    const s = thunderSounds[Math.floor(Math.random() * thunderSounds.length)];
-    s.volume = 0.8;
-    s.play();
-    soundPlayed = true;
-  }
-}
+    function createLightningCrack(x1, y1, x2, y2) {
+      const crack = document.createElement('div');
+      crack.className = 'lightning-crack';
+      
+      const length = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+      const angle = Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
+      
+      crack.style.left = x1 + 'px';
+      crack.style.top = y1 + 'px';
+      crack.style.height = length + 'px';
+      crack.style.transform = `rotate(${angle + 90}deg)`;
+      crack.style.transformOrigin = 'top center';
+      
+      document.body.appendChild(crack);
+      
+      setTimeout(() => {
+        crack.remove();
+      }, 500);
+    }
 
-function animate() {
-  ctx.clearRect(0, 0, width, height);
-  updateBolts();
-  for (const bolt of bolts) drawBolt(bolt);
+    function createElectricSparks(centerX, centerY, count = 15) {
+      for (let i = 0; i < count; i++) {
+        const spark = document.createElement('div');
+        spark.className = 'electric-spark';
+        
+        const angle = (i / count) * Math.PI * 2;
+        const distance = Math.random() * 150 + 50;
+        const x = centerX + Math.cos(angle) * distance;
+        const y = centerY + Math.sin(angle) * distance;
+        
+        spark.style.left = x + 'px';
+        spark.style.top = y + 'px';
+        
+        // Random movement
+        const moveX = (Math.random() - 0.5) * 300;
+        const moveY = (Math.random() - 0.5) * 300;
+        spark.style.setProperty('--moveX', moveX + 'px');
+        spark.style.setProperty('--moveY', moveY + 'px');
+        
+        // Add movement to animation
+        spark.style.animation = `sparkFly 2s ease-out forwards, sparkMove 2s ease-out forwards`;
+        spark.style.setProperty('transform', `translate(${moveX}px, ${moveY}px)`);
+        
+        document.body.appendChild(spark);
+        
+        setTimeout(() => {
+          spark.remove();
+        }, 2000);
+      }
+    }
 
-  const now = Date.now();
-  if (stage === 0 && now - boltTimer > 0) {
-    boltTimer = now;
-    triggerLightning();
-    stage = 1;
-  }
-  if (stage === 1 && now - boltTimer > 1200) {
-    triggerLightning();
-    stage = 2;
-  }
-  if (stage === 2 && now - boltTimer > 3000 && !flashTriggered) {
-    flashTriggered = true;
-    flash.style.opacity = "1";
-    winnerText.style.opacity = "1";
-    setTimeout(() => { flash.style.opacity = "0"; }, 2000);
-  }
+    function startLightningStorm() {
+      stormStarted = true;
+      
+      const rect = imageContainer.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
 
-  requestAnimationFrame(animate);
-}
+      // Initial warning strikes
+      setTimeout(() => {
+        createLightningCrack(centerX - 100, 0, centerX - 80, centerY - 50);
+        createScreenFlash(80);
+      }, 300);
 
-animate();
+      setTimeout(() => {
+        createLightningCrack(centerX + 120, 0, centerX + 90, centerY - 30);
+        createScreenFlash(60);
+      }, 700);
 
-setTimeout(() => {
-  canvas.remove();
-  flash.remove();
-  winnerText.remove();
-}, 7000);
-</script>
+      // MASSIVE LIGHTNING STRIKE
+      setTimeout(() => {
+        // Multiple simultaneous strikes
+        for (let i = 0; i < 5; i++) {
+          const startX = Math.random() * canvas.width;
+          const startY = 0;
+          const endX = centerX + (Math.random() - 0.5) * 200;
+          const endY = centerY + (Math.random() - 0.5) * 100;
+          
+          lightningBolts.push(new LightningBolt(startX, startY, endX, endY, 12, 4));
+        }
+        
+        // Devastating effects
+        createScreenFlash(200);
+        createElectricSparks(centerX, centerY, 25);
+        
+        // Image destruction
+        imageContainer.style.transform = 'translate(-50%, -50%) scale(0.1) rotate(720deg)';
+        imageContainer.style.filter = 'brightness(5) contrast(3) saturate(0) blur(10px)';
+        imageContainer.style.opacity = '0';
+        
+        catchImage.style.filter = 'brightness(10) contrast(5) saturate(0) invert(1)';
+        
+        // Create particles explosion
+        for (let i = 0; i < 50; i++) {
+          electricParticles.push(new ElectricParticle(centerX, centerY));
+        }
+        
+      }, 1200);
+
+      // Electric overlay
+      setTimeout(() => {
+        electricOverlay.style.opacity = '1';
+      }, 1500);
+
+      // Show name with electric entrance
+      setTimeout(() => {
+        nameContainer.style.opacity = '1';
+        nameContainer.style.transform = 'translate(-50%, -50%) scale(1)';
+      }, 2200);
+    }
+
+    function updateStorm() {
+      if (!stormStarted) return;
+      
+      animationTime += 0.016;
+      stormIntensity = Math.min(1, animationTime / 3);
+      
+      // Update lightning bolts
+      lightningBolts = lightningBolts.filter(bolt => bolt.update());
+      
+      // Update electric particles
+      electricParticles = electricParticles.filter(particle => particle.update());
+      
+      // Random additional strikes
+      if (animationTime < 4 && Math.random() < 0.1 * stormIntensity) {
+        const startX = Math.random() * canvas.width;
+        const endX = Math.random() * canvas.width;
+        const endY = Math.random() * canvas.height * 0.7 + canvas.height * 0.3;
+        
+        lightningBolts.push(new LightningBolt(startX, 0, endX, endY, 6, 2));
+        
+        if (Math.random() < 0.3) {
+          createScreenFlash(50);
+        }
+      }
+    }
+
+    function drawStorm() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Draw lightning bolts
+      lightningBolts.forEach(bolt => bolt.draw());
+      
+      // Draw electric particles
+      electricParticles.forEach(particle => particle.draw());
+      
+      // Atmospheric electric effect
+      if (stormIntensity > 0.3) {
+        const intensity = stormIntensity * 0.4;
+        ctx.save();
+        ctx.globalAlpha = intensity * Math.sin(animationTime * 8) * 0.5 + intensity * 0.5;
+        
+        // Electric field visualization
+        for (let i = 0; i < 12; i++) {
+          const x = (Math.sin(animationTime * 2 + i) * 0.4 + 0.5) * canvas.width;
+          const y = (Math.cos(animationTime * 1.5 + i * 0.8) * 0.3 + 0.4) * canvas.height;
+          const size = 60 + Math.sin(animationTime * 4 + i) * 30;
+          
+          const gradient = ctx.createRadialGradient(x, y, 0, x, y, size);
+          gradient.addColorStop(0, 'rgba(255, 255, 0, 0.2)');
+          gradient.addColorStop(0.7, 'rgba(255, 215, 0, 0.1)');
+          gradient.addColorStop(1, 'rgba(255, 215, 0, 0)');
+          ctx.fillStyle = gradient;
+          ctx.beginPath();
+          ctx.arc(x, y, size, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.restore();
+      }
+    }
+
+    function animate() {
+      updateStorm();
+      drawStorm();
+      requestAnimationFrame(animate);
+    }
+
+    // Start animation
+    animate();
+
+    // Cleanup after effect
+    setTimeout(() => {
+      canvas.remove();
+      imageContainer.remove();
+      electricOverlay.remove();
+      flashOverlay.remove();
+      nameContainer.remove();
+    }, 12000);
+  </script>
 </body>
 </html>

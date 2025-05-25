@@ -1,178 +1,399 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Flammeninferno</title>
+  <meta charset="UTF-8" />
+  <title>Burn Away Effect</title>
+  <script src="utils.js"></script>
   <style>
     html, body {
       margin: 0;
       padding: 0;
-      background: transparent;
+      background: #000;
       overflow: hidden;
+      font-family: 'Segoe UI', sans-serif;
+      width: 100vw;
+      height: 100vh;
     }
-    canvas {
-      display: block;
+
+    #burnCanvas {
       position: fixed;
       top: 0;
       left: 0;
-      z-index: 999;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
       pointer-events: none;
     }
-    #overlay {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(255, 0, 0, 0.95);
-      z-index: 1000;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 1.2s ease;
-    }
-    #winnerText {
+
+    #imageContainer {
       position: fixed;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      text-align: center;
-      z-index: 1001;
+      width: 400px;
+      height: 400px;
+      z-index: 2;
+      opacity: 1;
+      transition: opacity 0.3s ease;
+    }
+
+    #catchImage {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: brightness(1.2) contrast(1.1);
+      border-radius: 20px;
+    }
+
+    #nameOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
       opacity: 0;
-      transition: opacity 1.2s ease;
-      font-family: 'Segoe UI', sans-serif;
-      color: white;
-      text-shadow: 0 0 20px orange;
+      pointer-events: none;
+      transition: opacity 1.5s ease;
     }
+
     #winnerName {
-      font-size: 48px;
+      font-size: clamp(3rem, 8vw, 6rem);
       font-weight: bold;
+      text-align: center;
+      margin-bottom: 20px;
+      text-shadow: 
+        0 0 20px currentColor,
+        0 0 40px currentColor,
+        0 0 60px currentColor,
+        0 4px 8px rgba(0,0,0,0.8);
+      animation: nameGlow 2s ease-in-out infinite alternate;
     }
-    #catchmonLine {
-      font-size: 32px;
-      margin-top: 12px;
+
+    #catchLine {
+      font-size: clamp(1.5rem, 4vw, 2.5rem);
+      color: #fff;
+      text-align: center;
+      opacity: 0.9;
+      text-shadow: 
+        0 0 10px rgba(255,255,255,0.8),
+        0 2px 4px rgba(0,0,0,0.8);
+      animation: subtitlePulse 3s ease-in-out infinite;
+    }
+
+    @keyframes nameGlow {
+      0% { 
+        filter: brightness(1) drop-shadow(0 0 10px currentColor);
+        transform: scale(1);
+      }
+      100% { 
+        filter: brightness(1.3) drop-shadow(0 0 25px currentColor);
+        transform: scale(1.02);
+      }
+    }
+
+    @keyframes subtitlePulse {
+      0%, 100% { opacity: 0.9; }
+      50% { opacity: 1; }
+    }
+
+    /* Donation Tier Styles */
+    .catcher-name {
+      display: inline-block;
+      font-weight: bold;
+      background-size: 200% auto;
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shine 3s linear infinite;
+    }
+
+    .king {
+      background-image: linear-gradient(90deg, #ffd700, #fff200, #ffd700);
+      color: #ffd700;
+    }
+    
+    .flame {
+      background-image: linear-gradient(90deg, #ff4500, #ff8c00, #ff4500);
+      color: #ff4500;
+    }
+    
+    .diamond {
+      background-image: linear-gradient(90deg, #00bfff, #87ceeb, #00bfff);
+      color: #00bfff;
+    }
+    
+    .shine {
+      background-image: linear-gradient(90deg, #32cd32, #90ee90, #32cd32);
+      color: #32cd32;
+    }
+    
+    .normal {
+      color: #fff;
+      background: none;
+      -webkit-text-fill-color: inherit;
+      background-clip: unset;
+      animation: nameGlow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes shine {
+      to { background-position: -200% center; }
+    }
+
+    /* Particle Effects */
+    .particle {
+      position: fixed;
+      width: 4px;
+      height: 4px;
+      background: #ff6600;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 5;
+      opacity: 0;
+      box-shadow: 0 0 6px currentColor;
+    }
+
+    .particle.active {
+      animation: particleFloat 3s ease-out forwards;
+    }
+
+    @keyframes particleFloat {
+      0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-200px) scale(0.3);
+      }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      #imageContainer {
+        width: 300px;
+        height: 300px;
+      }
+
+      #winnerName {
+        font-size: clamp(2rem, 12vw, 4rem);
+      }
+
+      #catchLine {
+        font-size: clamp(1rem, 6vw, 1.8rem);
+      }
     }
   </style>
 </head>
 <body>
-<canvas id="fireCanvas"></canvas>
-<div id="overlay"></div>
-<div id="winnerText">
-  <div id="winnerName">???</div>
-  <div id="catchmonLine">caught ???!</div>
-</div>
-<audio id="fireSound" src="sounds/fire.mp3" preload="auto"></audio>
+  <canvas id="burnCanvas"></canvas>
+  
+  <div id="imageContainer">
+    <img id="catchImage" src="" alt="Catchmon">
+  </div>
 
-<script>
-const canvas = document.getElementById("fireCanvas");
-const ctx = canvas.getContext("2d");
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-const width = canvas.width;
-const height = canvas.height;
-const firePixelsArray = new Array(width * height).fill(0);
-const fireWidth = width;
-const fireHeight = height;
+  <div id="nameOverlay">
+    <div id="winnerName"></div>
+    <div id="catchLine"></div>
+  </div>
 
-const palette = [
-  "#070707", "#1F0707", "#2F0F07", "#470F07", "#571707", "#671F07", "#771F07", "#8F2707",
-  "#9F2F07", "#AF3F07", "#BF4707", "#C74707", "#DF4F07", "#DF5707", "#DF5707", "#D75F07",
-  "#D75F07", "#D7670F", "#CF6F0F", "#CF770F", "#CF7F0F", "#CF8717", "#C78717", "#C78F17",
-  "#C7971F", "#BF9F1F", "#BF9F1F", "#BFA727", "#BFA727", "#BFAF2F", "#B7AF2F", "#B7B72F",
-  "#B7B737", "#CFCF6F", "#DFDF9F", "#EFEFC7", "#FFFFFF"
-];
+  <audio id="burnSound" src="sounds/fire.mp3" preload="auto"></audio>
 
-function calculateFirePropagation() {
-  for (let x = 0; x < fireWidth; x++) {
-    for (let y = 1; y < fireHeight; y++) {
-      const src = y * fireWidth + x;
-      const below = src + fireWidth;
-      if (below >= firePixelsArray.length) continue;
+  <script>
+    const canvas = document.getElementById('burnCanvas');
+    const ctx = canvas.getContext('2d');
+    const imageContainer = document.getElementById('imageContainer');
+    const catchImage = document.getElementById('catchImage');
+    const nameOverlay = document.getElementById('nameOverlay');
+    const winnerName = document.getElementById('winnerName');
+    const catchLine = document.getElementById('catchLine');
 
-      const decay = Math.floor(Math.random() * 1.5);
-      const shift = Math.floor(Math.random() * 3) - 1;
+    // Canvas Setup
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
 
-      const belowIntensity = Math.max(firePixelsArray[below], firePixelsArray[src]);
-      const newIntensity = belowIntensity - decay >= 0 ? belowIntensity - decay : 0;
+    // Burn Effect Variables
+    let burnParticles = [];
+    let burnProgress = 0;
+    let imageData = null;
+    let originalImageData = null;
+    let burnStarted = false;
 
-      const dst = src + shift;
-      if (dst >= 0 && dst < firePixelsArray.length) {
-        firePixelsArray[dst] = newIntensity;
+    // Load spawn data and setup
+    fetch("spawn_data.json?" + Date.now())
+      .then(res => res.json())
+      .then(data => {
+        const styledName = getStyledCatcherName(data.winner || "???", data.donation || 0);
+        const tier = getDonationTier(data.donation || 0);
+        
+        winnerName.innerHTML = styledName;
+        winnerName.className = `catcher-name ${tier}`;
+        catchLine.textContent = `caught ${data.name || "???"}!`;
+        
+        // Load the catchmon image
+        if (data.sprite) {
+          catchImage.src = data.sprite;
+          catchImage.onload = () => {
+            setTimeout(startBurnEffect, 1000);
+          };
+        }
+      })
+      .catch(err => {
+        console.error("Error loading spawn data:", err);
+        startBurnEffect();
+      });
+
+    // Sound Effect
+    window.addEventListener("DOMContentLoaded", () => {
+      const burnAudio = document.getElementById("burnSound");
+      if (burnAudio) {
+        burnAudio.volume = 0.4;
+        burnAudio.play().catch(() => {
+          console.log("Autoplay blocked");
+        });
+      }
+    });
+
+    // Burn Particle Class
+    class BurnParticle {
+      constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.vx = (Math.random() - 0.5) * 4;
+        this.vy = -Math.random() * 3 - 1;
+        this.life = 1.0;
+        this.decay = Math.random() * 0.02 + 0.01;
+        this.size = Math.random() * 8 + 4;
+        this.color = this.getRandomFireColor();
+      }
+
+      getRandomFireColor() {
+        const colors = [
+          'rgba(255, 100, 0, ',
+          'rgba(255, 150, 0, ',
+          'rgba(255, 200, 0, ',
+          'rgba(255, 50, 0, ',
+          'rgba(200, 0, 0, '
+        ];
+        return colors[Math.floor(Math.random() * colors.length)];
+      }
+
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        this.vy += 0.1; // gravity
+        this.life -= this.decay;
+        this.size *= 0.98;
+        return this.life > 0;
+      }
+
+      draw() {
+        ctx.save();
+        ctx.globalAlpha = this.life;
+        ctx.fillStyle = this.color + this.life + ')';
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Add glow effect
+        ctx.shadowColor = this.color + '0.8)';
+        ctx.shadowBlur = this.size * 2;
+        ctx.fill();
+        ctx.restore();
       }
     }
-  }
-}
 
-function renderFire() {
-  const image = ctx.createImageData(fireWidth, fireHeight);
-  for (let i = 0; i < firePixelsArray.length; i++) {
-    const intensity = firePixelsArray[i];
-    if (intensity === 0) {
-      image.data[i * 4 + 3] = 0; // transparent
-    } else {
-      const color = hexToRGB(palette[intensity] || "#000000");
-      image.data[i * 4 + 0] = color.r;
-      image.data[i * 4 + 1] = color.g;
-      image.data[i * 4 + 2] = color.b;
-      image.data[i * 4 + 3] = 255;
+    function createBurnParticles() {
+      const rect = imageContainer.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      
+      // Create particles around the image edges
+      for (let i = 0; i < 15; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const radius = (rect.width / 2) * (0.8 + Math.random() * 0.4);
+        const x = centerX + Math.cos(angle) * radius;
+        const y = centerY + Math.sin(angle) * radius;
+        
+        burnParticles.push(new BurnParticle(x, y));
+      }
     }
-  }
-  ctx.putImageData(image, 0, 0);
-}
 
-function hexToRGB(hex) {
-  const bigint = parseInt(hex.slice(1), 16);
-  return {
-    r: (bigint >> 16) & 255,
-    g: (bigint >> 8) & 255,
-    b: bigint & 255
-  };
-}
+    function updateBurnEffect() {
+      // Update particles
+      burnParticles = burnParticles.filter(particle => {
+        particle.update();
+        return particle.life > 0;
+      });
 
-function createFireSource() {
-  for (let x = 0; x < fireWidth; x++) {
-    for (let y = 0; y < 6; y++) {
-      const index = (fireHeight - 1 - y) * fireWidth + x;
-      firePixelsArray[index] = palette.length - 1;
+      // Create new particles
+      if (burnProgress < 1 && Math.random() < 0.7) {
+        createBurnParticles();
+      }
+
+      // Update burn progress
+      if (burnStarted) {
+        burnProgress += 0.008;
+        
+        // Fade out image as it burns
+        if (burnProgress > 0.3) {
+          const fadeAmount = Math.min(1, (burnProgress - 0.3) / 0.4);
+          imageContainer.style.opacity = 1 - fadeAmount;
+        }
+
+        // Show name overlay when image is mostly burned
+        if (burnProgress > 0.7) {
+          nameOverlay.style.opacity = Math.min(1, (burnProgress - 0.7) / 0.3);
+        }
+      }
     }
-  }
-}
 
-function update() {
-  createFireSource();
-  calculateFirePropagation();
-  renderFire();
-  requestAnimationFrame(update);
-}
+    function drawBurnEffect() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Draw burn particles
+      burnParticles.forEach(particle => particle.draw());
+      
+      // Add screen burn effect
+      if (burnProgress > 0.4) {
+        const burnIntensity = Math.min(1, (burnProgress - 0.4) / 0.3);
+        ctx.fillStyle = `rgba(255, 100, 0, ${burnIntensity * 0.1})`;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      }
+    }
 
-update();
+    function startBurnEffect() {
+      burnStarted = true;
+      
+      // Create initial burst of particles
+      for (let i = 0; i < 30; i++) {
+        setTimeout(() => createBurnParticles(), i * 50);
+      }
+    }
 
-// Startet den Feuer-Sound direkt beim Laden mit halber Lautstärke
-window.addEventListener("DOMContentLoaded", () => {
-  const fireAudio = document.getElementById("fireSound");
-  fireAudio.volume = 0.5;
-  fireAudio.play().catch(() => {
-    console.log("Autoplay blockiert. Wird beim Event nachgeholt.");
-  });
-});
+    function animate() {
+      updateBurnEffect();
+      drawBurnEffect();
+      requestAnimationFrame(animate);
+    }
 
-// Dynamisch Name und Monster einfügen
-fetch("spawn_data.json?" + Date.now())
-  .then(res => res.json())
-  .then(data => {
-    const winnerName = document.getElementById("winnerName");
-    const catchmonLine = document.getElementById("catchmonLine");
-    winnerName.textContent = `🔥 ${data.winner || "???"} 🔥`;
-    catchmonLine.textContent = `caught ${data.name || "???"}!`;
+    // Start animation
+    animate();
 
-    setTimeout(() => {
-      document.getElementById("overlay").style.opacity = "1";
-      document.getElementById("winnerText").style.opacity = "1";
-    }, 4000);
-
+    // Cleanup after effect
     setTimeout(() => {
       canvas.remove();
-      document.getElementById("overlay").remove();
-      document.getElementById("winnerText").remove();
-    }, 9000);
-  });
-</script>
+      imageContainer.remove();
+      nameOverlay.remove();
+    }, 8000);
+  </script>
 </body>
 </html>

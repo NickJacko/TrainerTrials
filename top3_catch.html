@@ -2,114 +2,248 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Top 3 Catchrates</title>
+  <title>🎯 Top 3 Catchrates</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta http-equiv="refresh" content="30">
   <script src="utils.js"></script>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: #111;
-      color: white;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: transparent;
+      color: #2c3e50;
       text-align: center;
-      padding: 30px;
+      padding: 8px;
+      margin: 0;
+    }
+
+    .container {
+      max-width: 320px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(6px);
+      border-radius: 12px;
+      padding: 8px;
+      box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
     }
 
     h1 {
-      margin-bottom: 30px;
+      margin: 0 0 10px 0;
+      font-size: 1.1rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+      letter-spacing: 0.5px;
     }
 
-    .entry-row {
+    .rankings {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .rank-entry {
+      display: flex;
+      align-items: center;
+      padding: 6px 8px;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 10px;
+      box-shadow: 0 1px 6px rgba(0, 0, 0, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .rank-entry:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    }
+
+    .rank-entry.rank-1 {
+      background: rgba(255, 215, 0, 0.15);
+      border: 1px solid rgba(255, 215, 0, 0.4);
+    }
+
+    .rank-entry.rank-2 {
+      background: rgba(192, 192, 192, 0.15);
+      border: 1px solid rgba(192, 192, 192, 0.4);
+    }
+
+    .rank-entry.rank-3 {
+      background: rgba(205, 127, 50, 0.15);
+      border: 1px solid rgba(205, 127, 50, 0.4);
+    }
+
+    .rank-number {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 20px;
-      margin-bottom: 20px;
+      font-weight: 800;
+      font-size: 0.8rem;
+      margin-right: 8px;
+      flex-shrink: 0;
+      box-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.6);
     }
 
-    .player-label {
-      min-width: 240px;
-      text-align: right;
-      font-size: 20px;
-      font-weight: bold;
+    .rank-number.gold {
+      background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+      color: #fff;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.3);
     }
 
-    .bar-container {
-      background: #333;
-      border-radius: 16px;
-      height: 32px;
-      width: 60%;
-      max-width: 500px;
-      overflow: hidden;
+    .rank-number.silver {
+      background: linear-gradient(135deg, #C0C0C0 0%, #A8A8A8 100%);
+      color: #333;
+      text-shadow: 0 1px 2px rgba(255,255,255,0.5);
+    }
+
+    .rank-number.bronze {
+      background: linear-gradient(135deg, #CD7F32 0%, #B8860B 100%);
+      color: #fff;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    }
+
+    .player-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      margin-right: 8px;
+    }
+
+    .player-name {
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin-bottom: 1px;
+      text-align: left;
+      line-height: 1;
+    }
+
+    .player-level {
+      font-size: 0.65rem;
+      color: #666;
+      font-weight: 500;
+      line-height: 1;
+    }
+
+    .progress-section {
+      flex: 1.5;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .progress-container {
       position: relative;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 12px;
+      height: 18px;
+      overflow: hidden;
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.3);
     }
 
-    .bar-fill {
+    .progress-bar {
       height: 100%;
-      line-height: 32px;
-      text-align: center;
-      font-weight: bold;
-      white-space: nowrap;
-      color: white;
-      text-shadow: 0 0 6px white;
+      border-radius: 15px;
       position: relative;
-      transition: width 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      transition: all 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
       overflow: hidden;
-      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.8rem;
+      color: #fff;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.4);
     }
 
-    .shine-overlay {
+    .progress-bar::before {
+      content: '';
       position: absolute;
       top: 0;
-      left: 0;
-      height: 100%;
+      left: -100%;
       width: 100%;
-      background-image: linear-gradient(
+      height: 100%;
+      background: linear-gradient(
         90deg,
-        rgba(0, 0, 0, 0) 0%,
-        rgba(255, 255, 255, 0.3) 30%,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.4) 30%,
         rgba(255, 255, 255, 0.6) 50%,
-        rgba(255, 255, 255, 0.3) 70%,
-        rgba(0, 0, 0, 0) 100%
+        rgba(255, 255, 255, 0.4) 70%,
+        rgba(255, 255, 255, 0) 100%
       );
-      background-size: 200% auto;
-      background-position: -200% center;
-      animation: shineBar 3s ease-in-out infinite;
-      pointer-events: none;
-      border-radius: inherit;
-      z-index: 2;
+      animation: shimmer 3s ease-in-out infinite;
     }
 
-    @keyframes shineBar {
-      0%   { background-position: -200% center; }
-      50%  { background-position: 200% center; }
-      100% { background-position: 200% center; }
+    @keyframes shimmer {
+      0% { left: -100%; }
+      50% { left: 100%; }
+      100% { left: 100%; }
+    }
+
+    .progress-bar.high {
+      background: linear-gradient(135deg, #4CAF50 0%, #45a049 50%, #66BB6A 100%);
+      box-shadow: 0 0 20px rgba(76, 175, 80, 0.3);
+    }
+
+    .progress-bar.medium {
+      background: linear-gradient(135deg, #FF9800 0%, #F57C00 50%, #FFB74D 100%);
+      box-shadow: 0 0 20px rgba(255, 152, 0, 0.3);
+    }
+
+    .progress-bar.low {
+      background: linear-gradient(135deg, #2196F3 0%, #1976D2 50%, #64B5F6 100%);
+      box-shadow: 0 0 20px rgba(33, 150, 243, 0.3);
+    }
+
+    .progress-bar.very-low {
+      background: linear-gradient(135deg, #9E9E9E 0%, #757575 50%, #BDBDBD 100%);
+      box-shadow: 0 0 20px rgba(158, 158, 158, 0.3);
     }
 
     .percent-text {
       position: relative;
-      z-index: 3;
-      transition: all 0.3s ease;
+      z-index: 2;
+      font-weight: 800;
+      font-size: 0.7rem;
     }
 
+    /* Donation Tier Styles - Fixed Animation */
     .catcher-name {
       display: inline-block;
       font-weight: bold;
       background-size: 200% auto;
       background-clip: text;
+      -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       animation: shine 3s linear infinite;
-      text-shadow: 0 0 4px rgba(255, 255, 255, 0.3);
     }
 
-    .king    { background-image: linear-gradient(90deg, #ffd700, white, #ffd700); }
-    .flame   { background-image: linear-gradient(90deg, #ff0000, white, #ff0000); }
-    .diamond { background-image: linear-gradient(90deg, deepskyblue, white, deepskyblue); }
-    .shine   { background-image: linear-gradient(90deg, limegreen, white, limegreen); }
-    .normal  {
-      color: #ccc;
+    .king {
+      background-image: linear-gradient(90deg, #ffd700, #ffffff, #ffd700);
+    }
+    .flame {
+      background-image: linear-gradient(90deg, #ff0000, #ffffff, #ff0000);
+    }
+    .diamond {
+      background-image: linear-gradient(90deg, #00bfff, #ffffff, #00bfff);
+    }
+    .shine {
+      background-image: linear-gradient(90deg, #32cd32, #ffffff, #32cd32);
+    }
+    .normal {
+      color: #2c3e50;
       text-shadow: none;
-      font-weight: normal;
+      font-weight: 700;
       background: none;
       -webkit-text-fill-color: inherit;
       background-clip: unset;
@@ -117,75 +251,99 @@
     }
 
     @keyframes shine {
-      to { background-position: -200% center; }
+      0% { background-position: 0% 50%; }
+      100% { background-position: 200% 50%; }
     }
 
-    .gray       { 
-      background: #666;
-      transition: all 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    }
-    .gray-glow  { 
-      background: #bff5b1;
-      transition: all 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    }
-    .lightgreen-glow { 
-      background: #30c930;
-      transition: all 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    }
-    .green-glow { 
-      background: #005300;
-      transition: all 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    }
-    .cyan-glow  { 
-      background: #00ffff;
-      transition: all 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    }
-    .blue-glow  { 
-      background: #3399ff;
-      transition: all 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    }
-    .yellow-glow { 
-      background: #ffff66;
-      transition: all 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    }
-    .orange-glow { 
-      background: #ff9900;
-      transition: all 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    }
-    .red-glow   { 
-      background: #ff3333;
-      transition: all 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    }
-    .deepred-glow { 
-      background: #cc0000;
-      transition: all 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    }
-    .rainbow-glow {
-      background: linear-gradient(90deg, red, orange, yellow, green, cyan, blue, violet);
-      background-size: 200% auto;
-      animation: rainbowShine 3s linear infinite;
-      transition: width 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    .no-data {
+      text-align: center;
+      color: #666;
+      font-style: italic;
+      padding: 20px;
+      font-size: 0.9rem;
     }
 
-    @keyframes rainbowShine {
-      to { background-position: -200% center; }
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+      .container {
+        margin: 5px;
+        padding: 10px;
+        max-width: 350px;
+      }
+
+      .rank-entry {
+        padding: 6px 10px;
+      }
+
+      h1 {
+        font-size: 1.2rem;
+        margin-bottom: 12px;
+      }
+
+      .rank-number {
+        width: 25px;
+        height: 25px;
+        font-size: 0.8rem;
+      }
+
+      .player-name {
+        font-size: 0.85rem;
+      }
+
+      .player-level {
+        font-size: 0.7rem;
+      }
     }
 
-    /* Smooth transitions for color changes */
-    .bar-fill {
-      transition: 
-        width 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-        background 0.8s ease,
-        background-color 0.8s ease;
+    @media (max-width: 480px) {
+      .container {
+        margin: 2px;
+        padding: 8px;
+        max-width: 300px;
+      }
+
+      .progress-container {
+        height: 20px;
+      }
+
+      .progress-bar {
+        font-size: 0.75rem;
+      }
     }
   </style>
 </head>
 <body>
-  <h1>🎯 Top 3 Catchrates</h1>
-  <div id="catchBars"></div>
+  <div class="container">
+    <h1>🎯 Top 3 Catchrates</h1>
+    <div id="rankingsContainer" class="rankings">
+      <div class="no-data">Loading catchrates...</div>
+    </div>
+  </div>
 
   <script>
-    let currentEntries = {};
+    let currentEntries = [];
+    let lastSuccessfulData = [];
+
+    function getLevelColorClass(level) {
+      if (level >= 100) return 'level-100-plus';
+      if (level >= 90) return 'level-90-99';
+      if (level >= 80) return 'level-80-89';
+      if (level >= 70) return 'level-70-79';
+      if (level >= 60) return 'level-60-69';
+      if (level >= 50) return 'level-50-59';
+      if (level >= 40) return 'level-40-49';
+      if (level >= 30) return 'level-30-39';
+      if (level >= 20) return 'level-20-29';
+      if (level >= 10) return 'level-10-19';
+      return 'level-0-9';
+    }
+
+    function getRankClass(index) {
+      if (index === 0) return 'gold';
+      if (index === 1) return 'silver';
+      if (index === 2) return 'bronze';
+      return '';
+    }
 
     async function updateCatchrates() {
       try {
@@ -194,82 +352,88 @@
           fetch("catcher.json?" + Date.now())
         ]);
 
-        const data = await catchChanceRes.json();
+        if (!catchChanceRes.ok || !catcherRes.ok) {
+          console.warn("API response not ok, keeping last data");
+          return;
+        }
+
+        const catchChances = await catchChanceRes.json();
         const allCatchers = await catcherRes.json();
 
-        const top = Object.entries(data)
-          .map(([name, chance]) => ({ name, chance }))
+        const topEntries = Object.entries(catchChances)
+          .map(([name, chance]) => ({ 
+            name, 
+            chance,
+            catcher: allCatchers.catcher?.[name] || {}
+          }))
           .sort((a, b) => b.chance - a.chance)
           .slice(0, 3);
 
-        const container = document.getElementById("catchBars");
-        const newIds = [];
+        // Always update display with current data (even if empty)
+        updateDisplay(topEntries);
+        
+        // Only keep successful data if there are actual entries
+        if (topEntries.length > 0) {
+          lastSuccessfulData = topEntries;
+        } else {
+          // Clear last successful data when no entries exist
+          lastSuccessfulData = [];
+        }
 
-        top.forEach((entry, idx) => {
-          const id = `catch-entry-${idx}`;
-          newIds.push(id);
-          const percent = (entry.chance * 100).toFixed(1);
-          const info = allCatchers.catcher?.[entry.name] || {};
-          const coins = info.coins || 0;
-          const level = getPlayerLevel(coins);
-          const barColor = getLevelColor(level);
-          const donation = info.donation || 0;
-
-          const tierClass = donation >= 2500 ? "king" :
-                            donation >= 500  ? "flame" :
-                            donation >= 250  ? "diamond" :
-                            donation >= 100  ? "shine"  : "normal";
-
-          if (!currentEntries[id]) {
-            const row = document.createElement("div");
-            row.className = "entry-row";
-            row.id = id;
-            row.innerHTML = `
-              <div class="player-label">
-                ${idx + 1}. Lv.${level} <span class="catcher-name ${tierClass}">${entry.name}</span>
-              </div>
-              <div class="bar-container">
-                <div class="bar-fill ${barColor}" style="width:${percent}%;">
-                  <span class="percent-text">${percent}%</span>
-                  <div class="shine-overlay"></div>
-                </div>
-              </div>
-            `;
-            container.appendChild(row);
-            currentEntries[id] = row;
-          } else {
-            const row = currentEntries[id];
-            const bar = row.querySelector(".bar-fill");
-            const text = bar.querySelector(".percent-text");
-            const label = row.querySelector(".player-label");
-            
-            // Smooth width transition
-            bar.style.width = `${percent}%`;
-            
-            // Smooth text update
-            if (text) text.textContent = `${percent}%`;
-            
-            // Update label content
-            label.innerHTML = `${idx + 1}. Lv.${level} <span class="catcher-name ${tierClass}">${entry.name}</span>`;
-            
-            // Smooth color transition by updating class
-            bar.className = `bar-fill ${barColor}`;
-          }
-        });
-
-        // Entferne nicht mehr vorhandene Einträge
-        Object.keys(currentEntries).forEach(id => {
-          if (!newIds.includes(id)) {
-            currentEntries[id].remove();
-            delete currentEntries[id];
-          }
-        });
-
-      } catch (e) {
-        console.error("Fehler beim Laden der Daten", e);
+      } catch (error) {
+        console.warn("Error loading catchrates:", error);
+        // On error, try to show last successful data if available
+        if (lastSuccessfulData.length > 0) {
+          updateDisplay(lastSuccessfulData);
+        } else {
+          updateDisplay([]);
+        }
       }
     }
 
+    function updateDisplay(entries) {
+      const container = document.getElementById("rankingsContainer");
+
+      if (entries.length === 0) {
+        container.innerHTML = '<div class="no-data">No active catch attempts...</div>';
+        return;
+      }
+
+      container.innerHTML = '';
+
+      entries.forEach((entry, index) => {
+        const percent = (entry.chance * 100).toFixed(1);
+        const donation = entry.catcher.donation || 0;
+        const coins = entry.catcher.coins || 0;
+        const level = getPlayerLevel(coins);
+        const rankClass = getRankClass(index);
+        const levelColorClass = getLevelColorClass(level);
+
+        const rankEntry = document.createElement('div');
+        rankEntry.className = `rank-entry rank-${index + 1}`;
+        
+        rankEntry.innerHTML = `
+          <div class="rank-number ${rankClass}">${index + 1}</div>
+          <div class="player-info">
+            <div class="player-name">${getStyledCatcherName(entry.name, donation)}</div>
+            <div class="player-level">Level ${level}</div>
+          </div>
+          <div class="progress-section">
+            <div class="progress-container">
+              <div class="progress-bar ${levelColorClass}" style="width: ${percent}%">
+                <span class="percent-text">${percent}%</span>
+              </div>
+            </div>
+          </div>
+        `;
+
+        container.appendChild(rankEntry);
+      });
+
+      currentEntries = entries;
+    }
+
+    // Update every 300ms for smooth real-time updates
     updateCatchrates();
     setInterval(updateCatchrates, 300);
   </script>

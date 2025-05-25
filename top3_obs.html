@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Top 3 Podium OBS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="refresh" content="10" />
+  <script src="utils.js"></script>
+  <style>
+    * { 
+      box-sizing: border-box; 
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: transparent;
+      margin: 0;
+      padding: 6px;
+      color: #2c3e50;
+    }
+
+    .podium-container {
+      max-width: 420px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 18px;
+      padding: 15px 10px;
+      box-shadow: 
+        0 6px 25px rgba(0, 0, 0, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .podium-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.15) 50%,
+        rgba(255, 255, 255, 0) 100%
+      );
+      animation: shimmer 5s ease-in-out infinite;
+    }
+
+    @keyframes shimmer {
+      0% { left: -100%; }
+      50% { left: 100%; }
+      100% { left: 100%; }
+    }
+
+    .podium-grid {
+      display: flex;
+      justify-content: center;
+      align-items: end;
+      gap: 8px;
+    }
+
+    .podium-card {
+      background: rgba(255, 255, 255, 0.25);
+      border-radius: 15px;
+      padding: 12px 8px;
+      text-align: center;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .podium-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Winner - Center, Tallest */
+    .winner {
+      order: 2;
+      width: 140px;
+      background: linear-gradient(135deg, 
+        rgba(255, 215, 0, 0.25) 0%, 
+        rgba(255, 255, 255, 0.3) 50%, 
+        rgba(255, 215, 0, 0.15) 100%);
+      border: 2px solid rgba(255, 215, 0, 0.5);
+      box-shadow: 
+        0 6px 25px rgba(255, 215, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.6);
+      transform: scale(1.05);
+    }
+
+    /* Second Place - Left */
+    .second {
+      order: 1;
+      width: 120px;
+      background: linear-gradient(135deg, 
+        rgba(192, 192, 192, 0.2) 0%, 
+        rgba(255, 255, 255, 0.3) 50%, 
+        rgba(192, 192, 192, 0.1) 100%);
+      border: 2px solid rgba(192, 192, 192, 0.4);
+    }
+
+    /* Third Place - Right */
+    .third {
+      order: 3;
+      width: 120px;
+      background: linear-gradient(135deg, 
+        rgba(205, 127, 50, 0.2) 0%, 
+        rgba(255, 255, 255, 0.3) 50%, 
+        rgba(205, 127, 50, 0.1) 100%);
+      border: 2px solid rgba(205, 127, 50, 0.4);
+    }
+
+    .rank-crown {
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1rem;
+      margin: 0 auto 10px auto;
+      border: 2px solid rgba(255, 255, 255, 0.8);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .winner .rank-crown {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+      color: #fff;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.4);
+      animation: goldPulse 2.5s ease-in-out infinite alternate;
+      box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
+    }
+
+    .second .rank-crown {
+      background: linear-gradient(135deg, #C0C0C0 0%, #E8E8E8 100%);
+      color: #333;
+      text-shadow: 0 1px 2px rgba(255,255,255,0.6);
+    }
+
+    .third .rank-crown {
+      background: linear-gradient(135deg, #CD7F32 0%, #DAA520 100%);
+      color: #fff;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+    }
+
+    @keyframes goldPulse {
+      0% { 
+        box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
+        filter: brightness(1);
+      }
+      100% { 
+        box-shadow: 0 8px 30px rgba(255, 215, 0, 0.6);
+        filter: brightness(1.2);
+      }
+    }
+
+    .catcher-name {
+      font-size: 0.9rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+      line-height: 1.2;
+      word-break: break-word;
+    }
+
+    .winner .catcher-name {
+      font-size: 1rem;
+    }
+
+    .catcher-points {
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .winner .catcher-points {
+      font-size: 0.85rem;
+      color: #FF8C00;
+      font-weight: 700;
+    }
+
+    .second .catcher-points {
+      color: #708090;
+      font-weight: 700;
+    }
+
+    .third .catcher-points {
+      color: #CD853F;
+      font-weight: 700;
+    }
+
+    /* Donation Tier Styles */
+    .tier-name {
+      display: inline-block;
+      font-weight: bold;
+      background-size: 200% auto;
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shine 3s linear infinite;
+    }
+
+    .king {
+      background-image: linear-gradient(90deg, #ffd700, #ffffff, #ffd700);
+    }
+    .flame {
+      background-image: linear-gradient(90deg, #ff0000, #ffffff, #ff0000);
+    }
+    .diamond {
+      background-image: linear-gradient(90deg, #00bfff, #ffffff, #00bfff);
+    }
+    .shine {
+      background-image: linear-gradient(90deg, #32cd32, #ffffff, #32cd32);
+    }
+    .normal {
+      color: #2c3e50;
+      font-weight: 700;
+      background: none;
+      -webkit-text-fill-color: inherit;
+      background-clip: unset;
+      animation: none;
+    }
+
+    @keyframes shine {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 200% 50%; }
+    }
+
+    /* Crown/Medal Icons */
+    .winner::before {
+      content: '👑';
+      position: absolute;
+      top: -8px;
+      right: -5px;
+      font-size: 1.5rem;
+      z-index: 3;
+      filter: drop-shadow(0 3px 6px rgba(0,0,0,0.3));
+      animation: crownFloat 3s ease-in-out infinite alternate;
+    }
+
+    .second::before {
+      content: '🥈';
+      position: absolute;
+      top: -5px;
+      right: -3px;
+      font-size: 1.2rem;
+      z-index: 3;
+    }
+
+    .third::before {
+      content: '🥉';
+      position: absolute;
+      top: -5px;
+      right: -3px;
+      font-size: 1.2rem;
+      z-index: 3;
+    }
+
+    @keyframes crownFloat {
+      0% { transform: translateY(0px); }
+      100% { transform: translateY(-2px); }
+    }
+
+    .no-data {
+      text-align: center;
+      color: #666;
+      font-style: italic;
+      padding: 25px;
+      font-size: 0.9rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 450px) {
+      .podium-container {
+        max-width: 350px;
+        padding: 12px 8px;
+      }
+
+      .winner {
+        width: 115px;
+      }
+
+      .second, .third {
+        width: 100px;
+      }
+
+      .podium-grid {
+        gap: 6px;
+      }
+
+      .podium-card {
+        padding: 10px 6px;
+      }
+
+      .rank-crown {
+        width: 30px;
+        height: 30px;
+        font-size: 0.9rem;
+      }
+
+      .winner .rank-crown {
+        width: 35px;
+        height: 35px;
+      }
+
+      .catcher-name {
+        font-size: 0.8rem;
+      }
+
+      .winner .catcher-name {
+        font-size: 0.85rem;
+      }
+
+      .catcher-points {
+        font-size: 0.75rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="podium-container">
+    <div id="podiumGrid" class="podium-grid">
+      <div class="no-data">Loading top catchers...</div>
+    </div>
+  </div>
+
+  <script>
+    function calcPoints(p) {
+      return p.gesamtpunkte ?? 0;
+    }
+
+    function getDonationTier(donation) {
+      if (donation >= 2500) return "king";
+      if (donation >= 500) return "flame";
+      if (donation >= 250) return "diamond";
+      if (donation >= 100) return "shine";
+      return "normal";
+    }
+
+    function getStyledName(name, donation) {
+      const tier = getDonationTier(donation);
+      return `<span class="tier-name ${tier}">${name}</span>`;
+    }
+
+    function updateTopCatcher() {
+      fetch("catcher.json")
+        .then(res => {
+          if (!res.ok) throw new Error('Network response was not ok');
+          return res.json();
+        })
+        .then(data => {
+          const container = document.getElementById("podiumGrid");
+          
+          if (!data.catcher || Object.keys(data.catcher).length === 0) {
+            container.innerHTML = '<div class="no-data">No catchers yet...</div>';
+            return;
+          }
+          
+          const catchers = Object.entries(data.catcher || {}).map(([name, info]) => {
+            const team = info.team || [];
+            const totalPoints = team.reduce((sum, p) => sum + calcPoints(p), 0);
+            return {
+              name,
+              donation: info.donation || 0,
+              totalPoints
+            };
+          });
+
+          const topCatchers = catchers
+            .sort((a, b) => b.totalPoints - a.totalPoints)
+            .slice(0, 3);
+
+          if (topCatchers.length === 0) {
+            container.innerHTML = '<div class="no-data">No points yet...</div>';
+            return;
+          }
+
+          container.innerHTML = '';
+          
+          // Create podium cards in order: 2nd, 1st, 3rd
+          const podiumOrder = [
+            { catcher: topCatchers[1], rank: 2, class: 'second' },
+            { catcher: topCatchers[0], rank: 1, class: 'winner' },
+            { catcher: topCatchers[2], rank: 3, class: 'third' }
+          ];
+
+          podiumOrder.forEach(({ catcher, rank, class: className }) => {
+            if (!catcher) return;
+            
+            const card = document.createElement('div');
+            card.className = `podium-card ${className}`;
+            
+            card.innerHTML = `
+              <div class="rank-crown">${rank}</div>
+              <div class="catcher-name">${getStyledName(catcher.name, catcher.donation)}</div>
+              <div class="catcher-points">${catcher.totalPoints.toLocaleString()}</div>
+            `;
+            
+            container.appendChild(card);
+          });
+        })
+        .catch(error => {
+          console.error('Error loading data:', error);
+          document.getElementById("podiumGrid").innerHTML = 
+            '<div class="no-data">Error loading data</div>';
+        });
+    }
+
+    // Initial load
+    updateTopCatcher();
+    
+    // Auto-refresh every 10 seconds
+    setInterval(updateTopCatcher, 10000);
+  </script>
+</body>
+</html>

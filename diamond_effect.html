@@ -2,180 +2,584 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Water Finale – Blubber Boost</title>
+  <title>Epic Water Splash Effect</title>
   <script src="utils.js"></script>
   <style>
     html, body {
       margin: 0;
       padding: 0;
-      width: 100%;
-      height: 100%;
-      background: transparent;
+      background: radial-gradient(ellipse at center, #001a33 0%, #000611 70%, #000000 100%);
       overflow: hidden;
+      font-family: 'Segoe UI', sans-serif;
+      width: 100vw;
+      height: 100vh;
     }
-    canvas {
+
+    #splashCanvas {
       position: fixed;
       top: 0;
       left: 0;
-      z-index: 999;
+      width: 100%;
+      height: 100%;
+      z-index: 3;
       pointer-events: none;
-      background: rgba(0, 0, 0, 0.01);
     }
-    #blueOverlay {
+
+    #imageContainer {
       position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0, 191, 255, 0.85);
-      z-index: 1000;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 300px;
+      height: 300px;
+      z-index: 2;
+      opacity: 1;
+      transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    #catchImage {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: brightness(1.3) contrast(1.2) drop-shadow(0 0 20px rgba(0, 150, 255, 0.6));
+      border-radius: 50%;
+      transition: all 0.8s ease;
+    }
+
+    #waterOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(circle at 30% 20%, rgba(0, 191, 255, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 70% 80%, rgba(0, 100, 200, 0.2) 0%, transparent 50%),
+        linear-gradient(45deg, rgba(0, 150, 255, 0.1) 0%, rgba(0, 50, 150, 0.3) 100%);
+      z-index: 4;
       opacity: 0;
       pointer-events: none;
-      transition: opacity 1.2s ease;
+      transition: opacity 2.5s ease;
+      backdrop-filter: blur(2px);
     }
-    #winnerText {
+
+    #nameContainer {
       position: fixed;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
       text-align: center;
-      z-index: 1001;
+      z-index: 10;
       opacity: 0;
-      transition: opacity 1.2s ease;
-      font-family: 'Segoe UI', sans-serif;
-      color: white;
-      text-shadow: 0 0 10px #003366;
-    }
-    #winnerName {
-      font-size: 48px;
-      font-weight: bold;
-    }
-    #catchmonLine {
-      font-size: 32px;
-      margin-top: 12px;
+      pointer-events: none;
+      transition: all 2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     }
 
+    #winnerName {
+      font-size: clamp(2rem, 8vw, 5rem);
+      font-weight: 900;
+      margin-bottom: 15px;
+      text-shadow: 
+        0 0 10px currentColor,
+        0 0 30px currentColor,
+        0 0 50px currentColor,
+        0 0 80px rgba(0, 191, 255, 0.8),
+        0 5px 15px rgba(0,0,0,0.9);
+      animation: liquidGlow 2.5s ease-in-out infinite alternate;
+      letter-spacing: 2px;
+      white-space: nowrap;
+      max-width: 90vw;
+    }
+
+    #catchLine {
+      font-size: clamp(1.8rem, 5vw, 3rem);
+      color: #B0E0E6;
+      font-weight: 700;
+      text-shadow: 
+        0 0 15px rgba(176, 224, 230, 0.9),
+        0 0 30px rgba(0, 191, 255, 0.6),
+        0 3px 8px rgba(0,0,0,0.8);
+      animation: rippleText 3s ease-in-out infinite;
+      letter-spacing: 1px;
+    }
+
+    @keyframes liquidGlow {
+      0% { 
+        filter: brightness(1) drop-shadow(0 0 20px currentColor);
+        transform: scale(1) translateY(0);
+      }
+      100% { 
+        filter: brightness(1.5) drop-shadow(0 0 40px currentColor);
+        transform: scale(1.05) translateY(-3px);
+      }
+    }
+
+    @keyframes rippleText {
+      0%, 100% { 
+        opacity: 0.9; 
+        transform: translateY(0) scale(1);
+      }
+      50% { 
+        opacity: 1; 
+        transform: translateY(-8px) scale(1.02);
+      }
+    }
+
+    /* Donation Tier Water Styles */
     .catcher-name {
       display: inline-block;
-      font-weight: bold;
-      background-size: 200% auto;
+      font-weight: 900;
+      background-size: 300% auto;
       background-clip: text;
+      -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      animation: shine 3s linear infinite;
-      text-shadow: 0 0 4px rgba(255, 255, 255, 0);
+      animation: liquidShine 4s linear infinite;
     }
 
     .king {
-      background-image: linear-gradient(90deg, #ffd700, white, #ffd700);
+      background-image: linear-gradient(45deg, 
+        #FFD700, #FFF700, #87CEEB, #00BFFF, #FFD700);
+      color: #FFD700;
     }
+    
     .flame {
-      background-image: linear-gradient(90deg, #ff0000, white, #ff0000);
+      background-image: linear-gradient(45deg, 
+        #FF6347, #FF8C69, #87CEEB, #4169E1, #FF6347);
+      color: #FF6347;
     }
+    
     .diamond {
-      background-image: linear-gradient(90deg, deepskyblue, white, deepskyblue);
+      background-image: linear-gradient(45deg, 
+        #00CED1, #48D1CC, #E0FFFF, #B0E0E6, #00CED1);
+      color: #00CED1;
     }
+    
     .shine {
-      background-image: linear-gradient(90deg, limegreen, white, limegreen);
+      background-image: linear-gradient(45deg, 
+        #40E0D0, #7FFFD4, #AFEEEE, #5F9EA0, #40E0D0);
+      color: #40E0D0;
     }
+    
     .normal {
-      color: #fff;
-      font-weight: normal;
-      background: none;
-      -webkit-text-fill-color: inherit;
-      background-clip: unset;
-      animation: none;
+      color: #87CEEB;
+      background: linear-gradient(45deg, 
+        #87CEEB, #B0E0E6, #E0FFFF, #87CEEB);
+      background-size: 300% auto;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      -webkit-background-clip: text;
+      animation: liquidShine 4s linear infinite;
     }
 
-    @keyframes shine {
-      to { background-position: -200% center; }
+    @keyframes liquidShine {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 300% 50%; }
+    }
+
+    /* Splash Ring Animation */
+    .splash-ring {
+      position: fixed;
+      border: 3px solid;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 1;
+      animation: splashExpand 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    }
+
+    .splash-ring.water {
+      border-color: rgba(0, 191, 255, 0.8);
+      box-shadow: 0 0 20px rgba(0, 191, 255, 0.6);
+    }
+
+    .splash-ring.foam {
+      border-color: rgba(255, 255, 255, 0.9);
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
+    }
+
+    @keyframes splashExpand {
+      0% {
+        width: 0;
+        height: 0;
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+      }
+      70% {
+        opacity: 0.7;
+        transform: translate(-50%, -50%) scale(1.1);
+      }
+      100% {
+        width: 800px;
+        height: 800px;
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.9);
+      }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      #imageContainer {
+        width: 250px;
+        height: 250px;
+      }
+
+      #winnerName {
+        font-size: clamp(1.5rem, 12vw, 3.5rem);
+      }
+
+      #catchLine {
+        font-size: clamp(1.2rem, 8vw, 2.2rem);
+      }
     }
   </style>
 </head>
 <body>
-<canvas id="bubbleCanvas"></canvas>
-<div id="blueOverlay"></div>
-<div id="winnerText">
-  <div id="winnerName">???</div>
-  <div id="catchmonLine">caught ???!</div>
-</div>
-<audio id="diamondSound" src="sounds/diamond.mp3" preload="auto"></audio>
+  <canvas id="splashCanvas"></canvas>
+  
+  <div id="imageContainer">
+    <img id="catchImage" src="" alt="Catchmon">
+  </div>
 
-<script>
-const canvas = document.getElementById("bubbleCanvas");
-const ctx = canvas.getContext("2d");
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+  <div id="waterOverlay"></div>
 
-const overlay = document.getElementById("blueOverlay");
-const winnerText = document.getElementById("winnerText");
-const winnerName = document.getElementById("winnerName");
-const catchmonLine = document.getElementById("catchmonLine");
+  <div id="nameContainer">
+    <div id="winnerName">???</div>
+    <div id="catchLine">caught ???!</div>
+  </div>
 
-// Diamond-Sound automatisch abspielen
-window.addEventListener("DOMContentLoaded", () => {
-  const diamondAudio = document.getElementById("diamondSound");
-  diamondAudio.volume = 0.5;
-  diamondAudio.play().catch(() => {
-    console.log("Autoplay blockiert.");
-  });
-});
+  <audio id="splashSound" src="sounds/diamond.mp3" preload="auto"></audio>
 
-fetch("spawn_data.json?" + Date.now())
-  .then(res => res.json())
-  .then(data => {
-    const styledName = getStyledCatcherName(data.winner || "???", data.donation || 0);
-    winnerName.innerHTML = `🌊 ${styledName} 🌊`;
-    catchmonLine.textContent = `caught ${data.name || "???"}!`;
-  });
+  <script>
+    const canvas = document.getElementById('splashCanvas');
+    const ctx = canvas.getContext('2d');
+    const imageContainer = document.getElementById('imageContainer');
+    const catchImage = document.getElementById('catchImage');
+    const waterOverlay = document.getElementById('waterOverlay');
+    const nameContainer = document.getElementById('nameContainer');
+    const winnerName = document.getElementById('winnerName');
+    const catchLine = document.getElementById('catchLine');
 
-let bubbles = [];
+    let animationStarted = false;
+    let waterDroplets = [];
+    let splashParticles = [];
+    let animationTime = 0;
 
-function createBubble() {
-  return {
-    x: Math.random() * canvas.width,
-    y: canvas.height + Math.random() * 300,
-    r: Math.random() * 20 + 10,
-    speed: Math.random() * 2 + 1.5,
-    alpha: 0.6 + Math.random() * 0.4
-  };
-}
-
-for (let i = 0; i < 200; i++) bubbles.push(createBubble());
-
-function drawBubbles() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  for (let i = bubbles.length - 1; i >= 0; i--) {
-    const b = bubbles[i];
-    ctx.beginPath();
-    ctx.arc(b.x, b.y, b.r, 0, 2 * Math.PI);
-    ctx.fillStyle = `rgba(173,216,230,${b.alpha})`;
-    ctx.fill();
-
-    b.y -= b.speed;
-    b.alpha -= 0.001;
-    if (b.y + b.r < -50 || b.alpha <= 0.05) {
-      bubbles.splice(i, 1);
+    // Canvas Setup
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
     }
-  }
-}
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
 
-function animate() {
-  while (bubbles.length < 250) bubbles.push(createBubble());
-  drawBubbles();
-  requestAnimationFrame(animate);
-}
+    // Load spawn data
+    fetch("spawn_data.json?" + Date.now())
+      .then(res => res.json())
+      .then(data => {
+        const styledName = getStyledCatcherName(data.winner || "???", data.donation || 0);
+        const tier = getDonationTier(data.donation || 0);
+        
+        winnerName.innerHTML = styledName;
+        winnerName.className = `catcher-name ${tier}`;
+        catchLine.textContent = `caught ${data.name || "???"}!`;
+        
+        if (data.sprite) {
+          catchImage.src = data.sprite;
+          catchImage.onload = () => {
+            setTimeout(startWaterEffect, 600);
+          };
+        }
+      })
+      .catch(err => {
+        console.error("Error loading spawn data:", err);
+        startWaterEffect();
+      });
 
-function showFinale() {
-  overlay.style.opacity = "0.85";
-  winnerText.style.opacity = "1";
-}
+    // Sound Effect
+    window.addEventListener("DOMContentLoaded", () => {
+      const splashAudio = document.getElementById("splashSound");
+      if (splashAudio) {
+        splashAudio.volume = 0.6;
+        splashAudio.play().catch(() => {
+          console.log("Autoplay blocked");
+        });
+      }
+    });
 
-animate();
-setTimeout(showFinale, 3000);
+    // Water Droplet Class
+    class WaterDroplet {
+      constructor(x, y, vx, vy, size) {
+        this.x = x;
+        this.y = y;
+        this.vx = vx;
+        this.vy = vy;
+        this.size = size;
+        this.life = 1.0;
+        this.gravity = 0.4;
+        this.bounce = 0.6;
+        this.trail = [];
+      }
 
-setTimeout(() => {
-  canvas.remove();
-  overlay.remove();
-  winnerText.remove();
-}, 8000);
-</script>
+      update() {
+        // Store trail
+        this.trail.push({x: this.x, y: this.y, life: this.life});
+        if (this.trail.length > 8) this.trail.shift();
+
+        // Physics
+        this.x += this.vx;
+        this.y += this.vy;
+        this.vy += this.gravity;
+        
+        // Bounce off edges
+        if (this.x < 0 || this.x > canvas.width) {
+          this.vx *= -this.bounce;
+          this.x = Math.max(0, Math.min(canvas.width, this.x));
+        }
+        
+        if (this.y > canvas.height) {
+          this.vy *= -this.bounce;
+          this.y = canvas.height;
+          this.life *= 0.8;
+        }
+
+        // Air resistance
+        this.vx *= 0.99;
+        this.vy *= 0.995;
+        
+        // Life decay
+        this.life -= 0.008;
+        this.size *= 0.998;
+
+        return this.life > 0 && this.size > 0.5;
+      }
+
+      draw() {
+        ctx.save();
+        
+        // Draw trail
+        this.trail.forEach((point, i) => {
+          const alpha = (i / this.trail.length) * this.life * 0.6;
+          const size = this.size * (i / this.trail.length) * 0.7;
+          
+          ctx.globalAlpha = alpha;
+          ctx.fillStyle = `rgba(100, 200, 255, ${alpha})`;
+          ctx.beginPath();
+          ctx.arc(point.x, point.y, size, 0, Math.PI * 2);
+          ctx.fill();
+        });
+
+        // Draw main droplet
+        ctx.globalAlpha = this.life;
+        
+        // Droplet gradient
+        const gradient = ctx.createRadialGradient(
+          this.x - this.size * 0.3, this.y - this.size * 0.3, 0,
+          this.x, this.y, this.size
+        );
+        gradient.addColorStop(0, 'rgba(200, 240, 255, 0.9)');
+        gradient.addColorStop(0.5, 'rgba(100, 200, 255, 0.8)');
+        gradient.addColorStop(1, 'rgba(0, 150, 255, 0.6)');
+        
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Highlight
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+        ctx.beginPath();
+        ctx.arc(this.x - this.size * 0.4, this.y - this.size * 0.4, this.size * 0.3, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.restore();
+      }
+    }
+
+    // Splash Particle Class
+    class SplashParticle {
+      constructor(x, y) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = Math.random() * 15 + 8;
+        this.x = x;
+        this.y = y;
+        this.vx = Math.cos(angle) * speed;
+        this.vy = Math.sin(angle) * speed - Math.random() * 10;
+        this.size = Math.random() * 8 + 4;
+        this.life = 1.0;
+        this.gravity = 0.3;
+      }
+
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        this.vy += this.gravity;
+        this.vx *= 0.98;
+        this.life -= 0.012;
+        this.size *= 0.997;
+        return this.life > 0;
+      }
+
+      draw() {
+        ctx.save();
+        ctx.globalAlpha = this.life;
+        
+        const gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size);
+        gradient.addColorStop(0, 'rgba(255, 255, 255, 0.9)');
+        gradient.addColorStop(0.7, 'rgba(100, 200, 255, 0.7)');
+        gradient.addColorStop(1, 'rgba(0, 150, 255, 0.3)');
+        
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+
+    function createSplashRing(x, y, type = 'water', delay = 0) {
+      setTimeout(() => {
+        const ring = document.createElement('div');
+        ring.className = `splash-ring ${type}`;
+        ring.style.left = x + 'px';
+        ring.style.top = y + 'px';
+        document.body.appendChild(ring);
+        
+        setTimeout(() => {
+          ring.remove();
+        }, 1500);
+      }, delay);
+    }
+
+    function createWaterExplosion(centerX, centerY) {
+      // Create massive splash
+      for (let i = 0; i < 80; i++) {
+        const angle = (i / 80) * Math.PI * 2;
+        const distance = Math.random() * 100 + 50;
+        const x = centerX + Math.cos(angle) * distance;
+        const y = centerY + Math.sin(angle) * distance;
+        
+        const speed = Math.random() * 20 + 15;
+        const vx = Math.cos(angle) * speed;
+        const vy = Math.sin(angle) * speed - Math.random() * 8;
+        const size = Math.random() * 12 + 6;
+        
+        waterDroplets.push(new WaterDroplet(x, y, vx, vy, size));
+      }
+
+      // Create splash particles
+      for (let i = 0; i < 60; i++) {
+        splashParticles.push(new SplashParticle(centerX, centerY));
+      }
+
+      // Create expanding rings
+      createSplashRing(centerX, centerY, 'water', 0);
+      createSplashRing(centerX, centerY, 'foam', 200);
+      createSplashRing(centerX, centerY, 'water', 400);
+      createSplashRing(centerX, centerY, 'foam', 600);
+    }
+
+    function startWaterEffect() {
+      animationStarted = true;
+      
+      const rect = imageContainer.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+
+      // Initial small splash
+      setTimeout(() => {
+        createSplashRing(centerX, centerY, 'water');
+      }, 200);
+
+      // Big explosion
+      setTimeout(() => {
+        createWaterExplosion(centerX, centerY);
+        
+        // Image transformation
+        imageContainer.style.transform = 'translate(-50%, -50%) scale(0.3) rotateY(180deg)';
+        imageContainer.style.filter = 'blur(8px) brightness(0.4)';
+        imageContainer.style.opacity = '0.2';
+        
+        catchImage.style.filter = 'brightness(0.6) contrast(2) saturate(2) hue-rotate(180deg)';
+      }, 800);
+
+      // Water overlay
+      setTimeout(() => {
+        waterOverlay.style.opacity = '1';
+      }, 1200);
+
+      // Show name
+      setTimeout(() => {
+        nameContainer.style.opacity = '1';
+        nameContainer.style.transform = 'translate(-50%, -50%) scale(1)';
+      }, 1800);
+    }
+
+    function updateEffect() {
+      if (!animationStarted) return;
+      
+      animationTime += 0.016;
+      
+      // Update water droplets
+      waterDroplets = waterDroplets.filter(droplet => droplet.update());
+      
+      // Update splash particles
+      splashParticles = splashParticles.filter(particle => particle.update());
+      
+      // Add some continuous droplets
+      if (animationTime < 3 && Math.random() < 0.3) {
+        const x = canvas.width * 0.5 + (Math.random() - 0.5) * 200;
+        const y = canvas.height * 0.3;
+        waterDroplets.push(new WaterDroplet(x, y, (Math.random() - 0.5) * 8, Math.random() * 5, Math.random() * 6 + 3));
+      }
+    }
+
+    function drawEffect() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Draw water droplets
+      waterDroplets.forEach(droplet => droplet.draw());
+      
+      // Draw splash particles
+      splashParticles.forEach(particle => particle.draw());
+      
+      // Add atmospheric water effect
+      if (animationTime > 1) {
+        const intensity = Math.min(0.4, (animationTime - 1) / 2);
+        ctx.save();
+        ctx.globalAlpha = intensity * 0.6;
+        
+        for (let i = 0; i < 8; i++) {
+          const x = (Math.sin(animationTime + i) * 0.3 + 0.5) * canvas.width;
+          const y = (Math.cos(animationTime * 0.7 + i) * 0.2 + 0.4) * canvas.height;
+          const size = 80 + Math.sin(animationTime * 2 + i) * 40;
+          
+          const gradient = ctx.createRadialGradient(x, y, 0, x, y, size);
+          gradient.addColorStop(0, 'rgba(100, 200, 255, 0.15)');
+          gradient.addColorStop(1, 'rgba(100, 200, 255, 0)');
+          ctx.fillStyle = gradient;
+          ctx.beginPath();
+          ctx.arc(x, y, size, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.restore();
+      }
+    }
+
+    function animate() {
+      updateEffect();
+      drawEffect();
+      requestAnimationFrame(animate);
+    }
+
+    // Start animation
+    animate();
+
+    // Cleanup after effect
+    setTimeout(() => {
+      canvas.remove();
+      imageContainer.remove();
+      waterOverlay.remove();
+      nameContainer.remove();
+    }, 9000);
+  </script>
 </body>
 </html>

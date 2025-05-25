@@ -80,12 +80,54 @@ def trigger_donation_animation(donor_name, amount):
     except Exception as e:
         print(f"❌ Fehler beim Auslösen der Animation: {e}")
 
+# Global Likes System - NEU!
+def load_global_stats():
+    """Lädt die globalen Statistiken"""
+    try:
+        with open("global_stats.json", "r", encoding="utf-8") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        return {
+            "total_likes_ever": 0,
+            "total_spawns": 0,
+            "total_catches": 0,
+            "total_escapes": 0,
+            "session_start": time.time()
+        }
+
+def save_global_stats(stats):
+    """Speichert die globalen Statistiken"""
+    with open("global_stats.json", "w", encoding="utf-8") as f:
+        json.dump(stats, f, indent=2)
+
+def update_global_likes_file(current_spawn_likes, total_likes_ever):
+    """Aktualisiert sowohl die aktuellen Spawn-Likes als auch die Gesamtlikes"""
+    # Für die aktuelle Spawn-Anzeige (wie bisher)
+    spawn_data = {"global_likes": current_spawn_likes}
+    with open("global_likes.json", "w", encoding="utf-8") as f:
+        json.dump(spawn_data, f)
+    
+    # Für die Global Level Bar - ALLE Likes ever (NUR wenn sich was ändert!)
+    try:
+        with open("global_level.json", "r", encoding="utf-8") as f:
+            current_level_data = json.load(f)
+            current_total = current_level_data.get("global_likes", 0)
+    except FileNotFoundError:
+        current_total = 0
+    
+    # Nur aktualisieren wenn sich die Gesamtlikes geändert haben
+    if total_likes_ever != current_total:
+        level_data = {"global_likes": total_likes_ever}
+        with open("global_level.json", "w", encoding="utf-8") as f:
+            json.dump(level_data, f)
+
 COINS_PER_LIKE = 1
 SPAWN_INTERVAL = 15
 DEFAULT_ANIMATION_DURATION = 5.0
 
 user_like_counts = {}
 data = load_data()
+global_stats = load_global_stats()  # NEU: Global Stats laden
 likes_since_spawn = 0
 active_participants = set()
 current_catchmon = None
@@ -98,10 +140,6 @@ def add_donation(data, username, amount):
         data["catcher"][username] = {"coins": 0, "team": [], "donation": 0}
     data["catcher"][username]["donation"] += amount
     save_data(data)
-
-def update_global_likes_file(global_likes):
-    with open("global_likes.json", "w", encoding="utf-8") as f:
-        json.dump({"global_likes": global_likes}, f)
 
 def update_catch_chances_live():
     if not current_catchmon or not active_participants:
@@ -135,13 +173,24 @@ def calculate_total_effective_likes():
     return total
 
 def on_like_event(username):
-    global likes_since_spawn
+    global likes_since_spawn, global_stats
+    
+    # Normale Like-Logik
     add_coins(data, username, COINS_PER_LIKE)
     user_like_counts[username] = user_like_counts.get(username, 0) + 1
     active_participants.add(username)
     likes_since_spawn += 1
+    
+    # GLOBAL STATS UPDATE - NEU!
+    global_stats["total_likes_ever"] += 1
+    save_global_stats(global_stats)
+    
+    # Files aktualisieren
     save_data(data)
-    update_global_likes_file(calculate_total_effective_likes())
+    current_spawn_likes = calculate_total_effective_likes()
+    update_global_likes_file(current_spawn_likes, global_stats["total_likes_ever"])
+    
+    print(f"👍 {username} liked! (Total ever: {global_stats['total_likes_ever']})")
 
 def start_tiktok_listener():
     asyncio.run(client.run())
@@ -156,13 +205,18 @@ def init_donation_trigger():
         with open("donation_trigger.json", "w", encoding="utf-8") as f:
             json.dump({"donor": None, "amount": 0, "total_donation": 0, "timestamp": 0}, f)
 
-# Initialisiere die Trigger-Datei
+# Initialisiere alle Dateien
 init_donation_trigger()
+
+# Initiale Global Level Datei erstellen
+update_global_likes_file(0, global_stats["total_likes_ever"])
 
 if TESTMODE:
     threading.Thread(target=simulate_like, daemon=True).start()
 else:
     threading.Thread(target=start_tiktok_listener, daemon=True).start()
+
+print(f"🚀 Bot gestartet! Aktuelle Global Level: {global_stats['total_likes_ever']} Likes")
 
 try:
     while True:
@@ -175,8 +229,15 @@ try:
                     break
             last_spawn_time = time.time()
             evaluated = False
+            
+            # Global Stats Update
+            global_stats["total_spawns"] += 1
+            save_global_stats(global_stats)
+            
             save_spawn_data(current_catchmon, result=None, winner=None)
-            update_global_likes_file(0)
+            # DON'T reset global likes here - only reset spawn likes
+            with open("global_likes.json", "w", encoding="utf-8") as f:
+                json.dump({"global_likes": 0}, f)
             with open("catch_chances.json", "w", encoding="utf-8") as f:
                 json.dump({}, f)
 
@@ -203,8 +264,15 @@ try:
                 if winner:
                     add_catchmon(data, winner, current_catchmon)
                     donation = data["catcher"].get(winner, {}).get("donation", 0)
+                    global_stats["total_catches"] += 1
+                    print(f"🎉 {winner} caught {current_catchmon['name']}!")
                 else:
                     donation = 0
+                    global_stats["total_escapes"] += 1
+                    print(f"{current_catchmon['name']} escaped...")
+
+                # Global Stats speichern
+                save_global_stats(global_stats)
 
                 # Dynamische Animationsdauer
                 if donation >= 2500:
@@ -223,18 +291,18 @@ try:
                         time.sleep(0.3)
                         save_spawn_data(current_catchmon, result="caught", winner=winner, donation=donation, duration=animation_duration)
                     threading.Thread(target=delayed_write).start()
-                    print(f"🎉 {winner} caught {current_catchmon['name']}!")
                 else:
                     def delayed_escape():
                         time.sleep(0.3)
                         save_spawn_data(current_catchmon, result="escaped", duration=animation_duration)
                     threading.Thread(target=delayed_escape).start()
                     log_escaped_catchmon(data, current_catchmon)
-                    print(f"{current_catchmon['name']} escaped...")
 
                 count_encounter(data, current_catchmon["name"])
                 save_data(data)
-                update_global_likes_file(0)
+                # Only reset spawn likes, keep global level intact
+                with open("global_likes.json", "w", encoding="utf-8") as f:
+                    json.dump({"global_likes": 0}, f)
 
                 with open("catch_chances.json", "w", encoding="utf-8") as f:
                     json.dump({}, f)
@@ -245,8 +313,12 @@ try:
                     save_spawn_data(current_catchmon, result="escaped", duration=DEFAULT_ANIMATION_DURATION)
                 threading.Thread(target=delayed_escape).start()
                 log_escaped_catchmon(data, current_catchmon)
+                global_stats["total_escapes"] += 1
+                save_global_stats(global_stats)
                 print(f"{current_catchmon['name']} escaped (keine Teilnehmer)")
-                update_global_likes_file(0)
+                # Only reset spawn likes, keep global level intact
+                with open("global_likes.json", "w", encoding="utf-8") as f:
+                    json.dump({"global_likes": 0}, f)
                 with open("catch_chances.json", "w", encoding="utf-8") as f:
                     json.dump({}, f)
                 animation_duration = DEFAULT_ANIMATION_DURATION
@@ -265,4 +337,8 @@ try:
         time.sleep(1)
 
 except KeyboardInterrupt:
-    print("⛔ Bot gestoppt.")
+    print(f"⛔ Bot gestoppt. Finale Stats:")
+    print(f"   🌟 Total Likes Ever: {global_stats['total_likes_ever']}")
+    print(f"   🎯 Total Spawns: {global_stats['total_spawns']}")
+    print(f"   ✅ Total Catches: {global_stats['total_catches']}")
+    print(f"   💨 Total Escapes: {global_stats['total_escapes']}")

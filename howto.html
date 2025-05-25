@@ -5,109 +5,587 @@
   <title>How To Play – Catchmon Catcher</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #f9f9ff;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       margin: 0;
       padding: 0;
+      min-height: 100vh;
+      color: #333;
     }
 
     .container {
-      max-width: 800px;
+      max-width: 1000px;
       margin: auto;
-      padding: 24px;
-      color: #333;
+      padding: 20px;
     }
 
     .top-bar {
       display: flex;
       align-items: center;
-      margin-bottom: 16px;
+      justify-content: space-between;
+      margin-bottom: 30px;
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      padding: 15px 20px;
+      border: 1px solid rgba(255,255,255,0.2);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
     }
 
     .back-button {
       font-size: 16px;
       text-decoration: none;
-      color: #555;
-      font-weight: bold;
-      padding: 6px 12px;
-      border-radius: 6px;
-      background: #e0e0e0;
-      transition: background 0.2s ease;
+      color: white;
+      font-weight: 600;
+      padding: 12px 20px;
+      border-radius: 12px;
+      background: linear-gradient(145deg, rgba(255,255,255,0.2), rgba(255,255,255,0.1));
+      border: 1px solid rgba(255,255,255,0.3);
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
     }
 
     .back-button:hover {
-      background: #ccc;
+      transform: translateY(-2px);
+      background: linear-gradient(145deg, rgba(255,255,255,0.3), rgba(255,255,255,0.2));
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
     }
 
     h1 {
       text-align: center;
-      color: #2c3e50;
-      font-size: 26px;
-      margin-top: 0;
+      margin: 0;
+      font-size: clamp(2rem, 6vw, 3rem);
+      background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
+      background-size: 300% 300%;
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: gradientShift 3s ease-in-out infinite;
+      font-weight: 800;
+    }
+
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .hero-section {
+      text-align: center;
+      margin-bottom: 40px;
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(15px);
+      border-radius: 20px;
+      padding: 30px;
+      border: 1px solid rgba(255,255,255,0.2);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+      animation: heroShimmer 4s ease-in-out infinite;
+    }
+
+    @keyframes heroShimmer {
+      0% { left: -100%; }
+      50% { left: 100%; }
+      100% { left: 100%; }
+    }
+
+    .sprite-container {
+      position: relative;
+      display: inline-block;
+      margin-bottom: 20px;
+      z-index: 2;
     }
 
     .sprite {
-      float: right;
-      width: 100px;
-      margin-left: 16px;
+      width: 150px;
+      height: 150px;
+      object-fit: contain;
+      border-radius: 20px;
+      box-shadow: 
+        0 10px 30px rgba(0,0,0,0.3),
+        0 0 50px rgba(255,215,0,0.3);
+      border: 3px solid rgba(255,215,0,0.4);
+      animation: floatSprite 4s ease-in-out infinite alternate;
+      transition: all 0.3s ease;
     }
 
-    ul {
-      margin-top: 20px;
-      padding-left: 20px;
+    @keyframes floatSprite {
+      0% { 
+        transform: translateY(0px) scale(1);
+        box-shadow: 
+          0 10px 30px rgba(0,0,0,0.3),
+          0 0 50px rgba(255,215,0,0.3);
+      }
+      100% { 
+        transform: translateY(-10px) scale(1.05);
+        box-shadow: 
+          0 20px 40px rgba(0,0,0,0.4),
+          0 0 70px rgba(255,215,0,0.5);
+      }
+    }
+
+    .sprite:hover {
+      transform: translateY(-15px) scale(1.1);
+      box-shadow: 
+        0 25px 50px rgba(0,0,0,0.5),
+        0 0 80px rgba(255,215,0,0.6);
+    }
+
+    .intro-text {
+      font-size: 18px;
+      color: rgba(255,255,255,0.9);
+      margin-bottom: 20px;
+      font-weight: 500;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+      position: relative;
+      z-index: 2;
+    }
+
+    .steps-container {
+      display: grid;
+      gap: 25px;
+      margin-bottom: 40px;
+    }
+
+    .step-card {
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(15px);
+      border-radius: 20px;
+      padding: 25px;
+      border: 1px solid rgba(255,255,255,0.2);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .step-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+      transition: left 0.5s;
+    }
+
+    .step-card:hover::before {
+      left: 100%;
+    }
+
+    .step-card:hover {
+      transform: translateY(-5px) scale(1.02);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+      border-color: rgba(255,255,255,0.3);
+    }
+
+    .step-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 15px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .step-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: 800;
+      color: white;
+      text-shadow: 0 2px 5px rgba(0,0,0,0.3);
+      flex-shrink: 0;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+      position: relative;
+    }
+
+    .step-icon::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      border-radius: 50%;
+      background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
+      background-size: 300% 300%;
+      animation: iconGradient 3s ease-in-out infinite;
+      z-index: -1;
+    }
+
+    @keyframes iconGradient {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .step-icon::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.8);
+    }
+
+    .step-icon span {
+      position: relative;
+      z-index: 2;
+    }
+
+    .step-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: white;
+      margin: 0;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+
+    .step-description {
+      color: rgba(255,255,255,0.9);
+      font-size: 16px;
       line-height: 1.6;
+      margin: 0;
+      font-weight: 500;
+      position: relative;
+      z-index: 2;
     }
 
-    li {
-      margin-bottom: 12px;
-    }
-
-    .footer {
-      margin-top: 40px;
+    .footer-section {
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(15px);
+      border-radius: 20px;
+      padding: 30px;
       text-align: center;
-      font-size: 14px;
-      color: #777;
+      border: 1px solid rgba(255,255,255,0.2);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      position: relative;
+      overflow: hidden;
     }
 
-    @media (max-width: 600px) {
-      .sprite {
-        float: none;
-        display: block;
-        margin: 0 auto 20px auto;
+    .footer-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+      animation: footerShimmer 5s ease-in-out infinite;
+    }
+
+    @keyframes footerShimmer {
+      0% { left: -100%; }
+      50% { left: 100%; }
+      100% { left: 100%; }
+    }
+
+    .footer-text {
+      font-size: 20px;
+      font-weight: 600;
+      color: white;
+      margin: 0;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+      position: relative;
+      z-index: 2;
+    }
+
+    .footer-emojis {
+      font-size: 28px;
+      margin: 15px 0;
+      display: block;
+      animation: emojiFloat 3s ease-in-out infinite alternate;
+      position: relative;
+      z-index: 2;
+    }
+
+    @keyframes emojiFloat {
+      0% { transform: translateY(0px); }
+      100% { transform: translateY(-5px); }
+    }
+
+    /* Special Effects */
+    .sparkle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: white;
+      border-radius: 50%;
+      animation: sparkleFloat 4s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    @keyframes sparkleFloat {
+      0%, 100% { 
+        opacity: 0;
+        transform: translateY(20px) scale(0.5);
+      }
+      50% { 
+        opacity: 1;
+        transform: translateY(-20px) scale(1);
+      }
+    }
+
+    .sparkle:nth-child(1) { top: 20%; left: 10%; animation-delay: 0s; }
+    .sparkle:nth-child(2) { top: 60%; left: 90%; animation-delay: 1s; }
+    .sparkle:nth-child(3) { top: 80%; left: 20%; animation-delay: 2s; }
+    .sparkle:nth-child(4) { top: 30%; left: 80%; animation-delay: 0.5s; }
+
+    /* Mobile Optimizations */
+    @media (max-width: 768px) {
+      .container {
+        padding: 15px;
       }
 
-      .container {
-        padding: 16px;
+      .top-bar {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+        padding: 20px;
       }
 
       h1 {
-        font-size: 22px;
+        font-size: clamp(1.8rem, 8vw, 2.5rem);
+      }
+
+      .hero-section,
+      .step-card,
+      .footer-section {
+        padding: 20px;
+        margin-bottom: 20px;
+      }
+
+      .sprite {
+        width: 120px;
+        height: 120px;
+      }
+
+      .intro-text {
+        font-size: 16px;
+      }
+
+      .step-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 12px;
+      }
+
+      .step-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
+      }
+
+      .step-title {
+        font-size: 18px;
+      }
+
+      .step-description {
+        font-size: 15px;
+        text-align: center;
+      }
+
+      .footer-text {
+        font-size: 18px;
+      }
+
+      .footer-emojis {
+        font-size: 24px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 10px;
+      }
+
+      .hero-section,
+      .step-card,
+      .footer-section {
+        padding: 15px;
+        margin-bottom: 15px;
+      }
+
+      .sprite {
+        width: 100px;
+        height: 100px;
+      }
+
+      .intro-text {
+        font-size: 14px;
+      }
+
+      .step-icon {
+        width: 45px;
+        height: 45px;
+        font-size: 18px;
+      }
+
+      .step-title {
+        font-size: 16px;
+      }
+
+      .step-description {
+        font-size: 14px;
+      }
+
+      .footer-text {
+        font-size: 16px;
+      }
+
+      .footer-emojis {
+        font-size: 20px;
       }
     }
   </style>
 </head>
 <body>
   <div class="container">
+    <div class="sparkle"></div>
+    <div class="sparkle"></div>
+    <div class="sparkle"></div>
+    <div class="sparkle"></div>
+
     <div class="top-bar">
       <a class="back-button" href="javascript:history.back()">← Back</a>
+      <h1>🧠 How to Play Catchmon Catcher</h1>
+      <div></div> <!-- Spacer for flex layout -->
     </div>
 
-    <h1>🧠 How to Play Catchmon Catcher</h1>
-    <img class="sprite" src="catchmon/Common/Zapkit.png" alt="Zapkit">
+    <div class="hero-section">
+      <div class="sprite-container">
+        <img class="sprite" src="catchmon/Common/Zapkit.png" alt="Zapkit">
+      </div>
+      <p class="intro-text">
+        Welcome to the ultimate Catchmon experience! Master the art of catching, evolving, and battling your way to the top!
+      </p>
+    </div>
 
-    <ul>
-      <li><strong>Live Spawns:</strong> A wild Catchmon spawns every 2 minutes. It has random stats, level and rarity.</li>
-      <li><strong>Catch Mechanism:</strong> Viewers like the stream – every like acts as a ticket. The more likes you send, the higher your chance to catch the Catchmon!</li>
-      <li><strong>Fusion Evolution:</strong> When you catch two of the same Catchmon, they automatically evolve to the next stage.</li>
-      <li><strong>Stats & Power:</strong> Stats of both Catchmon are added together. There's no 31 cap – evolved Catchmon can be very strong!</li>
-      <li><strong>Stage Limit:</strong> You can only hold 3 Catchmon per evolution stage. New ones won't be added unless they trigger an evolution.</li>
-      <li><strong>Shiny Catchmon:</strong> Rare and powerful! Catching one is a badge of honor (and bonus points!).</li>
-      <li><strong>Climb the Rankings:</strong> Evolve strategically, collect the strongest team, and dominate the leaderboard.</li>
-    </ul>
+    <div class="steps-container">
+      <div class="step-card">
+        <div class="step-header">
+          <div class="step-icon">
+            <span>⚡</span>
+          </div>
+          <h3 class="step-title">Live Spawns</h3>
+        </div>
+        <p class="step-description">
+          A wild Catchmon spawns every 2 minutes during live streams! Each one has randomly generated stats, level, and rarity. Stay alert and be ready to catch!
+        </p>
+      </div>
 
-    <div class="footer">
-      🌟 Every like brings you closer – team up, catch ‘em all, and shine at the top!
+      <div class="step-card">
+        <div class="step-header">
+          <div class="step-icon">
+            <span>❤️</span>
+          </div>
+          <h3 class="step-title">Catch Mechanism</h3>
+        </div>
+        <p class="step-description">
+          Viewers like the stream to catch Catchmon! Every like acts as a lottery ticket. The more likes you send, the higher your chance to catch that wild Catchmon!
+        </p>
+      </div>
+
+      <div class="step-card">
+        <div class="step-header">
+          <div class="step-icon">
+            <span>🔥</span>
+          </div>
+          <h3 class="step-title">Fusion Evolution</h3>
+        </div>
+        <p class="step-description">
+          When you catch two of the same Catchmon, they automatically fuse and evolve to the next stage! Watch your team grow stronger with each evolution.
+        </p>
+      </div>
+
+      <div class="step-card">
+        <div class="step-header">
+          <div class="step-icon">
+            <span>💪</span>
+          </div>
+          <h3 class="step-title">Stats & Power</h3>
+        </div>
+        <p class="step-description">
+          Stats of both Catchmon are combined during evolution. There's no 31 cap – evolved Catchmon can become incredibly powerful with combined stats!
+        </p>
+      </div>
+
+      <div class="step-card">
+        <div class="step-header">
+          <div class="step-icon">
+            <span>🎯</span>
+          </div>
+          <h3 class="step-title">Stage Limit</h3>
+        </div>
+        <p class="step-description">
+          You can only hold 3 Catchmon per evolution stage. New catches won't be added unless they're strong enough to replace weaker ones or trigger evolution!
+        </p>
+      </div>
+
+      <div class="step-card">
+        <div class="step-header">
+          <div class="step-icon">
+            <span>✨</span>
+          </div>
+          <h3 class="step-title">Shiny Catchmon</h3>
+        </div>
+        <p class="step-description">
+          Rare and incredibly powerful! Shiny Catchmon are extremely rare spawns that give massive bonus points. Catching one is a true badge of honor!
+        </p>
+      </div>
+
+      <div class="step-card">
+        <div class="step-header">
+          <div class="step-icon">
+            <span>🏆</span>
+          </div>
+          <h3 class="step-title">Climb the Rankings</h3>
+        </div>
+        <p class="step-description">
+          Evolve strategically, collect the strongest team, and dominate the leaderboard! Compete with other trainers to become the ultimate Catchmon Master!
+        </p>
+      </div>
+
+      <div class="step-card">
+        <div class="step-header">
+          <div class="step-icon">
+            <span>💎</span>
+          </div>
+          <h3 class="step-title">Donation Bonuses</h3>
+        </div>
+        <p class="step-description">
+          Support the stream with donations to get powerful like multipliers! Higher donations give better catch rates and unlock exclusive visual effects when you catch Catchmon!
+        </p>
+      </div>
+    </div>
+
+    <div class="footer-section">
+      <div class="footer-emojis">🌟 ⚡ 🎮 ✨ 🏆</div>
+      <p class="footer-text">
+        Every like brings you closer – team up, catch 'em all, and shine at the top!
+      </p>
     </div>
   </div>
 </body>

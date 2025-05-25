@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Effect Placeholder</title>
+  <title>Catch Success</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="utils.js"></script>
   <style>
@@ -13,17 +13,22 @@
       height: 100%;
       background: transparent;
       overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
     }
+
     #overlay {
       position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.25);
+      top: 0; 
+      left: 0;
+      width: 100%; 
+      height: 100%;
+      background: radial-gradient(circle at center, rgba(76, 175, 80, 0.15) 0%, rgba(0, 0, 0, 0.3) 70%);
       z-index: 998;
       pointer-events: none;
       opacity: 0;
-      transition: opacity 0.6s ease;
+      transition: opacity 1s ease;
     }
+
     #winnerText {
       position: fixed;
       top: 50%;
@@ -31,59 +36,155 @@
       transform: translate(-50%, -50%);
       text-align: center;
       z-index: 1001;
-      font-family: 'Segoe UI', sans-serif;
-      color: white;
-      text-shadow: 0 0 10px #000;
       opacity: 0;
-      transition: opacity 1s ease;
+      transition: all 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     }
+
     #winnerName {
-      font-size: 48px;
-      font-weight: bold;
+      font-size: clamp(2.5rem, 8vw, 5rem);
+      font-weight: 800;
+      margin-bottom: 20px;
+      text-shadow: 
+        0 0 30px currentColor,
+        0 0 60px currentColor,
+        0 8px 20px rgba(0,0,0,0.8);
+      animation: nameGlow 2.5s ease-in-out infinite alternate;
+      letter-spacing: 2px;
     }
-    #catchmonLine {
-      font-size: 32px;
-      margin-top: 12px;
+
+    #catchLine {
+      font-size: clamp(1.5rem, 5vw, 2.8rem);
+      color: #fff;
+      font-weight: 600;
+      text-shadow: 
+        0 0 20px rgba(255, 255, 255, 0.8),
+        0 4px 12px rgba(0,0,0,0.8);
+      animation: subtlePulse 3s ease-in-out infinite;
+      letter-spacing: 1px;
     }
+
+    @keyframes nameGlow {
+      0% { 
+        filter: brightness(1) drop-shadow(0 0 20px currentColor);
+        transform: scale(1);
+      }
+      100% { 
+        filter: brightness(1.4) drop-shadow(0 0 40px currentColor);
+        transform: scale(1.03);
+      }
+    }
+
+    @keyframes subtlePulse {
+      0%, 100% { 
+        opacity: 0.9; 
+        transform: translateY(0);
+      }
+      50% { 
+        opacity: 1; 
+        transform: translateY(-5px);
+      }
+    }
+
+    /* Donation Tier Styles */
     .catcher-name {
       display: inline-block;
-      font-weight: bold;
-      background-size: 200% auto;
+      font-weight: 800;
+      background-size: 300% auto;
       background-clip: text;
+      -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      animation: shine 3s linear infinite;
-      text-shadow: 0 0 4px rgba(255, 255, 255, 0);
+      animation: smoothShine 4s linear infinite;
     }
+
     .king {
-      background-image: linear-gradient(90deg, #ffd700, white, #ffd700);
+      background-image: linear-gradient(45deg, #FFD700, #FFF700, #FFFF00, #FFD700);
+      color: #FFD700;
     }
+    
     .flame {
-      background-image: linear-gradient(90deg, #ff0000, white, #ff0000);
+      background-image: linear-gradient(45deg, #FF4500, #FF6347, #FF8C00, #FF4500);
+      color: #FF4500;
     }
+    
     .diamond {
-      background-image: linear-gradient(90deg, deepskyblue, white, deepskyblue);
+      background-image: linear-gradient(45deg, #00BFFF, #87CEEB, #4169E1, #00BFFF);
+      color: #00BFFF;
     }
+    
     .shine {
-      background-image: linear-gradient(90deg, limegreen, white, limegreen);
+      background-image: linear-gradient(45deg, #32CD32, #90EE90, #00FF7F, #32CD32);
+      color: #32CD32;
     }
+    
     .normal {
+      background-image: linear-gradient(45deg, #fff, #f0f0f0, #e8e8e8, #fff);
       color: #fff;
-      font-weight: normal;
-      background: none;
-      -webkit-text-fill-color: inherit;
-      background-clip: unset;
-      animation: none;
+      background-size: 300% auto;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      -webkit-background-clip: text;
+      animation: smoothShine 4s linear infinite;
     }
-    @keyframes shine {
-      to { background-position: -200% center; }
+
+    @keyframes smoothShine {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 300% 50%; }
+    }
+
+    /* Simple Particle Effect */
+    .particle {
+      position: fixed;
+      width: 4px;
+      height: 4px;
+      background: rgba(76, 175, 80, 0.8);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 999;
+      animation: particleFloat 3s ease-out forwards;
+    }
+
+    @keyframes particleFloat {
+      0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-200px) scale(0.3);
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      #winnerName {
+        font-size: clamp(2rem, 12vw, 4rem);
+        margin-bottom: 15px;
+        letter-spacing: 1px;
+      }
+
+      #catchLine {
+        font-size: clamp(1.2rem, 8vw, 2.2rem);
+        letter-spacing: 0.5px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      #winnerName {
+        font-size: clamp(1.8rem, 15vw, 3.5rem);
+        margin-bottom: 12px;
+      }
+
+      #catchLine {
+        font-size: clamp(1rem, 10vw, 2rem);
+      }
     }
   </style>
 </head>
 <body>
   <div id="overlay"></div>
   <div id="winnerText">
-    <div id="winnerName">???</div>
-    <div id="catchmonLine">caught ???!</div>
+    <div id="winnerName">Loading...</div>
+    <div id="catchLine">caught ???!</div>
   </div>
   <audio id="normalSound" src="sounds/normal.mp3" preload="auto"></audio>
 
@@ -91,32 +192,80 @@
     const overlay = document.getElementById("overlay");
     const winnerText = document.getElementById("winnerText");
     const winnerName = document.getElementById("winnerName");
-    const catchmonLine = document.getElementById("catchmonLine");
+    const catchLine = document.getElementById("catchLine");
 
     // Sound automatisch abspielen
     window.addEventListener("DOMContentLoaded", () => {
       const normalAudio = document.getElementById("normalSound");
-      normalAudio.volume = 0.3;
-      normalAudio.play().catch(() => {
-        console.log("Autoplay blockiert.");
-      });
+      if (normalAudio) {
+        normalAudio.volume = 0.4;
+        normalAudio.play().catch(() => {
+          console.log("Autoplay blocked");
+        });
+      }
     });
 
-    // Daten anzeigen
+    // Simple particle creation
+    function createParticles() {
+      const centerX = window.innerWidth / 2;
+      const centerY = window.innerHeight / 2;
+      
+      for (let i = 0; i < 20; i++) {
+        setTimeout(() => {
+          const particle = document.createElement('div');
+          particle.className = 'particle';
+          
+          const angle = (i / 20) * Math.PI * 2;
+          const distance = Math.random() * 100 + 50;
+          const x = centerX + Math.cos(angle) * distance;
+          const y = centerY + Math.sin(angle) * distance;
+          
+          particle.style.left = x + 'px';
+          particle.style.top = y + 'px';
+          particle.style.animationDelay = Math.random() * 1 + 's';
+          
+          document.body.appendChild(particle);
+          
+          setTimeout(() => {
+            particle.remove();
+          }, 3000);
+        }, i * 100);
+      }
+    }
+
+    // Load data and show effect
     fetch("spawn_data.json?" + Date.now())
       .then(res => res.json())
       .then(data => {
-        const styledName = getStyledCatcherName(data.winner || "???", data.donation || 0);
-        winnerName.innerHTML = ` ${styledName} `;
-        catchmonLine.textContent = `caught ${data.name + "🎉" || "???"}!`;
+        const styledName = getStyledCatcherName(data.winner || "Unknown", data.donation || 0);
+        const tier = getDonationTier(data.donation || 0);
+        
+        winnerName.innerHTML = styledName;
+        winnerName.className = `catcher-name ${tier}`;
+        catchLine.textContent = `caught ${data.name || "something"}!`;
+        
+        // Show effect
         overlay.style.opacity = "1";
         winnerText.style.opacity = "1";
+        winnerText.style.transform = "translate(-50%, -50%) scale(1)";
+        
+        // Create particles
+        setTimeout(createParticles, 500);
+      })
+      .catch(err => {
+        console.error("Error loading data:", err);
+        winnerName.innerHTML = '<span class="normal">Someone</span>';
+        catchLine.textContent = "made a catch!";
+        overlay.style.opacity = "1";
+        winnerText.style.opacity = "1";
+        winnerText.style.transform = "translate(-50%, -50%) scale(1)";
       });
 
+    // Auto cleanup
     setTimeout(() => {
       overlay.remove();
       winnerText.remove();
-    }, 3000);
+    }, 4000);
   </script>
 </body>
 </html>

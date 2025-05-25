@@ -6,94 +6,204 @@
   <title>Catcher Detail</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: Arial, sans-serif;
-      background: #f0f0f0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       margin: 0;
       padding: 0;
+      min-height: 100vh;
+      color: #333;
     }
 
     .container {
-      max-width: 960px;
+      max-width: 1200px;
       margin: auto;
-      padding: 24px;
+      padding: 20px;
     }
 
     .top-bar {
       display: flex;
       align-items: center;
-      margin-bottom: 10px;
+      justify-content: space-between;
+      margin-bottom: 30px;
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      padding: 15px 20px;
+      border: 1px solid rgba(255,255,255,0.2);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
     }
 
     .back-button {
       font-size: 16px;
       text-decoration: none;
-      color: #555;
-      font-weight: bold;
-      padding: 6px 12px;
-      border-radius: 6px;
-      background: #e0e0e0;
-      transition: background 0.2s ease;
+      color: white;
+      font-weight: 600;
+      padding: 12px 20px;
+      border-radius: 12px;
+      background: linear-gradient(145deg, rgba(255,255,255,0.2), rgba(255,255,255,0.1));
+      border: 1px solid rgba(255,255,255,0.3);
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
     }
 
     .back-button:hover {
-      background: #ccc;
+      transform: translateY(-2px);
+      background: linear-gradient(145deg, rgba(255,255,255,0.3), rgba(255,255,255,0.2));
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
     }
 
     h1 {
       text-align: center;
       margin: 0;
-      font-size: 26px;
+      font-size: clamp(1.8rem, 4vw, 2.2rem);
+      background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
+      background-size: 300% 300%;
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: gradientShift 3s ease-in-out infinite;
+      font-weight: 800;
+    }
+
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
     }
 
     h2 {
       text-align: center;
       margin-top: 8px;
-      font-weight: normal;
-      font-size: 18px;
-      color: #444;
+      font-weight: 600;
+      font-size: clamp(1rem, 3vw, 1.2rem);
+      color: rgba(255,255,255,0.9);
+      text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+
+    .catchdex-button-container {
+      text-align: center;
+      margin: 20px 0 30px 0;
+    }
+
+    .catchdex-button {
+      display: inline-block;
+      padding: 12px 24px;
+      background: linear-gradient(145deg, #4CAF50, #45a049);
+      color: white;
+      font-weight: 700;
+      border-radius: 12px;
+      text-decoration: none;
+      box-shadow: 0 6px 20px rgba(76, 175, 80, 0.3);
+      border: none;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      font-size: 16px;
+    }
+
+    .catchdex-button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.4s;
+    }
+
+    .catchdex-button:hover::before {
+      left: 100%;
+    }
+
+    .catchdex-button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(76, 175, 80, 0.4);
+      background: linear-gradient(145deg, #45a049, #3d8b40);
+    }
+
+    .stats-section {
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(15px);
+      border-radius: 20px;
+      padding: 25px;
+      margin-bottom: 30px;
+      border: 1px solid rgba(255,255,255,0.2);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stats-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+      animation: sectionShimmer 5s ease-in-out infinite;
+    }
+
+    @keyframes sectionShimmer {
+      0% { left: -100%; }
+      50% { left: 100%; }
+      100% { left: 100%; }
     }
 
     .levelbar-wrapper {
       display: flex;
       flex-direction: column;
       align-items: center;
-      margin-top: 10px;
-      margin-bottom: 20px;
+      margin-bottom: 25px;
       position: relative;
+      z-index: 2;
     }
 
     .bar-container {
-      background: #333;
-      border-radius: 16px;
-      height: 24px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 20px;
+      height: 32px;
       width: 100%;
-      max-width: 500px;
+      max-width: 600px;
       overflow: hidden;
       position: relative;
+      box-shadow: 
+        inset 0 2px 5px rgba(0,0,0,0.2),
+        0 2px 10px rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.3);
     }
 
     .bar-fill {
       height: 100%;
       position: relative;
-      transition: width 0.5s ease;
+      transition: width 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
       z-index: 1;
       overflow: hidden;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .shine-overlay {
       position: absolute;
       top: 0; left: 0;
-      width: 100%; height: 100%;
+      width: 100%; 
+      height: 100%;
       background-image: linear-gradient(
         90deg,
-        rgba(0, 0, 0, 0) 0%,
-        rgba(255, 255, 255, 0.5) 50%,
-        rgba(0, 0, 0, 0) 100%
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.4) 50%,
+        rgba(255, 255, 255, 0) 100%
       );
       background-size: 200% auto;
       background-position: -200% center;
-      animation: shineBar 2.5s linear infinite;
+      animation: shineBar 3s linear infinite;
       pointer-events: none;
       border-radius: inherit;
     }
@@ -104,83 +214,331 @@
     }
 
     .level-label {
-      font-size: 14px;
-      color: #444;
-      margin-top: 6px;
+      font-size: 16px;
+      color: white;
+      margin-top: 12px;
+      font-weight: 600;
+      text-shadow: 0 2px 5px rgba(0,0,0,0.3);
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Level Colors */
+    .gray       { background: linear-gradient(135deg, #9E9E9E, #757575); }
+    .lightgreen-glow { background: linear-gradient(135deg, #4CAF50, #66BB6A); }
+    .green-glow { background: linear-gradient(135deg, #2E7D32, #4CAF50); }
+    .blue-glow  { background: linear-gradient(135deg, #1976D2, #42A5F5); }
+    .yellow-glow { background: linear-gradient(135deg, #F57F17, #FFEB3B); }
+    .orange-glow { background: linear-gradient(135deg, #E65100, #FF9800); }
+    .red-glow   { background: linear-gradient(135deg, #C62828, #F44336); }
+    .deepred-glow { background: linear-gradient(135deg, #B71C1C, #D32F2F); }
+    .rainbow-glow {
+      background: linear-gradient(135deg, #ff0000, #ff8000, #ffff00, #80ff00, #00ff00, #00ff80, #00ffff, #0080ff, #0000ff, #8000ff, #ff00ff, #ff0080);
+      background-size: 400% 400%;
+      animation: rainbowShine 4s linear infinite, shineBar 3s linear infinite;
+    }
+
+    @keyframes rainbowShine {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 400% 50%; }
+    }
+
+    .table-container {
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(15px);
+      border-radius: 20px;
+      padding: 0;
+      border: 1px solid rgba(255,255,255,0.2);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .table-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+      animation: tableShimmer 6s ease-in-out infinite;
+    }
+
+    @keyframes tableShimmer {
+      0% { left: -100%; }
+      50% { left: 100%; }
+      100% { left: 100%; }
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 20px;
-      font-size: 14px;
-      overflow-x: auto;
+      margin-top: 0;
+      font-size: 15px;
+      position: relative;
+      z-index: 2;
     }
 
-    th, td {
-      border: 1px solid #ccc;
-      padding: 8px;
+    th {
+      background: linear-gradient(145deg, #4CAF50, #45a049);
+      color: white;
+      padding: 16px 12px;
       text-align: center;
+      font-weight: 600;
+      font-size: 14px;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+      border: none;
+      position: sticky;
+      top: 0;
+      z-index: 100;
     }
 
-    img {
-      width: 64px;
+    th:first-child {
+      border-top-left-radius: 20px;
+    }
+
+    th:last-child {
+      border-top-right-radius: 20px;
+    }
+
+    td {
+      padding: 14px 12px;
+      text-align: center;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      transition: all 0.3s ease;
+      color: white;
+      font-weight: 500;
+    }
+
+    tr:hover {
+      background: linear-gradient(90deg, 
+        rgba(76, 175, 80, 0.1), 
+        rgba(76, 175, 80, 0.2), 
+        rgba(76, 175, 80, 0.1));
+      transform: scale(1.01);
+      box-shadow: 0 2px 10px rgba(76, 175, 80, 0.2);
+    }
+
+    tr:last-child td:first-child {
+      border-bottom-left-radius: 20px;
+    }
+
+    tr:last-child td:last-child {
+      border-bottom-right-radius: 20px;
+    }
+
+    .catchmon-image {
+      width: 80px;
+      height: 80px;
+      object-fit: contain;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      border: 2px solid rgba(255,255,255,0.2);
+    }
+
+    .catchmon-image:hover {
+      transform: scale(1.1);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+      border-color: rgba(76, 175, 80, 0.5);
     }
 
     a {
       text-decoration: none;
-      font-weight: bold;
+      font-weight: 600;
       color: inherit;
+      transition: color 0.2s ease;
     }
 
+    a:hover {
+      color: #4CAF50;
+      text-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+    }
+
+    .points-cell {
+      font-weight: 700;
+      color: #4CAF50;
+      text-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+      font-size: 16px;
+    }
+
+    .level-cell {
+      font-weight: 600;
+      color: #FFD700;
+      text-shadow: 0 0 5px rgba(255, 215, 0, 0.3);
+    }
+
+    .stats-cell {
+      font-weight: 600;
+      color: #87CEEB;
+      text-shadow: 0 0 5px rgba(135, 206, 235, 0.3);
+    }
+
+    /* Donation Tier Styles */
     .catcher-name {
       display: inline-block;
       font-weight: bold;
       background-size: 200% auto;
       background-clip: text;
+      -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       animation: shine 3s linear infinite;
       text-shadow: 0 0 4px rgba(255, 255, 255, 0);
     }
 
-    .king { background-image: linear-gradient(90deg, #ffd700, white, #ffd700); }
-    .flame { background-image: linear-gradient(90deg, orangered, white, red); }
-    .diamond { background-image: linear-gradient(90deg, deepskyblue, white, deepskyblue); }
-    .shine { background-image: linear-gradient(90deg, limegreen, white, limegreen); }
-
+    .king {
+      background-image: linear-gradient(90deg, #ffd700, #ffffff, #ffd700);
+    }
+    .flame {
+      background-image: linear-gradient(90deg, #ff0000, #ffffff, #ff0000);
+    }
+    .diamond {
+      background-image: linear-gradient(90deg, #00bfff, #ffffff, #00bfff);
+    }
+    .shine {
+      background-image: linear-gradient(90deg, #32cd32, #ffffff, #32cd32);
+    }
     .normal {
-      color: #444;
-      font-weight: normal;
+      color: white;
+      text-shadow: 0 0 5px rgba(255,255,255,0.5);
+      font-weight: 600;
       background: none;
       -webkit-text-fill-color: inherit;
       background-clip: unset;
       animation: none;
-      text-shadow: 0 0 5px rgba(0,0,0,0.4);
     }
 
-    /* Balkenfarben */
-    .gray       { background: #666; }
-    .lightgreen-glow { background: #30c930; }
-    .green-glow { background: #005300; }
-    .blue-glow  { background: #3399ff; }
-    .yellow-glow { background: #ffff66; }
-    .orange-glow { background: #ff9900; }
-    .red-glow   { background: #ff3333; }
-    .deepred-glow { background: #cc0000; }
-    .rainbow-glow {
-      background: linear-gradient(90deg, red, orange, yellow, green, cyan, blue, violet);
-      background-size: 200% auto;
-      animation: rainbowShine 3s linear infinite;
+    @keyframes shine {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 200% 50%; }
     }
 
-    @keyframes rainbowShine {
-      to { background-position: -200% center; }
+    /* Loading Animation */
+    .loading {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100px;
+      color: rgba(255,255,255,0.8);
+      font-size: 18px;
     }
 
+    .loading::after {
+      content: '';
+      width: 24px;
+      height: 24px;
+      border: 3px solid rgba(255,255,255,0.3);
+      border-top: 3px solid white;
+      border-radius: 50%;
+      margin-left: 15px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Mobile Optimizations */
     @media (max-width: 768px) {
-      .container { padding: 16px; }
-      th, td { font-size: 12px; padding: 6px; }
-      h1 { font-size: 22px; }
+      .container { 
+        padding: 15px; 
+      }
+
+      .top-bar {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+        padding: 20px;
+      }
+      
+      h1 { 
+        font-size: clamp(1.5rem, 6vw, 1.8rem); 
+      }
+
+      h2 {
+        font-size: clamp(0.9rem, 4vw, 1rem);
+      }
+
+      .stats-section,
+      .table-container {
+        padding: 20px 15px;
+        margin-bottom: 20px;
+      }
+
+      .bar-container {
+        height: 28px;
+        max-width: 100%;
+      }
+
+      .level-label {
+        font-size: 14px;
+        margin-top: 10px;
+      }
+
+      table { 
+        font-size: 13px; 
+      }
+      
+      th, td { 
+        padding: 10px 8px; 
+      }
+
+      .catchmon-image {
+        width: 64px;
+        height: 64px;
+      }
+
+      .points-cell,
+      .level-cell,
+      .stats-cell {
+        font-size: 14px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .container { 
+        padding: 10px; 
+      }
+
+      .stats-section,
+      .table-container {
+        padding: 15px 10px;
+        margin-bottom: 15px;
+      }
+
+      .bar-container {
+        height: 24px;
+      }
+
+      .level-label {
+        font-size: 12px;
+        margin-top: 8px;
+      }
+
+      table { 
+        font-size: 12px; 
+      }
+      
+      th, td { 
+        padding: 8px 6px; 
+      }
+
+      .catchmon-image {
+        width: 56px;
+        height: 56px;
+      }
+
+      .catchdex-button {
+        padding: 10px 20px;
+        font-size: 14px;
+      }
+
+      .points-cell,
+      .level-cell,
+      .stats-cell {
+        font-size: 13px;
+      }
     }
   </style>
 </head>
@@ -188,49 +546,46 @@
   <div class="container">
     <div class="top-bar">
       <a class="back-button" href="javascript:history.back()">← Back</a>
+      <div>
+        <h1 id="catcherTitle">Catcher's Catchmon</h1>
+        <h2 id="totalPoints">Loading...</h2>
+      </div>
+      <div></div> <!-- Spacer for flex layout -->
     </div>
 
-    <h1 id="catcherTitle">Catcher’s Catchmon</h1>
-    <h2 id="totalPoints">Loading...</h2>
-    <!-- Catchdex Button -->
-    <div style="text-align:center; margin-top:12px;">
-      <a id="catchdexLink" href="#" style="
-        display:inline-block;
-        padding: 8px 16px;
-        background: #3b82f6;
-        color: white;
-        font-weight: bold;
-        border-radius: 8px;
-        text-decoration: none;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        transition: background 0.3s ease;">
+    <div class="catchdex-button-container">
+      <a id="catchdexLink" href="#" class="catchdex-button">
         🧾 Catchdex anzeigen
       </a>
     </div>
 
-    <div class="levelbar-wrapper">
-      <div class="bar-container">
-        <div class="bar-fill" id="levelFill">
-          <div class="shine-overlay"></div>
+    <div class="stats-section">
+      <div class="levelbar-wrapper">
+        <div class="bar-container">
+          <div class="bar-fill" id="levelFill">
+            <div class="shine-overlay"></div>
+          </div>
         </div>
+        <div class="level-label" id="levelLabel">Level ? – ? / ?</div>
       </div>
-      <div class="level-label" id="levelLabel">Level ? – ? / ?</div>
     </div>
 
-    <table>
-      <thead>
-        <tr>
-          <th>Sprite</th>
-          <th>Name</th>
-          <th>Level</th>
-          <th>Stats Sum</th>
-          <th>Points</th>
-        </tr>
-      </thead>
-      <tbody id="teamTable">
-        <tr><td colspan="5">Loading...</td></tr>
-      </tbody>
-    </table>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Sprite</th>
+            <th>Name</th>
+            <th>Level</th>
+            <th>Stats Sum</th>
+            <th>Points</th>
+          </tr>
+        </thead>
+        <tbody id="teamTable">
+          <tr><td colspan="5" class="loading">Loading</td></tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 
   <script>
@@ -279,50 +634,70 @@
       const name = getParam("name");
       if (!name) return;
 
-      const res = await fetch("catcher.json");
-      const data = await res.json();
-      const catcher = data.catcher?.[name];
-      if (!catcher) return;
+      try {
+        const res = await fetch("catcher.json");
+        if (!res.ok) throw new Error('Network response was not ok');
+        
+        const data = await res.json();
+        const catcher = data.catcher?.[name];
+        
+        if (!catcher) {
+          document.getElementById("teamTable").innerHTML = 
+            '<tr><td colspan="5">Trainer not found</td></tr>';
+          return;
+        }
 
-      const tier = getDonationTier(catcher.donation || 0);
-      document.getElementById("catcherTitle").innerHTML = `${styleCatcherName(name, tier)}’s Catchmon`;
+        const tier = getDonationTier(catcher.donation || 0);
+        document.getElementById("catcherTitle").innerHTML = `${styleCatcherName(name, tier)}'s Catchmon`;
 
-      const team = catcher.team || [];
-      const sorted = team.slice().sort((a, b) => calcPoints(b) - calcPoints(a));
-      const totalPoints = sorted.reduce((sum, p) => sum + calcPoints(p), 0);
-      document.getElementById("totalPoints").textContent = `Total Points: ${totalPoints}`;
+        const team = catcher.team || [];
+        const sorted = team.slice().sort((a, b) => calcPoints(b) - calcPoints(a));
+        const totalPoints = sorted.reduce((sum, p) => sum + calcPoints(p), 0);
+        
+        document.getElementById("totalPoints").textContent = `Total Points: ${totalPoints.toLocaleString()}`;
 
-      const level = getPlayerLevel(totalPoints);
-      const xpNow = totalPoints;
-      const xpPrev = getXpForLevel(level);
-      const xpNext = getXpForLevel(level + 1);
-      const percent = Math.min(100, ((xpNow - xpPrev) / (xpNext - xpPrev)) * 100).toFixed(1);
+        const level = getPlayerLevel(totalPoints);
+        const xpNow = totalPoints;
+        const xpPrev = getXpForLevel(level);
+        const xpNext = getXpForLevel(level + 1);
+        const percent = Math.min(100, ((xpNow - xpPrev) / (xpNext - xpPrev)) * 100).toFixed(1);
 
-      const fill = document.getElementById("levelFill");
-      fill.style.width = `${percent}%`;
-      fill.className = `bar-fill ${getLevelColor(level)}`;
-      document.getElementById("levelLabel").textContent = `Level ${level} – ${Math.floor(xpNow)} / ${Math.floor(xpNext)} XP`;
+        const fill = document.getElementById("levelFill");
+        fill.style.width = `${percent}%`;
+        fill.className = `bar-fill ${getLevelColor(level)}`;
+        document.getElementById("levelLabel").textContent = `Level ${level} – ${Math.floor(xpNow).toLocaleString()} / ${Math.floor(xpNext).toLocaleString()} XP`;
 
-      const tbody = document.getElementById("teamTable");
-      tbody.innerHTML = "";
+        const tbody = document.getElementById("teamTable");
+        tbody.innerHTML = "";
 
-      for (const p of sorted) {
-        const row = document.createElement("tr");
-        const sumStats = Object.values(p.stats).reduce((a, b) => a + b, 0);
-        const points = calcPoints(p);
-        const catchLink = `dex_detail.html?name=${encodeURIComponent(p.name)}`;
+        if (sorted.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="5">No Catchmon yet</td></tr>';
+          return;
+        }
 
-        row.innerHTML = `
-          <td><a href="${catchLink}"><img src="${p.sprite}" alt="${p.name}"></a></td>
-          <td><a href="${catchLink}">${p.name}</a></td>
-          <td>${p.level}</td>
-          <td>${sumStats}</td>
-          <td>${points}</td>
-        `;
-        tbody.appendChild(row);
+        for (const p of sorted) {
+          const row = document.createElement("tr");
+          const sumStats = Object.values(p.stats).reduce((a, b) => a + b, 0);
+          const points = calcPoints(p);
+          const catchLink = `dex_detail.html?name=${encodeURIComponent(p.name)}`;
+
+          row.innerHTML = `
+            <td><a href="${catchLink}"><img class="catchmon-image" src="${p.sprite}" alt="${p.name}"></a></td>
+            <td><a href="${catchLink}">${p.name}</a></td>
+            <td class="level-cell">${p.level}</td>
+            <td class="stats-cell">${sumStats.toLocaleString()}</td>
+            <td class="points-cell">${points.toLocaleString()}</td>
+          `;
+          tbody.appendChild(row);
+        }
+        
+        document.getElementById("catchdexLink").href = `catchdex_catcher.html?name=${encodeURIComponent(name)}`;
+
+      } catch (error) {
+        console.error('Error loading catcher data:', error);
+        document.getElementById("teamTable").innerHTML = 
+          '<tr><td colspan="5">Error loading data</td></tr>';
       }
-      document.getElementById("catchdexLink").href = `catchdex_catcher.html?name=${encodeURIComponent(name)}`;
-
     }
 
     loadCatcherData();

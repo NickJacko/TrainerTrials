@@ -2,151 +2,829 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>🏆 Live Catcher Ranking</title>
+  <title>🏆 Elite Catcher Arena</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="utils.js"></script>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f9f9f9;
+    * {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
-    .container {
-      max-width: 960px;
-      margin: auto;
-      padding: 24px;
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+      background: radial-gradient(ellipse at center, #1a1a2e 0%, #16213e 30%, #0f0f23 70%, #000000 100%);
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      color: white;
+      overflow-x: hidden;
     }
-    .top-bar {
+
+    /* Animated Background */
+    .bg-effects {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      opacity: 0.4;
+    }
+
+    .trophy-float {
+      position: absolute;
+      font-size: 2rem;
+      opacity: 0.3;
+      animation: floatTrophy 15s linear infinite;
+      pointer-events: none;
+    }
+
+    @keyframes floatTrophy {
+      0% {
+        transform: translateY(100vh) rotate(0deg) scale(0.5);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.3;
+      }
+      90% {
+        opacity: 0.3;
+      }
+      100% {
+        transform: translateY(-100px) rotate(360deg) scale(0.8);
+        opacity: 0;
+      }
+    }
+
+    .energy-orb {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background: radial-gradient(circle, #FFD700, #FFA500);
+      border-radius: 50%;
+      animation: orbFloat 12s linear infinite;
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+    }
+
+    @keyframes orbFloat {
+      0% {
+        transform: translateY(100vh) translateX(0);
+        opacity: 0;
+      }
+      20% {
+        opacity: 0.8;
+      }
+      80% {
+        opacity: 0.8;
+      }
+      100% {
+        transform: translateY(-100px) translateX(50px);
+        opacity: 0;
+      }
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: auto;
+      padding: 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Header Section */
+    .header-section {
       display: flex;
       align-items: center;
-      margin-bottom: 10px;
-      gap: 12px;
+      justify-content: space-between;
+      margin-bottom: 40px;
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(15px);
+      border-radius: 20px;
+      padding: 20px 30px;
+      border: 2px solid rgba(255,255,255,0.1);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+      position: relative;
+      overflow: hidden;
     }
+
+    .header-section::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, 
+        transparent, 
+        rgba(255, 215, 0, 0.1), 
+        transparent, 
+        rgba(255, 215, 0, 0.1), 
+        transparent);
+      animation: headerShine 8s linear infinite;
+    }
+
+    @keyframes headerShine {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .header-content {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+    }
+
     .back-button {
       font-size: 16px;
       text-decoration: none;
-      color: #555;
-      font-weight: bold;
-      padding: 6px 12px;
-      border-radius: 6px;
-      background: #e0e0e0;
-      transition: background 0.2s ease;
+      color: white;
+      font-weight: 700;
+      padding: 15px 25px;
+      border-radius: 15px;
+      background: linear-gradient(145deg, rgba(255,255,255,0.15), rgba(255,255,255,0.08));
+      border: 2px solid rgba(255,255,255,0.2);
+      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 5px 20px rgba(0,0,0,0.2);
     }
+
     .back-button:hover {
-      background: #ccc;
+      transform: translateY(-3px) scale(1.02);
+      background: linear-gradient(145deg, rgba(255,255,255,0.25), rgba(255,255,255,0.15));
+      box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+      border-color: rgba(255,255,255,0.4);
     }
+
     h1 {
       text-align: center;
-      margin-top: 0;
-      font-size: 26px;
+      flex: 1;
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      background: linear-gradient(45deg, #FFD700, #FF6B6B, #4ECDC4, #45B7D1, #FFD700);
+      background-size: 300% 300%;
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: gradientShift 4s ease-in-out infinite;
+      font-weight: 900;
+      text-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+      letter-spacing: -1px;
     }
-    #searchInput, #sortSelect {
-      width: 100%;
-      max-width: 400px;
-      padding: 10px;
-      margin: 10px auto;
+
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      25% { background-position: 100% 50%; }
+      50% { background-position: 100% 100%; }
+      75% { background-position: 0% 100%; }
+    }
+
+    .stats-display {
+      display: flex;
+      gap: 20px;
+      font-size: 0.9rem;
+      opacity: 0.9;
+    }
+
+    .stat-item {
+      text-align: center;
+      padding: 8px 12px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 10px;
+      backdrop-filter: blur(5px);
+    }
+
+    .stat-number {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: #FFD700;
       display: block;
-      font-size: 16px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
     }
+
+    /* Controls Section */
+    .controls-section {
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(15px);
+      border-radius: 20px;
+      padding: 25px;
+      margin-bottom: 30px;
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .controls-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+      animation: controlsShine 6s linear infinite;
+    }
+
+    @keyframes controlsShine {
+      0% { left: -100%; }
+      50% { left: 100%; }
+      100% { left: 100%; }
+    }
+
+    .controls-content {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .sort-controls {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+    }
+
+    .sort-button {
+      background: linear-gradient(145deg, rgba(76, 175, 80, 0.8), rgba(69, 160, 73, 0.8));
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(255,255,255,0.1);
+      font-size: 0.9rem;
+    }
+
+    .sort-button.active {
+      background: linear-gradient(145deg, rgba(255, 215, 0, 0.9), rgba(255, 193, 7, 0.9));
+      box-shadow: 0 5px 20px rgba(255, 215, 0, 0.4);
+      transform: translateY(-2px);
+    }
+
+    .sort-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
+    }
+
+    .search-container {
+      position: relative;
+    }
+
+    #searchInput {
+      padding: 12px 20px 12px 45px;
+      font-size: 16px;
+      border: 2px solid rgba(255,255,255,0.2);
+      border-radius: 20px;
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+      color: white;
+      width: 300px;
+      transition: all 0.3s ease;
+    }
+
+    #searchInput::placeholder {
+      color: rgba(255,255,255,0.6);
+    }
+
+    #searchInput:focus {
+      outline: none;
+      border-color: rgba(255, 215, 0, 0.5);
+      background: rgba(255,255,255,0.15);
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.2rem;
+      opacity: 0.6;
+    }
+
+    /* Table Section */
+    .table-section {
+      background: rgba(255,255,255,0.02);
+      backdrop-filter: blur(20px);
+      border-radius: 25px;
+      padding: 0;
+      border: 2px solid rgba(255,255,255,0.1);
+      box-shadow: 0 15px 50px rgba(0,0,0,0.2);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .table-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #FFD700, #FF6B6B, #4ECDC4, #45B7D1, #FFD700);
+      background-size: 200% 100%;
+      animation: topBorderFlow 3s linear infinite;
+    }
+
+    @keyframes topBorderFlow {
+      0% { background-position: 0% 0%; }
+      100% { background-position: 200% 0%; }
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 10px;
-      font-size: 14px;
+      font-size: 15px;
+      position: relative;
+      z-index: 2;
     }
-    th, td {
-      padding: 10px;
-      border: 1px solid #ccc;
-      text-align: center;
-    }
+
     th {
-      background: #eee;
+      background: linear-gradient(145deg, rgba(255, 215, 0, 0.2), rgba(255, 215, 0, 0.1));
+      color: white;
+      padding: 20px 15px;
+      text-align: center;
+      font-weight: 700;
+      font-size: 14px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      border: none;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(15px);
+      border-bottom: 2px solid rgba(255, 215, 0, 0.3);
     }
+
+    td {
+      padding: 15px;
+      text-align: center;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    tr {
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
     tr:hover {
-      background: #f1f1f1;
+      background: linear-gradient(90deg, 
+        rgba(255, 215, 0, 0.08), 
+        rgba(255, 215, 0, 0.15), 
+        rgba(255, 215, 0, 0.08));
+      transform: scale(1.01);
+      box-shadow: 0 5px 25px rgba(255, 215, 0, 0.2);
     }
-    .gold { background: #fff8dc; font-weight: bold; }
-    .silver { background: #f0f0f0; font-weight: bold; }
-    .bronze { background: #fdf5e6; font-weight: bold; }
-    a {
-      text-decoration: none;
-      font-weight: bold;
-      color: inherit;
+
+    /* Rank Badges */
+    .rank-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      font-weight: 900;
+      font-size: 1.1rem;
+      color: white;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.4);
+      position: relative;
+      overflow: hidden;
     }
+
+    .rank-badge::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      animation: badgeShine 3s linear infinite;
+    }
+
+    @keyframes badgeShine {
+      0% { left: -100%; }
+      50% { left: 100%; }
+      100% { left: 100%; }
+    }
+
+    .rank-1 { 
+      background: linear-gradient(45deg, #FFD700, #FFA500);
+      box-shadow: 0 0 25px rgba(255, 215, 0, 0.6);
+      animation: goldPulse 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes goldPulse {
+      0% { box-shadow: 0 0 25px rgba(255, 215, 0, 0.6); }
+      100% { box-shadow: 0 0 40px rgba(255, 215, 0, 0.9); }
+    }
+
+    .rank-2 { 
+      background: linear-gradient(45deg, #C0C0C0, #E8E8E8);
+      color: #333;
+      text-shadow: 0 1px 2px rgba(255,255,255,0.5);
+      box-shadow: 0 0 20px rgba(192, 192, 192, 0.5);
+    }
+
+    .rank-3 { 
+      background: linear-gradient(45deg, #CD7F32, #DAA520);
+      box-shadow: 0 0 20px rgba(205, 127, 50, 0.5);
+    }
+
+    .rank-other { 
+      background: linear-gradient(45deg, rgba(108, 117, 125, 0.8), rgba(73, 80, 87, 0.8));
+      backdrop-filter: blur(10px);
+    }
+
+    /* Medal Icons for Top 3 */
+    .rank-1::after { content: '👑'; position: absolute; top: -8px; right: -8px; font-size: 1.2rem; }
+    .rank-2::after { content: '🥈'; position: absolute; top: -6px; right: -6px; font-size: 1rem; }
+    .rank-3::after { content: '🥉'; position: absolute; top: -6px; right: -6px; font-size: 1rem; }
+
+    /* Special Row Styling */
+    .gold-row { 
+      background: linear-gradient(90deg, 
+        rgba(255, 215, 0, 0.1), 
+        rgba(255, 215, 0, 0.2), 
+        rgba(255, 215, 0, 0.1));
+      border: 2px solid rgba(255, 215, 0, 0.3);
+      box-shadow: 0 0 30px rgba(255, 215, 0, 0.2);
+    }
+
+    .silver-row { 
+      background: linear-gradient(90deg, 
+        rgba(192, 192, 192, 0.1), 
+        rgba(192, 192, 192, 0.2), 
+        rgba(192, 192, 192, 0.1));
+      border: 2px solid rgba(192, 192, 192, 0.3);
+    }
+
+    .bronze-row { 
+      background: linear-gradient(90deg, 
+        rgba(205, 127, 50, 0.1), 
+        rgba(205, 127, 50, 0.2), 
+        rgba(205, 127, 50, 0.1));
+      border: 2px solid rgba(205, 127, 50, 0.3);
+    }
+
+    /* Catcher Name Styling */
+    .catcher-cell {
+      font-weight: 700;
+      font-size: 1.1rem;
+      position: relative;
+    }
+
+    .level-display {
+      font-size: 0.9rem;
+      opacity: 0.8;
+      margin-top: 4px;
+    }
+
+    .points-cell {
+      font-weight: 800;
+      color: #FFD700;
+      font-size: 1.2rem;
+      text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    }
+
+    .team-count {
+      color: #4ECDC4;
+      font-weight: 600;
+    }
+
+    /* Donation Tier Styles */
     .catcher-name {
       display: inline-block;
       font-weight: bold;
       background-size: 200% auto;
       background-clip: text;
+      -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       animation: shine 3s linear infinite;
-      text-shadow: 0 0 4px rgba(255, 255, 255, 0);
     }
-    .king    { background-image: linear-gradient(90deg, #ffd700, white, #ffd700); }
-    .flame   { background-image: linear-gradient(90deg, #ff0000, white, #ff0000); }
-    .diamond { background-image: linear-gradient(90deg, deepskyblue, white, deepskyblue); }
-    .shine   { background-image: linear-gradient(90deg, limegreen, white, limegreen); }
-    .normal  {
-      color: #444;
-      text-shadow: none;
-      font-weight: normal;
+
+    .king {
+      background-image: linear-gradient(90deg, #ffd700, white, #ffd700);
+    }
+
+    .flame {
+      background-image: linear-gradient(90deg, #ff0000, white, #ff0000);
+    }
+
+    .diamond {
+      background-image: linear-gradient(90deg, #00bfff, white, #00bfff);
+    }
+
+    .shine {
+      background-image: linear-gradient(90deg, #32cd32, white, #32cd32);
+    }
+
+    .normal {
+      color: white;
+      text-shadow: 0 0 10px rgba(255,255,255,0.5);
+      font-weight: 700;
       background: none;
       -webkit-text-fill-color: inherit;
       background-clip: unset;
       animation: none;
     }
+
     @keyframes shine {
       to { background-position: -200% center; }
     }
+
+    /* Loading Animation */
+    .loading {
+      text-align: center;
+      padding: 60px;
+      color: rgba(255,255,255,0.8);
+      font-size: 18px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid rgba(255,255,255,0.2);
+      border-top: 4px solid #FFD700;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Floating Action Button */
+    .refresh-fab {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(45deg, #4ECDC4, #44A08D);
+      border: none;
+      border-radius: 50%;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+      z-index: 1000;
+      backdrop-filter: blur(10px);
+    }
+
+    .refresh-fab:hover {
+      transform: scale(1.1) rotate(180deg);
+      box-shadow: 0 12px 35px rgba(78, 205, 196, 0.4);
+    }
+
+    /* Mobile Optimizations */
+    @media (max-width: 1024px) {
+      th:nth-child(5), td:nth-child(5) { display: none; } /* Level ausblenden */
+    }
+
     @media (max-width: 768px) {
-      .container { padding: 16px; }
-      #searchInput, #sortSelect { font-size: 14px; padding: 8px; }
-      th, td { font-size: 12px; padding: 6px; }
-      h1 { font-size: 22px; }
+      .container { 
+        padding: 15px; 
+      }
+      
+      .header-section {
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
+        padding: 25px 20px;
+      }
+
+      .header-content {
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .stats-display {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .controls-content {
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .sort-controls {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      #searchInput {
+        width: 100%;
+        max-width: 300px;
+      }
+
+      table { 
+        font-size: 13px; 
+      }
+      
+      th, td { 
+        padding: 10px 6px; 
+      }
+
+      .rank-badge {
+        width: 35px;
+        height: 35px;
+        font-size: 0.9rem;
+      }
+
+      .catcher-cell {
+        font-size: 1rem;
+      }
+
+      .points-cell {
+        font-size: 1.1rem;
+      }
+
+      /* Auf Mobile Team Count ausblenden */
+      th:nth-child(4), td:nth-child(4) { 
+        display: none; 
+      }
+    }
+
+    @media (max-width: 480px) {
+      .container { 
+        padding: 10px; 
+      }
+
+      h1 { 
+        font-size: 2rem; 
+      }
+
+      .controls-section {
+        padding: 20px 15px;
+      }
+
+      table { 
+        font-size: 12px; 
+      }
+
+      th, td { 
+        padding: 8px 4px; 
+      }
+
+      .rank-badge {
+        width: 30px;
+        height: 30px;
+        font-size: 0.8rem;
+      }
+
+      .refresh-fab {
+        width: 50px;
+        height: 50px;
+        bottom: 20px;
+        right: 20px;
+        font-size: 1.3rem;
+      }
+    }
+
+    /* Scrollable table for very wide content */
+    @media (max-width: 600px) {
+      .table-section {
+        overflow-x: auto;
+      }
+      
+      table {
+        min-width: 500px;
+      }
     }
   </style>
 </head>
 <body>
+  <!-- Animated Background -->
+  <div class="bg-effects" id="bgEffects"></div>
+
   <div class="container">
-    <div class="top-bar">
-      <a class="back-button" href="javascript:history.back()">← Back</a>
+    <!-- Header Section -->
+    <div class="header-section">
+      <div class="header-content">
+        <a class="back-button" href="javascript:history.back()">← Back</a>
+        <h1>🏆 Elite Catcher Arena</h1>
+        <div class="stats-display">
+          <div class="stat-item">
+            <span class="stat-number" id="totalCatchers">0</span>
+            <span>Catchers</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number" id="totalPoints">0</span>
+            <span>Total Points</span>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <h1>🏆 Catcher Ranking</h1>
-    <select id="sortSelect" onchange="updateRanking()">
-      <option value="points">Sort by Total Points</option>
-      <option value="level">Sort by Level</option>
-      <option value="count">Sort by Catchmon Count</option>
-    </select>
-    <input type="text" id="searchInput" placeholder="Search catcher..." onkeyup="filterTable()">
+    <!-- Controls Section -->
+    <div class="controls-section">
+      <div class="controls-content">
+        <div class="sort-controls">
+          <button class="sort-button active" onclick="setSortMode('points')" id="sortPoints">🏆 Points</button>
+          <button class="sort-button" onclick="setSortMode('level')" id="sortLevel">⚡ Level</button>
+          <button class="sort-button" onclick="setSortMode('count')" id="sortCount">📊 Count</button>
+        </div>
+        
+        <div class="search-container">
+          <div class="search-icon">🔍</div>
+          <input type="text" id="searchInput" placeholder="Search elite catchers..." onkeyup="filterTable()">
+        </div>
+      </div>
+    </div>
 
-    <table>
-      <thead>
-        <tr>
-          <th>Rank</th>
-          <th>Catcher</th>
-          <th>Total Catchmon</th>
-          <th>Level</th>
-          <th>Total Points</th>
-        </tr>
-      </thead>
-      <tbody id="rankingBody">
-        <tr><td colspan="5">Loading...</td></tr>
-      </tbody>
-    </table>
+    <!-- Rankings Table -->
+    <div class="table-section">
+      <table>
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Catcher</th>
+            <th>Total Points</th>
+            <th>Catchmon</th>
+            <th>Level</th>
+          </tr>
+        </thead>
+        <tbody id="rankingBody">
+          <tr><td colspan="5" class="loading">
+            <div class="loading-spinner"></div>
+            <div>Loading Elite Catchers...</div>
+          </td></tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 
+  <!-- Floating Refresh Button -->
+  <button class="refresh-fab" onclick="forceRefresh()" title="Refresh Rankings">🔄</button>
+
   <script>
-    function filterTable() {
-      const input = document.getElementById("searchInput").value.toUpperCase();
-      const rows = document.getElementById("rankingBody").getElementsByTagName("tr");
-      for (let i = 0; i < rows.length; i++) {
-        const td = rows[i].getElementsByTagName("td")[1];
-        rows[i].style.display = (td && td.innerText.toUpperCase().includes(input)) ? "" : "none";
-      }
+    let currentSortMode = 'points';
+    let allCatchers = [];
+    let isLoading = false;
+
+    // Create floating background effects
+    function createTrophy() {
+      const trophies = ['🏆', '🥇', '👑', '⭐', '💎', '🔥', '⚡'];
+      const trophy = document.createElement('div');
+      trophy.className = 'trophy-float';
+      trophy.textContent = trophies[Math.floor(Math.random() * trophies.length)];
+      trophy.style.left = Math.random() * 100 + '%';
+      trophy.style.animationDuration = (Math.random() * 8 + 12) + 's';
+      trophy.style.animationDelay = Math.random() * 3 + 's';
+      
+      document.getElementById('bgEffects').appendChild(trophy);
+      
+      setTimeout(() => {
+        if (trophy.parentNode) {
+          trophy.parentNode.removeChild(trophy);
+        }
+      }, 20000);
+    }
+
+    function createEnergyOrb() {
+      const orb = document.createElement('div');
+      orb.className = 'energy-orb';
+      orb.style.left = Math.random() * 100 + '%';
+      orb.style.animationDuration = (Math.random() * 6 + 8) + 's';
+      orb.style.animationDelay = Math.random() * 2 + 's';
+      
+      document.getElementById('bgEffects').appendChild(orb);
+      
+      setTimeout(() => {
+        if (orb.parentNode) {
+          orb.parentNode.removeChild(orb);
+        }
+      }, 15000);
+    }
+
+    // Start background animations
+    setInterval(createTrophy, 4000);
+    setInterval(createEnergyOrb, 1000);
+
+    // Initial effects
+    for (let i = 0; i < 3; i++) {
+      setTimeout(createTrophy, i * 2000);
+    }
+    for (let i = 0; i < 8; i++) {
+      setTimeout(createEnergyOrb, i * 500);
     }
 
     function calcPoints(p) {
@@ -154,18 +832,113 @@
     }
 
     function calcLevel(points) {
-      return Math.floor(Math.pow(points, 0.25));  // just example
+      return Math.floor(Math.pow(points / 500, 0.6));
     }
 
-    function updateRanking() {
-      fetch("catcher.json")
-        .then(res => res.json())
-        .then(data => {
-          const sortMode = document.getElementById("sortSelect").value;
-          const tbody = document.getElementById("rankingBody");
-          tbody.innerHTML = "";
+    function getRankClass(index) {
+      if (index === 0) return 'rank-1';
+      if (index === 1) return 'rank-2';
+      if (index === 2) return 'rank-3';
+      return 'rank-other';
+    }
 
-          const catcher = Object.entries(data.catcher || {}).map(([name, info]) => {
+    function getRowClass(index) {
+      if (index === 0) return 'gold-row';
+      if (index === 1) return 'silver-row';
+      if (index === 2) return 'bronze-row';
+      return '';
+    }
+
+    function setSortMode(mode) {
+      currentSortMode = mode;
+      
+      // Update button states
+      document.querySelectorAll('.sort-button').forEach(btn => btn.classList.remove('active'));
+      document.getElementById(`sort${mode.charAt(0).toUpperCase() + mode.slice(1)}`).classList.add('active');
+      
+      renderTable();
+      
+      // Add click effect
+      createClickEffect(event.target);
+    }
+
+    function createClickEffect(element) {
+      const rect = element.getBoundingClientRect();
+      const x = rect.left + rect.width / 2;
+      const y = rect.top + rect.height / 2;
+      
+      for (let i = 0; i < 6; i++) {
+        const particle = document.createElement('div');
+        particle.style.position = 'fixed';
+        particle.style.left = x + 'px';
+        particle.style.top = y + 'px';
+        particle.style.width = '6px';
+        particle.style.height = '6px';
+        particle.style.backgroundColor = '#FFD700';
+        particle.style.borderRadius = '50%';
+        particle.style.pointerEvents = 'none';
+        particle.style.zIndex = '9999';
+        particle.style.boxShadow = '0 0 10px #FFD700';
+        
+const angle = (i / 6) * Math.PI * 2;
+        const velocity = 80 + Math.random() * 40;
+        const vx = Math.cos(angle) * velocity;
+        const vy = Math.sin(angle) * velocity;
+        
+        particle.style.animation = `clickParticle 0.8s ease-out forwards`;
+        particle.style.setProperty('--vx', vx + 'px');
+        particle.style.setProperty('--vy', vy + 'px');
+        
+        document.body.appendChild(particle);
+        
+        setTimeout(() => {
+          if (particle.parentNode) {
+            particle.parentNode.removeChild(particle);
+          }
+        }, 800);
+      }
+    }
+
+    // Add particle animation to CSS
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes clickParticle {
+        0% { 
+          opacity: 1; 
+          transform: translate(0, 0) scale(1); 
+        }
+        100% { 
+          opacity: 0; 
+          transform: translate(var(--vx), var(--vy)) scale(0.3); 
+        }
+      }
+    `;
+    document.head.appendChild(style);
+
+    function filterTable() {
+      const input = document.getElementById("searchInput").value.toUpperCase();
+      const rows = document.getElementById("rankingBody").getElementsByTagName("tr");
+      
+      for (let i = 0; i < rows.length; i++) {
+        const nameCell = rows[i].getElementsByTagName("td")[1];
+        if (nameCell) {
+          const textValue = nameCell.textContent || nameCell.innerText;
+          rows[i].style.display = textValue.toUpperCase().includes(input) ? "" : "none";
+        }
+      }
+    }
+
+    function updateData() {
+      if (isLoading) return;
+      isLoading = true;
+
+      fetch("catcher.json?" + Date.now())
+        .then(r => {
+          if (!r.ok) throw new Error('Network response was not ok');
+          return r.json();
+        })
+        .then(data => {
+          allCatchers = Object.entries(data.catcher || {}).map(([name, info]) => {
             const team = info.team || [];
             const totalPoints = team.reduce((sum, p) => sum + calcPoints(p), 0);
             const level = calcLevel(totalPoints);
@@ -178,35 +951,278 @@
             };
           });
 
-          catcher.sort((a, b) => {
-            if (sortMode === "points") return b.totalPoints - a.totalPoints;
-            if (sortMode === "level") return b.level - a.level;
-            if (sortMode === "count") return b.teamSize - a.teamSize;
-            return 0;
-          });
-
-          catcher.forEach((t, i) => {
-            const rank = i + 1;
-            const tr = document.createElement("tr");
-            let rankClass = "";
-            if (rank === 1) rankClass = "gold";
-            else if (rank === 2) rankClass = "silver";
-            else if (rank === 3) rankClass = "bronze";
-            tr.className = rankClass;
-            tr.innerHTML = `
-              <td>${rank}</td>
-              <td>${getStyledCatcherName(t.name, t.donation)}</td>
-              <td>${t.teamSize}</td>
-              <td>${t.level}</td>
-              <td>${t.totalPoints}</td>
-            `;
-            tbody.appendChild(tr);
-          });
+          // Update stats
+          updateStats();
+          renderTable();
+          isLoading = false;
+        })
+        .catch(error => {
+          console.error('Error loading data:', error);
+          document.getElementById("rankingBody").innerHTML = 
+            '<tr><td colspan="5" class="loading"><div class="loading-spinner"></div><div>Error loading data</div></td></tr>';
+          isLoading = false;
         });
     }
 
-    setInterval(updateRanking, 5000);
-    updateRanking();
+    function updateStats() {
+      const totalCatchers = allCatchers.length;
+      const totalPoints = allCatchers.reduce((sum, c) => sum + c.totalPoints, 0);
+      
+      // Animate numbers
+      animateNumber('totalCatchers', totalCatchers);
+      animateNumber('totalPoints', totalPoints);
+    }
+
+    function animateNumber(elementId, targetNumber) {
+      const element = document.getElementById(elementId);
+      const startNumber = parseInt(element.textContent) || 0;
+      const duration = 1500;
+      const startTime = Date.now();
+
+      function updateNumber() {
+        const now = Date.now();
+        const progress = Math.min((now - startTime) / duration, 1);
+        const easeProgress = 1 - Math.pow(1 - progress, 3);
+        const currentNumber = Math.floor(startNumber + (targetNumber - startNumber) * easeProgress);
+        
+        if (elementId === 'totalPoints') {
+          element.textContent = currentNumber.toLocaleString();
+        } else {
+          element.textContent = currentNumber;
+        }
+        
+        if (progress < 1) {
+          requestAnimationFrame(updateNumber);
+        }
+      }
+      
+      updateNumber();
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById("rankingBody");
+      tbody.innerHTML = "";
+
+      if (allCatchers.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" class="loading"><div class="loading-spinner"></div><div>No catchers found</div></td></tr>';
+        return;
+      }
+
+      // Sort catchers
+      const sortedCatchers = [...allCatchers].sort((a, b) => {
+        if (currentSortMode === 'points') return b.totalPoints - a.totalPoints;
+        if (currentSortMode === 'level') return b.level - a.level;
+        if (currentSortMode === 'count') return b.teamSize - a.teamSize;
+        return 0;
+      });
+
+      sortedCatchers.forEach((catcher, index) => {
+        const rank = index + 1;
+        const tr = document.createElement("tr");
+        const rankClass = getRankClass(index);
+        const rowClass = getRowClass(index);
+        
+        tr.className = rowClass;
+        
+        // Add hover effects
+        tr.addEventListener('mouseenter', function() {
+          createRowSparkles(this);
+        });
+        
+        tr.innerHTML = `
+          <td><div class="rank-badge ${rankClass}">${rank}</div></td>
+          <td class="catcher-cell">
+            <div>${getStyledCatcherName(catcher.name, catcher.donation)}</div>
+            <div class="level-display">Level ${catcher.level}</div>
+          </td>
+          <td class="points-cell">${catcher.totalPoints.toLocaleString()}</td>
+          <td class="team-count">${catcher.teamSize}</td>
+          <td>${catcher.level}</td>
+        `;
+        
+        tbody.appendChild(tr);
+      });
+
+      // Add entrance animation
+      const rows = tbody.querySelectorAll('tr');
+      rows.forEach((row, index) => {
+        row.style.opacity = '0';
+        row.style.transform = 'translateY(20px)';
+        
+        setTimeout(() => {
+          row.style.transition = 'all 0.4s ease';
+          row.style.opacity = '1';
+          row.style.transform = 'translateY(0)';
+        }, index * 50);
+      });
+    }
+
+    function createRowSparkles(row) {
+      const rect = row.getBoundingClientRect();
+      const sparkles = ['✨', '💫', '⭐'];
+      
+      for (let i = 0; i < 2; i++) {
+        const sparkle = document.createElement('div');
+        sparkle.textContent = sparkles[Math.floor(Math.random() * sparkles.length)];
+        sparkle.style.position = 'fixed';
+        sparkle.style.left = (rect.left + Math.random() * rect.width) + 'px';
+        sparkle.style.top = (rect.top + Math.random() * rect.height) + 'px';
+        sparkle.style.pointerEvents = 'none';
+        sparkle.style.zIndex = '9999';
+        sparkle.style.fontSize = '1rem';
+        sparkle.style.animation = 'sparkleFloat 1.5s ease-out forwards';
+        sparkle.style.color = '#FFD700';
+        sparkle.style.textShadow = '0 0 8px #FFD700';
+        
+        document.body.appendChild(sparkle);
+        
+        setTimeout(() => {
+          if (sparkle.parentNode) {
+            sparkle.parentNode.removeChild(sparkle);
+          }
+        }, 1500);
+      }
+    }
+
+    // Add sparkle animation
+    style.textContent += `
+      @keyframes sparkleFloat {
+        0% { 
+          opacity: 1; 
+          transform: translateY(0) scale(1) rotate(0deg); 
+        }
+        100% { 
+          opacity: 0; 
+          transform: translateY(-80px) scale(0.3) rotate(180deg); 
+        }
+      }
+    `;
+
+    function forceRefresh() {
+      const fab = document.querySelector('.refresh-fab');
+      fab.style.transform = 'scale(1.2) rotate(720deg)';
+      fab.style.boxShadow = '0 15px 50px rgba(78, 205, 196, 0.8)';
+      
+      setTimeout(() => {
+        fab.style.transform = '';
+        fab.style.boxShadow = '';
+      }, 800);
+
+      // Show loading state
+      document.getElementById("rankingBody").innerHTML = 
+        '<tr><td colspan="5" class="loading"><div class="loading-spinner"></div><div>Refreshing rankings...</div></td></tr>';
+      
+      updateData();
+      
+      // Create refresh effect
+      createClickEffect(fab);
+    }
+
+    // Add click effects to table rows
+    document.addEventListener('click', function(e) {
+      if (e.target.closest('tr') && e.target.closest('tbody')) {
+        const row = e.target.closest('tr');
+        createClickEffect(row);
+        
+        // Row flash effect
+        row.style.background = 'rgba(255, 215, 0, 0.3)';
+        setTimeout(() => {
+          row.style.background = '';
+        }, 300);
+      }
+    });
+
+    // Periodic sparkle effects on top 3
+    setInterval(() => {
+      const topRows = document.querySelectorAll('.gold-row, .silver-row, .bronze-row');
+      topRows.forEach(row => {
+        if (Math.random() < 0.4) {
+          createRowSparkles(row);
+        }
+      });
+    }, 8000);
+
+    // Auto-refresh every 5 seconds
+    setInterval(updateData, 5000);
+
+    // Initial load
+    updateData();
+
+    // Add scroll effects
+    let lastScrollTime = 0;
+    window.addEventListener('scroll', (e) => {
+      const now = Date.now();
+      if (now - lastScrollTime > 100) { // Throttle
+        const scrolled = window.pageYOffset;
+        const header = document.querySelector('.header-section');
+        if (header && scrolled > 50) {
+          header.style.transform = `translateY(${Math.min(scrolled * 0.2, 20)}px)`;
+          header.style.opacity = Math.max(0.7, 1 - scrolled * 0.001);
+        }
+        lastScrollTime = now;
+      }
+    });
+
+    // Add keyboard shortcuts
+    document.addEventListener('keydown', function(e) {
+      if (e.ctrlKey || e.metaKey) {
+        switch(e.key) {
+          case '1':
+            e.preventDefault();
+            setSortMode('points');
+            break;
+          case '2':
+            e.preventDefault();
+            setSortMode('level');
+            break;
+          case '3':
+            e.preventDefault();
+            setSortMode('count');
+            break;
+          case 'r':
+            e.preventDefault();
+            forceRefresh();
+            break;
+        }
+      }
+    });
+
+    // Add performance monitoring
+    let performanceStart = Date.now();
+    window.addEventListener('load', function() {
+      const loadTime = Date.now() - performanceStart;
+      console.log(`🏆 Elite Catcher Arena loaded in ${loadTime}ms`);
+    });
+
+    // Add special effects for milestones
+    function checkMilestones() {
+      const totalPoints = allCatchers.reduce((sum, c) => sum + c.totalPoints, 0);
+      const milestones = [100000, 500000, 1000000, 5000000];
+      
+      milestones.forEach(milestone => {
+        if (totalPoints >= milestone && !localStorage.getItem(`milestone_${milestone}`)) {
+          createMilestoneEffect(milestone);
+          localStorage.setItem(`milestone_${milestone}`, 'true');
+        }
+      });
+    }
+
+    function createMilestoneEffect(milestone) {
+      // Create celebration effect
+      for (let i = 0; i < 20; i++) {
+        setTimeout(() => {
+          createTrophy();
+        }, i * 100);
+      }
+      
+      // Show milestone message
+      setTimeout(() => {
+        alert(`🎉 MILESTONE REACHED!\n\n🏆 ${milestone.toLocaleString()} Total Points Achieved!\n\nThe Arena grows stronger! 💪`);
+      }, 1000);
+    }
+
+    // Check milestones after data updates
+    setInterval(checkMilestones, 10000);
   </script>
 </body>
 </html>

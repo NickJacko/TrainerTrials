@@ -9,128 +9,398 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     html, body {
-      margin: 0; padding: 0; background: transparent;
-      font-family: 'Segoe UI', sans-serif;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
+      margin: 0; 
+      padding: 0; 
+      background: transparent;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+      display: flex; 
+      flex-direction: column;
+      align-items: center; 
+      justify-content: center;
       height: 100vh;
+      color: #fff;
     }
+
+    .spawn-container {
+      background: transparent;
+      position: relative;
+      max-width: 420px;
+      width: 100%;
+    }
+
+    .spawn-container::before {
+      display: none;
+    }
+
     .catchmon-ring {
       position: relative;
-      width: 240px;
-      height: 240px;
+      width: 260px;
+      height: 260px;
+      margin: 0 auto;
     }
+
     .ring-base, .ring-progress {
       position: absolute;
       top: 0; left: 0;
-      width: 240px; height: 240px;
+      width: 260px; height: 260px;
       border-radius: 50%;
-      mask-image: radial-gradient(circle, transparent 95px, black 96px);
-      -webkit-mask-image: radial-gradient(circle, transparent 95px, black 96px);
+      mask-image: radial-gradient(circle, transparent 105px, black 106px);
+      -webkit-mask-image: radial-gradient(circle, transparent 105px, black 106px);
     }
-    .ring-base { background: #555; }
+
+    .ring-base { 
+      background: rgba(255, 255, 255, 0.2);
+      box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.1);
+    }
+
     .ring-progress {
-      background: conic-gradient(#00cc66 0deg, transparent 0deg);
+      background: conic-gradient(
+        from 0deg,
+        #4CAF50 0deg, 
+        #45a049 180deg, 
+        #66BB6A 360deg
+      );
+      filter: drop-shadow(0 0 10px rgba(76, 175, 80, 0.5));
+      transition: filter 0.3s ease;
     }
+
+    .ring-progress.pulse {
+      animation: ringPulse 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes ringPulse {
+      0% { 
+        filter: drop-shadow(0 0 10px rgba(76, 175, 80, 0.5));
+      }
+      100% { 
+        filter: drop-shadow(0 0 25px rgba(76, 175, 80, 0.8)) brightness(1.2);
+      }
+    }
+
     .catchmon {
       position: absolute;
-      top: 20px; left: 20px;
-      width: 200px; height: 200px;
-      display: flex; justify-content: center; align-items: center;
+      top: 22px; left: 22px;
+      width: 216px; height: 216px;
+      display: flex; 
+      justify-content: center; 
+      align-items: center;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(5px);
     }
+
     #catchImg {
-      width: 200px; height: auto;
-      z-index: 1; position: relative;
-      transition: all 0.6s ease;
+      width: 190px; 
+      height: auto;
+      z-index: 1; 
+      position: relative;
+      transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      border-radius: 15px;
+      filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.3));
     }
+
     .shake {
-      animation: shake 1.4s cubic-bezier(0.65, 0, 0.35, 1) 1 forwards;
+      animation: modernShake 1.4s cubic-bezier(0.65, 0, 0.35, 1) 1 forwards;
     }
-    @keyframes shake {
-      0% { transform: translateX(0); }
-      10% { transform: translateX(-10px); }
-      20% { transform: translateX(10px); }
-      30% { transform: translateX(-6px); }
-      40% { transform: translateX(6px); }
-      50% { transform: translateX(-3px); }
-      60% { transform: translateX(3px); }
-      70% { transform: translateX(-2px); }
-      80% { transform: translateX(2px); }
-      90% { transform: translateX(-1px); }
-      100% { transform: translateX(0); }
+
+    @keyframes modernShake {
+      0% { transform: translateX(0) scale(1); }
+      10% { transform: translateX(-12px) scale(1.02); }
+      20% { transform: translateX(12px) scale(0.98); }
+      30% { transform: translateX(-8px) scale(1.01); }
+      40% { transform: translateX(8px) scale(0.99); }
+      50% { transform: translateX(-4px) scale(1); }
+      60% { transform: translateX(4px) scale(1); }
+      70% { transform: translateX(-2px) scale(1); }
+      80% { transform: translateX(2px) scale(1); }
+      90% { transform: translateX(-1px) scale(1); }
+      100% { transform: translateX(0) scale(1); }
     }
+
     .glitter {
       position: absolute;
-      width: 260px; height: 260px;
-      top: -30px; left: -30px;
-      background: radial-gradient(circle, rgba(255,255,255,0.6) 0%, transparent 70%);
+      width: 280px; height: 280px;
+      top: -40px; left: -40px;
+      background: radial-gradient(
+        circle, 
+        rgba(255, 255, 255, 0.3) 0%, 
+        rgba(255, 215, 0, 0.2) 30%,
+        transparent 70%
+      );
       border-radius: 50%;
-      animation: shimmer 2s infinite;
+      animation: modernShimmer 3s ease-in-out infinite;
       z-index: 0;
+      filter: blur(1px);
     }
-    @keyframes shimmer {
-      0% { transform: rotate(0deg); opacity: 0.6; }
-      50% { transform: rotate(180deg); opacity: 1; }
-      100% { transform: rotate(360deg); opacity: 0.6; }
+
+    @keyframes modernShimmer {
+      0% { 
+        transform: rotate(0deg) scale(1); 
+        opacity: 0.4; 
+      }
+      50% { 
+        transform: rotate(180deg) scale(1.1); 
+        opacity: 0.8; 
+      }
+      100% { 
+        transform: rotate(360deg) scale(1); 
+        opacity: 0.4; 
+      }
     }
+
     .timer-text {
-      margin-top: 10px;
-      font-size: 20px;
-      font-weight: bold;
-      color: white;
-      text-shadow: 0 0 4px black;
+      margin-top: 15px;
+      font-size: 22px;
+      font-weight: 700;
+      color: #fff;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+      text-align: center;
+      background: rgba(0, 0, 0, 0.2);
+      padding: 8px 16px;
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
     }
+
     .info {
-      font-size: 20px;
-      margin-top: 20px;
-      font-weight: bold;
-      color: white;
-      text-shadow: 0 0 4px black;
+      font-size: 14px;
+      margin-top: 10px;
+      font-weight: 600;
+      color: #fff;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.5);
       text-align: center;
+      line-height: 1.3;
     }
+
     .stat-table {
-      margin-top: 20px;
+      margin-top: 12px;
       border-collapse: collapse;
-      color: white;
-      text-shadow: 0 0 2px black;
-      width: 500px;
-      table-layout: fixed;
+      color: #fff;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+      width: 100%;
+      max-width: 420px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      overflow: hidden;
+      backdrop-filter: blur(10px);
     }
+
     .stat-table th, .stat-table td {
-      padding: 6px 12px;
-      border: 1px solid #ccc;
+      padding: 6px 4px;
       text-align: center;
-      width: 16.66%;
+      border: none;
+      font-weight: 600;
     }
-    .stat-table th { background: #34495e; }
+
+    .stat-table th { 
+      background: rgba(76, 175, 80, 0.3);
+      font-weight: 700;
+      font-size: 10px;
+      letter-spacing: 0.5px;
+    }
+
+    .stat-table td {
+      background: rgba(255, 255, 255, 0.05);
+      font-size: 12px;
+      font-weight: 700;
+      transition: all 0.3s ease;
+    }
+
+    .stat-table tr:hover td {
+      background: rgba(255, 255, 255, 0.1);
+      transform: scale(1.02);
+    }
+
     .message-wrapper {
-      height: 40px;
-      margin-top: 20px;
+      height: 35px;
+      margin-top: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
+      width: 420px;
+      max-width: 420px;
+      min-width: 420px;
     }
+
     .message {
-      font-size: 24px;
-      font-weight: bold;
-      text-shadow: 0 0 4px black;
+      font-size: 18px;
+      font-weight: 800;
+      text-shadow: 
+        0 0 20px currentColor,
+        0 0 40px currentColor,
+        0 4px 8px rgba(0,0,0,0.7);
       opacity: 0;
-      transition: opacity 0.4s ease;
+      transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      text-align: center;
+      width: 100%;
+      position: relative;
     }
-    .message.show { opacity: 1; }
+
+    .message.show { 
+      opacity: 1; 
+    }
+
+    .message.success {
+      display: none;
+    }
+
+    .message.escaped {
+      color: #ff4757;
+      background: linear-gradient(135deg, #ff4757, #ff3742, #ff6b7a);
+      background-size: 200% 200%;
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: escapeGlow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes escapeGlow {
+      0% { 
+        background-position: 0% 50%;
+        filter: drop-shadow(0 0 15px rgba(255, 71, 87, 0.6));
+      }
+      100% { 
+        background-position: 100% 50%;
+        filter: drop-shadow(0 0 25px rgba(255, 71, 87, 0.9));
+      }
+    }
+
+    @keyframes successGlow {
+      0% { 
+        box-shadow: 0 0 20px rgba(76, 175, 80, 0.3);
+        text-shadow: 0 3px 10px rgba(0,0,0,0.7), 0 0 20px rgba(76, 175, 80, 0.5);
+      }
+      100% { 
+        box-shadow: 0 0 40px rgba(76, 175, 80, 0.5);
+        text-shadow: 0 3px 10px rgba(0,0,0,0.7), 0 0 30px rgba(76, 175, 80, 0.8);
+      }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .catchmon-ring {
+        width: 220px;
+        height: 220px;
+      }
+
+      .ring-base, .ring-progress {
+        width: 220px;
+        height: 220px;
+        mask-image: radial-gradient(circle, transparent 88px, black 89px);
+        -webkit-mask-image: radial-gradient(circle, transparent 88px, black 89px);
+      }
+
+      .catchmon {
+        top: 18px;
+        left: 18px;
+        width: 184px;
+        height: 184px;
+      }
+
+      #catchImg {
+        width: 160px;
+      }
+
+      .glitter {
+        width: 250px;
+        height: 250px;
+        top: -32px;
+        left: -32px;
+      }
+
+      .timer-text {
+        font-size: 20px;
+      }
+
+      .info {
+        font-size: 13px;
+      }
+
+      .message {
+        font-size: 16px;
+      }
+
+      .message-wrapper {
+        width: 350px;
+        max-width: 350px;
+        min-width: 350px;
+      }
+
+      .stat-table th, .stat-table td {
+        padding: 5px 3px;
+        font-size: 10px;
+      }
+
+      .stat-table th {
+        font-size: 9px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .catchmon-ring {
+        width: 200px;
+        height: 200px;
+      }
+
+      .ring-base, .ring-progress {
+        width: 200px;
+        height: 200px;
+        mask-image: radial-gradient(circle, transparent 80px, black 81px);
+        -webkit-mask-image: radial-gradient(circle, transparent 80px, black 81px);
+      }
+
+      .catchmon {
+        top: 17px;
+        left: 17px;
+        width: 166px;
+        height: 166px;
+      }
+
+      #catchImg {
+        width: 145px;
+      }
+
+      .message {
+        font-size: 14px;
+      }
+
+      .message-wrapper {
+        width: 320px;
+        max-width: 320px;
+        min-width: 320px;
+      }
+
+      .timer-text {
+        font-size: 18px;
+      }
+    }
   </style>
 </head>
 
 <body>
-  <div class="catchmon-ring">
-    <div class="ring-base"></div>
-    <div class="ring-progress" id="ringProgress"></div>
-    <div class="catchmon" id="catchWrapper"></div>
+  <div class="spawn-container">
+    <div class="catchmon-ring">
+      <div class="ring-base"></div>
+      <div class="ring-progress" id="ringProgress"></div>
+      <div class="catchmon" id="catchWrapper"></div>
+    </div>
+    
+    <div class="timer-text" id="timerText">00:00</div>
+    <div class="info" id="infoText">Waiting for wild Catchmon...</div>
+    
+    <table class="stat-table">
+      <thead>
+        <tr id="statHead"></tr>
+      </thead>
+      <tbody>
+        <tr id="statRow"></tr>
+      </tbody>
+    </table>
+    
+    <div class="message-wrapper">
+      <div class="message" id="catchMsg"></div>
+    </div>
   </div>
-  <div class="timer-text" id="timerText">00:00</div>
-  <div class="info" id="infoText"></div>
-  <table class="stat-table"><thead><tr id="statHead"></tr></thead><tbody><tr id="statRow"></tr></tbody></table>
-  <div class="message-wrapper"><div class="message" id="catchMsg"></div></div>
 
   <script>
     let spawnData = null;
@@ -150,92 +420,104 @@
       }
     }
 
-function renderSpawn(data) {
-  const { name, level, rarity, shiny, sprite, stats, result, winner, donation = 0 } = data;
+    function renderSpawn(data) {
+      const { name, level, rarity, shiny, sprite, stats, result, winner, donation = 0 } = data;
 
-  document.getElementById("infoText").innerHTML = `✨ Wild ${name} appeared!<br>Level: ${level} · ${rarity}`;
-  const head = document.getElementById("statHead");
-  const row = document.getElementById("statRow");
-  head.innerHTML = ""; row.innerHTML = "";
-  for (let key in stats) {
-    head.innerHTML += `<th>${key}</th>`;
-    const val = stats[key];
-    let color = "#f1c40f";
-    if (val === 0) color = "#ff69b4";
-    else if (val === 31) color = "#8e44ad";
-    else if (val > 25) color = "#e74c3c";
-    else if (val < 10) color = "#2ecc71";
-    row.innerHTML += `<td style="color:${color}">${val}</td>`;
-  }
+      document.getElementById("infoText").innerHTML = `✨ Wild <strong>${name}</strong> appeared!<br>Level: ${level} • ${rarity}${shiny ? ' ✨ <em>Shiny!</em>' : ''}`;
+      
+      const head = document.getElementById("statHead");
+      const row = document.getElementById("statRow");
+      head.innerHTML = ""; 
+      row.innerHTML = "";
+      
+      for (let key in stats) {
+        head.innerHTML += `<th>${key}</th>`;
+        const val = stats[key];
+        let color = "#FFD700"; // Default gold
+        
+        if (val === 0) color = "#FF69B4"; // Pink for 0
+        else if (val === 31) color = "#9C27B0"; // Purple for perfect
+        else if (val >= 28) color = "#4CAF50"; // Green for excellent
+        else if (val >= 20) color = "#FF9800"; // Orange for good
+        else if (val >= 15) color = "#2196F3"; // Blue for average
+        else if (val < 10) color = "#F44336"; // Red for low
+        
+        row.innerHTML += `<td style="color:${color}; text-shadow: 0 0 10px ${color};">${val}</td>`;
+      }
 
-  const msg = document.getElementById("catchMsg");
-  msg.classList.remove("show");
-  msg.textContent = "";
-  msg.style.color = result === "caught" ? "#2ecc71" : "#e74c3c";
-  msg.style.zIndex = "1000"; // höher als effect iframe
+      const msg = document.getElementById("catchMsg");
+      msg.classList.remove("show", "success", "escaped");
+      msg.textContent = "";
 
-  const wrapper = document.getElementById("catchWrapper");
-  wrapper.innerHTML = "";
+      const wrapper = document.getElementById("catchWrapper");
+      wrapper.innerHTML = "";
 
-  if (shiny) {
-    const glitter = document.createElement("div");
-    glitter.className = "glitter";
-    wrapper.appendChild(glitter);
-  }
+      if (shiny) {
+        const glitter = document.createElement("div");
+        glitter.className = "glitter";
+        wrapper.appendChild(glitter);
+      }
 
-  const img = document.createElement("img");
-  img.id = "catchImg";
-  img.src = sprite;
-  img.alt = name;
-  wrapper.appendChild(img);
+      const img = document.createElement("img");
+      img.id = "catchImg";
+      img.src = sprite;
+      img.alt = name;
+      wrapper.appendChild(img);
 
-  let i = 0;
-  const shakeCount = result === "caught" ? 3 : result === "escaped" ? 1 + Math.floor(Math.random() * 2) : 0;
+      // Add pulse effect to ring during spawn
+      const ringProgress = document.getElementById("ringProgress");
+      ringProgress.classList.add("pulse");
 
-  function doShake() {
-    if (i < shakeCount) {
-      img.classList.remove("shake");
-      void img.offsetWidth;
-      img.classList.add("shake");
-      const wobbleAudio = document.getElementById("wobbleSound");
-      wobbleAudio.currentTime = 0;
-      wobbleAudio.play();
-      i++;
-      setTimeout(doShake, 1200);
-    } else {
-      if (result === "caught") {
-        setTimeout(() => {
-          img.style.filter = "brightness(2.5)";
+      let i = 0;
+      const shakeCount = result === "caught" ? 3 : result === "escaped" ? 1 + Math.floor(Math.random() * 2) : 0;
 
-          setTimeout(() => {
-            img.style.filter = "none";
-          }, 400); // z. B. 400ms für kurzes Aufblitzen
-
-          // Effekt starten
-          reloadEffect(donation);
-
-          // Effekt nach 1.5s entfernen und Bild zurücksetzen
-          setTimeout(() => {
-            const effectFrame = document.getElementById("catchEffect");
-            if (effectFrame) effectFrame.remove();
-
-          }, 6000);
-        }, 100);
-      } else if (result === "escaped") {
-        setTimeout(() => {
-          img.style.opacity = 0;
-          msg.textContent = `${name} broke free and escaped…`;
-          const wobbleAudio = document.getElementById("breakOut");
+      function doShake() {
+        if (i < shakeCount) {
+          img.classList.remove("shake");
+          void img.offsetWidth;
+          img.classList.add("shake");
+          
+          const wobbleAudio = document.getElementById("wobbleSound");
           wobbleAudio.currentTime = 0;
           wobbleAudio.play();
-          msg.classList.add("show");
-        }, 100);
-      }
-    }
-  }
+          
+          i++;
+          setTimeout(doShake, 1200);
+        } else {
+          ringProgress.classList.remove("pulse");
+          
+          if (result === "caught") {
+            setTimeout(() => {
+              img.style.filter = "brightness(2.5) drop-shadow(0 0 30px rgba(76, 175, 80, 0.8))";
 
-  setTimeout(doShake, 300);
-}
+              setTimeout(() => {
+                img.style.filter = "brightness(1.2) drop-shadow(0 5px 15px rgba(0, 0, 0, 0.3))";
+              }, 600);
+
+              reloadEffect(donation);
+
+              setTimeout(() => {
+                const effectFrame = document.getElementById("catchEffect");
+                if (effectFrame) effectFrame.remove();
+              }, 6000);
+            }, 100);
+          } else if (result === "escaped") {
+            setTimeout(() => {
+              img.style.opacity = "0.3";
+              img.style.filter = "grayscale(100%) blur(3px)";
+              msg.textContent = `💨 ${name} escaped...`;
+              msg.classList.add("show", "escaped");
+              
+              const breakOutAudio = document.getElementById("breakOut");
+              breakOutAudio.currentTime = 0;
+              breakOutAudio.play();
+            }, 100);
+          }
+        }
+      }
+
+      setTimeout(doShake, 300);
+    }
 
     function reloadEffect(donation) {
       const tier = getDonationTier(donation);
@@ -275,7 +557,11 @@ function renderSpawn(data) {
 
         const ring = document.getElementById("ringProgress");
         ring.style.opacity = remaining === 0 ? "0" : "1";
-        ring.style.background = `conic-gradient(#00cc66 ${angle}deg, transparent ${angle}deg)`;
+        ring.style.background = `conic-gradient(
+          from 0deg,
+          #4CAF50 ${angle}deg, 
+          rgba(255, 255, 255, 0.1) ${angle}deg
+        )`;
       }
       requestAnimationFrame(updateRingProgress);
     }

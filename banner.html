@@ -2,85 +2,258 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Scrolling Stats Banner</title>
+  <title>Cool Scrolling Banner</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     body {
       margin: 0;
       padding: 0;
-      background: #111;
+      background: transparent;
       overflow: hidden;
-      font-family: Arial, sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      height: 100vh;
+      display: flex;
+      align-items: flex-end;
     }
 
-    .marquee-container {
+    .banner-container {
       position: fixed;
-      bottom: 16px;
+      bottom: 0;
       width: 100%;
+      height: 50px;
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(12px);
+      border-top: 2px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 
+        0 -4px 20px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
       overflow: hidden;
-      height: 36px;
       z-index: 1000;
+      position: relative;
+    }
+
+    .banner-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(
+        90deg,
+        rgba(102, 126, 234, 0.1) 0%,
+        rgba(118, 75, 162, 0.15) 25%,
+        rgba(64, 224, 208, 0.1) 50%,
+        rgba(255, 182, 193, 0.1) 75%,
+        rgba(102, 126, 234, 0.1) 100%
+      );
+      background-size: 400% 100%;
+      animation: gradientFlow 8s ease-in-out infinite;
+      opacity: 0.6;
+    }
+
+    @keyframes gradientFlow {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
     }
 
     .marquee-text {
       display: inline-block;
       white-space: nowrap;
-      font-size: 20px;
-      animation: scrollLeft 25s linear forwards;
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 50px;
+      position: relative;
+      z-index: 2;
+      animation: scrollLeft 30s linear infinite;
+      padding-left: 100%;
     }
 
     @keyframes scrollLeft {
-      0%   { transform: translateX(100%); }
+      0% { transform: translateX(0); }
       100% { transform: translateX(-100%); }
     }
 
-    .glow {
+    .message-segment {
       display: inline-block;
-      padding: 0 60px;
+      padding: 0 80px;
+      position: relative;
     }
 
-    .gray-glow {
-      color: #aaa;
-      text-shadow: 0 0 4px #888;
-      animation: shimmer 10s infinite;
+    .message-segment::before {
+      content: '✨';
+      position: absolute;
+      left: 40px;
+      font-size: 18px;
+      animation: sparkle 2s ease-in-out infinite alternate;
     }
 
-    .red-glow {
-      color: #ff4444;
-      text-shadow: 0 0 8px #ff2222;
-      animation: shimmer 10s  infinite;
+    @keyframes sparkle {
+      0% { 
+        transform: scale(1) rotate(0deg);
+        opacity: 0.7;
+      }
+      100% { 
+        transform: scale(1.2) rotate(15deg);
+        opacity: 1;
+      }
+    }
+
+    /* Message Styles */
+    .message-glow {
+      text-shadow: 
+        0 0 10px currentColor,
+        0 0 20px currentColor,
+        0 0 30px rgba(255, 255, 255, 0.5),
+        0 2px 4px rgba(0, 0, 0, 0.3);
+      animation: textGlow 3s ease-in-out infinite alternate;
+    }
+
+    @keyframes textGlow {
+      0% { 
+        filter: brightness(1);
+        text-shadow: 
+          0 0 10px currentColor,
+          0 0 20px currentColor,
+          0 0 30px rgba(255, 255, 255, 0.5),
+          0 2px 4px rgba(0, 0, 0, 0.3);
+      }
+      100% { 
+        filter: brightness(1.3);
+        text-shadow: 
+          0 0 15px currentColor,
+          0 0 30px currentColor,
+          0 0 45px rgba(255, 255, 255, 0.7),
+          0 2px 4px rgba(0, 0, 0, 0.3);
+      }
+    }
+
+    .blue-glow {
+      color: #4FC3F7;
+    }
+
+    .purple-glow {
+      color: #AB47BC;
+    }
+
+    .green-glow {
+      color: #66BB6A;
+    }
+
+    .orange-glow {
+      color: #FF7043;
+    }
+
+    .pink-glow {
+      color: #EC407A;
     }
 
     .cyan-glow {
-      color: #00ffff;
-      text-shadow: 0 0 8px #00cccc;
-      animation: shimmer 10s  infinite;
+      color: #26C6DA;
     }
 
-    .yellow-glow {
-      color: #ffff66;
-      text-shadow: 0 0 8px #ffea00;
-      animation: shimmer 10s s infinite;
+    /* Floating particles in banner */
+    .banner-particle {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      background: rgba(255, 255, 255, 0.6);
+      border-radius: 50%;
+      animation: floatParticle 4s ease-in-out infinite;
+      z-index: 1;
     }
 
-    @keyframes shimmer {
-      0%, 100% { filter: brightness(1); }
-      50%      { filter: brightness(1.6); }
+    @keyframes floatParticle {
+      0%, 100% {
+        transform: translateY(0) scale(0.8);
+        opacity: 0.4;
+      }
+      50% {
+        transform: translateY(-15px) scale(1.2);
+        opacity: 0.8;
+      }
+    }
+
+    .banner-particle:nth-child(1) { left: 10%; animation-delay: 0s; }
+    .banner-particle:nth-child(2) { left: 25%; animation-delay: 1s; }
+    .banner-particle:nth-child(3) { left: 40%; animation-delay: 2s; }
+    .banner-particle:nth-child(4) { left: 55%; animation-delay: 0.5s; }
+    .banner-particle:nth-child(5) { left: 70%; animation-delay: 1.5s; }
+    .banner-particle:nth-child(6) { left: 85%; animation-delay: 2.5s; }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .banner-container {
+        height: 45px;
+      }
+
+      .marquee-text {
+        font-size: 20px;
+        line-height: 45px;
+        animation-duration: 25s;
+      }
+
+      .message-segment {
+        padding: 0 60px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .banner-container {
+        height: 40px;
+      }
+
+      .marquee-text {
+        font-size: 18px;
+        line-height: 40px;
+        animation-duration: 20s;
+      }
+
+      .message-segment {
+        padding: 0 50px;
+      }
     }
   </style>
 </head>
 <body>
+  <div class="banner-container">
+    <!-- Floating particles -->
+    <div class="banner-particle"></div>
+    <div class="banner-particle"></div>
+    <div class="banner-particle"></div>
+    <div class="banner-particle"></div>
+    <div class="banner-particle"></div>
+    <div class="banner-particle"></div>
 
-  <div class="marquee-container">
     <div id="marqueeSlot" class="marquee-text"></div>
   </div>
 
   <script>
     const messages = [
-      { text: "Trainer stats unlocked – link in bio", class: "gray-glow" },
-      { text: "Level up? Check your stats in the bio", class: "red-glow" },
-      { text: "See your leaderboard position — link in bio", class: "cyan-glow" },
-      { text: "Who's the top catcher? Find out now!", class: "yellow-glow" }
+      { 
+        text: "🎮 Welcome to the Catchmon Arena! Like the stream to catch 'em all!", 
+        class: "blue-glow" 
+      },
+      { 
+        text: "⚡ More likes = higher catch chance! Team up with fellow trainers!", 
+        class: "purple-glow" 
+      },
+      { 
+        text: "🌟 Donate for special effects and multipliers! Check out the donation tiers!", 
+        class: "green-glow" 
+      },
+      { 
+        text: "🔥 Evolve your Catchmon by collecting duplicates! Build the ultimate team!", 
+        class: "orange-glow" 
+      },
+      { 
+        text: "💎 Climb the leaderboards and become the ultimate Catchmon Master!", 
+        class: "pink-glow" 
+      },
+      { 
+        text: "🏆 Check your stats and collection in the Catchdex! Link in bio!", 
+        class: "cyan-glow" 
+      }
     ];
 
     let currentIndex = 0;
@@ -88,17 +261,68 @@
 
     function showNextMessage() {
       const msg = messages[currentIndex];
-      slot.innerHTML = `<span class="glow ${msg.class}">${msg.text}</span>`;
-      slot.style.animation = "none"; // restart animation
-      void slot.offsetWidth; // force reflow
-      slot.style.animation = "scrollLeft 50s linear forwards";
+      slot.innerHTML = `<span class="message-segment message-glow ${msg.class}">${msg.text}</span>`;
+      
+      // Reset animation
+      slot.style.animation = "none";
+      void slot.offsetWidth; // Force reflow
+      slot.style.animation = "scrollLeft 30s linear infinite";
 
       currentIndex = (currentIndex + 1) % messages.length;
     }
 
+    // Show first message immediately
     showNextMessage();
-    setInterval(showNextMessage, 60000); // alle 60 Sekunden
-  </script>
+    
+    // Change message every 30 seconds (matching animation duration)
+    setInterval(showNextMessage, 30000);
 
+    // Add some interactive sparkles on mouse movement (optional)
+    let lastSparkleTime = 0;
+    document.addEventListener('mousemove', (e) => {
+      const now = Date.now();
+      if (now - lastSparkleTime > 200) { // Throttle to avoid too many sparkles
+        createMouseSparkle(e.clientX, e.clientY);
+        lastSparkleTime = now;
+      }
+    });
+
+    function createMouseSparkle(x, y) {
+      const sparkle = document.createElement('div');
+      sparkle.style.position = 'fixed';
+      sparkle.style.left = x + 'px';
+      sparkle.style.top = y + 'px';
+      sparkle.style.width = '4px';
+      sparkle.style.height = '4px';
+      sparkle.style.background = 'rgba(255, 255, 255, 0.8)';
+      sparkle.style.borderRadius = '50%';
+      sparkle.style.pointerEvents = 'none';
+      sparkle.style.zIndex = '1001';
+      sparkle.style.boxShadow = '0 0 6px rgba(255, 255, 255, 0.6)';
+      sparkle.style.animation = 'sparkle 1s ease-out forwards';
+      
+      document.body.appendChild(sparkle);
+      
+      setTimeout(() => {
+        sparkle.remove();
+      }, 1000);
+    }
+
+    // Add sparkle animation
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes sparkle {
+        0% { 
+          opacity: 1; 
+          transform: scale(1); 
+        }
+        100% { 
+          opacity: 0; 
+          transform: scale(0.3); 
+        }
+      }
+    `;
+    document.head.appendChild(style);
+  </script>
 </body>
 </html>
