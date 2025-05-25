@@ -186,6 +186,11 @@
         }
       ],
       "donation": 500
+    },
+    "fire": {
+      "coins": 200,
+      "team": [],
+      "donation": 500
     }
   },
   "encounters": {
@@ -349,6 +354,32 @@
         "Common"
       ],
       "gesamtpunkte": 10013,
+      "catcher": null
+    },
+    {
+      "name": "Duskaran",
+      "level": 55,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "ATK": 6,
+        "DEF": 25,
+        "SPD": 20,
+        "WIS": 20,
+        "CHA": 25,
+        "LUK": 13
+      },
+      "sprite": "catchmon/Common/Duskaran.png",
+      "stage": 1,
+      "evolution_line": [
+        "Duskaran",
+        "Ravikar",
+        "Brutalux"
+      ],
+      "categories": [
+        "Common"
+      ],
+      "gesamtpunkte": 5609,
       "catcher": null
     }
   ]
