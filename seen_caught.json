@@ -37,7 +37,7 @@
   },
   "fairypup": {
     "escaped": 1,
-    "caught": 0
+    "caught": 1
   },
   "plipsy": {
     "escaped": 1,
@@ -52,7 +52,7 @@
     "caught": 0
   },
   "duskaran": {
-    "escaped": 1,
+    "escaped": 2,
     "caught": 0
   },
   "crylette": {
@@ -85,6 +85,10 @@
   },
   "toxibelle": {
     "escaped": 2,
+    "caught": 0
+  },
+  "metallino": {
+    "escaped": 1,
     "caught": 0
   }
 }

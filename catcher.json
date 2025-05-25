@@ -219,7 +219,7 @@
       "donation": 500
     },
     "water": {
-      "coins": 600,
+      "coins": 800,
       "team": [
         {
           "name": "Psypus",
@@ -294,6 +294,29 @@
             "Starter"
           ],
           "gesamtpunkte": 4210
+        },
+        {
+          "name": "Fairypup",
+          "level": 1,
+          "rarity": "Common",
+          "shiny": false,
+          "stats": {
+            "ATK": 15,
+            "DEF": 22,
+            "SPD": 17,
+            "WIS": 7,
+            "CHA": 0,
+            "LUK": 26
+          },
+          "sprite": "catchmon/Common/Fairypup.png",
+          "stage": 1,
+          "evolution_line": [
+            "Fairypup"
+          ],
+          "categories": [
+            "Common"
+          ],
+          "gesamtpunkte": 187
         }
       ],
       "donation": 250
@@ -314,7 +337,8 @@
     "Wyrmling": 1,
     "Mabbit": 1,
     "Psypus": 1,
-    "Flaumi": 1
+    "Flaumi": 1,
+    "Fairypup": 1
   },
   "escaped": [
     {
@@ -845,6 +869,106 @@
         "Common"
       ],
       "gesamtpunkte": 323,
+      "catcher": null
+    },
+    {
+      "name": "Flurrie",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "ATK": 23,
+        "DEF": 13,
+        "SPD": 10,
+        "WIS": 28,
+        "CHA": 5,
+        "LUK": 21
+      },
+      "sprite": "catchmon/Common/Flurrie.png",
+      "stage": 1,
+      "evolution_line": [
+        "Flurrie"
+      ],
+      "categories": [
+        "Common"
+      ],
+      "gesamtpunkte": 200,
+      "catcher": null
+    },
+    {
+      "name": "Rhinubi",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "ATK": 9,
+        "DEF": 31,
+        "SPD": 17,
+        "WIS": 2,
+        "CHA": 27,
+        "LUK": 10
+      },
+      "sprite": "catchmon/Common/Rhinubi.png",
+      "stage": 1,
+      "evolution_line": [
+        "Rhinubi",
+        "Rhynok",
+        "Rharnox"
+      ],
+      "categories": [
+        "Common"
+      ],
+      "gesamtpunkte": 196,
+      "catcher": null
+    },
+    {
+      "name": "Rockoon",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "ATK": 4,
+        "DEF": 10,
+        "SPD": 20,
+        "WIS": 7,
+        "CHA": 17,
+        "LUK": 11
+      },
+      "sprite": "catchmon/Common/Rockoon.png",
+      "stage": 1,
+      "evolution_line": [
+        "Rockoon"
+      ],
+      "categories": [
+        "Common"
+      ],
+      "gesamtpunkte": 169,
+      "catcher": null
+    },
+    {
+      "name": "Duskaran",
+      "level": 52,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "ATK": 21,
+        "DEF": 31,
+        "SPD": 5,
+        "WIS": 3,
+        "CHA": 11,
+        "LUK": 29
+      },
+      "sprite": "catchmon/Common/Duskaran.png",
+      "stage": 1,
+      "evolution_line": [
+        "Duskaran",
+        "Ravikar",
+        "Brutalux"
+      ],
+      "categories": [
+        "Common"
+      ],
+      "gesamtpunkte": 5300,
       "catcher": null
     }
   ]
