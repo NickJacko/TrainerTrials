@@ -219,9 +219,13 @@
       "donation": 500
     },
     "water": {
-      "coins": 0,
+      "coins": 200,
       "team": [],
       "donation": 250
+    },
+    "": {
+      "coins": 1,
+      "team": []
     }
   },
   "encounters": {
@@ -512,6 +516,108 @@
         "Common"
       ],
       "gesamtpunkte": 349,
+      "catcher": null
+    },
+    {
+      "name": "Flambini",
+      "level": 3,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "ATK": 5,
+        "DEF": 19,
+        "SPD": 28,
+        "WIS": 20,
+        "CHA": 23,
+        "LUK": 4
+      },
+      "sprite": "catchmon/Common/Flambini.png",
+      "stage": 1,
+      "evolution_line": [
+        "Flambini",
+        "Glimbird",
+        "Infernox"
+      ],
+      "categories": [
+        "Common"
+      ],
+      "gesamtpunkte": 399,
+      "catcher": null
+    },
+    {
+      "name": "Shadopup",
+      "level": 18,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "ATK": 30,
+        "DEF": 7,
+        "SPD": 10,
+        "WIS": 17,
+        "CHA": 21,
+        "LUK": 21
+      },
+      "sprite": "catchmon/Common/Shadopup.png",
+      "stage": 1,
+      "evolution_line": [
+        "Shadopup"
+      ],
+      "categories": [
+        "Common"
+      ],
+      "gesamtpunkte": 1906,
+      "catcher": null
+    },
+    {
+      "name": "Spirico",
+      "level": 28,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "ATK": 21,
+        "DEF": 2,
+        "SPD": 8,
+        "WIS": 30,
+        "CHA": 19,
+        "LUK": 0
+      },
+      "sprite": "catchmon/Common/Spirico.png",
+      "stage": 1,
+      "evolution_line": [
+        "Spirico",
+        "Astranox",
+        "Ethernal"
+      ],
+      "categories": [
+        "Common"
+      ],
+      "gesamtpunkte": 2880,
+      "catcher": null
+    },
+    {
+      "name": "Rhinubi",
+      "level": 5,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "ATK": 15,
+        "DEF": 11,
+        "SPD": 28,
+        "WIS": 30,
+        "CHA": 23,
+        "LUK": 7
+      },
+      "sprite": "catchmon/Common/Rhinubi.png",
+      "stage": 1,
+      "evolution_line": [
+        "Rhinubi",
+        "Rhynok",
+        "Rharnox"
+      ],
+      "categories": [
+        "Common"
+      ],
+      "gesamtpunkte": 614,
       "catcher": null
     }
   ]
