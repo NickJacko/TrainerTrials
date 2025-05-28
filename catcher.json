@@ -105,14 +105,39 @@
     },
     "TrainerTrials": {
       "coins": 312,
-      "team": []
+      "team": [
+        {
+          "name": "Fairypup",
+          "level": 5,
+          "rarity": "Common",
+          "shiny": false,
+          "stats": {
+            "ATK": 24,
+            "DEF": 14,
+            "SPD": 30,
+            "WIS": 8,
+            "CHA": 31,
+            "LUK": 19
+          },
+          "sprite": "catchmon/Common/Fairypup.png",
+          "stage": 1,
+          "evolution_line": [
+            "Fairypup"
+          ],
+          "categories": [
+            "Common"
+          ],
+          "gesamtpunkte": 626
+        }
+      ]
     }
   },
   "encounters": {
     "Brummel": 1,
     "Glissalune": 1,
     "Florispur": 1,
-    "Crylette": 1
+    "Crylette": 1,
+    "Fairypup": 1
   },
   "escaped": [
     {
