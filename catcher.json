@@ -189,7 +189,8 @@
     "Silv": 1,
     "Aquaril": 1,
     "Duskaran": 1,
-    "Mabbit": 1
+    "Mabbit": 1,
+    "Aqualume": 1
   },
   "escaped": [
     {
@@ -340,6 +341,31 @@
         "Common"
       ],
       "gesamtpunkte": 1181,
+      "catcher": null
+    },
+    {
+      "name": "Aqualume",
+      "level": 13,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "ATK": 28,
+        "DEF": 30,
+        "SPD": 16,
+        "WIS": 26,
+        "CHA": 9,
+        "LUK": 4
+      },
+      "sprite": "catchmon/Common/Aqualume.png",
+      "stage": 1,
+      "evolution_line": [
+        "Aqualume",
+        "Nairowisp"
+      ],
+      "categories": [
+        "Common"
+      ],
+      "gesamtpunkte": 1413,
       "catcher": null
     }
   ]
