@@ -104,7 +104,7 @@
       "team": []
     },
     "TrainerTrials": {
-      "coins": 488,
+      "coins": 605,
       "team": [
         {
           "name": "Fairypup",
@@ -213,6 +213,31 @@
         "Common"
       ],
       "gesamtpunkte": 161,
+      "catcher": null
+    },
+    {
+      "name": "Ripplee",
+      "level": 96,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "ATK": 13,
+        "DEF": 24,
+        "SPD": 2,
+        "WIS": 24,
+        "CHA": 28,
+        "LUK": 6
+      },
+      "sprite": "catchmon/Common/Ripplee.png",
+      "stage": 1,
+      "evolution_line": [
+        "Ripplee",
+        "Volfreeze"
+      ],
+      "categories": [
+        "Common"
+      ],
+      "gesamtpunkte": 9697,
       "catcher": null
     }
   ]

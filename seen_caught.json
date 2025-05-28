@@ -15,6 +15,10 @@
     "escaped": 0,
     "caught": 1
   },
+  "aquaril": {
+    "escaped": 0,
+    "caught": 1
+  },
   "glissalune": {
     "escaped": 1,
     "caught": 0
@@ -23,11 +27,7 @@
     "escaped": 1,
     "caught": 0
   },
-  "magmarock": {
-    "escaped": 1,
-    "caught": 0
-  },
-  "flambini": {
+  "ripplee": {
     "escaped": 1,
     "caught": 0
   }
