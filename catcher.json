@@ -151,6 +151,31 @@
             "Common"
           ],
           "gesamtpunkte": 192
+        },
+        {
+          "name": "Mabbit",
+          "level": 1,
+          "rarity": "Common",
+          "shiny": false,
+          "stats": {
+            "ATK": 0,
+            "DEF": 25,
+            "SPD": 11,
+            "WIS": 26,
+            "CHA": 15,
+            "LUK": 4
+          },
+          "sprite": "catchmon/Common/Mabbit.png",
+          "stage": 1,
+          "evolution_line": [
+            "Mabbit",
+            "Mabteen",
+            "Mabboss"
+          ],
+          "categories": [
+            "Common"
+          ],
+          "gesamtpunkte": 181
         }
       ]
     }
@@ -163,7 +188,8 @@
     "Fairypup": 2,
     "Silv": 1,
     "Aquaril": 1,
-    "Duskaran": 1
+    "Duskaran": 1,
+    "Mabbit": 1
   },
   "escaped": [
     {
