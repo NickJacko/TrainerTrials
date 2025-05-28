@@ -160,7 +160,7 @@
     "Glissalune": 1,
     "Florispur": 1,
     "Crylette": 1,
-    "Fairypup": 1,
+    "Fairypup": 2,
     "Silv": 1,
     "Aquaril": 1
   },
@@ -263,6 +263,30 @@
         "Common"
       ],
       "gesamtpunkte": 324,
+      "catcher": null
+    },
+    {
+      "name": "Fairypup",
+      "level": 9,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "ATK": 9,
+        "DEF": 7,
+        "SPD": 15,
+        "WIS": 22,
+        "CHA": 23,
+        "LUK": 24
+      },
+      "sprite": "catchmon/Common/Fairypup.png",
+      "stage": 1,
+      "evolution_line": [
+        "Fairypup"
+      ],
+      "categories": [
+        "Common"
+      ],
+      "gesamtpunkte": 1000,
       "catcher": null
     }
   ]
