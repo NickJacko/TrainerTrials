@@ -74,5 +74,9 @@
   "magmarock": {
     "escaped": 1,
     "caught": 0
+  },
+  "terraky": {
+    "escaped": 1,
+    "caught": 0
   }
 }
