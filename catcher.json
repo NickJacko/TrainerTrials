@@ -36,11 +36,41 @@
     "!Donate test 20": {
       "coins": 1,
       "team": []
+    },
+    "thunder": {
+      "coins": 400,
+      "team": [
+        {
+          "name": "Florispur",
+          "level": 26,
+          "rarity": "Common",
+          "shiny": false,
+          "stats": {
+            "ATK": 11,
+            "DEF": 0,
+            "SPD": 11,
+            "WIS": 19,
+            "CHA": 2,
+            "LUK": 8
+          },
+          "sprite": "catchmon/Common/Florispur.png",
+          "stage": 1,
+          "evolution_line": [
+            "Florispur",
+            "Luravine"
+          ],
+          "categories": [
+            "Common"
+          ],
+          "gesamtpunkte": 2651
+        }
+      ]
     }
   },
   "encounters": {
     "Brummel": 1,
-    "Glissalune": 1
+    "Glissalune": 1,
+    "Florispur": 1
   },
   "escaped": [
     {
