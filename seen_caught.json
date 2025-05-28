@@ -22,5 +22,9 @@
   "silv": {
     "escaped": 1,
     "caught": 0
+  },
+  "magmarock": {
+    "escaped": 1,
+    "caught": 0
   }
 }
