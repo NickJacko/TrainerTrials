@@ -46,5 +46,9 @@
   "solanir": {
     "escaped": 1,
     "caught": 0
+  },
+  "rockoon": {
+    "escaped": 1,
+    "caught": 0
   }
 }
