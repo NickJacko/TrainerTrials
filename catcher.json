@@ -67,14 +67,40 @@
       ]
     },
     "paulaner24": {
-      "coins": 300,
-      "team": []
+      "coins": 600,
+      "team": [
+        {
+          "name": "Crylette",
+          "level": 48,
+          "rarity": "Common",
+          "shiny": false,
+          "stats": {
+            "ATK": 26,
+            "DEF": 8,
+            "SPD": 6,
+            "WIS": 9,
+            "CHA": 31,
+            "LUK": 0
+          },
+          "sprite": "catchmon/Common/Crylette.png",
+          "stage": 1,
+          "evolution_line": [
+            "Crylette",
+            "Glacelyra"
+          ],
+          "categories": [
+            "Common"
+          ],
+          "gesamtpunkte": 4880
+        }
+      ]
     }
   },
   "encounters": {
     "Brummel": 1,
     "Glissalune": 1,
-    "Florispur": 1
+    "Florispur": 1,
+    "Crylette": 1
   },
   "escaped": [
     {
