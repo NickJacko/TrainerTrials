@@ -1,10 +1,37 @@
 {
   "catcher": {
     "Nick": {
-      "coins": 100,
-      "team": []
+      "coins": 400,
+      "team": [
+        {
+          "name": "Brummel",
+          "level": 10,
+          "rarity": "Common",
+          "shiny": false,
+          "stats": {
+            "ATK": 17,
+            "DEF": 7,
+            "SPD": 20,
+            "WIS": 5,
+            "CHA": 31,
+            "LUK": 27
+          },
+          "sprite": "catchmon/Common/Brummel.png",
+          "stage": 1,
+          "evolution_line": [
+            "Brummel",
+            "Brumblast"
+          ],
+          "categories": [
+            "Common"
+          ],
+          "gesamtpunkte": 1107
+        }
+      ]
     }
   },
-  "encounters": {},
+  "encounters": {
+    "Brummel": 1
+  },
   "escaped": []
 }
