@@ -104,7 +104,7 @@
       "team": []
     },
     "TrainerTrials": {
-      "coins": 1187,
+      "coins": 1287,
       "team": [
         {
           "name": "Fairypup",
@@ -594,6 +594,109 @@
         "Common"
       ],
       "gesamtpunkte": 582,
+      "catcher": null
+    },
+    {
+      "name": "Florispur",
+      "level": 5,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "ATK": 9,
+        "DEF": 14,
+        "SPD": 6,
+        "WIS": 11,
+        "CHA": 23,
+        "LUK": 12
+      },
+      "sprite": "catchmon/Common/Florispur.png",
+      "stage": 1,
+      "evolution_line": [
+        "Florispur",
+        "Luravine"
+      ],
+      "categories": [
+        "Common"
+      ],
+      "gesamtpunkte": 575,
+      "catcher": null
+    },
+    {
+      "name": "Spirico",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "ATK": 31,
+        "DEF": 15,
+        "SPD": 25,
+        "WIS": 27,
+        "CHA": 0,
+        "LUK": 11
+      },
+      "sprite": "catchmon/Common/Spirico.png",
+      "stage": 1,
+      "evolution_line": [
+        "Spirico",
+        "Astranox",
+        "Ethernal"
+      ],
+      "categories": [
+        "Common"
+      ],
+      "gesamtpunkte": 209,
+      "catcher": null
+    },
+    {
+      "name": "Magmarock",
+      "level": 19,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "ATK": 31,
+        "DEF": 10,
+        "SPD": 18,
+        "WIS": 13,
+        "CHA": 21,
+        "LUK": 6
+      },
+      "sprite": "catchmon/Common/Magmarock.png",
+      "stage": 1,
+      "evolution_line": [
+        "Magmarock",
+        "Emberynn",
+        "Pyrocore"
+      ],
+      "categories": [
+        "Common"
+      ],
+      "gesamtpunkte": 1999,
+      "catcher": null
+    },
+    {
+      "name": "Terraky",
+      "level": 59,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "ATK": 30,
+        "DEF": 11,
+        "SPD": 5,
+        "WIS": 16,
+        "CHA": 0,
+        "LUK": 15
+      },
+      "sprite": "catchmon/Common/Terraky.png",
+      "stage": 1,
+      "evolution_line": [
+        "Terraky",
+        "Terraklawn",
+        "Terranox"
+      ],
+      "categories": [
+        "Common"
+      ],
+      "gesamtpunkte": 5977,
       "catcher": null
     }
   ]
