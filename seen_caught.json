@@ -3,7 +3,19 @@
     "escaped": 0,
     "caught": 1
   },
+  "florispur": {
+    "escaped": 0,
+    "caught": 1
+  },
+  "crylette": {
+    "escaped": 0,
+    "caught": 1
+  },
   "glissalune": {
+    "escaped": 1,
+    "caught": 0
+  },
+  "magmarock": {
     "escaped": 1,
     "caught": 0
   }
