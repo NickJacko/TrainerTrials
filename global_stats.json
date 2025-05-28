@@ -1,7 +1,13 @@
 {
-  "total_likes_ever": 20,
-  "total_spawns": 2,
+  "total_likes_ever": 100,
+  "total_spawns": 1,
   "total_catches": 0,
-  "total_escapes": 1,
-  "session_start": 1748194949.931509
+  "total_escapes": 0,
+  "total_evolutions": 0,
+  "session_start": 1748454435.705867,
+  "highest_level_catchmon": {
+    "name": "None",
+    "level": 0,
+    "catcher": "None"
+  }
 }
