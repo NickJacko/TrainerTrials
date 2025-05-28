@@ -4,7 +4,7 @@
     "caught": 1
   },
   "florispur": {
-    "escaped": 0,
+    "escaped": 1,
     "caught": 1
   },
   "crylette": {
@@ -12,14 +12,6 @@
     "caught": 1
   },
   "glissalune": {
-    "escaped": 1,
-    "caught": 0
-  },
-  "chronavelle": {
-    "escaped": 1,
-    "caught": 0
-  },
-  "lumibun": {
     "escaped": 1,
     "caught": 0
   }
