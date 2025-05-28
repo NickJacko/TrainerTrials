@@ -94,6 +94,14 @@
           "gesamtpunkte": 4880
         }
       ]
+    },
+    "nick": {
+      "coins": 200,
+      "team": []
+    },
+    "2": {
+      "coins": 200,
+      "team": []
     }
   },
   "encounters": {
