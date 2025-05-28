@@ -104,7 +104,7 @@
       "team": []
     },
     "TrainerTrials": {
-      "coins": 727,
+      "coins": 794,
       "team": [
         {
           "name": "Fairypup",
@@ -162,7 +162,8 @@
     "Crylette": 1,
     "Fairypup": 2,
     "Silv": 1,
-    "Aquaril": 1
+    "Aquaril": 1,
+    "Duskaran": 1
   },
   "escaped": [
     {
@@ -287,6 +288,32 @@
         "Common"
       ],
       "gesamtpunkte": 1000,
+      "catcher": null
+    },
+    {
+      "name": "Duskaran",
+      "level": 11,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "ATK": 27,
+        "DEF": 13,
+        "SPD": 8,
+        "WIS": 0,
+        "CHA": 13,
+        "LUK": 20
+      },
+      "sprite": "catchmon/Common/Duskaran.png",
+      "stage": 1,
+      "evolution_line": [
+        "Duskaran",
+        "Ravikar",
+        "Brutalux"
+      ],
+      "categories": [
+        "Common"
+      ],
+      "gesamtpunkte": 1181,
       "catcher": null
     }
   ]
