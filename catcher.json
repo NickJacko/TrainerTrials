@@ -102,6 +102,10 @@
     "2": {
       "coins": 200,
       "team": []
+    },
+    "TrainerTrials": {
+      "coins": 104,
+      "team": []
     }
   },
   "encounters": {
