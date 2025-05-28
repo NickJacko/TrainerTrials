@@ -4,14 +4,22 @@
     "caught": 1
   },
   "florispur": {
-    "escaped": 1,
+    "escaped": 0,
     "caught": 1
   },
   "crylette": {
     "escaped": 0,
     "caught": 1
   },
+  "fairypup": {
+    "escaped": 0,
+    "caught": 1
+  },
   "glissalune": {
+    "escaped": 1,
+    "caught": 0
+  },
+  "silv": {
     "escaped": 1,
     "caught": 0
   }
