@@ -104,7 +104,7 @@
       "team": []
     },
     "TrainerTrials": {
-      "coins": 1287,
+      "coins": 1322,
       "team": [
         {
           "name": "Fairypup",
@@ -192,7 +192,8 @@
     "Mabbit": 1,
     "Aqualume": 1,
     "Stellaryon": 1,
-    "Psypus": 1
+    "Psypus": 1,
+    "Abyssirex": 1
   },
   "escaped": [
     {
@@ -697,6 +698,30 @@
         "Common"
       ],
       "gesamtpunkte": 5977,
+      "catcher": null
+    },
+    {
+      "name": "Abyssirex",
+      "level": 20,
+      "rarity": "Rare",
+      "shiny": false,
+      "stats": {
+        "ATK": 7,
+        "DEF": 18,
+        "SPD": 31,
+        "WIS": 18,
+        "CHA": 2,
+        "LUK": 12
+      },
+      "sprite": "catchmon/Rare/Abyssirex.png",
+      "stage": 1,
+      "evolution_line": [
+        "Abyssirex"
+      ],
+      "categories": [
+        "Rare"
+      ],
+      "gesamtpunkte": 4176,
       "catcher": null
     }
   ]
