@@ -193,7 +193,8 @@
     "Aqualume": 1,
     "Stellaryon": 1,
     "Psypus": 1,
-    "Abyssirex": 1
+    "Abyssirex": 1,
+    "Zapkit": 1
   },
   "escaped": [
     {
@@ -849,6 +850,32 @@
         "Common"
       ],
       "gesamtpunkte": 685,
+      "catcher": null
+    },
+    {
+      "name": "Zapkit",
+      "level": 17,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "ATK": 11,
+        "DEF": 25,
+        "SPD": 10,
+        "WIS": 4,
+        "CHA": 18,
+        "LUK": 9
+      },
+      "sprite": "catchmon/Common/Zapkit.png",
+      "stage": 1,
+      "evolution_line": [
+        "Zapkit",
+        "Voltera",
+        "Voltitan"
+      ],
+      "categories": [
+        "Common"
+      ],
+      "gesamtpunkte": 1777,
       "catcher": null
     }
   ]

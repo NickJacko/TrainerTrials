@@ -86,5 +86,9 @@
   "spikrit": {
     "escaped": 1,
     "caught": 0
+  },
+  "zapkit": {
+    "escaped": 1,
+    "caught": 0
   }
 }
