@@ -137,7 +137,8 @@
     "Glissalune": 1,
     "Florispur": 1,
     "Crylette": 1,
-    "Fairypup": 1
+    "Fairypup": 1,
+    "Silv": 1
   },
   "escaped": [
     {
@@ -162,6 +163,32 @@
         "Common"
       ],
       "gesamtpunkte": 1853,
+      "catcher": null
+    },
+    {
+      "name": "Silv",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "ATK": 7,
+        "DEF": 3,
+        "SPD": 2,
+        "WIS": 4,
+        "CHA": 27,
+        "LUK": 18
+      },
+      "sprite": "catchmon/Common/Silv.png",
+      "stage": 1,
+      "evolution_line": [
+        "Silv",
+        "Silvonfla",
+        "Silvaflare"
+      ],
+      "categories": [
+        "Common"
+      ],
+      "gesamtpunkte": 161,
       "catcher": null
     }
   ]
