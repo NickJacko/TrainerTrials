@@ -30,6 +30,10 @@
       ]
     },
     "": {
+      "coins": 2,
+      "team": []
+    },
+    "!Donate test 20": {
       "coins": 1,
       "team": []
     }
