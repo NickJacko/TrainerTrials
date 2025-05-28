@@ -104,7 +104,7 @@
       "team": []
     },
     "TrainerTrials": {
-      "coins": 605,
+      "coins": 663,
       "team": [
         {
           "name": "Fairypup",
@@ -156,7 +156,7 @@
     }
   },
   "encounters": {
-    "Brummel": 1,
+    "Brummel": 2,
     "Glissalune": 1,
     "Florispur": 1,
     "Crylette": 1,
@@ -238,6 +238,31 @@
         "Common"
       ],
       "gesamtpunkte": 9697,
+      "catcher": null
+    },
+    {
+      "name": "Brummel",
+      "level": 2,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "ATK": 18,
+        "DEF": 30,
+        "SPD": 21,
+        "WIS": 15,
+        "CHA": 12,
+        "LUK": 28
+      },
+      "sprite": "catchmon/Common/Brummel.png",
+      "stage": 1,
+      "evolution_line": [
+        "Brummel",
+        "Brumblast"
+      ],
+      "categories": [
+        "Common"
+      ],
+      "gesamtpunkte": 324,
       "catcher": null
     }
   ]
