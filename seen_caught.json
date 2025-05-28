@@ -58,5 +58,9 @@
   "badgy": {
     "escaped": 1,
     "caught": 0
+  },
+  "stellaryon": {
+    "escaped": 1,
+    "caught": 0
   }
 }

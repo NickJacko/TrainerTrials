@@ -104,7 +104,7 @@
       "team": []
     },
     "TrainerTrials": {
-      "coins": 1038,
+      "coins": 1187,
       "team": [
         {
           "name": "Fairypup",
@@ -190,7 +190,8 @@
     "Aquaril": 1,
     "Duskaran": 1,
     "Mabbit": 1,
-    "Aqualume": 1
+    "Aqualume": 1,
+    "Stellaryon": 1
   },
   "escaped": [
     {
@@ -366,6 +367,206 @@
         "Common"
       ],
       "gesamtpunkte": 1413,
+      "catcher": null
+    },
+    {
+      "name": "Mabbit",
+      "level": 4,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "ATK": 7,
+        "DEF": 9,
+        "SPD": 13,
+        "WIS": 5,
+        "CHA": 20,
+        "LUK": 11
+      },
+      "sprite": "catchmon/Common/Mabbit.png",
+      "stage": 1,
+      "evolution_line": [
+        "Mabbit",
+        "Mabteen",
+        "Mabboss"
+      ],
+      "categories": [
+        "Common"
+      ],
+      "gesamtpunkte": 465,
+      "catcher": null
+    },
+    {
+      "name": "Solanir",
+      "level": 60,
+      "rarity": "Rare",
+      "shiny": false,
+      "stats": {
+        "ATK": 0,
+        "DEF": 22,
+        "SPD": 13,
+        "WIS": 29,
+        "CHA": 5,
+        "LUK": 0
+      },
+      "sprite": "catchmon/Rare/Solanir.png",
+      "stage": 1,
+      "evolution_line": [
+        "Solanir"
+      ],
+      "categories": [
+        "Rare"
+      ],
+      "gesamtpunkte": 12138,
+      "catcher": null
+    },
+    {
+      "name": "Rockoon",
+      "level": 20,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "ATK": 26,
+        "DEF": 26,
+        "SPD": 9,
+        "WIS": 22,
+        "CHA": 3,
+        "LUK": 15
+      },
+      "sprite": "catchmon/Common/Rockoon.png",
+      "stage": 1,
+      "evolution_line": [
+        "Rockoon"
+      ],
+      "categories": [
+        "Common"
+      ],
+      "gesamtpunkte": 2101,
+      "catcher": null
+    },
+    {
+      "name": "Ripplee",
+      "level": 7,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "ATK": 13,
+        "DEF": 9,
+        "SPD": 28,
+        "WIS": 18,
+        "CHA": 17,
+        "LUK": 16
+      },
+      "sprite": "catchmon/Common/Ripplee.png",
+      "stage": 1,
+      "evolution_line": [
+        "Ripplee",
+        "Volfreeze"
+      ],
+      "categories": [
+        "Common"
+      ],
+      "gesamtpunkte": 801,
+      "catcher": null
+    },
+    {
+      "name": "Florispur",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "ATK": 0,
+        "DEF": 24,
+        "SPD": 25,
+        "WIS": 1,
+        "CHA": 7,
+        "LUK": 7
+      },
+      "sprite": "catchmon/Common/Florispur.png",
+      "stage": 1,
+      "evolution_line": [
+        "Florispur",
+        "Luravine"
+      ],
+      "categories": [
+        "Common"
+      ],
+      "gesamtpunkte": 164,
+      "catcher": null
+    },
+    {
+      "name": "Plipsy",
+      "level": 8,
+      "rarity": "Starter",
+      "shiny": false,
+      "stats": {
+        "ATK": 28,
+        "DEF": 4,
+        "SPD": 14,
+        "WIS": 2,
+        "CHA": 0,
+        "LUK": 15
+      },
+      "sprite": "catchmon/Starter/Plipsy.png",
+      "stage": 1,
+      "evolution_line": [
+        "Plipsy",
+        "Aquilor",
+        "Hydravian"
+      ],
+      "categories": [
+        "Starter"
+      ],
+      "gesamtpunkte": 1294,
+      "catcher": null
+    },
+    {
+      "name": "Badgy",
+      "level": 2,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "ATK": 2,
+        "DEF": 3,
+        "SPD": 21,
+        "WIS": 27,
+        "CHA": 9,
+        "LUK": 27
+      },
+      "sprite": "catchmon/Common/Badgy.png",
+      "stage": 1,
+      "evolution_line": [
+        "Badgy",
+        "Badgock",
+        "Badgogon"
+      ],
+      "categories": [
+        "Common"
+      ],
+      "gesamtpunkte": 289,
+      "catcher": null
+    },
+    {
+      "name": "Stellaryon",
+      "level": 1,
+      "rarity": "Rare",
+      "shiny": false,
+      "stats": {
+        "ATK": 24,
+        "DEF": 31,
+        "SPD": 1,
+        "WIS": 11,
+        "CHA": 5,
+        "LUK": 16
+      },
+      "sprite": "catchmon/Rare/Stellaryon.png",
+      "stage": 1,
+      "evolution_line": [
+        "Stellaryon"
+      ],
+      "categories": [
+        "Rare"
+      ],
+      "gesamtpunkte": 376,
       "catcher": null
     }
   ]
