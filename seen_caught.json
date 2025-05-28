@@ -50,5 +50,9 @@
   "rockoon": {
     "escaped": 1,
     "caught": 0
+  },
+  "plipsy": {
+    "escaped": 1,
+    "caught": 0
   }
 }
