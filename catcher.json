@@ -104,7 +104,7 @@
       "team": []
     },
     "TrainerTrials": {
-      "coins": 1322,
+      "coins": 1523,
       "team": [
         {
           "name": "Fairypup",
@@ -189,7 +189,7 @@
     "Silv": 1,
     "Aquaril": 1,
     "Duskaran": 1,
-    "Mabbit": 1,
+    "Mabbit": 2,
     "Aqualume": 1,
     "Stellaryon": 1,
     "Psypus": 1,
@@ -722,6 +722,133 @@
         "Rare"
       ],
       "gesamtpunkte": 4176,
+      "catcher": null
+    },
+    {
+      "name": "Terraky",
+      "level": 15,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "ATK": 15,
+        "DEF": 12,
+        "SPD": 28,
+        "WIS": 17,
+        "CHA": 13,
+        "LUK": 24
+      },
+      "sprite": "catchmon/Common/Terraky.png",
+      "stage": 1,
+      "evolution_line": [
+        "Terraky",
+        "Terraklawn",
+        "Terranox"
+      ],
+      "categories": [
+        "Common"
+      ],
+      "gesamtpunkte": 1609,
+      "catcher": null
+    },
+    {
+      "name": "Stellaryon",
+      "level": 1,
+      "rarity": "Rare",
+      "shiny": false,
+      "stats": {
+        "ATK": 23,
+        "DEF": 17,
+        "SPD": 14,
+        "WIS": 15,
+        "CHA": 5,
+        "LUK": 15
+      },
+      "sprite": "catchmon/Rare/Stellaryon.png",
+      "stage": 1,
+      "evolution_line": [
+        "Stellaryon"
+      ],
+      "categories": [
+        "Rare"
+      ],
+      "gesamtpunkte": 378,
+      "catcher": null
+    },
+    {
+      "name": "Brummel",
+      "level": 2,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "ATK": 1,
+        "DEF": 5,
+        "SPD": 5,
+        "WIS": 30,
+        "CHA": 15,
+        "LUK": 16
+      },
+      "sprite": "catchmon/Common/Brummel.png",
+      "stage": 1,
+      "evolution_line": [
+        "Brummel",
+        "Brumblast"
+      ],
+      "categories": [
+        "Common"
+      ],
+      "gesamtpunkte": 272,
+      "catcher": null
+    },
+    {
+      "name": "Spikrit",
+      "level": 5,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "ATK": 24,
+        "DEF": 26,
+        "SPD": 22,
+        "WIS": 25,
+        "CHA": 14,
+        "LUK": 4
+      },
+      "sprite": "catchmon/Common/Spikrit.png",
+      "stage": 1,
+      "evolution_line": [
+        "Spikrit",
+        "Gravogorn",
+        "Terrarokh"
+      ],
+      "categories": [
+        "Common"
+      ],
+      "gesamtpunkte": 615,
+      "catcher": null
+    },
+    {
+      "name": "Mabbit",
+      "level": 6,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "ATK": 19,
+        "DEF": 6,
+        "SPD": 9,
+        "WIS": 24,
+        "CHA": 27,
+        "LUK": 0
+      },
+      "sprite": "catchmon/Common/Mabbit.png",
+      "stage": 1,
+      "evolution_line": [
+        "Mabbit",
+        "Mabteen",
+        "Mabboss"
+      ],
+      "categories": [
+        "Common"
+      ],
+      "gesamtpunkte": 685,
       "catcher": null
     }
   ]
