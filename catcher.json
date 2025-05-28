@@ -30,7 +30,7 @@
       ]
     },
     "": {
-      "coins": 2,
+      "coins": 3,
       "team": []
     },
     "!Donate test 20": {
@@ -39,7 +39,33 @@
     }
   },
   "encounters": {
-    "Brummel": 1
+    "Brummel": 1,
+    "Glissalune": 1
   },
-  "escaped": []
+  "escaped": [
+    {
+      "name": "Glissalune",
+      "level": 17,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "ATK": 29,
+        "DEF": 29,
+        "SPD": 13,
+        "WIS": 25,
+        "CHA": 29,
+        "LUK": 28
+      },
+      "sprite": "catchmon/Common/Glissalune.png",
+      "stage": 1,
+      "evolution_line": [
+        "Glissalune"
+      ],
+      "categories": [
+        "Common"
+      ],
+      "gesamtpunkte": 1853,
+      "catcher": null
+    }
+  ]
 }
