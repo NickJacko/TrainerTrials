@@ -191,7 +191,8 @@
     "Duskaran": 1,
     "Mabbit": 1,
     "Aqualume": 1,
-    "Stellaryon": 1
+    "Stellaryon": 1,
+    "Psypus": 1
   },
   "escaped": [
     {
@@ -567,6 +568,32 @@
         "Rare"
       ],
       "gesamtpunkte": 376,
+      "catcher": null
+    },
+    {
+      "name": "Psypus",
+      "level": 5,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "ATK": 29,
+        "DEF": 8,
+        "SPD": 0,
+        "WIS": 18,
+        "CHA": 24,
+        "LUK": 3
+      },
+      "sprite": "catchmon/Common/Psypus.png",
+      "stage": 1,
+      "evolution_line": [
+        "Psypus",
+        "Hypnoctus",
+        "Hypnoctob"
+      ],
+      "categories": [
+        "Common"
+      ],
+      "gesamtpunkte": 582,
       "catcher": null
     }
   ]
