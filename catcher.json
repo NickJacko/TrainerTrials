@@ -104,7 +104,7 @@
       "team": []
     },
     "TrainerTrials": {
-      "coins": 1919,
+      "coins": 2003,
       "team": [
         {
           "name": "Fairypup",
@@ -176,6 +176,31 @@
             "Common"
           ],
           "gesamtpunkte": 181
+        },
+        {
+          "name": "Spirico",
+          "level": 10,
+          "rarity": "Common",
+          "shiny": false,
+          "stats": {
+            "ATK": 29,
+            "DEF": 10,
+            "SPD": 13,
+            "WIS": 31,
+            "CHA": 1,
+            "LUK": 27
+          },
+          "sprite": "catchmon/Common/Spirico.png",
+          "stage": 1,
+          "evolution_line": [
+            "Spirico",
+            "Astranox",
+            "Ethernal"
+          ],
+          "categories": [
+            "Common"
+          ],
+          "gesamtpunkte": 1111
         }
       ]
     }
@@ -194,7 +219,8 @@
     "Stellaryon": 1,
     "Psypus": 1,
     "Abyssirex": 1,
-    "Zapkit": 1
+    "Zapkit": 1,
+    "Spirico": 1
   },
   "escaped": [
     {
