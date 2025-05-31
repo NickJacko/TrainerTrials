@@ -205,8 +205,34 @@
       ]
     },
     "cloud": {
-      "coins": 177,
-      "team": []
+      "coins": 393,
+      "team": [
+        {
+          "name": "Zappiri",
+          "level": 5,
+          "rarity": "Common",
+          "shiny": false,
+          "stats": {
+            "ATK": 6,
+            "DEF": 3,
+            "SPD": 7,
+            "WIS": 16,
+            "CHA": 29,
+            "LUK": 24
+          },
+          "sprite": "catchmon/Common/Zappiri.png",
+          "stage": 1,
+          "evolution_line": [
+            "Zappiri",
+            "Voltrossa",
+            "Thundralis"
+          ],
+          "categories": [
+            "Common"
+          ],
+          "gesamtpunkte": 585
+        }
+      ]
     }
   },
   "encounters": {
@@ -224,7 +250,8 @@
     "Psypus": 1,
     "Abyssirex": 1,
     "Zapkit": 1,
-    "Spirico": 1
+    "Spirico": 1,
+    "Zappiri": 1
   },
   "escaped": [
     {
