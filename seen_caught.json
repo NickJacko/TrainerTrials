@@ -24,7 +24,7 @@
     "caught": 1
   },
   "glissalune": {
-    "escaped": 2,
+    "escaped": 1,
     "caught": 0
   },
   "silv": {
@@ -32,7 +32,7 @@
     "caught": 0
   },
   "ripplee": {
-    "escaped": 3,
+    "escaped": 2,
     "caught": 0
   },
   "duskaran": {
@@ -40,7 +40,7 @@
     "caught": 0
   },
   "aqualume": {
-    "escaped": 2,
+    "escaped": 1,
     "caught": 0
   },
   "solanir": {
@@ -64,7 +64,7 @@
     "caught": 0
   },
   "psypus": {
-    "escaped": 2,
+    "escaped": 1,
     "caught": 0
   },
   "spirico": {
@@ -91,11 +91,7 @@
     "escaped": 1,
     "caught": 0
   },
-  "venametis": {
-    "escaped": 1,
-    "caught": 0
-  },
-  "shadopup": {
+  "skyrion": {
     "escaped": 1,
     "caught": 0
   }
