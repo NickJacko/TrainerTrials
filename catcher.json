@@ -104,7 +104,7 @@
       "team": []
     },
     "TrainerTrials": {
-      "coins": 1701,
+      "coins": 1778,
       "team": [
         {
           "name": "Fairypup",
@@ -186,7 +186,7 @@
     "Florispur": 1,
     "Crylette": 1,
     "Fairypup": 2,
-    "Silv": 1,
+    "Silv": 2,
     "Aquaril": 1,
     "Duskaran": 1,
     "Mabbit": 2,
@@ -876,6 +876,32 @@
         "Common"
       ],
       "gesamtpunkte": 1777,
+      "catcher": null
+    },
+    {
+      "name": "Silv",
+      "level": 1,
+      "rarity": "Common",
+      "shiny": false,
+      "stats": {
+        "ATK": 24,
+        "DEF": 5,
+        "SPD": 19,
+        "WIS": 2,
+        "CHA": 9,
+        "LUK": 26
+      },
+      "sprite": "catchmon/Common/Silv.png",
+      "stage": 1,
+      "evolution_line": [
+        "Silv",
+        "Silvonfla",
+        "Silvaflare"
+      ],
+      "categories": [
+        "Common"
+      ],
+      "gesamtpunkte": 185,
       "catcher": null
     }
   ]

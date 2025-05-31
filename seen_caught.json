@@ -28,7 +28,7 @@
     "caught": 0
   },
   "silv": {
-    "escaped": 1,
+    "escaped": 2,
     "caught": 0
   },
   "ripplee": {
@@ -88,10 +88,6 @@
     "caught": 0
   },
   "zapkit": {
-    "escaped": 1,
-    "caught": 0
-  },
-  "skyrion": {
     "escaped": 1,
     "caught": 0
   }
