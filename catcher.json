@@ -203,6 +203,10 @@
           "gesamtpunkte": 1111
         }
       ]
+    },
+    "cloud": {
+      "coins": 177,
+      "team": []
     }
   },
   "encounters": {
