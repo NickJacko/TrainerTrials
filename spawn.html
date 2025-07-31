@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <script src="utils.js"></script>
   <audio id="wobbleSound" src="sounds/wobble.mp3" preload="auto"></audio>
   <audio id="breakOut" src="sounds/breakout.mp3" preload="auto"></audio>  
   <meta charset="UTF-8" />
-  <title>Wild Catchmon Spawn</title>
+  <title>Wild Catchmon Spawn - Firebase Live</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     html, body {
@@ -96,12 +95,10 @@
       position: relative;
       border-radius: 15px;
       filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.3));
-      /* FIXED: Prevent animation conflicts */
       animation-fill-mode: both;
       transform-origin: center center;
     }
 
-    /* FIXED: Simplified and smoother entrance animation */
     .entrance-animation {
       animation: smoothEntrance 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.1) forwards;
     }
@@ -129,7 +126,6 @@
       }
     }
 
-    /* FIXED: Proper idle animation states that can be cleanly stopped */
     .idle-breathing {
       animation: idleBreathing 4s ease-in-out infinite;
     }
@@ -154,7 +150,6 @@
       animation: idleFloat 6s ease-in-out infinite;
     }
 
-    /* FIXED: Simplified idle animation keyframes */
     @keyframes idleBreathing {
       0%, 100% { 
         transform: scale(1) translateY(0px);
@@ -217,7 +212,6 @@
       }
     }
 
-    /* FIXED: Clean shake animation that doesn't conflict */
     .shake-animation {
       animation: cleanShake 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
     }
@@ -255,7 +249,6 @@
       }
     }
 
-    /* Special effects for shiny Catchmon */
     .shiny-effect {
       position: relative;
     }
@@ -294,7 +287,6 @@
       }
     }
 
-    /* Rarity-based glow effects */
     .rarity-common {
       filter: drop-shadow(0 0 10px rgba(158, 158, 158, 0.4));
     }
@@ -481,6 +473,27 @@
       }
     }
 
+    /* Firebase Connection Status */
+    .connection-status {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      padding: 5px 10px;
+      border-radius: 15px;
+      font-size: 12px;
+      z-index: 1000;
+    }
+
+    .connection-status.connected {
+      background: rgba(76, 175, 80, 0.8);
+    }
+
+    .connection-status.disconnected {
+      background: rgba(244, 67, 54, 0.8);
+    }
+
     /* Responsive Design */
     @media (max-width: 768px) {
       .catchmon-ring {
@@ -579,10 +592,28 @@
         font-size: 18px;
       }
     }
+
+    @keyframes atmosphericFloat {
+      0% { 
+        opacity: 0.6;
+        transform: translateY(0px) scale(1) rotate(0deg);
+      }
+      50% {
+        opacity: 0.3;
+        transform: translateY(-50px) scale(1.2) rotate(180deg);
+      }
+      100% { 
+        opacity: 0;
+        transform: translateY(-100px) scale(0.5) rotate(360deg);
+      }
+    }
   </style>
 </head>
 
 <body>
+  <!-- Firebase Connection Status -->
+  <div class="connection-status" id="connectionStatus">🔄 Verbinde...</div>
+
   <div class="spawn-container">
     <div class="catchmon-ring">
       <div class="ring-base"></div>
@@ -607,13 +638,40 @@
     </div>
   </div>
 
-  <script>
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+    import { 
+      getDatabase, 
+      ref, 
+      onValue, 
+      set, 
+      get 
+    } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+
+    // Firebase Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyDdStpC5rVtgaZ4XvtKLwQttnyIDXL2z7Q",
+      authDomain: "trainertrials.firebaseapp.com",
+      databaseURL: "https://trainertrials-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "trainertrials",
+      storageBucket: "trainertrials.firebasestorage.app",
+      messagingSenderId: "22071275267",
+      appId: "1:22071275267:web:92e82d6bfaee169aff8336",
+      measurementId: "G-WWENZ0HP22"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    // Game State
     let spawnData = null;
     let lastTimestamp = 0;
     let currentIdleInterval = null;
+    let connectionStatus = false;
     const SPAWN_INTERVAL = 15;
 
-    // FIXED: Simplified animation system
+    // Animation system
     const IDLE_ANIMATIONS = ['breathing', 'bounce', 'sway', 'pulse', 'wiggle', 'float'];
     
     const RARITY_ANIMATIONS = {
@@ -625,26 +683,54 @@
       'God': ['pulse']
     };
 
+    // Firebase Listeners
+
+    // Connection Status
+    const connectedRef = ref(db, '.info/connected');
+    onValue(connectedRef, (snapshot) => {
+      connectionStatus = snapshot.val();
+      updateConnectionStatus();
+    });
+
+    // Live Spawn Updates
+    const spawnRef = ref(db, 'spawn/current');
+    onValue(spawnRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data && (!data.timestamp || data.timestamp !== lastTimestamp)) {
+        lastTimestamp = data.timestamp;
+        spawnData = data;
+        renderSpawn(data);
+      }
+    });
+
+    function updateConnectionStatus() {
+      const statusElement = document.getElementById('connectionStatus');
+      if (connectionStatus) {
+        statusElement.textContent = '🟢 Live verbunden';
+        statusElement.className = 'connection-status connected';
+      } else {
+        statusElement.textContent = '🔴 Verbindung unterbrochen';
+        statusElement.className = 'connection-status disconnected';
+      }
+    }
+
     function getIdleAnimationForRarity(rarity) {
       const animations = RARITY_ANIMATIONS[rarity] || IDLE_ANIMATIONS;
       return animations[Math.floor(Math.random() * animations.length)];
     }
 
-    // FIXED: Clean animation state management
     function startIdleAnimation(img, rarity) {
       stopIdleAnimation(img);
       
       const animationType = getIdleAnimationForRarity(rarity);
       const rarityClass = `rarity-${rarity.toLowerCase()}`;
       
-      // Apply animation classes
       img.className = `idle-${animationType} ${rarityClass}`;
       
-      // Change animation periodically for variety
       currentIdleInterval = setInterval(() => {
         const newAnimation = getIdleAnimationForRarity(rarity);
         img.className = `idle-${newAnimation} ${rarityClass}`;
-      }, Math.random() * 10000 + 15000); // 15-25 seconds
+      }, Math.random() * 10000 + 15000);
     }
 
     function stopIdleAnimation(img) {
@@ -652,22 +738,8 @@
         clearInterval(currentIdleInterval);
         currentIdleInterval = null;
       }
-      // Clear all animation classes except rarity
       const rarityClass = Array.from(img.classList).find(cls => cls.startsWith('rarity-'));
       img.className = rarityClass || '';
-    }
-
-    async function fetchSpawn() {
-      try {
-        const res = await fetch("spawn_data.json?" + Date.now());
-        const data = await res.json();
-        if (!data.timestamp || data.timestamp === lastTimestamp) return;
-        lastTimestamp = data.timestamp;
-        spawnData = data;
-        renderSpawn(data);
-      } catch (err) {
-        console.error("Fehler beim Laden:", err);
-      }
     }
 
     function renderSpawn(data) {
@@ -702,7 +774,6 @@
       const wrapper = document.getElementById("catchWrapper");
       wrapper.innerHTML = "";
 
-      // Add glitter for shiny
       if (shiny) {
         const glitter = document.createElement("div");
         glitter.className = "glitter";
@@ -714,7 +785,6 @@
       img.src = sprite;
       img.alt = name;
       
-      // Add shiny wrapper if needed
       if (shiny) {
         const shinyWrapper = document.createElement("div");
         shinyWrapper.className = "shiny-effect";
@@ -724,20 +794,16 @@
         wrapper.appendChild(img);
       }
 
-      // FIXED: Clean entrance animation
       img.classList.add("entrance-animation");
       
-      // Ring pulse effect
       const ringProgress = document.getElementById("ringProgress");
       ringProgress.classList.add("pulse");
 
-      // After entrance, start idle animation
       setTimeout(() => {
         img.classList.remove("entrance-animation");
         startIdleAnimation(img, rarity);
-      }, 1500); // Match entrance animation duration
+      }, 1500);
 
-      // FIXED: Improved shake logic
       let shakeCount = 0;
       if (result === "caught") {
         shakeCount = 3;
@@ -749,32 +815,24 @@
 
       function doShake() {
         if (currentShake < shakeCount) {
-          // FIXED: Completely stop idle animation during shake
           stopIdleAnimation(img);
-          
-          // Clean slate - remove all animation classes
           img.className = img.className.replace(/idle-\w+/g, '').trim();
-          
-          // Add shake animation
           img.classList.add("shake-animation");
           
-          // Play sound
           const wobbleAudio = document.getElementById("wobbleSound");
           wobbleAudio.currentTime = 0;
           wobbleAudio.play().catch(() => {});
           
           currentShake++;
           
-          // Remove shake class and continue
           setTimeout(() => {
             img.classList.remove("shake-animation");
             if (currentShake < shakeCount) {
-              setTimeout(doShake, 200); // Short pause between shakes
+              setTimeout(doShake, 200);
             } else {
               handleFinalResult();
             }
-          }, 1200); // Match shake animation duration
-          
+          }, 1200);
         }
       }
 
@@ -782,7 +840,6 @@
         ringProgress.classList.remove("pulse");
         
         if (result === "caught") {
-          // Success effect
           stopIdleAnimation(img);
           img.style.filter = "brightness(2) saturate(1.5) drop-shadow(0 0 30px rgba(76, 175, 80, 0.8))";
           
@@ -798,7 +855,6 @@
           }, 6000);
           
         } else if (result === "escaped") {
-          // Escape effect
           stopIdleAnimation(img);
           img.style.opacity = "0.3";
           img.style.filter = "grayscale(100%) blur(3px)";
@@ -810,17 +866,24 @@
           breakOutAudio.play().catch(() => {});
           
         } else {
-          // No result yet, restart idle
           const rarityClass = `rarity-${rarity.toLowerCase()}`;
           img.className = rarityClass;
           startIdleAnimation(img, rarity);
         }
       }
 
-      // Start shake sequence if there's a result
       if (result && shakeCount > 0) {
-        setTimeout(doShake, 500); // Small delay before first shake
+        setTimeout(doShake, 500);
       }
+    }
+
+    function getDonationTier(donation) {
+      if (donation >= 1000) return "god";
+      if (donation >= 500) return "king";
+      if (donation >= 250) return "diamond";
+      if (donation >= 100) return "flame";
+      if (donation >= 50) return "shine";
+      return "normal";
     }
 
     function reloadEffect(donation) {
@@ -879,7 +942,9 @@
       const mm = String(Math.floor(remaining / 60)).padStart(2, '0');
       const ss = String(remaining % 60).padStart(2, '0');
       document.getElementById("timerText").textContent = `${mm}:${ss}`;
-    }// Add some random environmental effects for atmosphere
+    }
+
+    // Atmospheric effects
     function createAtmosphericEffect() {
       const effects = ['💨', '✨', '🌟', '💫', '⭐'];
       const effect = document.createElement('div');
@@ -904,40 +969,19 @@
       }, 8000);
     }
 
-    // Add atmospheric effect keyframes
-    const atmosphericStyle = document.createElement('style');
-    atmosphericStyle.textContent = `
-      @keyframes atmosphericFloat {
-        0% { 
-          opacity: 0.6;
-          transform: translateY(0px) scale(1) rotate(0deg);
-        }
-        50% {
-          opacity: 0.3;
-          transform: translateY(-50px) scale(1.2) rotate(180deg);
-        }
-        100% { 
-          opacity: 0;
-          transform: translateY(-100px) scale(0.5) rotate(360deg);
-        }
-      }
-    `;
-    document.head.appendChild(atmosphericStyle);
+    // Start systems
+    requestAnimationFrame(updateRingProgress);
+    setInterval(updateTimer, 500);
 
     // Create atmospheric effects periodically
     setInterval(() => {
-      if (Math.random() < 0.3) { // 30% chance every 5 seconds
+      if (Math.random() < 0.3) {
         createAtmosphericEffect();
       }
     }, 5000);
 
-    // Start smooth ring animation
-    requestAnimationFrame(updateRingProgress);
-    
-    // Keep original intervals
-    setInterval(updateTimer, 500);
-    setInterval(fetchSpawn, 500);
-    fetchSpawn();
+    // Initial load message
+    document.getElementById("infoText").innerHTML = "🔥 Verbinde mit Firebase...";
 
     // Cleanup when page unloads
     window.addEventListener('beforeunload', () => {
@@ -945,6 +989,9 @@
         clearInterval(currentIdleInterval);
       }
     });
+
+    console.log('🔥 Firebase Spawn System loaded!');
+
   </script>
 </body>
 </html>
