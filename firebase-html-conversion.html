@@ -1,0 +1,2427 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎮 Schritt 3: HTML Firebase Conversion</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #ffd700;
+        }
+        .step {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 12px;
+            border-left: 4px solid #4CAF50;
+        }
+        .file-conversion {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+        .file-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        .file-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+        .file-card.completed {
+            border-color: #4CAF50;
+            background: rgba(76, 175, 80, 0.1);
+        }
+        .file-card h4 {
+            margin-top: 0;
+            color: #ffd700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        button:hover {
+            background: #45a049;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+        }
+        button:disabled {
+            background: #666;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        button.download {
+            background: #2196F3;
+        }
+        button.download:hover {
+            background: #1976D2;
+            box-shadow: 0 4px 12px rgba(33, 150, 243, 0.4);
+        }
+        button.preview {
+            background: #ff9800;
+        }
+        button.preview:hover {
+            background: #f57c00;
+            box-shadow: 0 4px 12px rgba(255, 152, 0, 0.4);
+        }
+        .conversion-progress {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .progress {
+            width: 100%;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #8BC34A);
+            width: 0%;
+            transition: width 0.6s ease;
+            border-radius: 5px;
+        }
+        .code-preview {
+            background: #1a1a1a;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #333;
+        }
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .comparison-box {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 8px;
+        }
+        .comparison-box.old {
+            border-left: 4px solid #f44336;
+        }
+        .comparison-box.new {
+            border-left: 4px solid #4CAF50;
+        }
+        .feature-list {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 6px;
+        }
+        .log-output {
+            background: #1a1a1a;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 8px;
+            max-height: 300px;
+            overflow-y: auto;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+        .completion-celebration {
+            background: linear-gradient(135deg, #4CAF50, #8BC34A);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin: 30px 0;
+            color: white;
+            box-shadow: 0 10px 30px rgba(76, 175, 80, 0.3);
+        }
+        .next-steps {
+            background: rgba(255, 152, 0, 0.1);
+            border: 1px solid #ff9800;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 25px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎮 HTML-Dateien auf Firebase umstellen</h1>
+        <p style="text-align: center; font-size: 18px;">
+            Schritt 3: Konvertiere deine HTML-Dateien für Firebase Live-Updates
+        </p>
+
+        <div class="step">
+            <h3>🎯 Was wir erreichen wollen</h3>
+            <div class="feature-list">
+                <div class="feature-item">
+                    <span style="font-size: 24px;">🔄</span>
+                    <div>
+                        <strong>Live-Updates ohne Refresh</strong><br>
+                        <small>Spawn-Änderungen erscheinen sofort bei allen Zuschauern</small>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <span style="font-size: 24px;">❤️</span>
+                    <div>
+                        <strong>Echzeit Like-System</strong><br>
+                        <small>Likes werden sofort synchronisiert und angezeigt</small>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <span style="font-size: 24px;">📊</span>
+                    <div>
+                        <strong>Live Statistiken</strong><br>
+                        <small>Rankings und Stats aktualisieren sich automatisch</small>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <span style="font-size: 24px;">🎆</span>
+                    <div>
+                        <strong>Sofortige Catch-Effekte</strong><br>
+                        <small>Animationen triggern direkt nach dem Catch</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="step">
+            <h3>📁 Dateien-Konvertierung</h3>
+            <div class="conversion-progress">
+                <h4>Fortschritt der Konvertierung</h4>
+                <div class="progress">
+                    <div class="progress-bar" id="overallProgress"></div>
+                </div>
+                <div id="progressText">Bereit zum Start</div>
+            </div>
+
+            <div class="file-conversion">
+                <div class="file-card" id="spawnCard">
+                    <h4><span>📊</span> spawn.html</h4>
+                    <p><strong>Priorität: Hoch</strong><br>
+                    Hauptdatei für Live-Spawns und Like-System</p>
+                    
+                    <div class="comparison">
+                        <div class="comparison-box old">
+                            <h5>❌ Vorher (JSON)</h5>
+                            <code>fetch("spawn_data.json")</code><br>
+                            <small>Manueller Refresh nötig</small>
+                        </div>
+                        <div class="comparison-box new">
+                            <h5>✅ Nachher (Firebase)</h5>
+                            <code>onValue(spawnRef, callback)</code><br>
+                            <small>Automatische Live-Updates</small>
+                        </div>
+                    </div>
+                    
+                    <button onclick="convertSpawnHtml()" id="spawnBtn">🔄 Konvertieren</button>
+                    <button onclick="previewSpawn()" class="preview" id="spawnPreview" disabled>👁️ Vorschau</button>
+                    <button onclick="downloadSpawn()" class="download" id="spawnDownload" disabled>📥 Download</button>
+                </div>
+
+                <div class="file-card" id="rankingCard">
+                    <h4><span>🏆</span> ranking_catchmon_live.html</h4>
+                    <p><strong>Priorität: Hoch</strong><br>
+                    Live-Rankings mit automatischen Updates</p>
+                    
+                    <div class="comparison">
+                        <div class="comparison-box old">
+                            <h5>❌ Vorher</h5>
+                            <code>fetch("catcher.json")</code><br>
+                            <small>Statische Rangliste</small>
+                        </div>
+                        <div class="comparison-box new">
+                            <h5>✅ Nachher</h5>
+                            <code>onValue(trainersRef, callback)</code><br>
+                            <small>Live-Rankings</small>
+                        </div>
+                    </div>
+                    
+                    <button onclick="convertRankingHtml()" id="rankingBtn">🔄 Konvertieren</button>
+                    <button onclick="previewRanking()" class="preview" id="rankingPreview" disabled>👁️ Vorschau</button>
+                    <button onclick="downloadRanking()" class="download" id="rankingDownload" disabled>📥 Download</button>
+                </div>
+
+                <div class="file-card" id="effectsCard">
+                    <h4><span>🎆</span> *_effect.html (6 Dateien)</h4>
+                    <p><strong>Priorität: Mittel</strong><br>
+                    Alle Catch-Effekte für Live-Winner-Daten</p>
+                    
+                    <div class="comparison">
+                        <div class="comparison-box old">
+                            <h5>❌ Vorher</h5>
+                            <code>fetch("spawn_data.json")</code><br>
+                            <small>Winner aus JSON laden</small>
+                        </div>
+                        <div class="comparison-box new">
+                            <h5>✅ Nachher</h5>
+                            <code>onValue(spawnRef, callback)</code><br>
+                            <small>Live Winner-Updates</small>
+                        </div>
+                    </div>
+                    
+                    <button onclick="convertEffectsHtml()" id="effectsBtn">🔄 Alle konvertieren</button>
+                    <button onclick="previewEffects()" class="preview" id="effectsPreview" disabled>👁️ Vorschau</button>
+                    <button onclick="downloadEffects()" class="download" id="effectsDownload" disabled>📥 Download ZIP</button>
+                </div>
+
+                <div class="file-card" id="backgroundCard">
+                    <h4><span>🌌</span> background.html</h4>
+                    <p><strong>Priorität: Niedrig</strong><br>
+                    Optionale Live-Stats im Hintergrund</p>
+                    
+                    <div class="comparison">
+                        <div class="comparison-box old">
+                            <h5>❌ Vorher</h5>
+                            <small>Statischer Hintergrund</small>
+                        </div>
+                        <div class="comparison-box new">
+                            <h5>✅ Nachher</h5>
+                            <small>Live-Stats + Floating Catchmon</small>
+                        </div>
+                    </div>
+                    
+                    <button onclick="convertBackgroundHtml()" id="backgroundBtn">🔄 Konvertieren</button>
+                    <button onclick="previewBackground()" class="preview" id="backgroundPreview" disabled>👁️ Vorschau</button>
+                    <button onclick="downloadBackground()" class="download" id="backgroundDownload" disabled>📥 Download</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="step" id="utilsStep" style="display: none;">
+            <h3>🛠️ Firebase Utils erstellen</h3>
+            <p>Zusätzlich wird eine Utility-Datei erstellt, die alle Firebase-Funktionen vereinfacht:</p>
+            
+            <div class="feature-list">
+                <div class="feature-item">
+                    <span style="font-size: 20px;">📁</span>
+                    <div>
+                        <strong>firebase-utils.js</strong><br>
+                        <small>Zentrale Firebase-Funktionen für alle HTML-Dateien</small>
+                    </div>
+                </div>
+            </div>
+            
+            <button onclick="createFirebaseUtils()" id="utilsBtn">🔧 firebase-utils.js erstellen</button>
+            <button onclick="downloadUtils()" class="download" id="utilsDownload" disabled>📥 Download</button>
+        </div>
+
+        <div id="completionSection" style="display: none;">
+            <div class="completion-celebration">
+                <h2>🎉 Alle Dateien erfolgreich konvertiert!</h2>
+                <p style="font-size: 18px; margin: 20px 0;">
+                    Deine HTML-Dateien sind jetzt Firebase-ready und unterstützen Live-Updates!
+                </p>
+                <div style="font-size: 48px; margin: 20px 0;">🔥🎮🚀</div>
+            </div>
+
+            <div class="next-steps">
+                <h3>🚀 Nächste Schritte</h3>
+                <ol style="font-size: 16px; line-height: 1.6;">
+                    <li><strong>Dateien ersetzen:</strong> Ersetze deine alten HTML-Dateien durch die neuen Firebase-Versionen</li>
+                    <li><strong>firebase-utils.js hinzufügen:</strong> Lege die Utility-Datei in dein Hauptverzeichnis</li>
+                    <li><strong>Testing:</strong> Öffne spawn.html und teste die Live-Updates</li>
+                    <li><strong>Python Backend (optional):</strong> Aktualisiere dein Python-Backend für Firebase</li>
+                </ol>
+                
+                <button onclick="goToStep4()" style="background: #ff9800; font-size: 20px; padding: 15px 40px; margin-top: 20px;">
+                    ➡️ Weiter zu Schritt 4: Testing & Backend
+                </button>
+            </div>
+        </div>
+
+        <div class="log-output" id="conversionLog" style="display: none;">
+            <h4>🔍 Conversion Log:</h4>
+            <div id="logContent"></div>
+        </div>
+    </div>
+
+    <script>
+        let conversionsCompleted = 0;
+        const totalConversions = 5; // spawn, ranking, effects, background, utils
+        
+        let convertedFiles = {
+            spawn: null,
+            ranking: null,
+            effects: [],
+            background: null,
+            utils: null
+        };
+
+        function log(message, type = 'info') {
+            console.log(message);
+            const logOutput = document.getElementById('conversionLog');
+            const logContent = document.getElementById('logContent');
+            
+            logOutput.style.display = 'block';
+            const timestamp = new Date().toLocaleTimeString();
+            const prefix = type === 'error' ? '❌' : type === 'success' ? '✅' : type === 'warning' ? '⚠️' : 'ℹ️';
+            logContent.innerHTML += `<span style="color: #666;">[${timestamp}]</span> ${prefix} ${message}<br>`;
+            logContent.scrollTop = logContent.scrollHeight;
+        }
+
+        function updateProgress() {
+            const percentage = (conversionsCompleted / totalConversions) * 100;
+            document.getElementById('overallProgress').style.width = percentage + '%';
+            document.getElementById('progressText').textContent = 
+                `${conversionsCompleted}/${totalConversions} Dateien konvertiert (${percentage.toFixed(0)}%)`;
+            
+            if (conversionsCompleted === totalConversions) {
+                document.getElementById('completionSection').style.display = 'block';
+                document.getElementById('progressText').textContent = '🎉 Alle Konvertierungen abgeschlossen!';
+            }
+        }
+
+        function markCompleted(cardId, btnId, previewId, downloadId) {
+            const card = document.getElementById(cardId);
+            const btn = document.getElementById(btnId);
+            const preview = document.getElementById(previewId);
+            const download = document.getElementById(downloadId);
+            
+            card.classList.add('completed');
+            btn.textContent = '✅ Konvertiert';
+            btn.disabled = true;
+            preview.disabled = false;
+            download.disabled = false;
+            
+            conversionsCompleted++;
+            updateProgress();
+        }
+
+        // Firebase Config für alle Dateien
+        const firebaseConfigCode = `const firebaseConfig = {
+    apiKey: "AIzaSyDdStpC5rVtgaZ4XvtKLwQttnyIDXL2z7Q",
+    authDomain: "trainertrials.firebaseapp.com",
+    databaseURL: "https://trainertrials-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "trainertrials",
+    storageBucket: "trainertrials.firebasestorage.app",
+    messagingSenderId: "22071275267",
+    appId: "1:22071275267:web:92e82d6bfaee169aff8336",
+    measurementId: "G-WWENZ0HP22"
+};`;
+
+        // SPAWN.HTML CONVERSION
+        window.convertSpawnHtml = function() {
+            log('🔄 Konvertiere spawn.html zu Firebase...');
+            
+            const spawnHtmlContent = `<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catchmon Spawn - Firebase Live</title>
+    <style>
+        /* Deine bestehenden CSS-Styles bleiben unverändert */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .spawn-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .spawn-info {
+            text-align: center;
+            margin-bottom: 30px;
+            z-index: 10;
+        }
+
+        .catchmon-name {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        .catchmon-name.shiny {
+            background: linear-gradient(45deg, #ffd700, #ff69b4, #00bfff, #32cd32);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: rainbow 3s ease-in-out infinite, glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes rainbow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes glow {
+            from { text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+            to { text-shadow: 2px 2px 20px rgba(255,255,255,0.8); }
+        }
+
+        .catchmon-details {
+            font-size: 1.2rem;
+            margin: 5px 0;
+        }
+
+        .rarity {
+            padding: 5px 15px;
+            border-radius: 20px;
+            display: inline-block;
+            margin: 5px;
+            font-weight: bold;
+        }
+
+        .rarity.Common { background: #9e9e9e; }
+        .rarity.Rare { background: #2196f3; }
+        .rarity.Starter { background: #4caf50; }
+        .rarity.Legendary { background: #ff9800; }
+        .rarity.Mythical { background: #e91e63; }
+        .rarity.God { background: linear-gradient(45deg, #ffd700, #ff4081); }
+
+        .catchmon-image {
+            width: 300px;
+            height: 300px;
+            margin: 20px 0;
+            border-radius: 50%;
+            box-shadow: 0 0 50px rgba(255,255,255,0.3);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .catchmon-image.shiny {
+            box-shadow: 0 0 80px rgba(255,215,0,0.8);
+            animation: float 3s ease-in-out infinite, shimmer 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes shimmer {
+            0% { filter: brightness(1) hue-rotate(0deg); }
+            100% { filter: brightness(1.3) hue-rotate(60deg); }
+        }
+
+        .like-section {
+            text-align: center;
+            margin: 30px 0;
+            position: relative;
+        }
+
+        .like-button {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            border: none;
+            color: white;
+            font-size: 2rem;
+            padding: 20px 40px;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(238, 90, 36, 0.4);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .like-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(238, 90, 36, 0.6);
+        }
+
+        .like-button:active {
+            transform: translateY(0);
+            box-shadow: 0 4px 15px rgba(238, 90, 36, 0.4);
+        }
+
+        .like-counter {
+            font-size: 1.5rem;
+            margin: 15px 0;
+            font-weight: bold;
+        }
+
+        .countdown {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ffd700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            margin: 20px 0;
+        }
+
+        .status-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.8);
+            padding: 10px;
+            text-align: center;
+            z-index: 1000;
+            font-size: 14px;
+        }
+
+        .connection-status {
+            display: inline-block;
+            margin-right: 20px;
+        }
+
+        .connection-status.connected {
+            color: #4caf50;
+        }
+
+        .connection-status.disconnected {
+            color: #f44336;
+        }
+
+        .leaderboard {
+            position: fixed;
+            right: 20px;
+            top: 50px;
+            background: rgba(0,0,0,0.8);
+            padding: 15px;
+            border-radius: 10px;
+            min-width: 200px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .leaderboard h3 {
+            margin-top: 0;
+            text-align: center;
+            color: #ffd700;
+        }
+
+        .leader-entry {
+            display: flex;
+            justify-content: space-between;
+            margin: 5px 0;
+            padding: 5px;
+            border-radius: 5px;
+            background: rgba(255,255,255,0.1);
+        }
+
+        .loading {
+            text-align: center;
+            font-size: 1.5rem;
+            margin: 50px 0;
+        }
+
+        .loading::after {
+            content: '';
+            display: inline-block;
+            animation: dots 2s infinite;
+        }
+
+        @keyframes dots {
+            0% { content: ''; }
+            25% { content: '.'; }
+            50% { content: '..'; }
+            75% { content: '...'; }
+            100% { content: ''; }
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .catchmon-name {
+                font-size: 2rem;
+            }
+            
+            .catchmon-image {
+                width: 200px;
+                height: 200px;
+            }
+            
+            .like-button {
+                font-size: 1.5rem;
+                padding: 15px 30px;
+            }
+            
+            .leaderboard {
+                position: static;
+                margin: 20px;
+                width: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="status-bar">
+        <span class="connection-status" id="connectionStatus">🔄 Verbinde...</span>
+        <span id="globalStats">Lade...</span>
+    </div>
+
+    <div class="spawn-container">
+        <div id="loadingMessage" class="loading">
+            Lade aktuellen Spawn
+        </div>
+
+        <div id="spawnContent" style="display: none;">
+            <div class="spawn-info">
+                <div class="catchmon-name" id="catchmonName">???</div>
+                <div class="catchmon-details">
+                    <span class="rarity" id="catchmonRarity">Common</span>
+                    Level <span id="catchmonLevel">1</span>
+                </div>
+                <div class="catchmon-details" id="shinyIndicator" style="display: none;">
+                    ✨ SHINY ✨
+                </div>
+            </div>
+
+            <img class="catchmon-image" id="catchmonImage" src="" alt="Catchmon">
+
+            <div class="like-section">
+                <button class="like-button" id="likeButton" onclick="sendLike()">
+                    ❤️ TAP TO CATCH
+                </button>
+                <div class="like-counter">
+                    Deine Likes: <span id="userLikes">0</span> / 1000
+                </div>
+                <div class="countdown" id="countdown"></div>
+            </div>
+        </div>
+    </div>
+
+            <div class="leaderboard">
+        <h3>🏆 Live Ranking</h3>
+        <div id="leaderboardContent">Lade...</div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { 
+            getDatabase, 
+            ref, 
+            onValue, 
+            set, 
+            update, 
+            get 
+        } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+
+        // Firebase Config
+        ${firebaseConfigCode}
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // Game State
+        let currentSpawn = null;
+        let currentUsername = localStorage.getItem('catchmon_username') || null;
+        let userLikes = 0;
+        let connectionStatus = false;
+
+        // Username-Eingabe falls nicht vorhanden
+        if (!currentUsername) {
+            currentUsername = prompt('Wie heißt du, Trainer?') || 'Anonym';
+            localStorage.setItem('catchmon_username', currentUsername);
+        }
+
+        // Firebase Listeners
+        
+        // Connection Status
+        const connectedRef = ref(db, '.info/connected');
+        onValue(connectedRef, (snapshot) => {
+            connectionStatus = snapshot.val();
+            updateConnectionStatus();
+        });
+
+        // Aktuellen Spawn beobachten
+        const spawnRef = ref(db, 'spawn/current');
+        onValue(spawnRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                currentSpawn = data;
+                updateSpawnDisplay(data);
+            }
+        });
+
+        // Likes beobachten
+        const likesRef = ref(db, 'likes');
+        onValue(likesRef, (snapshot) => {
+            const likesData = snapshot.val() || {};
+            userLikes = likesData[currentUsername] || 0;
+            updateLikesDisplay();
+            updateLeaderboard(likesData);
+        });
+
+        // Globale Stats beobachten
+        const globalRef = ref(db, 'global');
+        onValue(globalRef, (snapshot) => {
+            const globalData = snapshot.val() || {};
+            updateGlobalStats(globalData);
+        });
+
+        // UI Update Functions
+        
+        function updateConnectionStatus() {
+            const statusElement = document.getElementById('connectionStatus');
+            if (connectionStatus) {
+                statusElement.textContent = '🟢 Live verbunden';
+                statusElement.className = 'connection-status connected';
+            } else {
+                statusElement.textContent = '🔴 Verbindung unterbrochen';
+                statusElement.className = 'connection-status disconnected';
+            }
+        }
+
+        function updateSpawnDisplay(spawn) {
+            document.getElementById('loadingMessage').style.display = 'none';
+            document.getElementById('spawnContent').style.display = 'block';
+
+            const nameElement = document.getElementById('catchmonName');
+            const rarityElement = document.getElementById('catchmonRarity');
+            const levelElement = document.getElementById('catchmonLevel');
+            const imageElement = document.getElementById('catchmonImage');
+            const shinyElement = document.getElementById('shinyIndicator');
+
+            nameElement.textContent = spawn.name || '???';
+            rarityElement.textContent = spawn.rarity || 'Common';
+            rarityElement.className = \`rarity \${spawn.rarity || 'Common'}\`;
+            levelElement.textContent = spawn.level || 1;
+            imageElement.src = spawn.sprite || '';
+
+            if (spawn.shiny) {
+                nameElement.classList.add('shiny');
+                imageElement.classList.add('shiny');
+                shinyElement.style.display = 'block';
+            } else {
+                nameElement.classList.remove('shiny');
+                imageElement.classList.remove('shiny');
+                shinyElement.style.display = 'none';
+            }
+        }
+
+        function updateLikesDisplay() {
+            document.getElementById('userLikes').textContent = userLikes;
+            
+            const likeButton = document.getElementById('likeButton');
+            if (userLikes >= 1000) {
+                likeButton.style.background = 'linear-gradient(45deg, #4caf50, #2e7d32)';
+                likeButton.textContent = '✅ MAX LIKES ERREICHT';
+            } else {
+                likeButton.style.background = 'linear-gradient(45deg, #ff6b6b, #ee5a24)';
+                likeButton.textContent = '❤️ TAP TO CATCH';
+            }
+        }
+
+        function updateLeaderboard(likesData) {
+            const sortedLikes = Object.entries(likesData)
+                .sort(([,a], [,b]) => b - a)
+                .slice(0, 10);
+
+            const leaderboardContent = document.getElementById('leaderboardContent');
+            if (sortedLikes.length === 0) {
+                leaderboardContent.innerHTML = '<div>Noch keine Likes...</div>';
+                return;
+            }
+
+            leaderboardContent.innerHTML = sortedLikes.map(([username, likes], index) => {
+                const medal = index < 3 ? ['🥇', '🥈', '🥉'][index] : \`\${index + 1}.\`;
+                const isCurrentUser = username === currentUsername;
+                return \`
+                    <div class="leader-entry" style="\${isCurrentUser ? 'background: rgba(255,215,0,0.3);' : ''}">
+                        <span>\${medal} \${username}</span>
+                        <span>\${likes} ❤️</span>
+                    </div>
+                \`;
+            }).join('');
+        }
+
+        function updateGlobalStats(globalData) {
+            const statsText = \`
+                📊 Spawns: \${globalData.total_spawns || 0} | 
+                ❤️ Likes: \${globalData.total_likes_ever || 0} | 
+                🎯 Catches: \${globalData.total_catches || 0}
+            \`;
+            document.getElementById('globalStats').textContent = statsText;
+        }
+
+        // Game Actions
+        
+        window.sendLike = async function() {
+            if (!connectionStatus) {
+                alert('❌ Keine Verbindung zur Datenbank!');
+                return;
+            }
+            
+            if (userLikes >= 1000) {
+                alert('Du hast bereits das Maximum von 1000 Likes erreicht!');
+                return;
+            }
+
+            if (!currentSpawn || currentSpawn.result) {
+                alert('Kein aktiver Spawn oder bereits beendet!');
+                return;
+            }
+
+            try {
+                const userLikesRef = ref(db, \`likes/\${currentUsername}\`);
+                const newLikes = userLikes + 1;
+                await set(userLikesRef, newLikes);
+                
+                // Global Like Counter erhöhen
+                const globalLikesRef = ref(db, 'global/total_likes_ever');
+                const globalSnapshot = await get(globalLikesRef);
+                const currentGlobalLikes = globalSnapshot.val() || 0;
+                await set(globalLikesRef, currentGlobalLikes + 1);
+                
+                // UI-Feedback
+                animateLikeButton();
+                
+            } catch (error) {
+                console.error('Fehler beim Senden des Likes:', error);
+                alert('❌ Fehler beim Senden des Likes!');
+            }
+        };
+
+        function animateLikeButton() {
+            const button = document.getElementById('likeButton');
+            button.style.transform = 'scale(1.1)';
+            setTimeout(() => {
+                button.style.transform = 'scale(1)';
+            }, 150);
+        }
+
+        console.log('🔥 Firebase Spawn System loaded!');
+        console.log('👤 Current trainer:', currentUsername);
+
+    </script>
+</body>
+</html>`;
+
+            convertedFiles.spawn = spawnHtmlContent;
+            markCompleted('spawnCard', 'spawnBtn', 'spawnPreview', 'spawnDownload');
+            log('✅ spawn.html erfolgreich konvertiert', 'success');
+            
+            // Utils Step anzeigen nach erster Konvertierung
+            document.getElementById('utilsStep').style.display = 'block';
+        };
+
+// ERSETZE DIE RANKING CONVERSION KOMPLETT:
+window.convertRankingHtml = function() {
+    log('🔄 Konvertiere ranking_catchmon_live.html zu Firebase...');
+    
+    const rankingHtmlContent = `<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏆 Catchmon Live Rankings - Firebase</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .ranking-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .ranking-table th,
+        .ranking-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .ranking-table th {
+            background: rgba(255, 255, 255, 0.1);
+            font-weight: bold;
+        }
+
+        .loading {
+            text-align: center;
+            font-size: 1.5rem;
+            margin: 50px 0;
+            color: #ffd700;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏆 Live Catchmon Rankings</h1>
+        <div id="loadingMessage" class="loading">Lade Live-Rankings...</div>
+        <table class="ranking-table" id="rankingTable" style="display: none;">
+            <thead>
+                <tr>
+                    <th>Rang</th>
+                    <th>Catchmon</th>
+                    <th>Level</th>
+                    <th>Trainer</th>
+                    <th>Rarity</th>
+                    <th>Punkte</th>
+                </tr>
+            </thead>
+            <tbody id="rankingBody"></tbody>
+        </table>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getDatabase, ref, onValue } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+
+        const firebaseConfig = ${firebaseConfigCode};
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        const trainersRef = ref(db, 'trainers');
+        onValue(trainersRef, (snapshot) => {
+            const trainersData = snapshot.val() || {};
+            updateRankings(trainersData);
+        });
+
+        function updateRankings(trainersData) {
+            const allCatchmon = [];
+            
+            for (const [trainerName, trainerData] of Object.entries(trainersData)) {
+                if (trainerData.team && trainerData.team.length > 0) {
+                    trainerData.team.forEach(catchmon => {
+                        allCatchmon.push({
+                            ...catchmon,
+                            trainer: trainerName,
+                            points: catchmon.gesamtpunkte || (catchmon.level * 10)
+                        });
+                    });
+                }
+            }
+
+            allCatchmon.sort((a, b) => b.points - a.points);
+
+            const tbody = document.getElementById('rankingBody');
+            tbody.innerHTML = '';
+
+            if (allCatchmon.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Keine Catchmon gefunden</td></tr>';
+                return;
+            }
+
+            allCatchmon.slice(0, 50).forEach((catchmon, index) => {
+                const row = document.createElement('tr');
+                const rank = index + 1;
+                const medal = rank <= 3 ? ['🥇', '🥈', '🥉'][rank - 1] : rank;
+
+                row.innerHTML = \`
+                    <td>\${medal}</td>
+                    <td><strong>\${catchmon.name || 'Unknown'}</strong>\${catchmon.shiny ? ' ✨' : ''}</td>
+                    <td><strong>\${catchmon.level || 1}</strong></td>
+                    <td>\${catchmon.trainer}</td>
+                    <td>\${catchmon.rarity || 'Common'}</td>
+                    <td><strong>\${catchmon.points.toLocaleString()}</strong></td>
+                \`;
+                
+                tbody.appendChild(row);
+            });
+
+            document.getElementById('loadingMessage').style.display = 'none';
+            document.getElementById('rankingTable').style.display = 'table';
+        }
+
+        console.log('🏆 Firebase Ranking System loaded!');
+    </script>
+</body>
+</html>`;
+
+    convertedFiles.ranking = rankingHtmlContent;
+    markCompleted('rankingCard', 'rankingBtn', 'rankingPreview', 'rankingDownload');
+    log('✅ ranking_catchmon_live.html erfolgreich konvertiert', 'success');
+};
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏆 Catchmon Live Rankings - Firebase</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stats-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .ranking-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .ranking-table th,
+        .ranking-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .ranking-table th {
+            background: rgba(255, 255, 255, 0.1);
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .ranking-table tr:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .rank-1 { color: #ffd700; font-weight: bold; }
+        .rank-2 { color: #c0c0c0; font-weight: bold; }
+        .rank-3 { color: #cd7f32; font-weight: bold; }
+
+        .gold-row { background: rgba(255, 215, 0, 0.1); }
+        .silver-row { background: rgba(192, 192, 192, 0.1); }
+        .bronze-row { background: rgba(205, 127, 50, 0.1); }
+
+        .trainer-name {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .catchmon-name {
+            font-weight: bold;
+        }
+
+        .shiny-indicator {
+            color: #ffd700;
+            text-shadow: 0 0 10px #ffd700;
+        }
+
+        .rarity {
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .rarity.Common { background: #9e9e9e; }
+        .rarity.Rare { background: #2196f3; }
+        .rarity.Starter { background: #4caf50; }
+        .rarity.Legendary { background: #ff9800; }
+        .rarity.Mythical { background: #e91e63; }
+        .rarity.God { background: linear-gradient(45deg, #ffd700, #ff4081); }
+
+        .loading {
+            text-align: center;
+            font-size: 1.5rem;
+            margin: 50px 0;
+            color: #ffd700;
+        }
+
+        .connection-status {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .connection-status.connected {
+            background: rgba(76, 175, 80, 0.8);
+            color: white;
+        }
+
+        .connection-status.disconnected {
+            background: rgba(244, 67, 54, 0.8);
+            color: white;
+        }
+
+        .last-update {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            opacity: 0.7;
+        }
+
+        .filter-controls {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .filter-controls button {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 10px 20px;
+            margin: 0 5px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-controls button:hover,
+        .filter-controls button.active {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: #ffd700;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .ranking-table {
+                font-size: 14px;
+            }
+            
+            .ranking-table th,
+            .ranking-table td {
+                padding: 10px 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="connection-status" id="connectionStatus">🔄 Verbinde...</div>
+
+    <div class="container">
+        <h1>🏆 Live Catchmon Rankings</h1>
+
+        <div class="stats-overview" id="statsOverview">
+            <div class="stat-card">
+                <div>📊 Total Spawns</div>
+                <div class="stat-value" id="totalSpawns">-</div>
+            </div>
+            <div class="stat-card">
+                <div>🎯 Total Catches</div>
+                <div class="stat-value" id="totalCatches">-</div>
+            </div>
+            <div class="stat-card">
+                <div>👥 Active Trainers</div>
+                <div class="stat-value" id="activeTrainers">-</div>
+            </div>
+            <div class="stat-card">
+                <div>💎 Total Catchmon</div>
+                <div class="stat-value" id="totalCatchmon">-</div>
+            </div>
+        </div>
+
+        <div class="filter-controls">
+            <button class="active" onclick="setFilter('all')">Alle Catchmon</button>
+            <button onclick="setFilter('shiny')">Nur Shiny</button>
+            <button onclick="setFilter('legendary')">Legendary+</button>
+            <button onclick="setFilter('top-trainers')">Top Trainer</button>
+        </div>
+
+        <div id="loadingMessage" class="loading">
+            Lade Live-Rankings...
+        </div>
+
+        <table class="ranking-table" id="rankingTable" style="display: none;">
+            <thead>
+                <tr>
+                    <th>Rang</th>
+                    <th>Catchmon</th>
+                    <th>Level</th>
+                    <th>Trainer</th>
+                    <th>Rarity</th>
+                    <th>Punkte</th>
+                    <th>Stats</th>
+                </tr>
+            </thead>
+            <tbody id="rankingBody">
+            </tbody>
+        </table>
+
+        <div class="last-update">
+            <div id="lastUpdate">Letzte Aktualisierung: Live Updates aktiv</div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { 
+            getDatabase, 
+            ref, 
+            onValue 
+        } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+
+        // Firebase Config
+        ${firebaseConfigCode}
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // Load winner data from Firebase
+        const spawnRef = ref(db, 'spawn/current');
+        onValue(spawnRef, (snapshot) => {
+            const spawnData = snapshot.val();
+            if (spawnData && spawnData.result === 'caught' && spawnData.winner) {
+                displayWinner(spawnData);
+            }
+        });
+
+        function displayWinner(spawnData) {
+            document.getElementById('winnerName').textContent = spawnData.winner;
+            document.getElementById('catchMessage').textContent = \`caught \${spawnData.name}!\`;
+            document.getElementById('catchmonImage').src = spawnData.sprite || 'catchmon/Common/default.png';
+        }
+
+        function goBackToSpawn() {
+            window.location.href = 'spawn.html';
+        }
+
+        // Auto-redirect after 8 seconds
+        setTimeout(() => {
+            goBackToSpawn();
+        }, 8000);
+
+    </script>
+</body>
+</html>\`;
+        }
+
+        // BACKGROUND CONVERSION
+        window.convertBackgroundHtml = function() {
+            log('🔄 Konvertiere background.html zu Firebase...');
+            
+            const backgroundHtmlContent = \`<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catchmon Background - Firebase Live</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            overflow: hidden;
+            position: relative;
+            height: 100vh;
+        }
+
+        .live-stats {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px;
+            border-radius: 10px;
+            color: white;
+            font-family: 'Arial', sans-serif;
+            z-index: 1000;
+        }
+
+        .live-stats h3 {
+            margin: 0 0 10px 0;
+            color: #ffd700;
+        }
+
+        .stat-item {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+
+        .current-spawn {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px;
+            border-radius: 10px;
+            color: white;
+            font-family: 'Arial', sans-serif;
+            z-index: 1000;
+            max-width: 300px;
+        }
+
+        .spawn-preview {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .spawn-image {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+        }
+
+        .spawn-info h4 {
+            margin: 0;
+            color: #ffd700;
+        }
+
+        .floating-particle {
+            position: absolute;
+            pointer-events: none;
+            opacity: 0.6;
+            animation: floatUp 15s linear infinite;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .connection-indicator {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: #4CAF50;
+            animation: pulse 2s infinite;
+            z-index: 1000;
+        }
+
+        .connection-indicator.disconnected {
+            background: #f44336;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(76, 175, 80, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0); }
+        }
+
+        .cloud {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 100px;
+            animation: drift 30s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes drift {
+            0% { transform: translateX(-200px); }
+            100% { transform: translateX(calc(100vw + 200px)); }
+        }
+
+        @media (max-width: 768px) {
+            .live-stats, .current-spawn {
+                font-size: 12px;
+                padding: 10px;
+            }
+            
+            .spawn-image {
+                width: 40px;
+                height: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="connection-indicator" id="connectionIndicator"></div>
+
+    <div class="live-stats">
+        <h3>📊 Live Stats</h3>
+        <div class="stat-item">🎯 Spawns: <span id="totalSpawns">-</span></div>
+        <div class="stat-item">❤️ Likes: <span id="totalLikes">-</span></div>
+        <div class="stat-item">🏆 Catches: <span id="totalCatches">-</span></div>
+        <div class="stat-item">👥 Trainer: <span id="totalTrainers">-</span></div>
+    </div>
+
+    <div class="current-spawn" id="currentSpawn" style="display: none;">
+        <h3>🎮 Aktueller Spawn</h3>
+        <div class="spawn-preview">
+            <img class="spawn-image" id="spawnImage" src="" alt="Current Spawn">
+            <div class="spawn-info">
+                <h4 id="spawnName">-</h4>
+                <div>Level <span id="spawnLevel">-</span></div>
+                <div id="spawnRarity">-</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { 
+            getDatabase, 
+            ref, 
+            onValue 
+        } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+
+        // Firebase Config
+        \${firebaseConfigCode}
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        let connectionStatus = false;
+
+        // Firebase Listeners
+        
+        // Connection Status
+        const connectedRef = ref(db, '.info/connected');
+        onValue(connectedRef, (snapshot) => {
+            connectionStatus = snapshot.val();
+            updateConnectionIndicator();
+        });
+
+        // Global Stats
+        const globalRef = ref(db, 'global');
+        onValue(globalRef, (snapshot) => {
+            const globalData = snapshot.val() || {};
+            updateLiveStats(globalData);
+        });
+
+        // Current Spawn
+        const spawnRef = ref(db, 'spawn/current');
+        onValue(spawnRef, (snapshot) => {
+            const spawnData = snapshot.val();
+            if (spawnData) {
+                updateCurrentSpawn(spawnData);
+            }
+        });
+
+        // Trainers count
+        const trainersRef = ref(db, 'trainers');
+        onValue(trainersRef, (snapshot) => {
+            const trainersData = snapshot.val() || {};
+            document.getElementById('totalTrainers').textContent = Object.keys(trainersData).length;
+        });
+
+        // Likes count
+        const likesRef = ref(db, 'likes');
+        onValue(likesRef, (snapshot) => {
+            const likesData = snapshot.val() || {};
+            const totalCurrentLikes = Object.values(likesData).reduce((sum, likes) => sum + likes, 0);
+            // Update live likes display (separate from global total)
+        });
+
+        function updateConnectionIndicator() {
+            const indicator = document.getElementById('connectionIndicator');
+            if (connectionStatus) {
+                indicator.classList.remove('disconnected');
+            } else {
+                indicator.classList.add('disconnected');
+            }
+        }
+
+        function updateLiveStats(globalData) {
+            document.getElementById('totalSpawns').textContent = globalData.total_spawns || 0;
+            document.getElementById('totalLikes').textContent = globalData.total_likes_ever || 0;
+            document.getElementById('totalCatches').textContent = globalData.total_catches || 0;
+        }
+
+        function updateCurrentSpawn(spawnData) {
+            const spawnDiv = document.getElementById('currentSpawn');
+            
+            if (spawnData && !spawnData.result) {
+                spawnDiv.style.display = 'block';
+                document.getElementById('spawnName').textContent = spawnData.name || 'Unknown';
+                document.getElementById('spawnLevel').textContent = spawnData.level || 1;
+                document.getElementById('spawnRarity').textContent = spawnData.rarity || 'Common';
+                document.getElementById('spawnImage').src = spawnData.sprite || 'catchmon/Common/default.png';
+            } else {
+                spawnDiv.style.display = 'none';
+            }
+        }
+
+        // Visual Effects
+        function createFloatingParticle() {
+            const particle = document.createElement('div');
+            particle.className = 'floating-particle';
+            particle.innerHTML = ['✨', '💫', '⭐', '🌟'][Math.floor(Math.random() * 4)];
+            particle.style.left = Math.random() * 100 + 'vw';
+            particle.style.fontSize = (Math.random() * 20 + 10) + 'px';
+            particle.style.animationDelay = Math.random() * 2 + 's';
+            particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+            
+            document.body.appendChild(particle);
+            
+            setTimeout(() => {
+                if (particle.parentNode) {
+                    particle.parentNode.removeChild(particle);
+                }
+            }, 15000);
+        }
+
+        function createCloud() {
+            const cloud = document.createElement('div');
+            cloud.className = 'cloud';
+            
+            const width = Math.random() * 200 + 100;
+            const height = Math.random() * 80 + 40;
+            const top = Math.random() * 60 + '%';
+            
+            cloud.style.width = width + 'px';
+            cloud.style.height = height + 'px';
+            cloud.style.top = top;
+            cloud.style.animationDuration = (Math.random() * 20 + 30) + 's';
+            cloud.style.animationDelay = Math.random() * 10 + 's';
+            
+            document.body.appendChild(cloud);
+            
+            setTimeout(() => {
+                if (cloud.parentNode) {
+                    cloud.parentNode.removeChild(cloud);
+                }
+            }, 60000);
+        }
+
+        // Start visual effects
+        setInterval(createFloatingParticle, 3000);
+        setInterval(createCloud, 8000);
+
+        console.log('🌌 Firebase Background System loaded!');
+
+    </script>
+</body>
+</html>\`;
+
+            convertedFiles.background = backgroundHtmlContent;
+            markCompleted('backgroundCard', 'backgroundBtn', 'backgroundPreview', 'backgroundDownload');
+            log('✅ background.html erfolgreich konvertiert', 'success');
+        };
+
+        // FIREBASE UTILS CREATION
+        window.createFirebaseUtils = function() {
+            log('🔧 Erstelle firebase-utils.js...');
+            
+            const utilsContent = \`// firebase-utils.js - Catchmon Firebase Integration
+// Diese Datei vereinfacht alle Firebase-Operationen für deine HTML-Dateien
+
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+import { 
+    getDatabase, 
+    ref, 
+    onValue, 
+    set, 
+    update, 
+    push, 
+    get,
+    serverTimestamp 
+} from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+
+// Firebase Konfiguration
+\${firebaseConfigCode}
+
+// Firebase initialisieren
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+// Catchmon Firebase Utilities Class
+class CatchmonFirebase {
+    constructor() {
+        this.db = db;
+        this.listeners = new Map();
+    }
+
+    // SPAWN SYSTEM
+    
+    watchCurrentSpawn(callback) {
+        const spawnRef = ref(this.db, 'spawn/current');
+        const unsubscribe = onValue(spawnRef, (snapshot) => {
+            const data = snapshot.val();
+            callback(data || {});
+        });
+        
+        this.listeners.set('spawn', unsubscribe);
+        return unsubscribe;
+    }
+
+    async setCurrentSpawn(spawnData) {
+        const spawnRef = ref(this.db, 'spawn/current');
+        const spawnWithTimestamp = {
+            ...spawnData,
+            timestamp: Date.now(),
+            result: null,
+            winner: null
+        };
+        
+        await set(spawnRef, spawnWithTimestamp);
+        console.log('🎯 New spawn set:', spawnData.name);
+        return spawnWithTimestamp;
+    }
+
+    async setSpawnResult(result, winner = null) {
+        const spawnRef = ref(this.db, 'spawn/current');
+        const updates = {
+            result: result,
+            winner: winner,
+            timestamp_result: Date.now()
+        };
+        
+        await update(spawnRef, updates);
+        console.log(\`🎉 Spawn result: \${result}\${winner ? \` by \${winner}\` : ''}\`);
+    }
+
+    // TRAINER SYSTEM
+
+    watchTrainers(callback) {
+        const trainersRef = ref(this.db, 'trainers');
+        const unsubscribe = onValue(trainersRef, (snapshot) => {
+            const data = snapshot.val() || {};
+            callback(data);
+        });
+        
+        this.listeners.set('trainers', unsubscribe);
+        return unsubscribe;
+    }
+
+    watchTrainer(username, callback) {
+        const trainerRef = ref(this.db, \`trainers/\${username}\`);
+        const unsubscribe = onValue(trainerRef, (snapshot) => {
+            const data = snapshot.val() || { coins: 0, team: [], donation: 0 };
+            callback(data);
+        });
+        
+        this.listeners.set(\`trainer_\${username}\`, unsubscribe);
+        return unsubscribe;
+    }
+
+    async addCatchmonToTrainer(username, catchmon) {
+        const trainerRef = ref(this.db, \`trainers/\${username}\`);
+        
+        const snapshot = await get(trainerRef);
+        const trainerData = snapshot.val() || { coins: 0, team: [], donation: 0 };
+        
+        const updatedTeam = [...(trainerData.team || []), catchmon];
+        const updates = {
+            ...trainerData,
+            team: updatedTeam,
+            coins: (trainerData.coins || 0) + 10
+        };
+        
+        await set(trainerRef, updates);
+        console.log(\`✅ Added \${catchmon.name} to \${username}'s team\`);
+        
+        return updates;
+    }
+
+    // LIKE SYSTEM
+
+    watchLikes(callback) {
+        const likesRef = ref(this.db, 'likes');
+        const unsubscribe = onValue(likesRef, (snapshot) => {
+            const data = snapshot.val() || {};
+            callback(data);
+        });
+        
+        this.listeners.set('likes', unsubscribe);
+        return unsubscribe;
+    }
+
+    async addLike(username) {
+        const userLikesRef = ref(this.db, \`likes/\${username}\`);
+        
+        const snapshot = await get(userLikesRef);
+        const currentLikes = snapshot.val() || 0;
+        const newLikes = Math.min(currentLikes + 1, 1000);
+        
+        await set(userLikesRef, newLikes);
+        
+        // Global Like Counter erhöhen
+        const globalLikesRef = ref(this.db, 'global/total_likes_ever');
+        const globalSnapshot = await get(globalLikesRef);
+        const currentGlobalLikes = globalSnapshot.val() || 0;
+        await set(globalLikesRef, currentGlobalLikes + 1);
+        
+        return newLikes;
+    }
+
+    async resetLikes() {
+        await set(ref(this.db, 'likes'), {});
+        console.log('🔄 Likes reset for new spawn');
+    }
+
+    // GLOBAL STATISTICS
+
+    watchGlobalStats(callback) {
+        const globalRef = ref(this.db, 'global');
+        const unsubscribe = onValue(globalRef, (snapshot) => {
+            const data = snapshot.val() || {};
+            callback(data);
+        });
+        
+        this.listeners.set('global', unsubscribe);
+        return unsubscribe;
+    }
+
+    async updateGlobalStats(updates) {
+        const globalRef = ref(this.db, 'global');
+        
+        const snapshot = await get(globalRef);
+        const currentStats = snapshot.val() || {};
+        
+        const newStats = { ...currentStats };
+        for (const [key, value] of Object.entries(updates)) {
+            if (typeof value === 'number' && typeof currentStats[key] === 'number') {
+                newStats[key] = currentStats[key] + value;
+            } else {
+                newStats[key] = value;
+            }
+        }
+        
+        await set(globalRef, newStats);
+        return newStats;
+    }
+
+    // UTILITY FUNCTIONS
+
+    stopAllListeners() {
+        for (const [key, unsubscribe] of this.listeners) {
+            unsubscribe();
+            console.log(\`🔇 Stopped listener: \${key}\`);
+        }
+        this.listeners.clear();
+    }
+
+    stopListener(key) {
+        const unsubscribe = this.listeners.get(key);
+        if (unsubscribe) {
+            unsubscribe();
+            this.listeners.delete(key);
+            console.log(\`🔇 Stopped listener: \${key}\`);
+        }
+    }
+}
+
+// Globale Instanz
+const catchmonDB = new CatchmonFirebase();
+
+// Legacy-Funktionen für einfache Migration
+window.loadSpawnData = function(callback) {
+    console.warn('⚠️ loadSpawnData() is deprecated. Use catchmonDB.watchCurrentSpawn() instead');
+    return catchmonDB.watchCurrentSpawn(callback);
+};
+
+window.loadCatcherData = function(callback) {
+    console.warn('⚠️ loadCatcherData() is deprecated. Use catchmonDB.watchTrainers() instead');
+    return catchmonDB.watchTrainers((trainers) => {
+        callback({ catcher: trainers });
+    });
+};
+
+window.loadGlobalStats = function(callback) {
+    console.warn('⚠️ loadGlobalStats() is deprecated. Use catchmonDB.watchGlobalStats() instead');
+    return catchmonDB.watchGlobalStats(callback);
+};
+
+// Globale Verfügbarkeit
+window.catchmonDB = catchmonDB;
+window.CatchmonFirebase = CatchmonFirebase;
+
+console.log('🔥 Catchmon Firebase Utils loaded successfully!');
+console.log('📖 Usage: catchmonDB.watchCurrentSpawn((data) => { /* your code */ })');
+
+export { CatchmonFirebase, catchmonDB };\`;
+
+            convertedFiles.utils = utilsContent;
+            markCompleted('utilsStep', 'utilsBtn', 'utilsPreview', 'utilsDownload');
+            log('✅ firebase-utils.js erfolgreich erstellt', 'success');
+        };
+
+        // PREVIEW FUNCTIONS
+        window.previewSpawn = function() {
+            if (convertedFiles.spawn) {
+                const newWindow = window.open('', '_blank');
+                newWindow.document.write(convertedFiles.spawn);
+                newWindow.document.close();
+            }
+        };
+
+        window.previewRanking = function() {
+            if (convertedFiles.ranking) {
+                const newWindow = window.open('', '_blank');
+                newWindow.document.write(convertedFiles.ranking);
+                newWindow.document.close();
+            }
+        };
+
+        window.previewEffects = function() {
+            if (convertedFiles.effects.length > 0) {
+                const newWindow = window.open('', '_blank');
+                newWindow.document.write(convertedFiles.effects[0].content);
+                newWindow.document.close();
+            }
+        };
+
+        window.previewBackground = function() {
+            if (convertedFiles.background) {
+                const newWindow = window.open('', '_blank');
+                newWindow.document.write(convertedFiles.background);
+                newWindow.document.close();
+            }
+        };
+
+        // DOWNLOAD FUNCTIONS
+        window.downloadSpawn = function() {
+            if (convertedFiles.spawn) {
+                downloadFile('spawn_firebase.html', convertedFiles.spawn);
+            }
+        };
+
+        window.downloadRanking = function() {
+            if (convertedFiles.ranking) {
+                downloadFile('ranking_catchmon_live_firebase.html', convertedFiles.ranking);
+            }
+        };
+
+        window.downloadEffects = function() {
+            if (convertedFiles.effects.length > 0) {
+                // Create ZIP file with all effect files
+                alert('📥 Download wird vorbereitet...\\n\\nAlle 6 Effect-Dateien werden einzeln heruntergeladen.');
+                
+                convertedFiles.effects.forEach((effect, index) => {
+                    setTimeout(() => {
+                        downloadFile(effect.filename.replace('.html', '_firebase.html'), effect.content);
+                    }, index * 500);
+                });
+            }
+        };
+
+        window.downloadBackground = function() {
+            if (convertedFiles.background) {
+                downloadFile('background_firebase.html', convertedFiles.background);
+            }
+        };
+
+        window.downloadUtils = function() {
+            if (convertedFiles.utils) {
+                downloadFile('firebase-utils.js', convertedFiles.utils);
+            }
+        };
+
+        function downloadFile(filename, content) {
+            const element = document.createElement('a');
+            element.setAttribute('href', 'data:text/html;charset=utf-8,' + encodeURIComponent(content));
+            element.setAttribute('download', filename);
+            element.style.display = 'none';
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+            
+            log(\`📥 \${filename} heruntergeladen\`, 'success');
+        }
+
+        window.goToStep4 = function() {
+            alert('🎉 Fantastisch! Alle HTML-Dateien sind Firebase-ready!\\n\\nIm nächsten Schritt testen wir alles und passen optional dein Python-Backend an.\\n\\nSoll ich dir Schritt 4 (Testing & Backend) erstellen?');
+        };
+
+        // Auto-Info
+        setTimeout(() => {
+            log('🎮 HTML Conversion Tool geladen. Starte mit der Konvertierung deiner Dateien!');
+        }, 1000);
+
+    </script>
+</body>
+</html>
+
+        let allCatchmon = [];
+        let currentFilter = 'all';
+        let connectionStatus = false;
+
+        // Firebase Listeners
+
+        // Connection Status
+        const connectedRef = ref(db, '.info/connected');
+        onValue(connectedRef, (snapshot) => {
+            connectionStatus = snapshot.val();
+            updateConnectionStatus();
+        });
+
+        // Trainer-Daten beobachten
+        const trainersRef = ref(db, 'trainers');
+        onValue(trainersRef, (snapshot) => {
+            const trainersData = snapshot.val() || {};
+            updateRankings(trainersData);
+        });
+
+        // Globale Stats beobachten
+        const globalRef = ref(db, 'global');
+        onValue(globalRef, (snapshot) => {
+            const globalData = snapshot.val() || {};
+            updateGlobalStats(globalData);
+        });
+
+        // UI Update Functions
+
+        function updateConnectionStatus() {
+            const statusElement = document.getElementById('connectionStatus');
+            if (connectionStatus) {
+                statusElement.textContent = '🟢 Live verbunden';
+                statusElement.className = 'connection-status connected';
+            } else {
+                statusElement.textContent = '🔴 Verbindung unterbrochen';
+                statusElement.className = 'connection-status disconnected';
+            }
+        }
+
+        function updateGlobalStats(globalData) {
+            document.getElementById('totalSpawns').textContent = globalData.total_spawns || 0;
+            document.getElementById('totalCatches').textContent = globalData.total_catches || 0;
+            document.getElementById('activeTrainers').textContent = Object.keys(globalData).length || 0;
+        }
+
+        function updateRankings(trainersData) {
+            allCatchmon = [];
+            let totalCatchmon = 0;
+            let activeTrainers = 0;
+
+            // Alle Catchmon sammeln
+            for (const [trainerName, trainerData] of Object.entries(trainersData)) {
+                if (trainerData.team && trainerData.team.length > 0) {
+                    activeTrainers++;
+                    
+                    trainerData.team.forEach(catchmon => {
+                        allCatchmon.push({
+                            ...catchmon,
+                            trainer: trainerName,
+                            points: catchmon.gesamtpunkte || calculatePoints(catchmon)
+                        });
+                        totalCatchmon++;
+                    });
+                }
+            }
+
+            // Stats aktualisieren
+            document.getElementById('activeTrainers').textContent = activeTrainers;
+            document.getElementById('totalCatchmon').textContent = totalCatchmon;
+
+            // Rankings rendern
+            renderRankings();
+        }
+
+        function calculatePoints(catchmon) {
+            const rarityMultipliers = {
+                Common: 1, Rare: 2, Starter: 3,
+                Legendary: 7, Mythical: 8, God: 9
+            };
+            
+            const level = catchmon.level || 1;
+            const rarity = catchmon.rarity || 'Common';
+            const shiny = catchmon.shiny || false;
+            const stats = catchmon.stats || {};
+            
+            const basePoints = level * 10;
+            const rarityMultiplier = rarityMultipliers[rarity] || 1;
+            const shinyMultiplier = shiny ? 2 : 1;
+            const statsBonus = Object.values(stats).reduce((sum, val) => sum + val, 0);
+            
+            return Math.floor((basePoints + statsBonus) * rarityMultiplier * shinyMultiplier);
+        }
+
+        function renderRankings() {
+            document.getElementById('loadingMessage').style.display = 'none';
+            document.getElementById('rankingTable').style.display = 'table';
+
+            const tbody = document.getElementById('rankingBody');
+            tbody.innerHTML = '';
+
+            // Filter anwenden
+            let filteredCatchmon = [...allCatchmon];
+            
+            switch (currentFilter) {
+                case 'shiny':
+                    filteredCatchmon = filteredCatchmon.filter(c => c.shiny);
+                    break;
+                case 'legendary':
+                    filteredCatchmon = filteredCatchmon.filter(c => 
+                        ['Legendary', 'Mythical', 'God'].includes(c.rarity));
+                    break;
+                case 'top-trainers':
+                    // Gruppiere nach Trainer und zeige nur bestes Catchmon
+                    const trainerBest = {};
+                    filteredCatchmon.forEach(c => {
+                        if (!trainerBest[c.trainer] || c.points > trainerBest[c.trainer].points) {
+                            trainerBest[c.trainer] = c;
+                        }
+                    });
+                    filteredCatchmon = Object.values(trainerBest);
+                    break;
+            }
+
+            // Sortieren nach Punkten
+            filteredCatchmon.sort((a, b) => b.points - a.points);
+
+            if (filteredCatchmon.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 40px;">Keine Catchmon gefunden</td></tr>';
+                return;
+            }
+
+            // Tabelle füllen
+            filteredCatchmon.forEach((catchmon, index) => {
+                const row = document.createElement('tr');
+                const rank = index + 1;
+                
+                // Row styling
+                if (rank === 1) row.classList.add('gold-row');
+                else if (rank === 2) row.classList.add('silver-row');
+                else if (rank === 3) row.classList.add('bronze-row');
+
+                const rankClass = rank <= 3 ? \`rank-\${rank}\` : '';
+                const medal = rank <= 3 ? ['🥇', '🥈', '🥉'][rank - 1] : rank;
+                
+                const statsSum = catchmon.stats ? 
+                    Object.values(catchmon.stats).reduce((sum, val) => sum + val, 0) : 0;
+
+                row.innerHTML = \`
+                    <td class="\${rankClass}">\${medal}</td>
+                    <td>
+                        <span class="catchmon-name">\${catchmon.name || 'Unknown'}</span>
+                        \${catchmon.shiny ? '<span class="shiny-indicator">✨</span>' : ''}
+                    </td>
+                    <td><strong>\${catchmon.level || 1}</strong></td>
+                    <td class="trainer-name">\${catchmon.trainer}</td>
+                    <td><span class="rarity \${catchmon.rarity || 'Common'}">\${catchmon.rarity || 'Common'}</span></td>
+                    <td><strong>\${catchmon.points.toLocaleString()}</strong></td>
+                    <td>\${statsSum}</td>
+                \`;
+                
+                tbody.appendChild(row);
+            });
+
+            // Last update time
+            document.getElementById('lastUpdate').textContent = 
+                \`Letzte Aktualisierung: \${new Date().toLocaleTimeString()}\`;
+        }
+
+        // Filter Functions
+        window.setFilter = function(filter) {
+            currentFilter = filter;
+            
+            // Button styling
+            document.querySelectorAll('.filter-controls button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            renderRankings();
+        };
+
+        console.log('🏆 Firebase Ranking System loaded!');
+
+    </script>
+</body>
+</html>`;
+
+            convertedFiles.ranking = rankingHtmlContent;
+            markCompleted('rankingCard', 'rankingBtn', 'rankingPreview', 'rankingDownload');
+            log('✅ ranking_catchmon_live.html erfolgreich konvertiert', 'success');
+        };
+
+        // EFFECTS CONVERSION
+        window.convertEffectsHtml = function() {
+            log('🔄 Konvertiere alle Effect-Dateien zu Firebase...');
+            
+            const effectFiles = [
+                'normal_effect.html', 'shine_effect.html', 'flame_effect.html',
+                'diamond_effect.html', 'king_effect.html', 'god_effect.html'
+            ];
+            
+            convertedFiles.effects = [];
+            
+            effectFiles.forEach((filename, index) => {
+                setTimeout(() => {
+                    const effectType = filename.replace('_effect.html', '');
+                    const effectHtml = generateEffectHtml(effectType);
+                    
+                    convertedFiles.effects.push({
+                        filename: filename,
+                        content: effectHtml
+                    });
+                    
+                    log(\`✅ \${filename} konvertiert\`, 'success');
+                    
+                    if (index === effectFiles.length - 1) {
+                        markCompleted('effectsCard', 'effectsBtn', 'effectsPreview', 'effectsDownload');
+                        log('✅ Alle Effect-Dateien erfolgreich konvertiert', 'success');
+                    }
+                }, index * 100);
+            });
+        };
+
+        function generateEffectHtml(effectType) {
+            return \`<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catchmon \${effectType.charAt(0).toUpperCase() + effectType.slice(1)} Effect - Firebase</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .effect-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .winner-name {
+            font-size: 4rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.8);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        .catch-message {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .catchmon-display {
+            width: 400px;
+            height: 400px;
+            margin: 20px 0;
+            border-radius: 50%;
+            animation: celebrate 3s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 3px 3px 6px rgba(0,0,0,0.8); }
+            to { text-shadow: 3px 3px 20px rgba(255,255,255,0.8); }
+        }
+
+        @keyframes celebrate {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            25% { transform: scale(1.1) rotate(5deg); }
+            75% { transform: scale(1.1) rotate(-5deg); }
+        }
+
+        .effect-\${effectType} {
+            /* Specific effect styling for \${effectType} */
+            box-shadow: 0 0 80px rgba(255,215,0,0.8);
+        }
+
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .winner-name {
+                font-size: 2.5rem;
+            }
+            
+            .catch-message {
+                font-size: 1.5rem;
+            }
+            
+            .catchmon-display {
+                width: 250px;
+                height: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="back-button" onclick="goBackToSpawn()">← Zurück zum Spawn</button>
+
+    <div class="effect-container">
+        <div class="winner-name" id="winnerName">Loading...</div>
+        <div class="catch-message" id="catchMessage">Loading...</div>
+        <img class="catchmon-display effect-\${effectType}" id="catchmonImage" src="" alt="Caught Catchmon">
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { 
+            getDatabase, 
+            ref,onValue 
+        } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+
+        // Firebase Config
+        ${firebaseConfigCode}
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // Load winner data from Firebase
+        const spawnRef = ref(db, 'spawn/current');
+        onValue(spawnRef, (snapshot) => {
+            const spawnData = snapshot.val();
+            if (spawnData && spawnData.result === 'caught' && spawnData.winner) {
+                displayWinner(spawnData);
+            }
+        });
+
+        function displayWinner(spawnData) {
+            document.getElementById('winnerName').textContent = spawnData.winner;
+            document.getElementById('catchMessage').textContent = `caught ${spawnData.name}!`;
+            document.getElementById('catchmonImage').src = spawnData.sprite || 'catchmon/Common/default.png';
+        }
+
+        function goBackToSpawn() {
+            window.location.href = 'spawn.html';
+        }
+
+        // Auto-redirect after 8 seconds
+        setTimeout(() => {
+            goBackToSpawn();
+        }, 8000);
+
+    </script>
+</body>
+</html>`;
+        }
+
+        // Auto-Info
+        setTimeout(() => {
+            log('🎮 HTML Conversion Tool geladen. Starte mit der Konvertierung deiner Dateien!');
+        }, 1000);
+
+    </script>
+</body>
+</html>
