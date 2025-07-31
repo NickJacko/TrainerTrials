@@ -15,11 +15,15 @@ for %%F in (
   catcher.json
   catcher_detail.html
   catcher_ranking_live.html
+  catchdex_catcher.html
   dex_detail.html
   dex_list.json
   donations.html
   evolution_lines.json
   gen_config.json
+  global_level.json
+  global_likes.json
+  global_stats.json
   howto.html
   imprint.html
   index.html

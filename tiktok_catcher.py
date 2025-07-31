@@ -42,8 +42,6 @@ def simulate_like():
                 amount = int(amount)
                 add_donation(data, name, amount)
                 print(f"💸 {name} hat {amount} Coins gespendet.")
-                
-                # Spenden-Animation auslösen
                 trigger_donation_animation(name, amount)
             except:
                 print("❌ Falsches Format. Nutze: !donate Nick 50")
@@ -62,7 +60,6 @@ def simulate_like():
 def trigger_donation_animation(donor_name, amount):
     """Löst die Spenden-Animation aus"""
     try:
-        # Aktuelle Gesamtspende des Nutzers abrufen
         total_donation = data["catcher"].get(donor_name, {}).get("donation", 0)
         
         animation_data = {
@@ -80,7 +77,7 @@ def trigger_donation_animation(donor_name, amount):
     except Exception as e:
         print(f"❌ Fehler beim Auslösen der Animation: {e}")
 
-# Global Likes System - NEU!
+# VEREINFACHTES Global System - Nur noch Global Level!
 def load_global_stats():
     """Lädt die globalen Statistiken"""
     try:
@@ -100,26 +97,11 @@ def save_global_stats(stats):
     with open("global_stats.json", "w", encoding="utf-8") as f:
         json.dump(stats, f, indent=2)
 
-def update_global_likes_file(current_spawn_likes, total_likes_ever):
-    """Aktualisiert sowohl die aktuellen Spawn-Likes als auch die Gesamtlikes"""
-    # Für die aktuelle Spawn-Anzeige (wie bisher)
-    spawn_data = {"global_likes": current_spawn_likes}
-    with open("global_likes.json", "w", encoding="utf-8") as f:
-        json.dump(spawn_data, f)
-    
-    # Für die Global Level Bar - ALLE Likes ever (NUR wenn sich was ändert!)
-    try:
-        with open("global_level.json", "r", encoding="utf-8") as f:
-            current_level_data = json.load(f)
-            current_total = current_level_data.get("global_likes", 0)
-    except FileNotFoundError:
-        current_total = 0
-    
-    # Nur aktualisieren wenn sich die Gesamtlikes geändert haben
-    if total_likes_ever != current_total:
-        level_data = {"global_likes": total_likes_ever}
-        with open("global_level.json", "w", encoding="utf-8") as f:
-            json.dump(level_data, f)
+def update_global_level(total_likes_ever):
+    """Aktualisiert NUR die Global Level Datei"""
+    level_data = {"global_likes": total_likes_ever}
+    with open("global_level.json", "w", encoding="utf-8") as f:
+        json.dump(level_data, f)
 
 COINS_PER_LIKE = 1
 SPAWN_INTERVAL = 15
@@ -127,8 +109,7 @@ DEFAULT_ANIMATION_DURATION = 5.0
 
 user_like_counts = {}
 data = load_data()
-global_stats = load_global_stats()  # NEU: Global Stats laden
-likes_since_spawn = 0
+global_stats = load_global_stats()
 active_participants = set()
 current_catchmon = None
 last_spawn_time = time.time()
@@ -151,7 +132,7 @@ def update_catch_chances_live():
     for user in active_participants:
         catcher = data["catcher"].get(user, {})
         donation = catcher.get("donation", 0)
-        multiplier = 4 if donation >= 100 else 3 if donation >= 50 else 2 if donation >= 10 else 1
+        multiplier = 5 if donation >= 2500 else 4 if donation >= 500 else 3 if donation >= 250 else 2 if donation >= 100 else 1
         like_data[user] = {
             "likes": user_like_counts.get(user, 0),
             "multiplier": multiplier
@@ -163,35 +144,20 @@ def update_catch_chances_live():
     with open("catch_chances.json", "w", encoding="utf-8") as f:
         json.dump(chances, f, indent=2)
 
-def calculate_total_effective_likes():
-    total = 0
-    for user in active_participants:
-        likes = user_like_counts.get(user, 0)
-        donation = data["catcher"].get(user, {}).get("donation", 0)
-        multiplier = 5 if donation >= 2500 else 4 if donation >= 500 else 3 if donation >= 250 else 2 if donation >= 100 else 1
-        total += likes * multiplier
-    return total
-
 def on_like_event(username):
-    global likes_since_spawn, global_stats
+    global global_stats
     
-    # Normale Like-Logik
+    # Like-Logik
     add_coins(data, username, COINS_PER_LIKE)
     user_like_counts[username] = user_like_counts.get(username, 0) + 1
     active_participants.add(username)
-    likes_since_spawn += 1
     
-    # GLOBAL STATS UPDATE - NEU!
+    # GLOBAL LEVEL UPDATE - NUR DAS!
     global_stats["total_likes_ever"] += 1
     save_global_stats(global_stats)
+    update_global_level(global_stats["total_likes_ever"])
     
-    # Files aktualisieren
     save_data(data)
-    current_spawn_likes = calculate_total_effective_likes()
-    update_global_likes_file(current_spawn_likes, global_stats["total_likes_ever"])
-    
-    print(f"👍 {username} liked! (Total ever: {global_stats['total_likes_ever']})")
-
 def start_tiktok_listener():
     asyncio.run(client.run())
 
@@ -199,9 +165,8 @@ def start_tiktok_listener():
 def init_donation_trigger():
     try:
         with open("donation_trigger.json", "r", encoding="utf-8") as f:
-            pass  # Datei existiert bereits
+            pass
     except FileNotFoundError:
-        # Erstelle leere Trigger-Datei
         with open("donation_trigger.json", "w", encoding="utf-8") as f:
             json.dump({"donor": None, "amount": 0, "total_donation": 0, "timestamp": 0}, f)
 
@@ -209,14 +174,14 @@ def init_donation_trigger():
 init_donation_trigger()
 
 # Initiale Global Level Datei erstellen
-update_global_likes_file(0, global_stats["total_likes_ever"])
+update_global_level(global_stats["total_likes_ever"])
 
 if TESTMODE:
     threading.Thread(target=simulate_like, daemon=True).start()
 else:
     threading.Thread(target=start_tiktok_listener, daemon=True).start()
 
-print(f"🚀 Bot gestartet! Aktuelle Global Level: {global_stats['total_likes_ever']} Likes")
+print(f"🚀 Bot gestartet! Global Level: {global_stats['total_likes_ever']} Likes")
 
 try:
     while True:
@@ -235,9 +200,8 @@ try:
             save_global_stats(global_stats)
             
             save_spawn_data(current_catchmon, result=None, winner=None)
-            # DON'T reset global likes here - only reset spawn likes
-            with open("global_likes.json", "w", encoding="utf-8") as f:
-                json.dump({"global_likes": 0}, f)
+            
+            # NUR catch_chances zurücksetzen - keine global_likes mehr!
             with open("catch_chances.json", "w", encoding="utf-8") as f:
                 json.dump({}, f)
 
@@ -247,7 +211,7 @@ try:
                 for user in active_participants:
                     catcher = data["catcher"].get(user, {})
                     donation = catcher.get("donation", 0)
-                    multiplier = 4 if donation >= 100 else 3 if donation >= 50 else 2 if donation >= 10 else 1
+                    multiplier = 5 if donation >= 2500 else 4 if donation >= 500 else 3 if donation >= 250 else 2 if donation >= 100 else 1
                     like_data[user] = {
                         "likes": user_like_counts.get(user, 0),
                         "multiplier": multiplier
@@ -271,7 +235,6 @@ try:
                     global_stats["total_escapes"] += 1
                     print(f"{current_catchmon['name']} escaped...")
 
-                # Global Stats speichern
                 save_global_stats(global_stats)
 
                 # Dynamische Animationsdauer
@@ -300,10 +263,8 @@ try:
 
                 count_encounter(data, current_catchmon["name"])
                 save_data(data)
-                # Only reset spawn likes, keep global level intact
-                with open("global_likes.json", "w", encoding="utf-8") as f:
-                    json.dump({"global_likes": 0}, f)
-
+                
+                # NUR catch_chances zurücksetzen - keine global_likes mehr!
                 with open("catch_chances.json", "w", encoding="utf-8") as f:
                     json.dump({}, f)
 
@@ -316,9 +277,8 @@ try:
                 global_stats["total_escapes"] += 1
                 save_global_stats(global_stats)
                 print(f"{current_catchmon['name']} escaped (keine Teilnehmer)")
-                # Only reset spawn likes, keep global level intact
-                with open("global_likes.json", "w", encoding="utf-8") as f:
-                    json.dump({"global_likes": 0}, f)
+                
+                # NUR catch_chances zurücksetzen
                 with open("catch_chances.json", "w", encoding="utf-8") as f:
                     json.dump({}, f)
                 animation_duration = DEFAULT_ANIMATION_DURATION
@@ -329,7 +289,6 @@ try:
         if evaluated and current_time >= animation_end_time:
             current_catchmon = None
             evaluated = False
-            likes_since_spawn = 0
             user_like_counts.clear()
             active_participants.clear()
 
@@ -337,8 +296,8 @@ try:
         time.sleep(1)
 
 except KeyboardInterrupt:
-    print(f"⛔ Bot gestoppt. Finale Stats:")
-    print(f"   🌟 Total Likes Ever: {global_stats['total_likes_ever']}")
-    print(f"   🎯 Total Spawns: {global_stats['total_spawns']}")
-    print(f"   ✅ Total Catches: {global_stats['total_catches']}")
-    print(f"   💨 Total Escapes: {global_stats['total_escapes']}")
+    print(f"⛔ Bot gestoppt. Stats:")
+    print(f"   🌟 Global Level: {global_stats['total_likes_ever']} Likes")
+    print(f"   🎯 Spawns: {global_stats['total_spawns']}")
+    print(f"   ✅ Catches: {global_stats['total_catches']}")
+    print(f"   💨 Escapes: {global_stats['total_escapes']}")

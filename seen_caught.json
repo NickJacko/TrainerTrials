@@ -1,161 +1,21 @@
 {
-  "flurrie": {
-    "escaped": 11,
-    "caught": 1
-  },
-  "ripplee": {
-    "escaped": 11,
-    "caught": 3
-  },
-  "glissalune": {
-    "escaped": 11,
-    "caught": 2
-  },
-  "spikrit": {
-    "escaped": 5,
-    "caught": 2
-  },
-  "rockoon": {
-    "escaped": 6,
-    "caught": 1
-  },
-  "wyrmling": {
-    "escaped": 13,
-    "caught": 1
-  },
-  "mabbit": {
-    "escaped": 7,
-    "caught": 1
-  },
-  "psypus": {
-    "escaped": 5,
-    "caught": 2
-  },
-  "flaumi": {
+  "silv": {
     "escaped": 0,
-    "caught": 1
-  },
-  "fairypup": {
-    "escaped": 10,
-    "caught": 1
-  },
-  "zappiri": {
-    "escaped": 10,
-    "caught": 1
-  },
-  "glimbird": {
-    "escaped": 0,
-    "caught": 1
-  },
-  "venuscale": {
-    "escaped": 0,
-    "caught": 1
-  },
-  "venametis": {
-    "escaped": 8,
-    "caught": 1
-  },
-  "toxibelle": {
-    "escaped": 8,
-    "caught": 1
-  },
-  "spirico": {
-    "escaped": 5,
     "caught": 1
   },
   "brummel": {
-    "escaped": 13,
-    "caught": 1
-  },
-  "badgy": {
-    "escaped": 5,
-    "caught": 1
-  },
-  "magmarock": {
-    "escaped": 3,
-    "caught": 1
-  },
-  "plipsy": {
     "escaped": 2,
     "caught": 0
   },
-  "zapkit": {
-    "escaped": 7,
-    "caught": 0
-  },
-  "duskaran": {
-    "escaped": 6,
-    "caught": 0
-  },
-  "crylette": {
-    "escaped": 5,
-    "caught": 0
-  },
-  "flambini": {
-    "escaped": 10,
-    "caught": 0
-  },
-  "shadopup": {
-    "escaped": 6,
-    "caught": 0
-  },
-  "rhinubi": {
-    "escaped": 9,
-    "caught": 0
-  },
-  "aquaril": {
-    "escaped": 6,
-    "caught": 0
-  },
-  "stellaryon": {
+  "psypus": {
     "escaped": 2,
     "caught": 0
   },
-  "metallino": {
-    "escaped": 5,
-    "caught": 0
-  },
-  "nuttiki": {
-    "escaped": 6,
-    "caught": 0
-  },
-  "lumibun": {
-    "escaped": 7,
-    "caught": 0
-  },
-  "friggleaf": {
-    "escaped": 4,
-    "caught": 0
-  },
-  "florispur": {
-    "escaped": 7,
-    "caught": 0
-  },
-  "lunareve": {
+  "chimourn": {
     "escaped": 1,
     "caught": 0
   },
-  "silv": {
-    "escaped": 9,
-    "caught": 0
-  },
-  "aqualume": {
-    "escaped": 5,
-    "caught": 0
-  },
-  "mindferno": {
-    "escaped": 1,
-    "caught": 0
-  },
-  "terraky": {
-    "escaped": 2,
-    "caught": 0
-  },
-  "chronavelle": {
-    "escaped": 1,
-    "caught": 0
-  },
-  "geckon": {
+  "mabbit": {
     "escaped": 1,
     "caught": 0
   }

@@ -94,27 +94,243 @@
       height: auto;
       z-index: 1; 
       position: relative;
-      transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
       border-radius: 15px;
       filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.3));
+      /* FIXED: Prevent animation conflicts */
+      animation-fill-mode: both;
+      transform-origin: center center;
     }
 
-    .shake {
-      animation: modernShake 1.4s cubic-bezier(0.65, 0, 0.35, 1) 1 forwards;
+    /* FIXED: Simplified and smoother entrance animation */
+    .entrance-animation {
+      animation: smoothEntrance 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.1) forwards;
     }
 
-    @keyframes modernShake {
-      0% { transform: translateX(0) scale(1); }
-      10% { transform: translateX(-12px) scale(1.02); }
-      20% { transform: translateX(12px) scale(0.98); }
-      30% { transform: translateX(-8px) scale(1.01); }
-      40% { transform: translateX(8px) scale(0.99); }
-      50% { transform: translateX(-4px) scale(1); }
-      60% { transform: translateX(4px) scale(1); }
-      70% { transform: translateX(-2px) scale(1); }
-      80% { transform: translateX(2px) scale(1); }
-      90% { transform: translateX(-1px) scale(1); }
-      100% { transform: translateX(0) scale(1); }
+    @keyframes smoothEntrance {
+      0% {
+        transform: scale(0.3) translateY(30px);
+        opacity: 0;
+        filter: blur(8px) drop-shadow(0 0 30px rgba(255, 215, 0, 0.8));
+      }
+      60% {
+        transform: scale(1.1) translateY(-5px);
+        opacity: 0.8;
+        filter: blur(2px) drop-shadow(0 0 20px rgba(255, 255, 255, 0.6));
+      }
+      80% {
+        transform: scale(0.95) translateY(2px);
+        opacity: 0.95;
+        filter: blur(1px) drop-shadow(0 0 15px rgba(0, 0, 0, 0.4));
+      }
+      100% {
+        transform: scale(1) translateY(0px);
+        opacity: 1;
+        filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.3));
+      }
+    }
+
+    /* FIXED: Proper idle animation states that can be cleanly stopped */
+    .idle-breathing {
+      animation: idleBreathing 4s ease-in-out infinite;
+    }
+
+    .idle-bounce {
+      animation: idleBounce 3s ease-in-out infinite;
+    }
+
+    .idle-sway {
+      animation: idleSway 5s ease-in-out infinite;
+    }
+
+    .idle-pulse {
+      animation: idlePulse 3.5s ease-in-out infinite;
+    }
+
+    .idle-wiggle {
+      animation: idleWiggle 4s ease-in-out infinite;
+    }
+
+    .idle-float {
+      animation: idleFloat 6s ease-in-out infinite;
+    }
+
+    /* FIXED: Simplified idle animation keyframes */
+    @keyframes idleBreathing {
+      0%, 100% { 
+        transform: scale(1) translateY(0px);
+      }
+      50% { 
+        transform: scale(1.02) translateY(-3px);
+      }
+    }
+
+    @keyframes idleBounce {
+      0%, 100% { 
+        transform: translateY(0px) scale(1);
+      }
+      50% { 
+        transform: translateY(-8px) scale(1.01);
+      }
+    }
+
+    @keyframes idleSway {
+      0%, 100% { 
+        transform: rotate(0deg);
+      }
+      25% { 
+        transform: rotate(2deg);
+      }
+      75% { 
+        transform: rotate(-2deg);
+      }
+    }
+
+    @keyframes idlePulse {
+      0%, 100% { 
+        transform: scale(1);
+        filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.3)) brightness(1);
+      }
+      50% { 
+        transform: scale(1.05);
+        filter: drop-shadow(0 8px 25px rgba(0, 0, 0, 0.4)) brightness(1.1);
+      }
+    }
+
+    @keyframes idleWiggle {
+      0%, 100% { 
+        transform: rotate(0deg);
+      }
+      25% { 
+        transform: rotate(1deg);
+      }
+      75% { 
+        transform: rotate(-1deg);
+      }
+    }
+
+    @keyframes idleFloat {
+      0%, 100% { 
+        transform: translateY(0px);
+      }
+      50% { 
+        transform: translateY(-6px);
+      }
+    }
+
+    /* FIXED: Clean shake animation that doesn't conflict */
+    .shake-animation {
+      animation: cleanShake 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    }
+
+    @keyframes cleanShake {
+      0%, 100% { 
+        transform: translateX(0) scale(1); 
+      }
+      10% { 
+        transform: translateX(-8px) scale(1.01); 
+      }
+      20% { 
+        transform: translateX(8px) scale(0.99); 
+      }
+      30% { 
+        transform: translateX(-6px) scale(1.005); 
+      }
+      40% { 
+        transform: translateX(6px) scale(0.995); 
+      }
+      50% { 
+        transform: translateX(-4px) scale(1); 
+      }
+      60% { 
+        transform: translateX(4px) scale(1); 
+      }
+      70% { 
+        transform: translateX(-2px) scale(1); 
+      }
+      80% { 
+        transform: translateX(2px) scale(1); 
+      }
+      90% { 
+        transform: translateX(-1px) scale(1); 
+      }
+    }
+
+    /* Special effects for shiny Catchmon */
+    .shiny-effect {
+      position: relative;
+    }
+
+    .shiny-effect::before {
+      content: '';
+      position: absolute;
+      top: -10px;
+      left: -10px;
+      right: -10px;
+      bottom: -10px;
+      background: linear-gradient(45deg, 
+        transparent, 
+        rgba(255, 215, 0, 0.3), 
+        transparent, 
+        rgba(255, 192, 203, 0.3), 
+        transparent, 
+        rgba(173, 216, 230, 0.3), 
+        transparent);
+      border-radius: 15px;
+      animation: shinySparkle 3s linear infinite;
+      z-index: 0;
+    }
+
+    @keyframes shinySparkle {
+      0% { 
+        transform: rotate(0deg);
+        opacity: 0.5;
+      }
+      50% {
+        opacity: 0.8;
+      }
+      100% { 
+        transform: rotate(360deg);
+        opacity: 0.5;
+      }
+    }
+
+    /* Rarity-based glow effects */
+    .rarity-common {
+      filter: drop-shadow(0 0 10px rgba(158, 158, 158, 0.4));
+    }
+
+    .rarity-rare {
+      filter: drop-shadow(0 0 15px rgba(33, 150, 243, 0.5));
+    }
+
+    .rarity-legendary {
+      filter: drop-shadow(0 0 20px rgba(255, 152, 0, 0.6));
+      animation: legendaryGlow 4s ease-in-out infinite alternate;
+    }
+
+    .rarity-mythical {
+      filter: drop-shadow(0 0 25px rgba(156, 39, 176, 0.7));
+      animation: mythicalGlow 3s ease-in-out infinite alternate;
+    }
+
+    .rarity-god {
+      filter: drop-shadow(0 0 30px rgba(128, 0, 128, 0.8));
+      animation: godGlow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes legendaryGlow {
+      0% { filter: drop-shadow(0 0 20px rgba(255, 152, 0, 0.6)) brightness(1); }
+      100% { filter: drop-shadow(0 0 35px rgba(255, 152, 0, 0.9)) brightness(1.2); }
+    }
+
+    @keyframes mythicalGlow {
+      0% { filter: drop-shadow(0 0 25px rgba(156, 39, 176, 0.7)) brightness(1); }
+      100% { filter: drop-shadow(0 0 40px rgba(156, 39, 176, 1)) brightness(1.3); }
+    }
+
+    @keyframes godGlow {
+      0% { filter: drop-shadow(0 0 30px rgba(128, 0, 128, 0.8)) brightness(0.8) contrast(1.2); }
+      100% { filter: drop-shadow(0 0 50px rgba(128, 0, 128, 1)) brightness(1.1) contrast(1.5); }
     }
 
     .glitter {
@@ -265,17 +481,6 @@
       }
     }
 
-    @keyframes successGlow {
-      0% { 
-        box-shadow: 0 0 20px rgba(76, 175, 80, 0.3);
-        text-shadow: 0 3px 10px rgba(0,0,0,0.7), 0 0 20px rgba(76, 175, 80, 0.5);
-      }
-      100% { 
-        box-shadow: 0 0 40px rgba(76, 175, 80, 0.5);
-        text-shadow: 0 3px 10px rgba(0,0,0,0.7), 0 0 30px rgba(76, 175, 80, 0.8);
-      }
-    }
-
     /* Responsive Design */
     @media (max-width: 768px) {
       .catchmon-ring {
@@ -405,7 +610,52 @@
   <script>
     let spawnData = null;
     let lastTimestamp = 0;
+    let currentIdleInterval = null;
     const SPAWN_INTERVAL = 15;
+
+    // FIXED: Simplified animation system
+    const IDLE_ANIMATIONS = ['breathing', 'bounce', 'sway', 'pulse', 'wiggle', 'float'];
+    
+    const RARITY_ANIMATIONS = {
+      'Common': ['breathing', 'bounce'],
+      'Rare': ['pulse', 'sway'],
+      'Starter': ['bounce', 'float'],
+      'Legendary': ['pulse', 'float'],
+      'Mythical': ['wiggle', 'float'],
+      'God': ['pulse']
+    };
+
+    function getIdleAnimationForRarity(rarity) {
+      const animations = RARITY_ANIMATIONS[rarity] || IDLE_ANIMATIONS;
+      return animations[Math.floor(Math.random() * animations.length)];
+    }
+
+    // FIXED: Clean animation state management
+    function startIdleAnimation(img, rarity) {
+      stopIdleAnimation(img);
+      
+      const animationType = getIdleAnimationForRarity(rarity);
+      const rarityClass = `rarity-${rarity.toLowerCase()}`;
+      
+      // Apply animation classes
+      img.className = `idle-${animationType} ${rarityClass}`;
+      
+      // Change animation periodically for variety
+      currentIdleInterval = setInterval(() => {
+        const newAnimation = getIdleAnimationForRarity(rarity);
+        img.className = `idle-${newAnimation} ${rarityClass}`;
+      }, Math.random() * 10000 + 15000); // 15-25 seconds
+    }
+
+    function stopIdleAnimation(img) {
+      if (currentIdleInterval) {
+        clearInterval(currentIdleInterval);
+        currentIdleInterval = null;
+      }
+      // Clear all animation classes except rarity
+      const rarityClass = Array.from(img.classList).find(cls => cls.startsWith('rarity-'));
+      img.className = rarityClass || '';
+    }
 
     async function fetchSpawn() {
       try {
@@ -433,14 +683,14 @@
       for (let key in stats) {
         head.innerHTML += `<th>${key}</th>`;
         const val = stats[key];
-        let color = "#FFD700"; // Default gold
+        let color = "#FFD700";
         
-        if (val === 0) color = "#FF69B4"; // Pink for 0
-        else if (val === 31) color = "#9C27B0"; // Purple for perfect
-        else if (val >= 28) color = "#4CAF50"; // Green for excellent
-        else if (val >= 20) color = "#FF9800"; // Orange for good
-        else if (val >= 15) color = "#2196F3"; // Blue for average
-        else if (val < 10) color = "#F44336"; // Red for low
+        if (val === 0) color = "#FF69B4";
+        else if (val === 31) color = "#9C27B0";
+        else if (val >= 28) color = "#4CAF50";
+        else if (val >= 20) color = "#FF9800";
+        else if (val >= 15) color = "#2196F3";
+        else if (val < 10) color = "#F44336";
         
         row.innerHTML += `<td style="color:${color}; text-shadow: 0 0 10px ${color};">${val}</td>`;
       }
@@ -452,6 +702,7 @@
       const wrapper = document.getElementById("catchWrapper");
       wrapper.innerHTML = "";
 
+      // Add glitter for shiny
       if (shiny) {
         const glitter = document.createElement("div");
         glitter.className = "glitter";
@@ -462,61 +713,114 @@
       img.id = "catchImg";
       img.src = sprite;
       img.alt = name;
-      wrapper.appendChild(img);
+      
+      // Add shiny wrapper if needed
+      if (shiny) {
+        const shinyWrapper = document.createElement("div");
+        shinyWrapper.className = "shiny-effect";
+        shinyWrapper.appendChild(img);
+        wrapper.appendChild(shinyWrapper);
+      } else {
+        wrapper.appendChild(img);
+      }
 
-      // Add pulse effect to ring during spawn
+      // FIXED: Clean entrance animation
+      img.classList.add("entrance-animation");
+      
+      // Ring pulse effect
       const ringProgress = document.getElementById("ringProgress");
       ringProgress.classList.add("pulse");
 
-      let i = 0;
-      const shakeCount = result === "caught" ? 3 : result === "escaped" ? 1 + Math.floor(Math.random() * 2) : 0;
+      // After entrance, start idle animation
+      setTimeout(() => {
+        img.classList.remove("entrance-animation");
+        startIdleAnimation(img, rarity);
+      }, 1500); // Match entrance animation duration
+
+      // FIXED: Improved shake logic
+      let shakeCount = 0;
+      if (result === "caught") {
+        shakeCount = 3;
+      } else if (result === "escaped") {
+        shakeCount = 1 + Math.floor(Math.random() * 2);
+      }
+
+      let currentShake = 0;
 
       function doShake() {
-        if (i < shakeCount) {
-          img.classList.remove("shake");
-          void img.offsetWidth;
-          img.classList.add("shake");
+        if (currentShake < shakeCount) {
+          // FIXED: Completely stop idle animation during shake
+          stopIdleAnimation(img);
           
+          // Clean slate - remove all animation classes
+          img.className = img.className.replace(/idle-\w+/g, '').trim();
+          
+          // Add shake animation
+          img.classList.add("shake-animation");
+          
+          // Play sound
           const wobbleAudio = document.getElementById("wobbleSound");
           wobbleAudio.currentTime = 0;
-          wobbleAudio.play();
+          wobbleAudio.play().catch(() => {});
           
-          i++;
-          setTimeout(doShake, 1200);
-        } else {
-          ringProgress.classList.remove("pulse");
+          currentShake++;
           
-          if (result === "caught") {
-            setTimeout(() => {
-              img.style.filter = "brightness(2.5) drop-shadow(0 0 30px rgba(76, 175, 80, 0.8))";
-
-              setTimeout(() => {
-                img.style.filter = "brightness(1.2) drop-shadow(0 5px 15px rgba(0, 0, 0, 0.3))";
-              }, 600);
-
-              reloadEffect(donation);
-
-              setTimeout(() => {
-                const effectFrame = document.getElementById("catchEffect");
-                if (effectFrame) effectFrame.remove();
-              }, 6000);
-            }, 100);
-          } else if (result === "escaped") {
-            setTimeout(() => {
-              img.style.opacity = "0.3";
-              img.style.filter = "grayscale(100%) blur(3px)";
-              msg.textContent = `💨 ${name} escaped...`;
-              msg.classList.add("show", "escaped");
-              
-              const breakOutAudio = document.getElementById("breakOut");
-              breakOutAudio.currentTime = 0;
-              breakOutAudio.play();
-            }, 100);
-          }
+          // Remove shake class and continue
+          setTimeout(() => {
+            img.classList.remove("shake-animation");
+            if (currentShake < shakeCount) {
+              setTimeout(doShake, 200); // Short pause between shakes
+            } else {
+              handleFinalResult();
+            }
+          }, 1200); // Match shake animation duration
+          
         }
       }
 
-      setTimeout(doShake, 300);
+      function handleFinalResult() {
+        ringProgress.classList.remove("pulse");
+        
+        if (result === "caught") {
+          // Success effect
+          stopIdleAnimation(img);
+          img.style.filter = "brightness(2) saturate(1.5) drop-shadow(0 0 30px rgba(76, 175, 80, 0.8))";
+          
+          setTimeout(() => {
+            img.style.filter = "brightness(1.2) drop-shadow(0 5px 15px rgba(0, 0, 0, 0.3))";
+          }, 800);
+
+          reloadEffect(donation);
+
+          setTimeout(() => {
+            const effectFrame = document.getElementById("catchEffect");
+            if (effectFrame) effectFrame.remove();
+          }, 6000);
+          
+        } else if (result === "escaped") {
+          // Escape effect
+          stopIdleAnimation(img);
+          img.style.opacity = "0.3";
+          img.style.filter = "grayscale(100%) blur(3px)";
+          msg.textContent = `💨 ${name} escaped...`;
+          msg.classList.add("show", "escaped");
+          
+          const breakOutAudio = document.getElementById("breakOut");
+          breakOutAudio.currentTime = 0;
+          breakOutAudio.play().catch(() => {});
+          
+        } else {
+          // No result yet, restart idle
+          const rarityClass = `rarity-${rarity.toLowerCase()}`;
+          img.className = rarityClass;
+          startIdleAnimation(img, rarity);
+        }
+      }
+
+      // Start shake sequence if there's a result
+      if (result && shakeCount > 0) {
+        setTimeout(doShake, 500); // Small delay before first shake
+      }
     }
 
     function reloadEffect(donation) {
@@ -548,7 +852,7 @@
       }, 50);
     }
 
-    // Flüssige Ring-Animation
+    // Smooth ring progress animation
     function updateRingProgress() {
       if (spawnData && spawnData.spawn_start) {
         const elapsed = (Date.now() / 1000) - spawnData.spawn_start;
@@ -575,15 +879,72 @@
       const mm = String(Math.floor(remaining / 60)).padStart(2, '0');
       const ss = String(remaining % 60).padStart(2, '0');
       document.getElementById("timerText").textContent = `${mm}:${ss}`;
+    }// Add some random environmental effects for atmosphere
+    function createAtmosphericEffect() {
+      const effects = ['💨', '✨', '🌟', '💫', '⭐'];
+      const effect = document.createElement('div');
+      effect.textContent = effects[Math.floor(Math.random() * effects.length)];
+      effect.style.cssText = `
+        position: fixed;
+        left: ${Math.random() * 100}%;
+        top: ${Math.random() * 100}%;
+        font-size: ${Math.random() * 20 + 10}px;
+        opacity: 0.6;
+        pointer-events: none;
+        z-index: -1;
+        animation: atmosphericFloat 8s ease-out forwards;
+      `;
+      
+      document.body.appendChild(effect);
+      
+      setTimeout(() => {
+        if (effect.parentNode) {
+          effect.parentNode.removeChild(effect);
+        }
+      }, 8000);
     }
 
-    // Starte flüssige Ring-Animation
+    // Add atmospheric effect keyframes
+    const atmosphericStyle = document.createElement('style');
+    atmosphericStyle.textContent = `
+      @keyframes atmosphericFloat {
+        0% { 
+          opacity: 0.6;
+          transform: translateY(0px) scale(1) rotate(0deg);
+        }
+        50% {
+          opacity: 0.3;
+          transform: translateY(-50px) scale(1.2) rotate(180deg);
+        }
+        100% { 
+          opacity: 0;
+          transform: translateY(-100px) scale(0.5) rotate(360deg);
+        }
+      }
+    `;
+    document.head.appendChild(atmosphericStyle);
+
+    // Create atmospheric effects periodically
+    setInterval(() => {
+      if (Math.random() < 0.3) { // 30% chance every 5 seconds
+        createAtmosphericEffect();
+      }
+    }, 5000);
+
+    // Start smooth ring animation
     requestAnimationFrame(updateRingProgress);
     
-    // Behalte die ursprünglichen Intervalle
+    // Keep original intervals
     setInterval(updateTimer, 500);
     setInterval(fetchSpawn, 500);
     fetchSpawn();
+
+    // Cleanup when page unloads
+    window.addEventListener('beforeunload', () => {
+      if (currentIdleInterval) {
+        clearInterval(currentIdleInterval);
+      }
+    });
   </script>
 </body>
 </html>

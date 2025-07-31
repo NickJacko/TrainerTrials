@@ -367,25 +367,37 @@
 
     async function fetchData() {
       try {
-        const res = await fetch("global_likes.json?_=" + Date.now());
-        const data = await res.json();
-        const totalLikes = data.global_likes || 0;
-        
-        // Each like = 1 XP
-        const newXP = totalLikes;
-        
-        // Show floating XP for increases
-        if (newXP > lastTotalLikes) {
-          const xpGain = newXP - lastTotalLikes;
-          createFloatingXP(xpGain);
+        // FIXED: Fetch from global_level.json instead of global_likes.json
+        const res = await fetch("global_level.json?_=" + Date.now());
+        if (!res.ok) {
+          console.warn("Could not fetch global_level.json, trying global_likes.json as fallback");
+          const fallbackRes = await fetch("global_likes.json?_=" + Date.now());
+          if (!fallbackRes.ok) throw new Error('Both files unavailable');
+          const fallbackData = await fallbackRes.json();
+          const totalLikes = fallbackData.global_likes || 0;
+          handleNewXP(totalLikes);
+          return;
         }
         
-        currentXP = newXP;
-        lastTotalLikes = totalLikes;
+        const data = await res.json();
+        const totalLikes = data.global_likes || 0;
+        handleNewXP(totalLikes);
         
       } catch (e) {
-        console.error("Error loading global_likes.json:", e);
+        console.error("Error loading global level data:", e);
+        // Try to continue with last known values
       }
+    }
+
+    function handleNewXP(newXP) {
+      // Show floating XP for increases
+      if (newXP > lastTotalLikes) {
+        const xpGain = newXP - lastTotalLikes;
+        createFloatingXP(xpGain);
+      }
+      
+      currentXP = newXP;
+      lastTotalLikes = newXP;
     }
 
     function updateDisplay() {
@@ -450,7 +462,7 @@
     // Initial load
     fetchData();
     
-    console.log('🌟 Global Level Bar loaded!');
+    console.log('🌟 Global Level Bar loaded and fixed!');
   </script>
 </body>
 </html>

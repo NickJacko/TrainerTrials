@@ -1,21 +1,21 @@
 {
-  "name": "Lumibun",
-  "level": 43,
+  "name": "Nuttiki",
+  "level": 4,
   "rarity": "Common",
   "shiny": false,
-  "sprite": "catchmon/Common/Lumibun.png",
+  "sprite": "catchmon/Common/Nuttiki.png",
   "stats": {
-    "ATK": 5,
-    "DEF": 20,
-    "SPD": 23,
+    "ATK": 6,
+    "DEF": 11,
+    "SPD": 2,
     "WIS": 9,
-    "CHA": 26,
-    "LUK": 18
+    "CHA": 20,
+    "LUK": 23
   },
   "result": null,
   "winner": null,
   "donation": 0,
   "duration": 3.0,
-  "timestamp": 1748194971,
-  "spawn_start": 1748194971
+  "timestamp": 1748421105,
+  "spawn_start": 1748421105
 }
