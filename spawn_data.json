@@ -1,31 +1,33 @@
 {
-  "name": "Rockoon",
-  "level": 59,
+  "name": "Psypus",
+  "level": 1,
   "rarity": "Common",
   "shiny": false,
   "stats": {
-    "ATK": 15,
-    "DEF": 6,
-    "SPD": 7,
-    "WIS": 12,
-    "CHA": 12,
+    "ATK": 0,
+    "DEF": 30,
+    "SPD": 2,
+    "WIS": 26,
+    "CHA": 15,
     "LUK": 26
   },
-  "sprite": "catchmon/Common/Rockoon.png",
+  "sprite": "catchmon/Common/Psypus.png",
   "stage": 1,
   "evolution_line": [
-    "Rockoon"
+    "Psypus",
+    "Hypnoctus",
+    "Hypnoctob"
   ],
   "categories": [
     "Common"
   ],
-  "gesamtpunkte": 5978,
-  "result": "escaped",
+  "gesamtpunkte": 199,
+  "result": null,
   "winner": null,
   "donation": 0,
   "duration": 5.0,
-  "timestamp": 1754041978795,
-  "spawn_start": 1754041978,
+  "timestamp": 1754042860697,
+  "spawn_start": 1754042860,
   "spawn_interval": 15,
   "SPAWN_INTERVAL": 15
 }

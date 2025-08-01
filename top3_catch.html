@@ -53,7 +53,7 @@
       border-radius: 10px;
       box-shadow: 0 1px 6px rgba(0, 0, 0, 0.08);
       border: 1px solid rgba(255, 255, 255, 0.25);
-      transition: all 0.3s ease;
+      transition: transform 0.3s ease; /* 🎯 NUR für Hover-Effekte */
       position: relative;
       overflow: hidden;
     }
@@ -132,6 +132,7 @@
       color: #666;
       font-weight: 500;
       line-height: 1;
+      /* 🎯 KEINE Transition - sofortige Text-Updates */
     }
 
     .progress-section {
@@ -151,24 +152,6 @@
       border: 1px solid rgba(255, 255, 255, 0.3);
     }
 
-    .rank-entry {
-      display: flex;
-      align-items: center;
-      padding: 6px 8px;
-      background: rgba(255, 255, 255, 0.15);
-      border-radius: 10px;
-      box-shadow: 0 1px 6px rgba(0, 0, 0, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      transition: transform 0.3s ease; /* 🎯 NUR für Hover-Effekte */
-      position: relative;
-      overflow: hidden;
-    }
-
-    .rank-entry:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-    }
-
     .progress-bar {
       height: 100%;
       border-radius: 15px;
@@ -182,22 +165,6 @@
       font-size: 0.8rem;
       color: #fff;
       text-shadow: 0 1px 2px rgba(0,0,0,0.4);
-    }
-
-    .player-level {
-      font-size: 0.65rem;
-      color: #666;
-      font-weight: 500;
-      line-height: 1;
-      /* 🎯 KEINE Transition - sofortige Text-Updates */
-    }
-
-    .percent-text {
-      position: relative;
-      z-index: 2;
-      font-weight: 800;
-      font-size: 0.7rem;
-      /* 🎯 KEINE Transition - sofortige Text-Updates */
     }
 
     .progress-bar::before {
@@ -249,6 +216,7 @@
       z-index: 2;
       font-weight: 800;
       font-size: 0.7rem;
+      /* 🎯 KEINE Transition - sofortige Text-Updates */
     }
 
     /* Donation Tier Styles - Fixed Animation */
@@ -355,12 +323,11 @@
   </div>
 
   <script>
-    let currentEntries = [];
-    let lastSuccessfulData = [];
+    // 🎯 ANTI-FLICKER SYSTEM
+    let currentDisplayHash = null;
+    let isUpdating = false;
 
-    // 🎯 FIREBASE-FORMAT READER
     function getPlayerLevel(coins) {
-      // Vereinfachte Level-Berechnung basierend auf Coins
       if (coins >= 10000) return 100;
       if (coins >= 5000) return 80;
       if (coins >= 2500) return 60;
@@ -384,20 +351,6 @@
       return `<span class="catcher-name ${tier}">${name}</span>`;
     }
 
-    function getLevelColorClass(level) {
-      if (level >= 100) return 'level-100-plus';
-      if (level >= 90) return 'level-90-99';
-      if (level >= 80) return 'level-80-89';
-      if (level >= 70) return 'level-70-79';
-      if (level >= 60) return 'level-60-69';
-      if (level >= 50) return 'level-50-59';
-      if (level >= 40) return 'level-40-49';
-      if (level >= 30) return 'level-30-39';
-      if (level >= 20) return 'level-20-29';
-      if (level >= 10) return 'level-10-19';
-      return 'level-0-9';
-    }
-
     function getProgressColorClass(percent) {
       if (percent >= 15) return 'high';
       if (percent >= 8) return 'medium';
@@ -412,48 +365,30 @@
       return '';
     }
 
-    let isUpdating = false;
-    let currentDisplayData = null;
+    // 🎯 HASH-FUNCTION für intelligenten Update-Check
+    function createDisplayHash(entries) {
+      return entries.map(entry => {
+        const percent = (entry.chance * 100).toFixed(1);
+        return `${entry.name}|${percent}|${entry.level}|${entry.likes}|${entry.donation}`;
+      }).join('||');
+    }
 
-    async function updateCatchrates() {
-      if (isUpdating) return;
-      isUpdating = true;
-
-      try {
-        const catchChanceRes = await fetch("catch_chances.json?" + Date.now());
-        if (!catchChanceRes.ok) {
-          isUpdating = false;
-          return;
-        }
-
-        const catchChances = await catchChanceRes.json();
-        console.log("📊 Loaded:", catchChances);
-
-        const topEntries = Object.entries(catchChances)
-          .map(([name, data]) => ({ 
-            name, 
-            chance: data.chance,
-            likes: data.likes,
-            donation: data.donation,
-            level: data.level || getPlayerLevel(data.coins || 0)
-          }))
-          .sort((a, b) => b.chance - a.chance)
-          .slice(0, 3);
-
-        console.log("🏆 Top entries:", topEntries);
-
-        // Nur updaten wenn sich wirklich was geändert hat
-        const newDataString = JSON.stringify(topEntries);
-        if (currentDisplayData !== newDataString) {
-          currentDisplayData = newDataString;
-          updateDisplay(topEntries);
-        }
-
-      } catch (error) {
-        console.warn("Error loading catchrates:", error);
+    // 🎯 SMART UPDATE: Nur updaten wenn sich was SICHTBARES geändert hat
+    function updateDisplayIfChanged(entries) {
+      const newHash = createDisplayHash(entries);
+      
+      // Prüfe ob sich was geändert hat
+      if (currentDisplayHash === newHash) {
+        console.log('🚫 No visible changes - skipping update');
+        return;
       }
-
-      isUpdating = false;
+      
+      console.log('✅ Changes detected - updating display');
+      console.log(`📊 Old: ${currentDisplayHash}`);
+      console.log(`📊 New: ${newHash}`);
+      
+      currentDisplayHash = newHash;
+      updateDisplay(entries);
     }
 
     function updateDisplay(entries) {
@@ -464,9 +399,9 @@
         return;
       }
 
-      // 🎯 EINFACH: Komplett neu bauen, aber nur bei Änderungen
-      container.innerHTML = '';
-
+      // 🎯 PROGRESSIVE UPDATE: Bestehende Elemente updaten statt neu bauen
+      const existingEntries = container.querySelectorAll('.rank-entry');
+      
       entries.forEach((entry, index) => {
         const percent = (entry.chance * 100).toFixed(1);
         const donation = entry.donation || 0;
@@ -474,10 +409,17 @@
         const rankClass = getRankClass(index);
         const progressColorClass = getProgressColorClass(parseFloat(percent));
 
-        const rankEntry = document.createElement('div');
-        rankEntry.className = `rank-entry rank-${index + 1}`;
+        let rankEntry = existingEntries[index];
         
-        rankEntry.innerHTML = `
+        // Wenn Entry nicht existiert, neu erstellen
+        if (!rankEntry) {
+          rankEntry = document.createElement('div');
+          rankEntry.className = `rank-entry rank-${index + 1}`;
+          container.appendChild(rankEntry);
+        }
+        
+        // 🎯 SMART UPDATE: Nur innerHTML wenn nötig
+        const newInnerHTML = `
           <div class="rank-number ${rankClass}">${index + 1}</div>
           <div class="player-info">
             <div class="player-name">${getStyledCatcherName(entry.name, donation)}</div>
@@ -492,14 +434,55 @@
           </div>
         `;
         
-        container.appendChild(rankEntry);
+        // Nur updaten wenn innerHTML unterschiedlich ist
+        if (rankEntry.innerHTML !== newInnerHTML) {
+          rankEntry.innerHTML = newInnerHTML;
+        }
       });
+
+      // 🎯 CLEANUP: Überschüssige Entries entfernen
+      for (let i = entries.length; i < existingEntries.length; i++) {
+        existingEntries[i].remove();
+      }
 
       console.log(`✅ Display updated with ${entries.length} entries`);
     }
 
-    // 🎯 ZURÜCK ZUM EINFACHEN
-    console.log('🎯 Starting Simple Catchrates (Debug Mode)');
+    async function updateCatchrates() {
+      if (isUpdating) return;
+      isUpdating = true;
+
+      try {
+        const catchChanceRes = await fetch("catch_chances.json?" + Date.now());
+        if (!catchChanceRes.ok) {
+          isUpdating = false;
+          return;
+        }
+
+        const catchChances = await catchChanceRes.json();
+
+        const topEntries = Object.entries(catchChances)
+          .map(([name, data]) => ({ 
+            name, 
+            chance: data.chance,
+            likes: data.likes,
+            donation: data.donation,
+            level: data.level || getPlayerLevel(data.coins || 0)
+          }))
+          .sort((a, b) => b.chance - a.chance)
+          .slice(0, 3);
+
+        // 🎯 INTELLIGENT UPDATE: Nur bei sichtbaren Änderungen
+        updateDisplayIfChanged(topEntries);
+
+      } catch (error) {
+        console.warn("Error loading catchrates:", error);
+      }
+
+      isUpdating = false;
+    }
+
+    console.log('🎯 Starting Anti-Flicker Top3 Catchrates');
     
     updateCatchrates();
     setInterval(updateCatchrates, 500);
