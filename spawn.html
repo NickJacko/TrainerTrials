@@ -291,8 +291,16 @@
       filter: drop-shadow(0 0 10px rgba(158, 158, 158, 0.4));
     }
 
+    .rarity-uncommon {
+      filter: drop-shadow(0 0 12px rgba(76, 175, 80, 0.5));
+    }
+
     .rarity-rare {
       filter: drop-shadow(0 0 15px rgba(33, 150, 243, 0.5));
+    }
+
+    .rarity-epic {
+      filter: drop-shadow(0 0 18px rgba(156, 39, 176, 0.6));
     }
 
     .rarity-legendary {
@@ -308,6 +316,10 @@
     .rarity-god {
       filter: drop-shadow(0 0 30px rgba(128, 0, 128, 0.8));
       animation: godGlow 2s ease-in-out infinite alternate;
+    }
+
+    .rarity-starter {
+      filter: drop-shadow(0 0 12px rgba(255, 193, 7, 0.5));
     }
 
     @keyframes legendaryGlow {
@@ -484,6 +496,7 @@
       border-radius: 15px;
       font-size: 12px;
       z-index: 1000;
+      backdrop-filter: blur(10px);
     }
 
     .connection-status.connected {
@@ -622,7 +635,7 @@
     </div>
     
     <div class="timer-text" id="timerText">00:00</div>
-    <div class="info" id="infoText">Waiting for wild Catchmon...</div>
+    <div class="info" id="infoText">🔥 Verbinde mit Firebase...</div>
     
     <table class="stat-table">
       <thead>
@@ -649,7 +662,7 @@
       get 
     } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 
-    // Firebase Config
+    // 🔥 FIREBASE CONFIG - IHRE ECHTE KONFIGURATION
     const firebaseConfig = {
       apiKey: "AIzaSyDdStpC5rVtgaZ4XvtKLwQttnyIDXL2z7Q",
       authDomain: "trainertrials.firebaseapp.com",
@@ -664,27 +677,29 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // Game State
+    // 🎮 GAME STATE VARIABLEN
     let spawnData = null;
     let lastTimestamp = 0;
     let currentIdleInterval = null;
     let connectionStatus = false;
     const SPAWN_INTERVAL = 15;
 
-    // Animation system
+    // 🎨 ANIMATION SYSTEM
     const IDLE_ANIMATIONS = ['breathing', 'bounce', 'sway', 'pulse', 'wiggle', 'float'];
     
     const RARITY_ANIMATIONS = {
       'Common': ['breathing', 'bounce'],
-      'Rare': ['pulse', 'sway'],
-      'Starter': ['bounce', 'float'],
-      'Legendary': ['pulse', 'float'],
+      'Uncommon': ['breathing', 'bounce', 'sway'],
+      'Rare': ['breathing', 'sway', 'pulse'],
+      'Epic': ['bounce', 'sway', 'pulse', 'wiggle'],
+      'Legendary': ['pulse', 'wiggle', 'float'],
       'Mythical': ['wiggle', 'float'],
-      'God': ['pulse']
+      'God': ['pulse'],
+      'Starter': ['bounce', 'float']
     };
 
-    // Firebase Listeners
-
+    // 🔥 FIREBASE LISTENERS - ALLE DATEN LIVE
+    
     // Connection Status
     const connectedRef = ref(db, '.info/connected');
     onValue(connectedRef, (snapshot) => {
@@ -692,7 +707,7 @@
       updateConnectionStatus();
     });
 
-    // Live Spawn Updates
+    // Live Spawn Updates - ERSETZT ALLE JSON FETCHES
     const spawnRef = ref(db, 'spawn/current');
     onValue(spawnRef, (snapshot) => {
       const data = snapshot.val();
@@ -703,6 +718,7 @@
       }
     });
 
+    // 🌐 CONNECTION STATUS UPDATE
     function updateConnectionStatus() {
       const statusElement = document.getElementById('connectionStatus');
       if (connectionStatus) {
@@ -714,6 +730,7 @@
       }
     }
 
+    // 🎨 ANIMATION FUNKTIONEN
     function getIdleAnimationForRarity(rarity) {
       const animations = RARITY_ANIMATIONS[rarity] || IDLE_ANIMATIONS;
       return animations[Math.floor(Math.random() * animations.length)];
@@ -742,49 +759,59 @@
       img.className = rarityClass || '';
     }
 
+    // 🎯 HAUPTFUNKTION - SPAWN RENDERING (VOLLSTÄNDIG FIREBASE-BASIERT)
     function renderSpawn(data) {
       const { name, level, rarity, shiny, sprite, stats, result, winner, donation = 0 } = data;
 
-      document.getElementById("infoText").innerHTML = `✨ Wild <strong>${name}</strong> appeared!<br>Level: ${level} • ${rarity}${shiny ? ' ✨ <em>Shiny!</em>' : ''}`;
+      // Info Text Update
+      document.getElementById("infoText").innerHTML = `✨ Wild <strong>${name}</strong> appeared!<br>Level: ${level} • ${rarity}${shiny ? ' ✨ <em style="color: #ffd700;">Shiny!</em>' : ''}`;
       
+      // Stats Table Update - DIREKT AUS FIREBASE
       const head = document.getElementById("statHead");
       const row = document.getElementById("statRow");
       head.innerHTML = ""; 
       row.innerHTML = "";
       
-      for (let key in stats) {
-        head.innerHTML += `<th>${key}</th>`;
-        const val = stats[key];
-        let color = "#FFD700";
-        
-        if (val === 0) color = "#FF69B4";
-        else if (val === 31) color = "#9C27B0";
-        else if (val >= 28) color = "#4CAF50";
-        else if (val >= 20) color = "#FF9800";
-        else if (val >= 15) color = "#2196F3";
-        else if (val < 10) color = "#F44336";
-        
-        row.innerHTML += `<td style="color:${color}; text-shadow: 0 0 10px ${color};">${val}</td>`;
+      if (stats) {
+        for (let key in stats) {
+          head.innerHTML += `<th>${key.toUpperCase()}</th>`;
+          const val = stats[key];
+          let color = "#FFD700";
+          
+          if (val === 0) color = "#FF69B4";
+          else if (val === 31) color = "#9C27B0";
+          else if (val >= 28) color = "#4CAF50";
+          else if (val >= 20) color = "#FF9800";
+          else if (val >= 15) color = "#2196F3";
+          else if (val < 10) color = "#F44336";
+          
+          row.innerHTML += `<td style="color:${color}; text-shadow: 0 0 10px ${color};">${val}</td>`;
+        }
       }
 
+      // Message Reset
       const msg = document.getElementById("catchMsg");
       msg.classList.remove("show", "success", "escaped");
       msg.textContent = "";
 
+      // Image Container Setup
       const wrapper = document.getElementById("catchWrapper");
       wrapper.innerHTML = "";
 
+      // Shiny Glitter Effect
       if (shiny) {
         const glitter = document.createElement("div");
         glitter.className = "glitter";
         wrapper.appendChild(glitter);
       }
 
+      // Catchmon Image Setup
       const img = document.createElement("img");
       img.id = "catchImg";
-      img.src = sprite;
+      img.src = sprite || `catchmon/${rarity}/${name}.png`;
       img.alt = name;
       
+      // Shiny Wrapper
       if (shiny) {
         const shinyWrapper = document.createElement("div");
         shinyWrapper.className = "shiny-effect";
@@ -794,16 +821,25 @@
         wrapper.appendChild(img);
       }
 
+      // Image Error Handling
+      img.onerror = function() {
+        console.log(`Image failed to load: ${this.src}`);
+        this.src = 'catchmon/placeholder.png';
+      };
+
+      // Initial Entrance Animation
       img.classList.add("entrance-animation");
       
       const ringProgress = document.getElementById("ringProgress");
       ringProgress.classList.add("pulse");
 
+      // Start Idle Animation after entrance
       setTimeout(() => {
         img.classList.remove("entrance-animation");
         startIdleAnimation(img, rarity);
       }, 1500);
 
+      // 🎲 SHAKE ANIMATION SYSTEM - BASIERT AUF FIREBASE RESULT
       let shakeCount = 0;
       if (result === "caught") {
         shakeCount = 3;
@@ -819,6 +855,7 @@
           img.className = img.className.replace(/idle-\w+/g, '').trim();
           img.classList.add("shake-animation");
           
+          // Sound Effect
           const wobbleAudio = document.getElementById("wobbleSound");
           wobbleAudio.currentTime = 0;
           wobbleAudio.play().catch(() => {});
@@ -836,6 +873,7 @@
         }
       }
 
+      // 🎉 FINAL RESULT HANDLING
       function handleFinalResult() {
         ringProgress.classList.remove("pulse");
         
@@ -847,6 +885,7 @@
             img.style.filter = "brightness(1.2) drop-shadow(0 5px 15px rgba(0, 0, 0, 0.3))";
           }, 800);
 
+          // Trigger Effect Animation
           reloadEffect(donation);
 
           setTimeout(() => {
@@ -866,17 +905,20 @@
           breakOutAudio.play().catch(() => {});
           
         } else {
+          // No result yet - continue idle animation
           const rarityClass = `rarity-${rarity.toLowerCase()}`;
           img.className = rarityClass;
           startIdleAnimation(img, rarity);
         }
       }
 
+      // Start shake animation if there's a result
       if (result && shakeCount > 0) {
         setTimeout(doShake, 500);
       }
     }
 
+    // 🎭 DONATION TIER SYSTEM
     function getDonationTier(donation) {
       if (donation >= 1000) return "god";
       if (donation >= 500) return "king";
@@ -886,6 +928,7 @@
       return "normal";
     }
 
+    // 🎬 EFFECT LOADING SYSTEM
     function reloadEffect(donation) {
       const tier = getDonationTier(donation);
       setTimeout(() => {
@@ -915,10 +958,10 @@
       }, 50);
     }
 
-    // Smooth ring progress animation
+    // ⏱️ TIMER SYSTEM - FIREBASE BASIERT
     function updateRingProgress() {
-      if (spawnData && spawnData.spawn_start) {
-        const elapsed = (Date.now() / 1000) - spawnData.spawn_start;
+      if (spawnData && spawnData.timestamp) {
+        const elapsed = (Date.now() - spawnData.timestamp) / 1000;
         const remaining = Math.max(0, SPAWN_INTERVAL - elapsed);
         const angle = Math.min(1.0, elapsed / SPAWN_INTERVAL) * 360;
 
@@ -934,9 +977,9 @@
     }
 
     function updateTimer() {
-      if (!spawnData || !spawnData.spawn_start) return;
+      if (!spawnData || !spawnData.timestamp) return;
 
-      const elapsed = Math.floor(Date.now() / 1000) - spawnData.spawn_start;
+      const elapsed = Math.floor((Date.now() - spawnData.timestamp) / 1000);
       const remaining = Math.max(0, SPAWN_INTERVAL - elapsed);
 
       const mm = String(Math.floor(remaining / 60)).padStart(2, '0');
@@ -944,7 +987,7 @@
       document.getElementById("timerText").textContent = `${mm}:${ss}`;
     }
 
-    // Atmospheric effects
+    // 🌟 ATMOSPHERIC EFFECTS
     function createAtmosphericEffect() {
       const effects = ['💨', '✨', '🌟', '💫', '⭐'];
       const effect = document.createElement('div');
@@ -969,28 +1012,41 @@
       }, 8000);
     }
 
-    // Start systems
-    requestAnimationFrame(updateRingProgress);
-    setInterval(updateTimer, 500);
+    // 🚀 SYSTEM STARTUP
+    function startSystems() {
+      console.log('🔥 Firebase Spawn System starting...');
+      
+      // Ring Progress Animation
+      requestAnimationFrame(updateRingProgress);
+      
+      // Timer Updates
+      setInterval(updateTimer, 500);
 
-    // Create atmospheric effects periodically
-    setInterval(() => {
-      if (Math.random() < 0.3) {
-        createAtmosphericEffect();
-      }
-    }, 5000);
+      // Atmospheric Effects
+      setInterval(() => {
+        if (Math.random() < 0.3) {
+          createAtmosphericEffect();
+        }
+      }, 5000);
 
-    // Initial load message
-    document.getElementById("infoText").innerHTML = "🔥 Verbinde mit Firebase...";
+      // Initial status
+      document.getElementById("infoText").innerHTML = "🔥 Firebase-Verbindung wird hergestellt...";
+      
+      console.log('✅ All systems active!');
+    }
 
-    // Cleanup when page unloads
+    // 🧹 CLEANUP
     window.addEventListener('beforeunload', () => {
       if (currentIdleInterval) {
         clearInterval(currentIdleInterval);
       }
     });
 
+    // 🎯 INITIALIZE EVERYTHING
+    startSystems();
+
     console.log('🔥 Firebase Spawn System loaded!');
+    console.log('📡 Waiting for spawn data from Firebase...');
 
   </script>
 </body>

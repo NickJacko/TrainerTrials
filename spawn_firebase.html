@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catchmon Spawn - Firebase Live</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: "Arial", sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            overflow: hidden;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        .connection-status {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+        
+        .connection-status.connected {
+            background: rgba(76, 175, 80, 0.9);
+            color: white;
+        }
+        
+        .connection-status.disconnected {
+            background: rgba(244, 67, 54, 0.9);
+            color: white;
+        }
+
+        .spawn-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .loading-message {
+            text-align: center;
+            font-size: 1.5rem;
+            margin: 20px 0;
+        }
+
+        .spawn-content {
+            display: none;
+            text-align: center;
+        }
+
+        .catchmon-name {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+            to { text-shadow: 2px 2px 20px rgba(255,255,255,0.8); }
+        }
+
+        .spawn-info {
+            font-size: 1.2rem;
+            margin: 10px 0;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+        }
+
+        .shiny-indicator {
+            font-size: 2rem;
+            margin: 10px 0;
+            animation: sparkle 1.5s ease-in-out infinite;
+        }
+
+        @keyframes sparkle {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.8; }
+        }
+
+        .catchmon-image {
+            width: 250px;
+            height: 250px;
+            margin: 20px 0;
+            border-radius: 50%;
+            box-shadow: 0 0 50px rgba(255,255,255,0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .catchmon-image:hover {
+            transform: scale(1.1);
+        }
+
+        .like-section {
+            margin: 30px 0;
+        }
+
+        .like-button {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            border: none;
+            color: white;
+            font-size: 1.8rem;
+            padding: 15px 30px;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(238, 90, 36, 0.4);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .like-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(238, 90, 36, 0.6);
+        }
+
+        .like-button:active {
+            transform: scale(0.95);
+        }
+
+        .like-button:disabled {
+            background: #666;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .likes-display {
+            font-size: 1.5rem;
+            margin: 15px 0;
+            font-weight: bold;
+        }
+
+        .leaderboard {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            backdrop-filter: blur(10px);
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .leaderboard h3 {
+            margin: 0 0 15px 0;
+            color: #ffd700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .leaderboard-entry {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .leaderboard-entry:last-child {
+            border-bottom: none;
+        }
+
+        .global-stats {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            backdrop-filter: blur(10px);
+            max-width: 300px;
+            width: 100%;
+        }
+
+        .stats-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+        }
+
+        .username-input {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            z-index: 1000;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .catchmon-name {
+                font-size: 2rem;
+            }
+            
+            .catchmon-image {
+                width: 200px;
+                height: 200px;
+            }
+            
+            .like-button {
+                font-size: 1.5rem;
+                padding: 12px 25px;
+            }
+            
+            .leaderboard, .global-stats {
+                max-width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Connection Status -->
+    <div id="connectionStatus" class="connection-status">🔄 Verbinde...</div>
+    
+    <!-- Username Input -->
+    <input type="text" id="usernameInput" class="username-input" placeholder="Dein Name..." maxlength="20">
+
+    <div class="spawn-container">
+        <!-- Loading Message -->
+        <div id="loadingMessage" class="loading-message">
+            🔄 Lade aktuellen Spawn...
+        </div>
+
+        <!-- Spawn Content -->
+        <div id="spawnContent" class="spawn-content">
+            <!-- Catchmon Info -->
+            <div id="catchmonName" class="catchmon-name">???</div>
+            <div id="shinyIndicator" class="shiny-indicator" style="display: none;">✨ SHINY ✨</div>
+            <div id="catchmonRarity" class="spawn-info">Rarity: ???</div>
+            <div id="catchmonLevel" class="spawn-info">Level: ???</div>
+            
+            <!-- Catchmon Image -->
+            <img id="catchmonImage" class="catchmon-image" src="" alt="Catchmon" style="display: none;">
+            
+            <!-- Like Section -->
+            <div class="like-section">
+                <button id="likeButton" class="like-button" onclick="sendLike()">
+                    ❤️ Like (+1)
+                </button>
+                <div id="likesDisplay" class="likes-display">
+                    Deine Likes: <span id="userLikes">0</span>/1000
+                </div>
+            </div>
+
+            <!-- Leaderboard -->
+            <div class="leaderboard">
+                <h3>🏆 Top Likes</h3>
+                <div id="leaderboardContent">
+                    <div class="leaderboard-entry">
+                        <span>Lade...</span>
+                        <span>-</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Global Stats -->
+            <div class="global-stats">
+                <h3>📊 Global Stats</h3>
+                <div id="globalStatsContent">
+                    <div class="stats-row">
+                        <span>Total Spawns:</span>
+                        <span id="totalSpawns">-</span>
+                    </div>
+                    <div class="stats-row">
+                        <span>Total Catches:</span>
+                        <span id="totalCatches">-</span>
+                    </div>
+                    <div class="stats-row">
+                        <span>Total Escapes:</span>
+                        <span id="totalEscapes">-</span>
+                    </div>
+                    <div class="stats-row">
+                        <span>Total Likes Ever:</span>
+                        <span id="totalLikesEver">-</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { 
+            getDatabase, 
+            ref, 
+            onValue, 
+            set, 
+            get,
+            update
+        } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+
+        // 🔥 IHRE FIREBASE KONFIGURATION
+        const firebaseConfig = {
+            apiKey: "AIzaSyDdStpC5rVtgaZ4XvtKLwQttnyIDXL2z7Q",
+            authDomain: "trainertrials.firebaseapp.com",
+            databaseURL: "https://trainertrials-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "trainertrials",
+            storageBucket: "trainertrials.firebasestorage.app",
+            messagingSenderId: "22071275267",
+            appId: "1:22071275267:web:92e82d6bfaee169aff8336",
+            measurementId: "G-WWENZ0HP22"
+        };
+
+        // Firebase initialisieren
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // State Variables
+        let connectionStatus = false;
+        let currentSpawn = null;
+        let currentUsername = '';
+        let userLikes = 0;
+
+        // Initialize
+        window.addEventListener('load', function() {
+            initializeApp();
+        });
+
+        function initializeApp() {
+            setupUsername();
+            setupFirebaseListeners();
+            console.log('🔥 Firebase Spawn System loaded!');
+        }
+
+        // Username Management
+        function setupUsername() {
+            const usernameInput = document.getElementById('usernameInput');
+            currentUsername = localStorage.getItem('catchmon_username') || '';
+            
+            if (currentUsername) {
+                usernameInput.value = currentUsername;
+            } else {
+                currentUsername = 'Trainer' + Math.floor(Math.random() * 1000);
+                usernameInput.value = currentUsername;
+            }
+
+            usernameInput.addEventListener('input', function() {
+                currentUsername = this.value.trim() || 'Anonym';
+                localStorage.setItem('catchmon_username', currentUsername);
+            });
+        }
+
+        // Firebase Listeners
+        function setupFirebaseListeners() {
+            // Connection Status
+            const connectedRef = ref(db, '.info/connected');
+            onValue(connectedRef, (snapshot) => {
+                connectionStatus = snapshot.val();
+                updateConnectionStatus();
+            });
+
+            // Current Spawn
+            const spawnRef = ref(db, 'spawn/current');
+            onValue(spawnRef, (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    currentSpawn = data;
+                    updateSpawnDisplay(data);
+                }
+            });
+
+            // Likes
+            const likesRef = ref(db, 'likes');
+            onValue(likesRef, (snapshot) => {
+                const likesData = snapshot.val() || {};
+                userLikes = likesData[currentUsername] || 0;
+                updateLikesDisplay();
+                updateLeaderboard(likesData);
+            });
+
+            // Global Stats
+            const globalRef = ref(db, 'global');
+            onValue(globalRef, (snapshot) => {
+                const globalData = snapshot.val() || {};
+                updateGlobalStats(globalData);
+            });
+        }
+
+        // UI Update Functions
+        function updateConnectionStatus() {
+            const statusElement = document.getElementById('connectionStatus');
+            if (connectionStatus) {
+                statusElement.textContent = '🟢 Live verbunden';
+                statusElement.className = 'connection-status connected';
+            } else {
+                statusElement.textContent = '🔴 Verbindung unterbrochen';
+                statusElement.className = 'connection-status disconnected';
+            }
+        }
+
+        function updateSpawnDisplay(spawn) {
+            document.getElementById('loadingMessage').style.display = 'none';
+            document.getElementById('spawnContent').style.display = 'block';
+
+            const nameElement = document.getElementById('catchmonName');
+            const rarityElement = document.getElementById('catchmonRarity');
+            const levelElement = document.getElementById('catchmonLevel');
+            const imageElement = document.getElementById('catchmonImage');
+            const shinyElement = document.getElementById('shinyIndicator');
+
+            nameElement.textContent = spawn.name || '???';
+            rarityElement.textContent = `Rarity: ${spawn.rarity || '???'}`;
+            levelElement.textContent = `Level: ${spawn.level || '???'}`;
+
+            if (spawn.sprite) {
+                imageElement.src = spawn.sprite;
+                imageElement.style.display = 'block';
+                imageElement.onerror = function() {
+                    this.style.display = 'none';
+                };
+            }
+
+            if (spawn.shiny) {
+                shinyElement.style.display = 'block';
+                nameElement.style.background = 'linear-gradient(45deg, #ffd700, #ffed4e)';
+                nameElement.style.webkitBackgroundClip = 'text';
+                nameElement.style.webkitTextFillColor = 'transparent';
+            } else {
+                shinyElement.style.display = 'none';
+                nameElement.style.background = 'none';
+                nameElement.style.webkitTextFillColor = 'white';
+            }
+
+            // Like Button Status
+            const likeButton = document.getElementById('likeButton');
+            if (spawn.result) {
+                likeButton.disabled = true;
+                likeButton.textContent = `${spawn.result === 'caught' ? '✅' : '💨'} ${spawn.result === 'caught' ? 'Gefangen' : 'Entkommen'}`;
+            } else {
+                likeButton.disabled = false;
+                likeButton.textContent = '❤️ Like (+1)';
+            }
+        }
+
+        function updateLikesDisplay() {
+            document.getElementById('userLikes').textContent = userLikes;
+            
+            const likeButton = document.getElementById('likeButton');
+            if (userLikes >= 1000) {
+                likeButton.disabled = true;
+                likeButton.textContent = '❤️ Max erreicht';
+            }
+        }
+
+        function updateLeaderboard(likesData) {
+            const leaderboardContent = document.getElementById('leaderboardContent');
+            
+            // Sortieren nach Likes
+            const sortedLikes = Object.entries(likesData)
+                .sort(([,a], [,b]) => b - a)
+                .slice(0, 10);
+
+            if (sortedLikes.length === 0) {
+                leaderboardContent.innerHTML = '<div class="leaderboard-entry"><span>Noch keine Likes</span><span>-</span></div>';
+                return;
+            }
+
+            leaderboardContent.innerHTML = sortedLikes
+                .map(([username, likes], index) => {
+                    const trophy = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}.`;
+                    const isCurrentUser = username === currentUsername ? ' style="color: #ffd700; font-weight: bold;"' : '';
+                    return `<div class="leaderboard-entry"${isCurrentUser}>
+                        <span>${trophy} ${username}</span>
+                        <span>${likes}</span>
+                    </div>`;
+                })
+                .join('');
+        }
+
+        function updateGlobalStats(globalData) {
+            document.getElementById('totalSpawns').textContent = globalData.total_spawns || 0;
+            document.getElementById('totalCatches').textContent = globalData.total_catches || 0;
+            document.getElementById('totalEscapes').textContent = globalData.total_escapes || 0;
+            document.getElementById('totalLikesEver').textContent = globalData.total_likes_ever || 0;
+        }
+
+        // Like System
+        window.sendLike = async function() {
+            if (!currentUsername || currentUsername.trim() === '') {
+                alert('⚠️ Bitte gib einen Namen ein!');
+                document.getElementById('usernameInput').focus();
+                return;
+            }
+            
+            if (userLikes >= 1000) {
+                alert('Du hast bereits das Maximum von 1000 Likes erreicht!');
+                return;
+            }
+
+            if (!currentSpawn || currentSpawn.result) {
+                alert('Kein aktiver Spawn oder bereits beendet!');
+                return;
+            }
+
+            try {
+                const userLikesRef = ref(db, 'likes/' + currentUsername);
+                const newLikes = userLikes + 1;
+                await set(userLikesRef, newLikes);
+                
+                // Global Like Counter erhöhen
+                const globalLikesRef = ref(db, 'global/total_likes_ever');
+                const globalSnapshot = await get(globalLikesRef);
+                const currentGlobalLikes = globalSnapshot.val() || 0;
+                await set(globalLikesRef, currentGlobalLikes + 1);
+                
+                // UI-Feedback
+                animateLikeButton();
+                
+            } catch (error) {
+                console.error('Fehler beim Senden des Likes:', error);
+                alert('❌ Fehler beim Senden des Likes!');
+            }
+        };
+
+        function animateLikeButton() {
+            const button = document.getElementById('likeButton');
+            button.style.transform = 'scale(1.1)';
+            setTimeout(() => {
+                button.style.transform = 'scale(1)';
+            }, 150);
+        }
+
+        console.log('🔥 Firebase Spawn System loaded!');
+        console.log('👤 Current trainer:', currentUsername);
+
+    </script>
+</body>
+</html>
