@@ -792,13 +792,13 @@
         .map(([name, data]) => ({
           name,
           ...data,
-          totalPower: calculateTotalPower(data.team),
+          totalPoints: calculateTotalPoints(data.team), // ✅ Geändert von totalPower zu totalPoints
           teamSize: data.team ? data.team.length : 0,
           totalCatches: data.stats?.total_catches || 0,
           donation: data.donation || 0
         }))
         .filter(trainer => trainer.teamSize > 0)
-        .sort((a, b) => b.totalPower - a.totalPower)
+        .sort((a, b) => b.totalPoints - a.totalPoints) // ✅ Nach totalPoints sortieren
         .slice(0, 3);
 
       if (trainers.length === 0) {
@@ -857,9 +857,9 @@
         return;
       }
 
-      // Top 3 nach Power sortieren
+      // Top 3 nach Points sortieren
       const topCatchmon = allCatchmon
-        .sort((a, b) => calculateCatchmonPower(b) - calculateCatchmonPower(a))
+        .sort((a, b) => calculateCatchmonPoints(b) - calculateCatchmonPoints(a)) // ✅ Geändert zu Points
         .slice(0, 3);
 
       container.innerHTML = '';
@@ -876,7 +876,7 @@
       const medalClass = index === 0 ? 'medal-1' : index === 1 ? 'medal-2' : 'medal-3';
       card.className = `card ${medalClass}`;
 
-      const poder = calculateCatchmonPower(catchmon);
+      const points = calculateCatchmonPoints(catchmon); // ✅ Geändert zu Points
       const imageUrl = catchmon.sprite || 
                       `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${catchmon.id || 1}.png`;
       const styledCatcher = getStyledCatcherName(catchmon.caughtBy, catchmon.trainerDonation);
@@ -891,43 +891,45 @@
           <div class="card-stats">Level ${catchmon.level || 1}</div>
           <div class="card-stats">Catcher: ${styledCatcher}</div>
           <div class="card-stats">Rarity: ${catchmon.rarity || 'Unknown'}</div>
-          <div class="points-highlight">${formatNumber(poder)} Power</div>
+          <div class="points-highlight">${formatNumber(points)} Points</div>
         </div>
       `;
 
       card.addEventListener('click', () => {
-        window.open(`catcher_detail.html?name=${encodeURIComponent(catchmon.caughtBy)}`, '_blank');
+        window.location.href = `catcher_detail.html?name=${encodeURIComponent(catchmon.caughtBy)}`;
       });
 
       return card;
     }
 
-    function calculateCatchmonPower(catchmon) {
+    // ✅ NEUE POINTS-BERECHNUNG (basierend auf der calcPoints Funktion aus dem Projekt)
+    function calculateCatchmonPoints(catchmon) {
       if (!catchmon) return 0;
       
-      // Basis-Stats berechnen
-      const stats = catchmon.stats || {};
-      const baseStats = (stats.hp || 50) + (stats.attack || 50) + (stats.defense || 50) + 
-                       (stats.sp_attack || 50) + (stats.sp_defense || 50) + (stats.speed || 50);
-      
-      // Level-Multiplier
       const level = catchmon.level || 1;
-      const levelMultiplier = Math.pow(level, 1.2);
+      const stats = catchmon.stats || {};
+      const statSum = Object.values(stats).reduce((sum, val) => sum + (val || 0), 0);
+      let points = level * 10 + statSum;
       
-      // Shiny-Bonus
-      const shinyBonus = catchmon.shiny ? 1.5 : 1;
+      // Rarity multiplier
+      const rarityMultipliers = {
+        "Common": 1,
+        "Uncommon": 1.2,
+        "Rare": 1.5,
+        "Epic": 2,
+        "Legendary": 3,
+        "Mythical": 4
+      };
       
-      // Rarity-Bonus
-      const rarityMultiplier = {
-        'Common': 1,
-        'Uncommon': 1.2,
-        'Rare': 1.5,
-        'Epic': 2,
-        'Legendary': 3,
-        'Mythical': 4
-      }[catchmon.rarity] || 1;
+      const rarity = catchmon.rarity || "Common";
+      points *= (rarityMultipliers[rarity] || 1);
       
-      return Math.floor(baseStats * levelMultiplier * shinyBonus * rarityMultiplier);
+      // Shiny bonus
+      if (catchmon.shiny) {
+        points *= 1.5;
+      }
+      
+      return Math.floor(points);
     }
 
     function createCatcherCard(catcher, index) {
@@ -942,14 +944,14 @@
         <div class="card-content">
           <div class="card-title">${styledName}</div>
           <div class="card-stats">Team: ${catcher.teamSize} Catchmon</div>
-          <div class="card-stats">Catches: ${catcher.totalCatches}</div>
+          <div class="card-stats">Catches: ${formatNumber(catcher.totalCatches)}</div>
           <div class="card-stats">Donation: ${formatNumber(catcher.donation)}€</div>
-          <div class="points-highlight">${formatNumber(catcher.totalPower)} Power</div>
+          <div class="points-highlight">${formatNumber(catcher.totalPoints)} Points</div>
         </div>
       `;
 
       card.addEventListener('click', () => {
-        window.open(`catcher_detail.html?name=${encodeURIComponent(catcher.name)}`, '_blank');
+        window.location.href = `catcher_detail.html?name=${encodeURIComponent(catcher.name)}`;
       });
 
       return card;
@@ -969,17 +971,17 @@
       // Demo Top Catchers
       const demoTrainers = {
         "TrainerMaster": {
-          team: Array(12).fill({level: 50}),
+          team: Array(12).fill({level: 50, stats: {hp: 100, attack: 80, defense: 70, sp_attack: 85, sp_defense: 75, speed: 90}}),
           stats: { total_catches: 45 },
           donation: 500
         },
         "PokeFan2024": {
-          team: Array(8).fill({level: 35}),
+          team: Array(8).fill({level: 35, stats: {hp: 80, attack: 60, defense: 55, sp_attack: 65, sp_defense: 60, speed: 70}}),
           stats: { total_catches: 28 },
           donation: 100
         },
         "CatchmonKing": {
-          team: Array(15).fill({level: 40}),
+          team: Array(15).fill({level: 40, stats: {hp: 95, attack: 75, defense: 65, sp_attack: 80, sp_defense: 70, speed: 85}}),
           stats: { total_catches: 67 },
           donation: 1000
         }
@@ -999,7 +1001,7 @@
             <div class="card-stats">Level 85</div>
             <div class="card-stats">Catcher: <span class="catcher-name king">CatchmonKing</span></div>
             <div class="card-stats">Rarity: Legendary</div>
-            <div class="points-highlight">45.8K Power</div>
+            <div class="points-highlight">3.8K Points</div>
           </div>
         </div>
         
@@ -1012,7 +1014,7 @@
             <div class="card-stats">Level 78</div>
             <div class="card-stats">Catcher: <span class="catcher-name king">TrainerMaster</span></div>
             <div class="card-stats">Rarity: Epic</div>
-            <div class="points-highlight">42.2K Power</div>
+            <div class="points-highlight">3.2K Points</div>
           </div>
         </div>
         
@@ -1025,7 +1027,7 @@
             <div class="card-stats">Level 72</div>
             <div class="card-stats">Catcher: <span class="catcher-name flame">PokeFan2024</span></div>
             <div class="card-stats">Rarity: Mythical</div>
-            <div class="points-highlight">38.9K Power</div>
+            <div class="points-highlight">2.9K Points</div>
           </div>
         </div>
       `;
@@ -1035,16 +1037,11 @@
     }
 
     // 🔧 UTILITY FUNCTIONS
-    function calculateTotalPower(team) {
+    // ✅ NEUE TOTAL POINTS BERECHNUNG (basierend auf der calcPoints Funktion)
+    function calculateTotalPoints(team) {
       if (!team || !Array.isArray(team)) return 0;
       return team.reduce((total, catchmon) => {
-        const level = catchmon?.level || 1;
-        const baseStats = (catchmon?.hp || 50) + (catchmon?.attack || 50) + 
-                         (catchmon?.defense || 50) + (catchmon?.sp_attack || 50) + 
-                         (catchmon?.sp_defense || 50) + (catchmon?.speed || 50);
-        const levelMultiplier = Math.pow(level, 1.2);
-        const shinyBonus = catchmon?.shiny ? 1.5 : 1;
-        return total + Math.floor(baseStats * levelMultiplier * shinyBonus);
+        return total + calculateCatchmonPoints(catchmon);
       }, 0);
     }
 
