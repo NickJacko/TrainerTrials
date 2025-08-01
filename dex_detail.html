@@ -2,9 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Catchmon Detail</title>
+  <title>Catchmon Detail - Firebase Live</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <script src="utils.js"></script>
   <style>
     * {
       box-sizing: border-box;
@@ -14,112 +13,18 @@
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
-      background: radial-gradient(ellipse at center, #1a1a2e 0%, #16213e 30%, #0f0f23 70%, #000000 100%);
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%);
       margin: 0;
       padding: 0;
       min-height: 100vh;
       color: white;
       overflow-x: hidden;
-      transition: all 0.5s ease;
+      transition: all 0.3s ease;
     }
 
-    /* Animated Background Particles */
-    .bg-particles {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
-      opacity: 0.4;
-    }
-
-    .particle {
-      position: absolute;
-      width: 3px;
-      height: 3px;
-      background: linear-gradient(45deg, #667eea, #764ba2);
-      border-radius: 50%;
-      animation: floatParticle linear infinite;
-    }
-
-    @keyframes floatParticle {
-      0% {
-        transform: translateY(100vh) rotate(0deg);
-        opacity: 0;
-      }
-      10% {
-        opacity: 1;
-      }
-      90% {
-        opacity: 1;
-      }
-      100% {
-        transform: translateY(-100px) rotate(360deg);
-        opacity: 0;
-      }
-    }
-
-    /* God Mode Special Effects */
+    /* God Mode Special Effects - Simplified */
     body.god-mode {
-      background: 
-        radial-gradient(circle at 20% 30%, rgba(75,0,130,0.3) 0%, transparent 50%),
-        radial-gradient(circle at 80% 70%, rgba(25,0,50,0.4) 0%, transparent 50%),
-        linear-gradient(135deg, #0a0a0a 0%, #1a001a 30%, #000000 70%, #2d002d 100%);
-      animation: mysticalBackground 8s ease-in-out infinite alternate;
-    }
-
-    @keyframes mysticalBackground {
-      0% { filter: brightness(0.8) contrast(1.2); }
-      100% { filter: brightness(1.1) contrast(1.5); }
-    }
-
-    .interference-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 1;
-      opacity: 0;
-      transition: opacity 0.5s ease;
-    }
-
-    .interference-overlay.active {
-      opacity: 1;
-      background: 
-        repeating-linear-gradient(
-          0deg,
-          transparent,
-          transparent 2px,
-          rgba(255,255,255,0.03) 2px,
-          rgba(255,255,255,0.03) 4px
-        ),
-        repeating-linear-gradient(
-          90deg,
-          transparent,
-          transparent 2px,
-          rgba(128,0,128,0.02) 2px,
-          rgba(128,0,128,0.02) 4px
-        );
-      animation: scanlines 0.1s linear infinite, interference 2s ease-in-out infinite;
-    }
-
-    @keyframes scanlines {
-      0% { background-position: 0 0, 0 0; }
-      100% { background-position: 0 4px, 4px 0; }
-    }
-
-    @keyframes interference {
-      0%, 100% { 
-        opacity: 0.6;
-        filter: contrast(1) brightness(1);
-      }
-      50% { 
-        opacity: 0.8;
-        filter: contrast(1.2) brightness(1.1);
-      }
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a001a 30%, #000000 70%, #2d002d 100%);
     }
 
     .container {
@@ -130,41 +35,41 @@
       z-index: 10;
     }
 
+    /* Firebase Connection Status */
+    .connection-status {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 8px 15px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 600;
+      z-index: 1000;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .connection-status.connected {
+      background: rgba(76, 175, 80, 0.9);
+    }
+
+    .connection-status.disconnected {
+      background: rgba(244, 67, 54, 0.9);
+    }
+
     /* Top Bar */
     .top-bar {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 40px;
-      background: rgba(255,255,255,0.05);
-      backdrop-filter: blur(20px);
+      margin-bottom: 30px;
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(15px);
       border-radius: 20px;
       padding: 20px 30px;
-      border: 2px solid rgba(255,255,255,0.1);
-      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .top-bar::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: linear-gradient(45deg, 
-        transparent, 
-        rgba(255, 215, 0, 0.1), 
-        transparent, 
-        rgba(255, 215, 0, 0.1), 
-        transparent);
-      animation: headerShine 8s linear infinite;
-    }
-
-    @keyframes headerShine {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
+      border: 1px solid rgba(255,255,255,0.2);
     }
 
     .back-button {
@@ -172,27 +77,21 @@
       text-decoration: none;
       color: white;
       font-weight: 700;
-      padding: 15px 25px;
-      border-radius: 15px;
-      background: linear-gradient(145deg, rgba(255,255,255,0.15), rgba(255,255,255,0.08));
-      border: 2px solid rgba(255,255,255,0.2);
-      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-      backdrop-filter: blur(10px);
-      box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-      position: relative;
-      z-index: 2;
+      padding: 12px 20px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      transition: all 0.2s ease;
     }
 
     .back-button:hover {
-      transform: translateY(-3px) scale(1.02);
-      background: linear-gradient(145deg, rgba(255,255,255,0.25), rgba(255,255,255,0.15));
-      box-shadow: 0 8px 30px rgba(0,0,0,0.3);
-      border-color: rgba(255,255,255,0.4);
+      background: rgba(255,255,255,0.2);
+      transform: translateY(-2px);
     }
 
     body.god-mode .back-button {
-      background: linear-gradient(145deg, rgba(128,0,128,0.3), rgba(75,0,130,0.2));
-      border: 2px solid rgba(147,112,219,0.4);
+      background: rgba(128,0,128,0.3);
+      border: 1px solid rgba(147,112,219,0.4);
       color: #DDA0DD;
     }
 
@@ -200,8 +99,8 @@
     .hero-section {
       display: grid;
       grid-template-columns: 1fr 2fr;
-      gap: 40px;
-      margin-bottom: 60px;
+      gap: 30px;
+      margin-bottom: 40px;
       align-items: start;
     }
 
@@ -210,75 +109,33 @@
     }
 
     .image-container {
-      background: rgba(255,255,255,0.05);
+      background: rgba(255,255,255,0.1);
       backdrop-filter: blur(15px);
-      border-radius: 25px;
-      padding: 30px;
+      border-radius: 20px;
+      padding: 25px;
       text-align: center;
-      border: 2px solid rgba(255,255,255,0.1);
-      box-shadow: 0 15px 50px rgba(0,0,0,0.2);
+      border: 1px solid rgba(255,255,255,0.2);
       position: relative;
-      overflow: hidden;
-    }
-
-    .image-container::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-      animation: imageShimmer 4s ease-in-out infinite;
-    }
-
-    @keyframes imageShimmer {
-      0% { left: -100%; }
-      50% { left: 100%; }
-      100% { left: 100%; }
     }
 
     .catchmon-image {
-      width: 300px;
-      height: 300px;
+      width: 250px;
+      height: 250px;
       object-fit: contain;
-      border-radius: 20px;
-      transition: all 0.5s ease;
-      filter: drop-shadow(0 10px 30px rgba(0,0,0,0.3));
-      position: relative;
-      z-index: 2;
+      border-radius: 15px;
+      transition: transform 0.3s ease;
+      filter: drop-shadow(0 8px 20px rgba(0,0,0,0.3));
     }
 
     .catchmon-image:hover {
       transform: scale(1.05);
-      filter: drop-shadow(0 15px 40px rgba(0,0,0,0.4));
     }
 
-    /* God Mode Image Effects */
+    /* God Mode Image Effects - Simplified */
     body.god-mode .catchmon-image {
-      filter: brightness(0.1) saturate(0) contrast(3);
-      border: 4px solid rgba(75,0,130,0.6);
-      box-shadow: 
-        0 0 30px rgba(75,0,130,0.8),
-        0 0 60px rgba(128,0,128,0.4),
-        inset 0 0 20px rgba(0,0,0,0.9);
-      animation: godImagePulse 4s ease-in-out infinite alternate;
-    }
-
-    @keyframes godImagePulse {
-      0% { 
-        box-shadow: 
-          0 0 30px rgba(75,0,130,0.8),
-          0 0 60px rgba(128,0,128,0.4);
-        filter: brightness(0.1) saturate(0) contrast(3);
-      }
-      100% { 
-        box-shadow: 
-          0 0 50px rgba(75,0,130,1),
-          0 0 100px rgba(128,0,128,0.6),
-          0 0 150px rgba(147,112,219,0.3);
-        filter: brightness(0.15) saturate(0) contrast(4);
-      }
+      filter: brightness(0.2) saturate(0) contrast(2);
+      border: 2px solid rgba(128,0,128,0.6);
+      box-shadow: 0 0 20px rgba(128,0,128,0.5);
     }
 
     .god-image-overlay {
@@ -288,75 +145,37 @@
       transform: translate(-50%, -50%);
       color: #9370DB;
       font-weight: 900;
-      font-size: 16px;
-      text-shadow: 
-        0 0 20px rgba(147,112,219,1),
-        0 0 40px rgba(75,0,130,0.8);
-      letter-spacing: 1px;
+      font-size: 14px;
+      text-shadow: 0 0 15px rgba(147,112,219,0.8);
       text-align: center;
-      animation: overlayPulse 3s ease-in-out infinite alternate;
-      background: linear-gradient(135deg, 
-        rgba(0,0,0,0.9) 0%, 
-        rgba(25,0,50,0.8) 50%, 
-        rgba(0,0,0,0.9) 100%);
-      padding: 12px 20px;
-      border-radius: 15px;
-      border: 2px solid rgba(147,112,219,0.6);
-      box-shadow: 
-        0 0 30px rgba(75,0,130,0.5),
-        inset 0 0 15px rgba(147,112,219,0.3);
+      background: rgba(0,0,0,0.8);
+      padding: 10px 15px;
+      border-radius: 12px;
+      border: 1px solid rgba(147,112,219,0.5);
       opacity: 0;
       white-space: nowrap;
-      display: none;
       z-index: 3;
     }
 
     body.god-mode .god-image-overlay {
       opacity: 1;
-      display: block;
-    }
-
-    @keyframes overlayPulse {
-      0% { 
-        opacity: 0.9;
-        transform: translate(-50%, -50%) scale(1);
-        text-shadow: 
-          0 0 20px rgba(147,112,219,1),
-          0 0 40px rgba(75,0,130,0.8);
-      }
-      100% { 
-        opacity: 1;
-        transform: translate(-50%, -50%) scale(1.05);
-        text-shadow: 
-          0 0 30px rgba(147,112,219,1),
-          0 0 60px rgba(75,0,130,1),
-          0 0 90px rgba(138,43,226,0.8);
-      }
     }
 
     /* Info Section */
     .info-section {
       display: flex;
       flex-direction: column;
-      gap: 25px;
-    }
-
-    .title-container {
-      position: relative;
-      z-index: 2;
+      gap: 20px;
     }
 
     .catchmon-title {
-      font-size: clamp(2.5rem, 6vw, 4rem);
-      font-weight: 900;
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 800;
       margin-bottom: 15px;
-      background: linear-gradient(45deg, #FFD700, #FF6B6B, #4ECDC4, #45B7D1, #FFD700);
-      background-size: 300% 300%;
+      background: linear-gradient(45deg, #FFD700, #FF6B6B, #4ECDC4, #45B7D1);
       background-clip: text;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      animation: gradientShift 4s ease-in-out infinite;
-      text-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
       letter-spacing: -1px;
     }
 
@@ -364,397 +183,206 @@
       color: #9370DB;
       background: none;
       -webkit-text-fill-color: #9370DB;
-      text-shadow: 
-        0 0 10px rgba(147,112,219,0.8),
-        0 0 20px rgba(75,0,130,0.6),
-        0 0 30px rgba(128,0,128,0.4);
-      animation: titlePulse 3s ease-in-out infinite alternate;
-    }
-
-    @keyframes gradientShift {
-      0%, 100% { background-position: 0% 50%; }
-      25% { background-position: 100% 50%; }
-      50% { background-position: 100% 100%; }
-      75% { background-position: 0% 100%; }
-    }
-
-    @keyframes titlePulse {
-      0% { 
-        filter: brightness(1);
-        text-shadow: 
-          0 0 10px rgba(147,112,219,0.8),
-          0 0 20px rgba(75,0,130,0.6);
-      }
-      100% { 
-        filter: brightness(1.3);
-        text-shadow: 
-          0 0 20px rgba(147,112,219,1),
-          0 0 40px rgba(75,0,130,0.8),
-          0 0 60px rgba(128,0,128,0.6);
-      }
+      text-shadow: 0 0 15px rgba(147,112,219,0.6);
     }
 
     .stats-summary {
-      background: rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.1);
       backdrop-filter: blur(15px);
-      border-radius: 20px;
-      padding: 25px;
-      border: 1px solid rgba(255,255,255,0.15);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.15);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .stats-summary::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-      animation: statsShimmer 5s ease-in-out infinite;
-    }
-
-    @keyframes statsShimmer {
-      0% { left: -100%; }
-      50% { left: 100%; }
-      100% { left: 100%; }
+      border-radius: 15px;
+      padding: 20px;
+      border: 1px solid rgba(255,255,255,0.2);
     }
 
     .summary-text {
-      font-size: 1.4rem;
+      font-size: 1.2rem;
       color: rgba(255,255,255,0.9);
-      margin-bottom: 15px;
+      margin-bottom: 10px;
       font-weight: 600;
-      text-shadow: 0 2px 10px rgba(0,0,0,0.3);
-      position: relative;
-      z-index: 2;
     }
 
     body.god-mode .summary-text {
       color: #DDA0DD;
-      text-shadow: 0 0 10px rgba(221,160,221,0.6);
     }
 
     /* Filter Section */
     .filter-section {
-      background: rgba(255,255,255,0.05);
+      background: rgba(255,255,255,0.1);
       backdrop-filter: blur(15px);
-      border-radius: 20px;
+      border-radius: 15px;
       padding: 20px;
       text-align: center;
-      border: 1px solid rgba(255,255,255,0.1);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-      margin-bottom: 40px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .filter-section::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
-      animation: filterShine 6s linear infinite;
-    }
-
-    @keyframes filterShine {
-      0% { left: -100%; }
-      50% { left: 100%; }
-      100% { left: 100%; }
+      border: 1px solid rgba(255,255,255,0.2);
+      margin-bottom: 30px;
     }
 
     .filter-section label {
       color: white;
       font-weight: 700;
-      font-size: 1.1rem;
+      font-size: 1rem;
       background: rgba(255,255,255,0.1);
-      padding: 12px 25px;
-      border-radius: 25px;
-      border: 2px solid rgba(255,255,255,0.2);
+      padding: 10px 20px;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.2);
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: all 0.2s ease;
       display: inline-flex;
       align-items: center;
-      gap: 12px;
-      backdrop-filter: blur(10px);
-      position: relative;
-      z-index: 2;
+      gap: 10px;
     }
 
     body.god-mode .filter-section label {
       background: rgba(75,0,130,0.2);
-      border: 2px solid rgba(128,0,128,0.3);
+      border: 1px solid rgba(128,0,128,0.3);
       color: #DDA0DD;
     }
 
     .filter-section label:hover {
       background: rgba(255,255,255,0.2);
-      transform: translateY(-3px);
-      box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+      transform: translateY(-1px);
     }
 
     #caughtOnly {
-      width: 20px;
-      height: 20px;
+      width: 18px;
+      height: 18px;
       accent-color: #9370DB;
       cursor: pointer;
     }
 
     /* Table Section */
     .table-section {
-      background: rgba(255,255,255,0.02);
-      backdrop-filter: blur(20px);
-      border-radius: 25px;
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(15px);
+      border-radius: 20px;
       padding: 0;
-      border: 2px solid rgba(255,255,255,0.1);
-      box-shadow: 0 15px 50px rgba(0,0,0,0.2);
+      border: 1px solid rgba(255,255,255,0.2);
       overflow: hidden;
-      position: relative;
-    }
-
-    .table-section::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: linear-gradient(90deg, #FFD700, #FF6B6B, #4ECDC4, #45B7D1, #FFD700);
-      background-size: 200% 100%;
-      animation: topBorderFlow 3s linear infinite;
-    }
-
-    @keyframes topBorderFlow {
-      0% { background-position: 0% 0%; }
-      100% { background-position: 200% 0%; }
     }
 
     body.god-mode .table-section {
-      background: rgba(25,0,25,0.9);
-      border: 2px solid rgba(75,0,130,0.4);
-      box-shadow: 
-        0 0 30px rgba(75,0,130,0.4),
-        inset 0 0 20px rgba(128,0,128,0.1);
-      animation: tableGlow 4s ease-in-out infinite alternate;
-    }
-
-    @keyframes tableGlow {
-      0% { 
-        box-shadow: 
-          0 0 30px rgba(75,0,130,0.4),
-          inset 0 0 20px rgba(128,0,128,0.1);
-      }
-      100% { 
-        box-shadow: 
-          0 0 50px rgba(75,0,130,0.6),
-          inset 0 0 30px rgba(128,0,128,0.2);
-      }
+      background: rgba(25,0,25,0.8);
+      border: 1px solid rgba(75,0,130,0.4);
+      box-shadow: 0 0 20px rgba(75,0,130,0.3);
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 15px;
-      position: relative;
-      z-index: 2;
+      font-size: 14px;
     }
 
     th {
-      background: linear-gradient(145deg, rgba(255, 215, 0, 0.2), rgba(255, 215, 0, 0.1));
+      background: rgba(255, 215, 0, 0.2);
       color: white;
-      padding: 20px 15px;
+      padding: 15px 12px;
       text-align: center;
       font-weight: 700;
-      font-size: 14px;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      font-size: 13px;
       border: none;
       position: sticky;
       top: 0;
       z-index: 10;
-      backdrop-filter: blur(15px);
-      border-bottom: 2px solid rgba(255, 215, 0, 0.3);
     }
 
     body.god-mode th {
-      background: linear-gradient(145deg, #4B0082, #8B008B);
+      background: rgba(75, 0, 130, 0.4);
       color: #DDA0DD;
-      text-shadow: 0 0 5px rgba(221,160,221,0.8);
-      animation: headerFlicker 5s ease-in-out infinite alternate;
-    }
-
-    @keyframes headerFlicker {
-      0%, 100% { 
-        filter: brightness(1);
-        text-shadow: 0 0 5px rgba(221,160,221,0.8);
-      }
-      50% { 
-        filter: brightness(1.2);
-        text-shadow: 0 0 10px rgba(221,160,221,1);
-      }
     }
 
     td {
-      padding: 15px;
+      padding: 12px;
       text-align: center;
-      border-bottom: 1px solid rgba(255,255,255,0.05);
-      transition: all 0.3s ease;
-      position: relative;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      transition: background-color 0.2s ease;
       color: white;
     }
 
     body.god-mode td {
       color: #DDA0DD;
       border-bottom: 1px solid rgba(75,0,130,0.2);
-      background: rgba(0,0,0,0.1);
     }
 
-    tr {
-      transition: all 0.3s ease;
-      position: relative;
+    tr:hover td {
+      background: rgba(255, 215, 0, 0.1);
     }
 
-    tr:hover {
-      background: linear-gradient(90deg, 
-        rgba(255, 215, 0, 0.08), 
-        rgba(255, 215, 0, 0.15), 
-        rgba(255, 215, 0, 0.08));
-      transform: scale(1.01);
-      box-shadow: 0 5px 25px rgba(255, 215, 0, 0.2);
+    body.god-mode tr:hover td {
+      background: rgba(75,0,130, 0.2);
     }
 
-    body.god-mode tr:hover {
-      background: linear-gradient(90deg, rgba(75,0,130, 0.1), rgba(128,0,128, 0.2), rgba(75,0,130, 0.1));
-      transform: scale(1.01);
-    }
-
-    /* Glitch Effects */
-    .glitch-text {
-      position: relative;
-      display: inline-block;
-    }
-
-    .glitch-text::before,
-    .glitch-text::after {
-      content: attr(data-text);
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      opacity: 0;
-    }
-
-    body.god-mode .glitch-text::before {
-      animation: glitch-1 2s infinite;
-      color: #ff00ff;
-      z-index: -1;
-    }
-
-    body.god-mode .glitch-text::after {
-      animation: glitch-2 2s infinite;
-      color: #00ffff;
-      z-index: -2;
-    }
-
-    @keyframes glitch-1 {
-      0%, 100% { 
-        transform: translate(0);
-        opacity: 0;
-      }
-      20% { 
-        transform: translate(-2px, 2px);
-        opacity: 1;
-      }
-      40% { 
-        transform: translate(-2px, -2px);
-        opacity: 1;
-      }
-      60% { 
-        transform: translate(2px, 2px);
-        opacity: 1;
-      }
-      80% { 
-        transform: translate(2px, -2px);
-        opacity: 1;
-      }
-    }
-
-    @keyframes glitch-2 {
-      0%, 100% { 
-        transform: translate(0);
-        opacity: 0;
-      }
-      25% { 
-        transform: translate(2px, -2px);
-        opacity: 0.8;
-      }
-      50% { 
-        transform: translate(-2px, 2px);
-        opacity: 0.8;
-      }
-      75% { 
-        transform: translate(2px, 2px);
-        opacity: 0.8;
-      }
-    }
-
-    /* Donation Tier Styles */
+    /* Donation Tier Styles - Simplified */
     .catcher-name {
-      display: inline-block;
-      font-weight: bold;
-      background-size: 200% auto;
-      background-clip: text;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      animation: shine 3s linear infinite;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 8px;
     }
 
     .king {
-      background-image: linear-gradient(90deg, #ffd700, white, #ffd700);
+      background: linear-gradient(90deg, #FFD700, #FFA500);
+      color: #000;
     }
+
     .flame {
-      background-image: linear-gradient(90deg, #ff0000, white, #ff0000);
+      background: linear-gradient(90deg, #FF4444, #FF6B6B);
+      color: white;
     }
+
     .diamond {
-      background-image: linear-gradient(90deg, #00bfff, white, #00bfff);
+      background: linear-gradient(90deg, #4ECDC4, #45B7D1);
+      color: white;
     }
+
     .shine {
-      background-image: linear-gradient(90deg, #32cd32, white, #32cd32);
+      background: linear-gradient(90deg, #4CAF50, #66BB6A);
+      color: white;
     }
+
     .normal {
       color: white;
-      text-shadow: none;
-      font-weight: 600;
-      background: none;
-      -webkit-text-fill-color: inherit;
-      background-clip: unset;
-      animation: none;
+      background: rgba(255,255,255,0.1);
     }
 
     body.god-mode .normal {
       color: #DDA0DD;
+      background: rgba(75,0,130,0.2);
     }
 
-    @keyframes shine {
-      to { background-position: -200% center; }
+    /* Loading Animation */
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: rgba(255,255,255,0.8);
+      font-size: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .loading-spinner {
+      width: 30px;
+      height: 30px;
+      border: 3px solid rgba(255,255,255,0.3);
+      border-top: 3px solid #FFD700;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
     }
 
     /* Mobile Optimizations */
     @media (max-width: 1024px) {
       .hero-section {
         grid-template-columns: 1fr;
-        gap: 30px;
+        gap: 25px;
         text-align: center;
       }
 
       .catchmon-image {
-        width: 250px;
-        height: 250px;
+        width: 200px;
+        height: 200px;
       }
     }
 
@@ -770,26 +398,22 @@
         padding: 20px;
       }
 
-      .catchmon-title {
-        font-size: clamp(2rem, 8vw, 3rem);
-      }
-
       .catchmon-image {
-        width: 200px;
-        height: 200px;
+        width: 180px;
+        height: 180px;
       }
 
       .god-image-overlay {
         font-size: 12px;
-        padding: 8px 15px;
+        padding: 8px 12px;
       }
 
       table {
-        font-size: 13px;
+        font-size: 12px;
       }
 
       th, td {
-        padding: 10px 8px;
+        padding: 10px 6px;
       }
     }
 
@@ -798,36 +422,49 @@
         padding: 10px;
       }
 
-      .catchmon-title {
-        font-size: clamp(1.5rem, 10vw, 2.5rem);
-      }
-
       .catchmon-image {
-        width: 180px;
-        height: 180px;
+        width: 150px;
+        height: 150px;
       }
 
       .god-image-overlay {
         font-size: 10px;
-        padding: 6px 12px;
+        padding: 6px 10px;
       }
 
       table {
-        font-size: 12px;
+        font-size: 11px;
       }
 
       th, td {
         padding: 8px 4px;
       }
     }
+
+    /* Scrollable table for wide content */
+    @media (max-width: 600px) {
+      .table-section {
+        overflow-x: auto;
+      }
+      
+      table {
+        min-width: 600px;
+      }
+    }
+
+    /* Reduce motion for performance */
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
   </style>
 </head>
 <body>
-  <!-- Animated Background -->
-  <div class="bg-particles" id="bgParticles"></div>
-  
-  <!-- Special God Mode Effects -->
-  <div class="interference-overlay"></div>
+  <!-- Firebase Connection Status -->
+  <div class="connection-status" id="connectionStatus">🔄 Verbinde...</div>
 
   <div class="container">
     <!-- Top Bar -->
@@ -841,7 +478,7 @@
       <!-- Image Section -->
       <div class="image-section">
         <div class="image-container">
-          <img id="catchImg" class="catchmon-image" src="" alt="Catchmon">
+          <img id="catchImg" class="catchmon-image" src="" alt="Catchmon" loading="lazy">
           <div class="god-image-overlay">⚡ CLASSIFIED ENTITY ⚡<br>ACCESS RESTRICTED</div>
         </div>
       </div>
@@ -849,9 +486,7 @@
       <!-- Info Section -->
       <div class="info-section">
         <div class="title-container">
-          <h1 id="catchTitle" class="catchmon-title">
-            <span class="glitch-text" data-text="">Loading...</span>
-          </h1>
+          <h1 id="catchTitle" class="catchmon-title">Loading...</h1>
         </div>
         
         <div class="stats-summary">
@@ -877,172 +512,162 @@
             <th>ATK</th><th>DEF</th><th>SPD</th><th>WIS</th><th>CHA</th><th>LUK</th>
           </tr>
         </thead>
-        <tbody></tbody>
+        <tbody>
+          <tr><td colspan="11" class="loading">
+            <div class="loading-spinner"></div>
+            <div>Loading Catchmon data...</div>
+          </td></tr>
+        </tbody>
       </table>
     </div>
   </div>
 
-  <script>
-    // Create animated background particles
-    function createParticle() {
-      const particle = document.createElement('div');
-      particle.className = 'particle';
-      particle.style.left = Math.random() * 100 + '%';
-      particle.style.animationDuration = (Math.random() * 8 + 12) + 's';
-      particle.style.animationDelay = Math.random() * 5 + 's';
-      
-      // Random colors for particles
-      const colors = ['#667eea', '#764ba2', '#4ecdc4', '#45b7d1', '#96ceb4'];
-      particle.style.background = `linear-gradient(45deg, ${colors[Math.floor(Math.random() * colors.length)]}, ${colors[Math.floor(Math.random() * colors.length)]})`;
-      
-      document.getElementById('bgParticles').appendChild(particle);
-      
-      setTimeout(() => {
-        if (particle.parentNode) {
-          particle.parentNode.removeChild(particle);
-        }
-      }, 20000);
-    }
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+    import { 
+      getDatabase, 
+      ref, 
+      onValue 
+    } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 
-    // Start background animations
-    setInterval(createParticle, 800);
+    // Firebase Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyDdStpC5rVtgaZ4XvtKLwQttnyIDXL2z7Q",
+      authDomain: "trainertrials.firebaseapp.com",
+      databaseURL: "https://trainertrials-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "trainertrials",
+      storageBucket: "trainertrials.firebasestorage.app",
+      messagingSenderId: "22071275267",
+      appId: "1:22071275267:web:92e82d6bfaee169aff8336",
+      measurementId: "G-WWENZ0HP22"
+    };
 
-    // Initial particles
-    for (let i = 0; i < 15; i++) {
-      setTimeout(createParticle, i * 200);
-    }
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
 
+    // Game State
     const statsOrder = ["ATK", "DEF", "SPD", "WIS", "CHA", "LUK"];
     let allEntries = [];
     let catcherDonations = {};
+    let trainersData = {};
+    let dexList = [];
+    let connectionStatus = false;
     let isGodMode = false;
 
-    function getParam(name) {
-      return new URLSearchParams(window.location.search).get(name);
+    // URL Parameters
+    const params = new URLSearchParams(window.location.search);
+    const catchmonName = params.get("name");
+
+    // Firebase Listeners
+    const connectedRef = ref(db, '.info/connected');
+    onValue(connectedRef, (snapshot) => {
+      connectionStatus = snapshot.val();
+      updateConnectionStatus();
+    });
+
+    const trainersRef = ref(db, 'trainers');
+    onValue(trainersRef, (snapshot) => {
+      trainersData = snapshot.val() || {};
+      loadData();
+    });
+
+    function updateConnectionStatus() {
+      const statusElement = document.getElementById('connectionStatus');
+      if (connectionStatus) {
+        statusElement.textContent = '🟢 Connected';
+        statusElement.className = 'connection-status connected';
+      } else {
+        statusElement.textContent = '🔴 Offline';
+        statusElement.className = 'connection-status disconnected';
+      }
     }
 
+    // Utility Functions
     function capitalize(s) {
       return s.charAt(0).toUpperCase() + s.slice(1);
     }
 
     function sumStats(stats) {
-      return Object.values(stats).reduce((a, b) => a + b, 0);
+      return Object.values(stats || {}).reduce((a, b) => a + (b || 0), 0);
     }
 
-    function calcPoints(p) {
-      return p.gesamtpunkte ?? 0;
+    function calcPoints(catchmon) {
+      if (!catchmon) return 0;
+      
+      const level = catchmon.level || 1;
+      const stats = catchmon.stats || {};
+      const statSum = Object.values(stats).reduce((sum, val) => sum + (val || 0), 0);
+      let points = level * 10 + statSum;
+      
+      // Rarity multiplier
+      const rarityMultipliers = {
+        "Common": 1,
+        "Uncommon": 1.2,
+        "Rare": 1.5,
+        "Epic": 2,
+        "Legendary": 3,
+        "Mythical": 5
+      };
+      
+      const multiplier = rarityMultipliers[catchmon.rarity] || 1;
+      points *= multiplier;
+      
+      if (catchmon.shiny) {
+        points *= 2;
+      }
+      
+      return Math.round(points);
     }
 
     function isGodCatchmon(sprite) {
       return sprite && sprite.includes('/God/');
     }
 
+    function getDonationTier(donation) {
+      if (donation >= 2500) return "king";
+      if (donation >= 500) return "flame";
+      if (donation >= 250) return "diamond";
+      if (donation >= 100) return "shine";
+      return "normal";
+    }
+
+    function getStyledCatcherName(name, donation) {
+      const tier = getDonationTier(donation);
+      if (tier === "normal") return capitalize(name);
+      return `<span class="catcher-name ${tier}">${capitalize(name)}</span>`;
+    }
+
     function activateGodMode() {
       isGodMode = true;
       document.body.classList.add('god-mode');
-      document.querySelector('.interference-overlay').classList.add('active');
-      
-      // Glitch effect for title
-      const titleElement = document.querySelector('.glitch-text');
-      if (titleElement) {
-        titleElement.setAttribute('data-text', titleElement.textContent);
-      }
-      
-      // Play mysterious sound effect (if available)
-      try {
-        const audio = new Audio('sounds/god_reveal.mp3');
-        audio.volume = 0.3;
-        audio.play().catch(() => {});
-      } catch (e) {}
-      
-      // Random screen flickers
-      setInterval(() => {
-        if (Math.random() < 0.1) { // 10% chance every interval
-          document.body.style.filter = 'brightness(1.5) contrast(2)';
-          setTimeout(() => {
-            document.body.style.filter = '';
-          }, 50 + Math.random() * 100);
-        }
-      }, 2000);
-      
-      // Random interference bursts
-      setInterval(() => {
-        if (Math.random() < 0.05) { // 5% chance
-          const overlay = document.querySelector('.interference-overlay');
-          overlay.style.opacity = '0.9';
-          setTimeout(() => {
-            overlay.style.opacity = '0.6';
-          }, 200 + Math.random() * 300);
-        }
-      }, 1000);
-
-      // Create mysterious particles for God mode
-      setInterval(() => {
-        createMysteriousParticle();
-      }, 1500);
+      console.log('🔮 God Mode activated');
     }
-
-    function createMysteriousParticle() {
-      const particle = document.createElement('div');
-      particle.style.position = 'fixed';
-      particle.style.width = '4px';
-      particle.style.height = '4px';
-      particle.style.background = 'linear-gradient(45deg, #9370DB, #4B0082)';
-      particle.style.borderRadius = '50%';
-      particle.style.left = Math.random() * 100 + '%';
-      particle.style.top = Math.random() * 100 + '%';
-      particle.style.pointerEvents = 'none';
-      particle.style.zIndex = '5';
-      particle.style.opacity = '0.7';
-      particle.style.boxShadow = '0 0 10px #9370DB';
-      particle.style.animation = 'mysteriousFloat 4s ease-out forwards';
-      
-      document.body.appendChild(particle);
-      
-      setTimeout(() => {
-        if (particle.parentNode) {
-          particle.parentNode.removeChild(particle);
-        }
-      }, 4000);
-    }
-
-    // Add mysterious particle animation
-    const style = document.createElement('style');
-    style.textContent = `
-      @keyframes mysteriousFloat {
-        0% { 
-          opacity: 0.7;
-          transform: translateY(0px) scale(1);
-        }
-        50% {
-          opacity: 1;
-          transform: translateY(-50px) scale(1.2);
-        }
-        100% { 
-          opacity: 0;
-          transform: translateY(-100px) scale(0.3);
-        }
-      }
-    `;
-    document.head.appendChild(style);
 
     function renderTable() {
       const tbody = document.querySelector("#dataTable tbody");
       const showCaughtOnly = document.getElementById("caughtOnly").checked;
-      tbody.innerHTML = "";
+
+      if (allEntries.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="11" class="loading"><div class="loading-spinner"></div><div>No data available</div></td></tr>';
+        return;
+      }
+
+      // Use DocumentFragment for better performance
+      const fragment = document.createDocumentFragment();
 
       allEntries
         .filter(e => !showCaughtOnly || e.catcher)
         .sort((a, b) => calcPoints(b) - calcPoints(a))
         .forEach(e => {
           const tr = document.createElement("tr");
-          const stats = statsOrder.map(s => `<td>${e.stats[s]}</td>`).join("");
+          const stats = statsOrder.map(s => `<td>${e.stats[s] || 0}</td>`).join("");
           
           let catcherCell = "❌";
           if (e.catcher) {
             if (isGodMode) {
-              // In God mode, show mysterious catcher names with glitch effect
-              catcherCell = `<span class="glitch-text" data-text="█████">█████</span>`;
+              // In God mode, show mysterious catcher names
+              catcherCell = `<span style="color: #9370DB;">█████</span>`;
             } else {
               catcherCell = getStyledCatcherName(e.catcher, catcherDonations[e.catcher] || 0);
             }
@@ -1050,218 +675,111 @@
           
           tr.innerHTML = `
             <td>${catcherCell}</td>
-            <td>${calcPoints(e).toLocaleString()}</td>
-            <td>${e.level}</td>
+            <td>${calcPoints(e).toLocaleString('de-DE')}</td>
+            <td>${e.level || 1}</td>
             <td>${e.shiny ? "✨" : ""}</td>
-            <td>${sumStats(e.stats).toLocaleString()}</td>
+            <td>${sumStats(e.stats).toLocaleString('de-DE')}</td>
             ${stats}
           `;
-          tbody.appendChild(tr);
+          fragment.appendChild(tr);
         });
+
+      tbody.innerHTML = '';
+      tbody.appendChild(fragment);
     }
 
-    async function loadData() {
-      const name = getParam("name");
-      if (!name) return;
+    async function loadDexList() {
+      try {
+        const response = await fetch("dex_list.json");
+        if (!response.ok) throw new Error('Failed to load dex list');
+        dexList = await response.json();
+        loadData();
+      } catch (error) {
+        console.error('Error loading dex list:', error);
+        showError('Error loading Catchmon data');
+      }
+    }
+
+    function showError(message) {
+      document.getElementById("catchTitle").textContent = "Error";
+      document.getElementById("summary").textContent = message;
+      const tbody = document.querySelector("#dataTable tbody");
+      tbody.innerHTML = `<tr><td colspan="11" class="loading">${message}</td></tr>`;
+    }
+
+    function loadData() {
+      if (!catchmonName) {
+        showError('No Catchmon specified');
+        return;
+      }
+
+      if (dexList.length === 0) {
+        return; // Wait for dex list to load
+      }
+
+      if (Object.keys(trainersData).length === 0) {
+        return; // Wait for Firebase data
+      }
 
       try {
-        const [catcherResponse, dexResponse, seenResponse] = await Promise.all([
-          fetch("catcher.json"),
-          fetch("dex_list.json"), 
-          fetch("seen_caught.json")
-        ]);
-
-        const catcher = catcherResponse.ok ? await catcherResponse.json() : {};
-        const dexList = dexResponse.ok ? await dexResponse.json() : [];
-        const seenData = seenResponse.ok ? await seenResponse.json() : {};
-
-        const lowerName = name.toLowerCase();
+        const lowerName = catchmonName.toLowerCase();
         const entries = [];
         catcherDonations = {};
 
-        // Load catcher data
-        Object.entries(catcher.catcher || {}).forEach(([catcher, info]) => {
+        // Load catcher data from Firebase
+        Object.entries(trainersData).forEach(([catcher, info]) => {
           catcherDonations[catcher] = info.donation || 0;
           (info.team || []).forEach(p => {
-            if (p.name.toLowerCase() === lowerName) {
+            if (p.name && p.name.toLowerCase() === lowerName) {
               entries.push({ ...p, catcher });
             }
           });
         });
 
-        // Load escaped data
-        (catcher.escaped || []).forEach(p => {
-          if (p.name.toLowerCase() === lowerName) {
-            entries.push({ ...p, catcher: null });
-          }
-        });
-
+        // Get dex entry
         const dexEntry = dexList.find(p => p.name.toLowerCase() === lowerName);
         const sprite = dexEntry?.sprite || "";
-        const escaped = seenData[lowerName]?.escaped || 0;
-        const caught = seenData[lowerName]?.caught || 0;
+
+        // Count escaped/caught
+        const caught = entries.length;
+        const escaped = 0; // Would need escaped data from Firebase if available
 
         // Check if this is a God Catchmon
         if (isGodCatchmon(sprite)) {
           activateGodMode();
-          document.getElementById("catchTitle").innerHTML = 
-            `<span class="glitch-text" data-text="#??? ??? ??? ???">#??? ??? ??? ???</span>`;
+          document.getElementById("catchTitle").textContent = "#??? ??? ??? ???";
+          document.getElementById("summary").textContent = "█ CLASSIFIED / █ CLASSIFIED";
         } else {
           document.getElementById("catchTitle").textContent = 
-            `#${String(dexEntry?.id || "").padStart(3, "0")} ${capitalize(name)}`;
+            `#${String(dexEntry?.id || "").padStart(3, "0")} ${capitalize(catchmonName)}`;
+          document.getElementById("summary").textContent = `${escaped} escaped • ${caught} caught`;
         }
         
         document.getElementById("catchImg").src = sprite;
-        document.getElementById("catchImg").alt = name;
-        
-        if (isGodMode) {
-          document.getElementById("summary").innerHTML = `
-            <span class="glitch-text" data-text="█ CLASSIFIED / █ CLASSIFIED">█ CLASSIFIED / █ CLASSIFIED</span>
-          `;
-        } else {
-          document.getElementById("summary").textContent = `${escaped} escaped • ${caught} caught`;
-        }
+        document.getElementById("catchImg").alt = catchmonName;
 
         allEntries = entries;
         renderTable();
         
-        // Add sparkle effects for non-God catchmon
-        if (!isGodMode) {
-          setTimeout(() => {
-            createSparkleEffect();
-          }, 1000);
-          
-          setInterval(() => {
-            if (Math.random() < 0.3) {
-              createSparkleEffect();
-            }
-          }, 8000);
-        }
-        
       } catch (error) {
         console.error("Error loading data:", error);
-        document.getElementById("catchTitle").textContent = "Error loading data";
-        document.getElementById("summary").textContent = "Please check console for details";
+        showError("Error processing data");
       }
     }
 
-    function createSparkleEffect() {
-      const imageContainer = document.querySelector('.image-container');
-      const rect = imageContainer.getBoundingClientRect();
-      const sparkles = ['✨', '💫', '⭐', '🌟'];
-      
-      for (let i = 0; i < 5; i++) {
-        const sparkle = document.createElement('div');
-        sparkle.textContent = sparkles[Math.floor(Math.random() * sparkles.length)];
-        sparkle.style.position = 'fixed';
-        sparkle.style.left = (rect.left + Math.random() * rect.width) + 'px';
-        sparkle.style.top = (rect.top + Math.random() * rect.height) + 'px';
-        sparkle.style.pointerEvents = 'none';
-        sparkle.style.zIndex = '9999';
-        sparkle.style.fontSize = '1.5rem';
-        sparkle.style.animation = 'sparkleFloat 3s ease-out forwards';
-        sparkle.style.color = '#FFD700';
-        sparkle.style.textShadow = '0 0 10px #FFD700';
-        
-        document.body.appendChild(sparkle);
-        
-        setTimeout(() => {
-          if (sparkle.parentNode) {
-            sparkle.parentNode.removeChild(sparkle);
-          }
-        }, 3000);
-      }
+    // Make renderTable globally available
+    window.renderTable = renderTable;
+
+    // Initialize
+    console.log('🔥 Firebase Catchmon Detail System loading...');
+    
+    if (!catchmonName) {
+      showError('No Catchmon specified in URL.');
+    } else {
+      loadDexList(); // Load dex list first
+      console.log(`🐲 Loading details for Catchmon: ${catchmonName}`);
     }
 
-    // Add sparkle animation
-    style.textContent += `
-      @keyframes sparkleFloat {
-        0% { 
-          opacity: 1; 
-          transform: translateY(0) scale(1) rotate(0deg); 
-        }
-        100% { 
-          opacity: 0; 
-          transform: translateY(-150px) scale(0.3) rotate(360deg); 
-        }
-      }
-    `;
-
-    // Initialize glitch text data attributes after DOM load
-    document.addEventListener('DOMContentLoaded', () => {
-      const glitchElements = document.querySelectorAll('.glitch-text');
-      glitchElements.forEach(el => {
-        if (!el.getAttribute('data-text')) {
-          el.setAttribute('data-text', el.textContent);
-        }
-      });
-    });
-
-    // Add hover effects to table rows
-    document.addEventListener('DOMContentLoaded', () => {
-      const table = document.getElementById('dataTable');
-      if (table) {
-        table.addEventListener('mouseover', function(e) {
-          if (e.target.closest('tr') && e.target.closest('tbody')) {
-            const row = e.target.closest('tr');
-            createRowEffect(row);
-          }
-        });
-      }
-    });
-
-    function createRowEffect(row) {
-      const rect = row.getBoundingClientRect();
-      const effects = ['⚡', '✨', '💫'];
-      
-      for (let i = 0; i < 2; i++) {
-        const effect = document.createElement('div');
-        effect.textContent = effects[Math.floor(Math.random() * effects.length)];
-        effect.style.position = 'fixed';
-        effect.style.left = (rect.left + Math.random() * rect.width) + 'px';
-        effect.style.top = (rect.top + Math.random() * rect.height) + 'px';
-        effect.style.pointerEvents = 'none';
-        effect.style.zIndex = '9998';
-        effect.style.fontSize = '1rem';
-        effect.style.animation = 'rowEffect 1s ease-out forwards';
-        effect.style.color = isGodMode ? '#9370DB' : '#FFD700';
-        effect.style.textShadow = `0 0 8px ${isGodMode ? '#9370DB' : '#FFD700'}`;
-        
-        document.body.appendChild(effect);
-        
-        setTimeout(() => {
-          if (effect.parentNode) {
-            effect.parentNode.removeChild(effect);
-          }
-        }, 1000);
-      }
-    }
-
-    // Add row effect animation
-    style.textContent += `
-      @keyframes rowEffect {
-        0% { 
-          opacity: 1; 
-          transform: translateY(0) scale(1); 
-        }
-        100% { 
-          opacity: 0; 
-          transform: translateY(-50px) scale(0.5); 
-        }
-      }
-    `;
-
-    // Parallax effect on scroll
-    window.addEventListener('scroll', () => {
-      const scrolled = window.pageYOffset;
-      const heroSection = document.querySelector('.hero-section');
-      if (heroSection) {
-        heroSection.style.transform = `translateY(${scrolled * 0.1}px)`;
-      }
-    });
-
-    // Load data when page loads
-    loadData();
   </script>
 </body>
 </html>

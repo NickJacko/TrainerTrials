@@ -600,18 +600,17 @@
 
     <!-- Navigation Links -->
     <div class="main-links">
-      <a href="spawn_firebase.html">🎯 Live Spawn Arena</a>
-      <a href="ranking.html">🏆 Full Rankings</a>
+      <a href="catchdex_live.html">📘 Explore Catchdex</a>
+      <a href="catcher_ranking_live.html">🏅 Catcher Rankings</a>
       <a href="ranking_catchmon_live.html">🐲 Catchmon Rankings</a>
-      <a href="catcher_detail.html">📊 Trainer Details</a>
-      <a href="donations.html">💎 Support the Arena</a>
+      <a href="howto.html">🧠 Learn to Play</a>
+      <a href="donations.html">💖 Power Up with Donations</a>
     </div>
 
     <!-- Legal Links -->
     <div class="legal-links">
-      <a href="impressum.html">Impressum</a>
-      <a href="datenschutz.html">Datenschutz</a>
-      <a href="agb.html">AGB</a>
+      <a href="imprint.html">Imprint</a>
+      <a href="privacy.html">Privacy</a>
     </div>
   </div>
 
@@ -897,7 +896,7 @@
       `;
 
       card.addEventListener('click', () => {
-        window.open(`catcher_detail.html?trainer=${encodeURIComponent(catchmon.caughtBy)}`, '_blank');
+        window.open(`catcher_detail.html?name=${encodeURIComponent(catchmon.caughtBy)}`, '_blank');
       });
 
       return card;
@@ -950,7 +949,7 @@
       `;
 
       card.addEventListener('click', () => {
-        window.open(`catcher_detail.html?trainer=${encodeURIComponent(catcher.name)}`, '_blank');
+        window.open(`catcher_detail.html?name=${encodeURIComponent(catcher.name)}`, '_blank');
       });
 
       return card;

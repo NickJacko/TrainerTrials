@@ -2,9 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>🏆 Elite Catcher Arena</title>
+  <title>🏆 Elite Catcher Arena - Firebase Live</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <script src="utils.js"></script>
   <style>
     * {
       box-sizing: border-box;
@@ -14,75 +13,12 @@
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
-      background: radial-gradient(ellipse at center, #1a1a2e 0%, #16213e 30%, #0f0f23 70%, #000000 100%);
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%);
       margin: 0;
       padding: 0;
       min-height: 100vh;
       color: white;
       overflow-x: hidden;
-    }
-
-    /* Animated Background */
-    .bg-effects {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
-      opacity: 0.4;
-    }
-
-    .trophy-float {
-      position: absolute;
-      font-size: 2rem;
-      opacity: 0.3;
-      animation: floatTrophy 15s linear infinite;
-      pointer-events: none;
-    }
-
-    @keyframes floatTrophy {
-      0% {
-        transform: translateY(100vh) rotate(0deg) scale(0.5);
-        opacity: 0;
-      }
-      10% {
-        opacity: 0.3;
-      }
-      90% {
-        opacity: 0.3;
-      }
-      100% {
-        transform: translateY(-100px) rotate(360deg) scale(0.8);
-        opacity: 0;
-      }
-    }
-
-    .energy-orb {
-      position: absolute;
-      width: 6px;
-      height: 6px;
-      background: radial-gradient(circle, #FFD700, #FFA500);
-      border-radius: 50%;
-      animation: orbFloat 12s linear infinite;
-      box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
-    }
-
-    @keyframes orbFloat {
-      0% {
-        transform: translateY(100vh) translateX(0);
-        opacity: 0;
-      }
-      20% {
-        opacity: 0.8;
-      }
-      80% {
-        opacity: 0.8;
-      }
-      100% {
-        transform: translateY(-100px) translateX(50px);
-        opacity: 0;
-      }
     }
 
     .container {
@@ -93,46 +29,44 @@
       z-index: 1;
     }
 
+    /* Firebase Connection Status */
+    .connection-status {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 8px 15px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 600;
+      z-index: 1000;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .connection-status.connected {
+      background: rgba(76, 175, 80, 0.9);
+    }
+
+    .connection-status.disconnected {
+      background: rgba(244, 67, 54, 0.9);
+    }
+
     /* Header Section */
     .header-section {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 40px;
-      background: rgba(255,255,255,0.05);
+      margin-bottom: 30px;
+      background: rgba(255,255,255,0.1);
       backdrop-filter: blur(15px);
       border-radius: 20px;
       padding: 20px 30px;
-      border: 2px solid rgba(255,255,255,0.1);
-      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .header-section::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: linear-gradient(45deg, 
-        transparent, 
-        rgba(255, 215, 0, 0.1), 
-        transparent, 
-        rgba(255, 215, 0, 0.1), 
-        transparent);
-      animation: headerShine 8s linear infinite;
-    }
-
-    @keyframes headerShine {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
+      border: 1px solid rgba(255,255,255,0.2);
     }
 
     .header-content {
-      position: relative;
-      z-index: 2;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -144,61 +78,46 @@
       text-decoration: none;
       color: white;
       font-weight: 700;
-      padding: 15px 25px;
-      border-radius: 15px;
-      background: linear-gradient(145deg, rgba(255,255,255,0.15), rgba(255,255,255,0.08));
-      border: 2px solid rgba(255,255,255,0.2);
-      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-      backdrop-filter: blur(10px);
-      box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+      padding: 12px 20px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      transition: all 0.2s ease;
     }
 
     .back-button:hover {
-      transform: translateY(-3px) scale(1.02);
-      background: linear-gradient(145deg, rgba(255,255,255,0.25), rgba(255,255,255,0.15));
-      box-shadow: 0 8px 30px rgba(0,0,0,0.3);
-      border-color: rgba(255,255,255,0.4);
+      background: rgba(255,255,255,0.2);
+      transform: translateY(-2px);
     }
 
     h1 {
       text-align: center;
       flex: 1;
-      font-size: clamp(2.5rem, 6vw, 4rem);
-      background: linear-gradient(45deg, #FFD700, #FF6B6B, #4ECDC4, #45B7D1, #FFD700);
-      background-size: 300% 300%;
+      font-size: clamp(1.8rem, 5vw, 3rem);
+      background: linear-gradient(45deg, #FFD700, #FF6B6B, #4ECDC4, #45B7D1);
       background-clip: text;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      animation: gradientShift 4s ease-in-out infinite;
-      font-weight: 900;
-      text-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+      font-weight: 800;
       letter-spacing: -1px;
-    }
-
-    @keyframes gradientShift {
-      0%, 100% { background-position: 0% 50%; }
-      25% { background-position: 100% 50%; }
-      50% { background-position: 100% 100%; }
-      75% { background-position: 0% 100%; }
     }
 
     .stats-display {
       display: flex;
-      gap: 20px;
-      font-size: 0.9rem;
-      opacity: 0.9;
+      gap: 15px;
+      font-size: 0.85rem;
     }
 
     .stat-item {
       text-align: center;
-      padding: 8px 12px;
+      padding: 6px 10px;
       background: rgba(255,255,255,0.1);
-      border-radius: 10px;
+      border-radius: 8px;
       backdrop-filter: blur(5px);
     }
 
     .stat-number {
-      font-size: 1.3rem;
+      font-size: 1.1rem;
       font-weight: 800;
       color: #FFD700;
       display: block;
@@ -206,73 +125,49 @@
 
     /* Controls Section */
     .controls-section {
-      background: rgba(255,255,255,0.05);
+      background: rgba(255,255,255,0.1);
       backdrop-filter: blur(15px);
-      border-radius: 20px;
-      padding: 25px;
-      margin-bottom: 30px;
-      border: 1px solid rgba(255,255,255,0.1);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .controls-section::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
-      animation: controlsShine 6s linear infinite;
-    }
-
-    @keyframes controlsShine {
-      0% { left: -100%; }
-      50% { left: 100%; }
-      100% { left: 100%; }
+      border-radius: 15px;
+      padding: 20px;
+      margin-bottom: 25px;
+      border: 1px solid rgba(255,255,255,0.2);
     }
 
     .controls-content {
-      position: relative;
-      z-index: 2;
       display: flex;
       align-items: center;
       justify-content: space-between;
       flex-wrap: wrap;
-      gap: 20px;
+      gap: 15px;
     }
 
     .sort-controls {
       display: flex;
-      gap: 15px;
+      gap: 10px;
       align-items: center;
     }
 
     .sort-button {
-      background: linear-gradient(145deg, rgba(76, 175, 80, 0.8), rgba(69, 160, 73, 0.8));
+      background: rgba(76, 175, 80, 0.8);
       color: white;
       border: none;
-      padding: 12px 20px;
-      border-radius: 15px;
+      padding: 10px 16px;
+      border-radius: 12px;
       font-weight: 700;
       cursor: pointer;
-      transition: all 0.3s ease;
-      backdrop-filter: blur(10px);
-      border: 2px solid rgba(255,255,255,0.1);
-      font-size: 0.9rem;
+      transition: all 0.2s ease;
+      font-size: 0.85rem;
+      border: 1px solid rgba(255,255,255,0.2);
     }
 
     .sort-button.active {
-      background: linear-gradient(145deg, rgba(255, 215, 0, 0.9), rgba(255, 193, 7, 0.9));
-      box-shadow: 0 5px 20px rgba(255, 215, 0, 0.4);
-      transform: translateY(-2px);
+      background: rgba(255, 215, 0, 0.9);
+      color: #000;
+      transform: translateY(-1px);
     }
 
     .sort-button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
+      transform: translateY(-1px);
     }
 
     .search-container {
@@ -280,15 +175,15 @@
     }
 
     #searchInput {
-      padding: 12px 20px 12px 45px;
-      font-size: 16px;
-      border: 2px solid rgba(255,255,255,0.2);
-      border-radius: 20px;
+      padding: 10px 16px 10px 35px;
+      font-size: 14px;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 15px;
       background: rgba(255,255,255,0.1);
       backdrop-filter: blur(10px);
       color: white;
-      width: 300px;
-      transition: all 0.3s ease;
+      width: 250px;
+      transition: all 0.2s ease;
     }
 
     #searchInput::placeholder {
@@ -299,203 +194,126 @@
       outline: none;
       border-color: rgba(255, 215, 0, 0.5);
       background: rgba(255,255,255,0.15);
-      box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
     }
 
     .search-icon {
       position: absolute;
-      left: 15px;
+      left: 12px;
       top: 50%;
       transform: translateY(-50%);
-      font-size: 1.2rem;
+      font-size: 1rem;
       opacity: 0.6;
     }
 
     /* Table Section */
     .table-section {
-      background: rgba(255,255,255,0.02);
-      backdrop-filter: blur(20px);
-      border-radius: 25px;
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(15px);
+      border-radius: 20px;
       padding: 0;
-      border: 2px solid rgba(255,255,255,0.1);
-      box-shadow: 0 15px 50px rgba(0,0,0,0.2);
+      border: 1px solid rgba(255,255,255,0.2);
       overflow: hidden;
-      position: relative;
-    }
-
-    .table-section::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: linear-gradient(90deg, #FFD700, #FF6B6B, #4ECDC4, #45B7D1, #FFD700);
-      background-size: 200% 100%;
-      animation: topBorderFlow 3s linear infinite;
-    }
-
-    @keyframes topBorderFlow {
-      0% { background-position: 0% 0%; }
-      100% { background-position: 200% 0%; }
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 15px;
-      position: relative;
-      z-index: 2;
+      font-size: 14px;
     }
 
     th {
-      background: linear-gradient(145deg, rgba(255, 215, 0, 0.2), rgba(255, 215, 0, 0.1));
+      background: rgba(255, 215, 0, 0.2);
       color: white;
-      padding: 20px 15px;
+      padding: 15px 12px;
       text-align: center;
       font-weight: 700;
-      font-size: 14px;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      font-size: 13px;
       border: none;
       position: sticky;
       top: 0;
       z-index: 10;
-      backdrop-filter: blur(15px);
-      border-bottom: 2px solid rgba(255, 215, 0, 0.3);
     }
 
     td {
-      padding: 15px;
+      padding: 12px;
       text-align: center;
-      border-bottom: 1px solid rgba(255,255,255,0.05);
-      transition: all 0.3s ease;
-      position: relative;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      transition: background-color 0.2s ease;
+      color: white;
     }
 
-    tr {
-      transition: all 0.3s ease;
-      position: relative;
+    tr:hover td {
+      background: rgba(255, 215, 0, 0.1);
     }
 
-    tr:hover {
-      background: linear-gradient(90deg, 
-        rgba(255, 215, 0, 0.08), 
-        rgba(255, 215, 0, 0.15), 
-        rgba(255, 215, 0, 0.08));
-      transform: scale(1.01);
-      box-shadow: 0 5px 25px rgba(255, 215, 0, 0.2);
-    }
-
-    /* Rank Badges */
+    /* Rank Badges - Simplified */
     .rank-badge {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 45px;
-      height: 45px;
+      width: 35px;
+      height: 35px;
       border-radius: 50%;
-      font-weight: 900;
-      font-size: 1.1rem;
+      font-weight: 800;
+      font-size: 1rem;
       color: white;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.4);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .rank-badge::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-      animation: badgeShine 3s linear infinite;
-    }
-
-    @keyframes badgeShine {
-      0% { left: -100%; }
-      50% { left: 100%; }
-      100% { left: 100%; }
     }
 
     .rank-1 { 
       background: linear-gradient(45deg, #FFD700, #FFA500);
-      box-shadow: 0 0 25px rgba(255, 215, 0, 0.6);
-      animation: goldPulse 2s ease-in-out infinite alternate;
-    }
-
-    @keyframes goldPulse {
-      0% { box-shadow: 0 0 25px rgba(255, 215, 0, 0.6); }
-      100% { box-shadow: 0 0 40px rgba(255, 215, 0, 0.9); }
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
     }
 
     .rank-2 { 
       background: linear-gradient(45deg, #C0C0C0, #E8E8E8);
       color: #333;
-      text-shadow: 0 1px 2px rgba(255,255,255,0.5);
-      box-shadow: 0 0 20px rgba(192, 192, 192, 0.5);
     }
 
     .rank-3 { 
       background: linear-gradient(45deg, #CD7F32, #DAA520);
-      box-shadow: 0 0 20px rgba(205, 127, 50, 0.5);
     }
 
     .rank-other { 
-      background: linear-gradient(45deg, rgba(108, 117, 125, 0.8), rgba(73, 80, 87, 0.8));
-      backdrop-filter: blur(10px);
+      background: rgba(108, 117, 125, 0.8);
     }
 
     /* Medal Icons for Top 3 */
-    .rank-1::after { content: '👑'; position: absolute; top: -8px; right: -8px; font-size: 1.2rem; }
-    .rank-2::after { content: '🥈'; position: absolute; top: -6px; right: -6px; font-size: 1rem; }
-    .rank-3::after { content: '🥉'; position: absolute; top: -6px; right: -6px; font-size: 1rem; }
+    .rank-1::after { content: '👑'; position: absolute; top: -6px; right: -6px; font-size: 1rem; }
+    .rank-2::after { content: '🥈'; position: absolute; top: -5px; right: -5px; font-size: 0.9rem; }
+    .rank-3::after { content: '🥉'; position: absolute; top: -5px; right: -5px; font-size: 0.9rem; }
 
-    /* Special Row Styling */
-    .gold-row { 
-      background: linear-gradient(90deg, 
-        rgba(255, 215, 0, 0.1), 
-        rgba(255, 215, 0, 0.2), 
-        rgba(255, 215, 0, 0.1));
-      border: 2px solid rgba(255, 215, 0, 0.3);
-      box-shadow: 0 0 30px rgba(255, 215, 0, 0.2);
+    /* Special Row Styling - Simplified */
+    .gold-row td { 
+      background: rgba(255, 215, 0, 0.15);
+      border-bottom: 1px solid rgba(255, 215, 0, 0.3);
     }
 
-    .silver-row { 
-      background: linear-gradient(90deg, 
-        rgba(192, 192, 192, 0.1), 
-        rgba(192, 192, 192, 0.2), 
-        rgba(192, 192, 192, 0.1));
-      border: 2px solid rgba(192, 192, 192, 0.3);
+    .silver-row td { 
+      background: rgba(192, 192, 192, 0.15);
+      border-bottom: 1px solid rgba(192, 192, 192, 0.3);
     }
 
-    .bronze-row { 
-      background: linear-gradient(90deg, 
-        rgba(205, 127, 50, 0.1), 
-        rgba(205, 127, 50, 0.2), 
-        rgba(205, 127, 50, 0.1));
-      border: 2px solid rgba(205, 127, 50, 0.3);
+    .bronze-row td { 
+      background: rgba(205, 127, 50, 0.15);
+      border-bottom: 1px solid rgba(205, 127, 50, 0.3);
     }
 
     /* Catcher Name Styling */
     .catcher-cell {
       font-weight: 700;
-      font-size: 1.1rem;
-      position: relative;
+      font-size: 1rem;
     }
 
     .level-display {
-      font-size: 0.9rem;
+      font-size: 0.8rem;
       opacity: 0.8;
-      margin-top: 4px;
+      margin-top: 3px;
     }
 
     .points-cell {
-      font-weight: 800;
+      font-weight: 700;
       color: #FFD700;
-      font-size: 1.2rem;
-      text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+      font-size: 1.1rem;
     }
 
     .team-count {
@@ -503,64 +321,55 @@
       font-weight: 600;
     }
 
-    /* Donation Tier Styles */
+    /* Donation Tier Styles - Simplified */
     .catcher-name {
-      display: inline-block;
-      font-weight: bold;
-      background-size: 200% auto;
-      background-clip: text;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      animation: shine 3s linear infinite;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 8px;
     }
 
     .king {
-      background-image: linear-gradient(90deg, #ffd700, white, #ffd700);
+      background: linear-gradient(90deg, #FFD700, #FFA500);
+      color: #000;
     }
 
     .flame {
-      background-image: linear-gradient(90deg, #ff0000, white, #ff0000);
+      background: linear-gradient(90deg, #FF4444, #FF6B6B);
+      color: white;
     }
 
     .diamond {
-      background-image: linear-gradient(90deg, #00bfff, white, #00bfff);
+      background: linear-gradient(90deg, #4ECDC4, #45B7D1);
+      color: white;
     }
 
     .shine {
-      background-image: linear-gradient(90deg, #32cd32, white, #32cd32);
+      background: linear-gradient(90deg, #4CAF50, #66BB6A);
+      color: white;
     }
 
     .normal {
       color: white;
-      text-shadow: 0 0 10px rgba(255,255,255,0.5);
-      font-weight: 700;
-      background: none;
-      -webkit-text-fill-color: inherit;
-      background-clip: unset;
-      animation: none;
-    }
-
-    @keyframes shine {
-      to { background-position: -200% center; }
+      background: rgba(255,255,255,0.1);
     }
 
     /* Loading Animation */
     .loading {
       text-align: center;
-      padding: 60px;
+      padding: 40px;
       color: rgba(255,255,255,0.8);
-      font-size: 18px;
+      font-size: 16px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 20px;
+      gap: 15px;
     }
 
     .loading-spinner {
-      width: 40px;
-      height: 40px;
-      border: 4px solid rgba(255,255,255,0.2);
-      border-top: 4px solid #FFD700;
+      width: 30px;
+      height: 30px;
+      border: 3px solid rgba(255,255,255,0.3);
+      border-top: 3px solid #FFD700;
       border-radius: 50%;
       animation: spin 1s linear infinite;
     }
@@ -572,30 +381,28 @@
     /* Floating Action Button */
     .refresh-fab {
       position: fixed;
-      bottom: 30px;
-      right: 30px;
-      width: 60px;
-      height: 60px;
+      bottom: 20px;
+      right: 20px;
+      width: 50px;
+      height: 50px;
       background: linear-gradient(45deg, #4ECDC4, #44A08D);
       border: none;
       border-radius: 50%;
       color: white;
-      font-size: 1.5rem;
+      font-size: 1.2rem;
       cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+      transition: transform 0.2s ease;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
       z-index: 1000;
-      backdrop-filter: blur(10px);
     }
 
     .refresh-fab:hover {
-      transform: scale(1.1) rotate(180deg);
-      box-shadow: 0 12px 35px rgba(78, 205, 196, 0.4);
+      transform: scale(1.1);
     }
 
     /* Mobile Optimizations */
     @media (max-width: 1024px) {
-      th:nth-child(5), td:nth-child(5) { display: none; } /* Level ausblenden */
+      th:nth-child(5), td:nth-child(5) { display: none; } /* Level hide */
     }
 
     @media (max-width: 768px) {
@@ -605,24 +412,23 @@
       
       .header-section {
         flex-direction: column;
-        gap: 20px;
-        text-align: center;
-        padding: 25px 20px;
+        gap: 15px;
+        padding: 20px;
       }
 
       .header-content {
         flex-direction: column;
-        gap: 20px;
+        gap: 15px;
       }
 
       .stats-display {
         flex-direction: column;
-        gap: 10px;
+        gap: 8px;
       }
 
       .controls-content {
         flex-direction: column;
-        gap: 15px;
+        gap: 12px;
       }
 
       .sort-controls {
@@ -632,11 +438,11 @@
 
       #searchInput {
         width: 100%;
-        max-width: 300px;
+        max-width: 250px;
       }
 
       table { 
-        font-size: 13px; 
+        font-size: 12px; 
       }
       
       th, td { 
@@ -644,20 +450,20 @@
       }
 
       .rank-badge {
-        width: 35px;
-        height: 35px;
-        font-size: 0.9rem;
+        width: 28px;
+        height: 28px;
+        font-size: 0.8rem;
       }
 
       .catcher-cell {
-        font-size: 1rem;
+        font-size: 0.9rem;
       }
 
       .points-cell {
-        font-size: 1.1rem;
+        font-size: 1rem;
       }
 
-      /* Auf Mobile Team Count ausblenden */
+      /* Hide team count on mobile */
       th:nth-child(4), td:nth-child(4) { 
         display: none; 
       }
@@ -668,16 +474,12 @@
         padding: 10px; 
       }
 
-      h1 { 
-        font-size: 2rem; 
-      }
-
       .controls-section {
-        padding: 20px 15px;
+        padding: 15px;
       }
 
       table { 
-        font-size: 12px; 
+        font-size: 11px; 
       }
 
       th, td { 
@@ -685,17 +487,15 @@
       }
 
       .rank-badge {
-        width: 30px;
-        height: 30px;
-        font-size: 0.8rem;
+        width: 24px;
+        height: 24px;
+        font-size: 0.7rem;
       }
 
       .refresh-fab {
-        width: 50px;
-        height: 50px;
-        bottom: 20px;
-        right: 20px;
-        font-size: 1.3rem;
+        width: 45px;
+        height: 45px;
+        font-size: 1rem;
       }
     }
 
@@ -706,14 +506,23 @@
       }
       
       table {
-        min-width: 500px;
+        min-width: 400px;
+      }
+    }
+
+    /* Reduce motion for performance */
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
       }
     }
   </style>
 </head>
 <body>
-  <!-- Animated Background -->
-  <div class="bg-effects" id="bgEffects"></div>
+  <!-- Firebase Connection Status -->
+  <div class="connection-status" id="connectionStatus">🔄 Verbinde...</div>
 
   <div class="container">
     <!-- Header Section -->
@@ -775,60 +584,91 @@
   <!-- Floating Refresh Button -->
   <button class="refresh-fab" onclick="forceRefresh()" title="Refresh Rankings">🔄</button>
 
-  <script>
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+    import { 
+      getDatabase, 
+      ref, 
+      onValue 
+    } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+
+    // Firebase Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyDdStpC5rVtgaZ4XvtKLwQttnyIDXL2z7Q",
+      authDomain: "trainertrials.firebaseapp.com",
+      databaseURL: "https://trainertrials-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "trainertrials",
+      storageBucket: "trainertrials.firebasestorage.app",
+      messagingSenderId: "22071275267",
+      appId: "1:22071275267:web:92e82d6bfaee169aff8336",
+      measurementId: "G-WWENZ0HP22"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    // Game State
     let currentSortMode = 'points';
     let allCatchers = [];
-    let isLoading = false;
+    let trainersData = {};
+    let connectionStatus = false;
 
-    // Create floating background effects
-    function createTrophy() {
-      const trophies = ['🏆', '🥇', '👑', '⭐', '💎', '🔥', '⚡'];
-      const trophy = document.createElement('div');
-      trophy.className = 'trophy-float';
-      trophy.textContent = trophies[Math.floor(Math.random() * trophies.length)];
-      trophy.style.left = Math.random() * 100 + '%';
-      trophy.style.animationDuration = (Math.random() * 8 + 12) + 's';
-      trophy.style.animationDelay = Math.random() * 3 + 's';
-      
-      document.getElementById('bgEffects').appendChild(trophy);
-      
-      setTimeout(() => {
-        if (trophy.parentNode) {
-          trophy.parentNode.removeChild(trophy);
-        }
-      }, 20000);
+    // Firebase Listeners
+    const connectedRef = ref(db, '.info/connected');
+    onValue(connectedRef, (snapshot) => {
+      connectionStatus = snapshot.val();
+      updateConnectionStatus();
+    });
+
+    const trainersRef = ref(db, 'trainers');
+    onValue(trainersRef, (snapshot) => {
+      trainersData = snapshot.val() || {};
+      updateData();
+    });
+
+    function updateConnectionStatus() {
+      const statusElement = document.getElementById('connectionStatus');
+      if (connectionStatus) {
+        statusElement.textContent = '🟢 Connected';
+        statusElement.className = 'connection-status connected';
+      } else {
+        statusElement.textContent = '🔴 Offline';
+        statusElement.className = 'connection-status disconnected';
+      }
     }
 
-    function createEnergyOrb() {
-      const orb = document.createElement('div');
-      orb.className = 'energy-orb';
-      orb.style.left = Math.random() * 100 + '%';
-      orb.style.animationDuration = (Math.random() * 6 + 8) + 's';
-      orb.style.animationDelay = Math.random() * 2 + 's';
+    // Utility Functions
+    function capitalize(str) {
+      return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+
+    function calcPoints(catchmon) {
+      if (!catchmon) return 0;
       
-      document.getElementById('bgEffects').appendChild(orb);
+      const level = catchmon.level || 1;
+      const stats = catchmon.stats || {};
+      const statSum = Object.values(stats).reduce((sum, val) => sum + (val || 0), 0);
+      let points = level * 10 + statSum;
       
-      setTimeout(() => {
-        if (orb.parentNode) {
-          orb.parentNode.removeChild(orb);
-        }
-      }, 15000);
-    }
-
-    // Start background animations
-    setInterval(createTrophy, 4000);
-    setInterval(createEnergyOrb, 1000);
-
-    // Initial effects
-    for (let i = 0; i < 3; i++) {
-      setTimeout(createTrophy, i * 2000);
-    }
-    for (let i = 0; i < 8; i++) {
-      setTimeout(createEnergyOrb, i * 500);
-    }
-
-    function calcPoints(p) {
-      return p.gesamtpunkte ?? 0;
+      // Rarity multiplier
+      const rarityMultipliers = {
+        "Common": 1,
+        "Uncommon": 1.2,
+        "Rare": 1.5,
+        "Epic": 2,
+        "Legendary": 3,
+        "Mythical": 5
+      };
+      
+      const multiplier = rarityMultipliers[catchmon.rarity] || 1;
+      points *= multiplier;
+      
+      if (catchmon.shiny) {
+        points *= 2;
+      }
+      
+      return Math.round(points);
     }
 
     function calcLevel(points) {
@@ -849,6 +689,20 @@
       return '';
     }
 
+    function getDonationTier(donation) {
+      if (donation >= 2500) return "king";
+      if (donation >= 500) return "flame";
+      if (donation >= 250) return "diamond";
+      if (donation >= 100) return "shine";
+      return "normal";
+    }
+
+    function getStyledCatcherName(name, donation) {
+      const tier = getDonationTier(donation);
+      if (tier === "normal") return capitalize(name);
+      return `<span class="catcher-name ${tier}">${capitalize(name)}</span>`;
+    }
+
     function setSortMode(mode) {
       currentSortMode = mode;
       
@@ -857,63 +711,7 @@
       document.getElementById(`sort${mode.charAt(0).toUpperCase() + mode.slice(1)}`).classList.add('active');
       
       renderTable();
-      
-      // Add click effect
-      createClickEffect(event.target);
     }
-
-    function createClickEffect(element) {
-      const rect = element.getBoundingClientRect();
-      const x = rect.left + rect.width / 2;
-      const y = rect.top + rect.height / 2;
-      
-      for (let i = 0; i < 6; i++) {
-        const particle = document.createElement('div');
-        particle.style.position = 'fixed';
-        particle.style.left = x + 'px';
-        particle.style.top = y + 'px';
-        particle.style.width = '6px';
-        particle.style.height = '6px';
-        particle.style.backgroundColor = '#FFD700';
-        particle.style.borderRadius = '50%';
-        particle.style.pointerEvents = 'none';
-        particle.style.zIndex = '9999';
-        particle.style.boxShadow = '0 0 10px #FFD700';
-        
-const angle = (i / 6) * Math.PI * 2;
-        const velocity = 80 + Math.random() * 40;
-        const vx = Math.cos(angle) * velocity;
-        const vy = Math.sin(angle) * velocity;
-        
-        particle.style.animation = `clickParticle 0.8s ease-out forwards`;
-        particle.style.setProperty('--vx', vx + 'px');
-        particle.style.setProperty('--vy', vy + 'px');
-        
-        document.body.appendChild(particle);
-        
-        setTimeout(() => {
-          if (particle.parentNode) {
-            particle.parentNode.removeChild(particle);
-          }
-        }, 800);
-      }
-    }
-
-    // Add particle animation to CSS
-    const style = document.createElement('style');
-    style.textContent = `
-      @keyframes clickParticle {
-        0% { 
-          opacity: 1; 
-          transform: translate(0, 0) scale(1); 
-        }
-        100% { 
-          opacity: 0; 
-          transform: translate(var(--vx), var(--vy)) scale(0.3); 
-        }
-      }
-    `;
-    document.head.appendChild(style);
 
     function filterTable() {
       const input = document.getElementById("searchInput").value.toUpperCase();
@@ -929,39 +727,24 @@ const angle = (i / 6) * Math.PI * 2;
     }
 
     function updateData() {
-      if (isLoading) return;
-      isLoading = true;
+      console.log('🔄 Processing trainers data:', Object.keys(trainersData).length);
+      
+      allCatchers = Object.entries(trainersData).map(([name, info]) => {
+        const team = info.team || [];
+        const totalPoints = team.reduce((sum, p) => sum + calcPoints(p), 0);
+        const level = calcLevel(totalPoints);
+        return {
+          name,
+          teamSize: team.length,
+          totalPoints,
+          level,
+          donation: info.donation || 0
+        };
+      });
 
-      fetch("catcher.json?" + Date.now())
-        .then(r => {
-          if (!r.ok) throw new Error('Network response was not ok');
-          return r.json();
-        })
-        .then(data => {
-          allCatchers = Object.entries(data.catcher || {}).map(([name, info]) => {
-            const team = info.team || [];
-            const totalPoints = team.reduce((sum, p) => sum + calcPoints(p), 0);
-            const level = calcLevel(totalPoints);
-            return {
-              name,
-              teamSize: team.length,
-              totalPoints,
-              level,
-              donation: info.donation || 0
-            };
-          });
-
-          // Update stats
-          updateStats();
-          renderTable();
-          isLoading = false;
-        })
-        .catch(error => {
-          console.error('Error loading data:', error);
-          document.getElementById("rankingBody").innerHTML = 
-            '<tr><td colspan="5" class="loading"><div class="loading-spinner"></div><div>Error loading data</div></td></tr>';
-          isLoading = false;
-        });
+      // Update stats
+      updateStats();
+      renderTable();
     }
 
     function updateStats() {
@@ -976,7 +759,7 @@ const angle = (i / 6) * Math.PI * 2;
     function animateNumber(elementId, targetNumber) {
       const element = document.getElementById(elementId);
       const startNumber = parseInt(element.textContent) || 0;
-      const duration = 1500;
+      const duration = 1000;
       const startTime = Date.now();
 
       function updateNumber() {
@@ -986,7 +769,7 @@ const angle = (i / 6) * Math.PI * 2;
         const currentNumber = Math.floor(startNumber + (targetNumber - startNumber) * easeProgress);
         
         if (elementId === 'totalPoints') {
-          element.textContent = currentNumber.toLocaleString();
+          element.textContent = currentNumber.toLocaleString('de-DE');
         } else {
           element.textContent = currentNumber;
         }
@@ -1001,7 +784,6 @@ const angle = (i / 6) * Math.PI * 2;
 
     function renderTable() {
       const tbody = document.getElementById("rankingBody");
-      tbody.innerHTML = "";
 
       if (allCatchers.length === 0) {
         tbody.innerHTML = '<tr><td colspan="5" class="loading"><div class="loading-spinner"></div><div>No catchers found</div></td></tr>';
@@ -1016,213 +798,61 @@ const angle = (i / 6) * Math.PI * 2;
         return 0;
       });
 
+      // Use DocumentFragment for better performance
+      const fragment = document.createDocumentFragment();
+
       sortedCatchers.forEach((catcher, index) => {
         const rank = index + 1;
         const tr = document.createElement("tr");
         const rankClass = getRankClass(index);
         const rowClass = getRowClass(index);
         
-        tr.className = rowClass;
-        
-        // Add hover effects
-        tr.addEventListener('mouseenter', function() {
-          createRowSparkles(this);
-        });
+        if (rowClass) tr.classList.add(rowClass);
         
         tr.innerHTML = `
           <td><div class="rank-badge ${rankClass}">${rank}</div></td>
           <td class="catcher-cell">
-            <div>${getStyledCatcherName(catcher.name, catcher.donation)}</div>
-            <div class="level-display">Level ${catcher.level}</div>
+            <a href="catcher_detail.html?name=${encodeURIComponent(catcher.name)}" style="text-decoration: none; color: inherit;">
+              <div>${getStyledCatcherName(catcher.name, catcher.donation)}</div>
+              <div class="level-display">Level ${catcher.level}</div>
+            </a>
           </td>
-          <td class="points-cell">${catcher.totalPoints.toLocaleString()}</td>
+          <td class="points-cell">${catcher.totalPoints.toLocaleString('de-DE')}</td>
           <td class="team-count">${catcher.teamSize}</td>
           <td>${catcher.level}</td>
         `;
         
-        tbody.appendChild(tr);
+        fragment.appendChild(tr);
       });
 
-      // Add entrance animation
-      const rows = tbody.querySelectorAll('tr');
-      rows.forEach((row, index) => {
-        row.style.opacity = '0';
-        row.style.transform = 'translateY(20px)';
-        
-        setTimeout(() => {
-          row.style.transition = 'all 0.4s ease';
-          row.style.opacity = '1';
-          row.style.transform = 'translateY(0)';
-        }, index * 50);
-      });
+      tbody.innerHTML = '';
+      tbody.appendChild(fragment);
     }
-
-    function createRowSparkles(row) {
-      const rect = row.getBoundingClientRect();
-      const sparkles = ['✨', '💫', '⭐'];
-      
-      for (let i = 0; i < 2; i++) {
-        const sparkle = document.createElement('div');
-        sparkle.textContent = sparkles[Math.floor(Math.random() * sparkles.length)];
-        sparkle.style.position = 'fixed';
-        sparkle.style.left = (rect.left + Math.random() * rect.width) + 'px';
-        sparkle.style.top = (rect.top + Math.random() * rect.height) + 'px';
-        sparkle.style.pointerEvents = 'none';
-        sparkle.style.zIndex = '9999';
-        sparkle.style.fontSize = '1rem';
-        sparkle.style.animation = 'sparkleFloat 1.5s ease-out forwards';
-        sparkle.style.color = '#FFD700';
-        sparkle.style.textShadow = '0 0 8px #FFD700';
-        
-        document.body.appendChild(sparkle);
-        
-        setTimeout(() => {
-          if (sparkle.parentNode) {
-            sparkle.parentNode.removeChild(sparkle);
-          }
-        }, 1500);
-      }
-    }
-
-    // Add sparkle animation
-    style.textContent += `
-      @keyframes sparkleFloat {
-        0% { 
-          opacity: 1; 
-          transform: translateY(0) scale(1) rotate(0deg); 
-        }
-        100% { 
-          opacity: 0; 
-          transform: translateY(-80px) scale(0.3) rotate(180deg); 
-        }
-      }
-    `;
 
     function forceRefresh() {
+      console.log('🔄 Force refresh triggered');
       const fab = document.querySelector('.refresh-fab');
-      fab.style.transform = 'scale(1.2) rotate(720deg)';
-      fab.style.boxShadow = '0 15px 50px rgba(78, 205, 196, 0.8)';
+      fab.style.transform = 'scale(1.2)';
       
       setTimeout(() => {
         fab.style.transform = '';
-        fab.style.boxShadow = '';
-      }, 800);
+      }, 200);
 
       // Show loading state
       document.getElementById("rankingBody").innerHTML = 
         '<tr><td colspan="5" class="loading"><div class="loading-spinner"></div><div>Refreshing rankings...</div></td></tr>';
       
-      updateData();
-      
-      // Create refresh effect
-      createClickEffect(fab);
+      // Firebase will automatically update when data changes
+      renderTable();
     }
 
-    // Add click effects to table rows
-    document.addEventListener('click', function(e) {
-      if (e.target.closest('tr') && e.target.closest('tbody')) {
-        const row = e.target.closest('tr');
-        createClickEffect(row);
-        
-        // Row flash effect
-        row.style.background = 'rgba(255, 215, 0, 0.3)';
-        setTimeout(() => {
-          row.style.background = '';
-        }, 300);
-      }
-    });
+    // Make functions globally available
+    window.setSortMode = setSortMode;
+    window.filterTable = filterTable;
+    window.forceRefresh = forceRefresh;
 
-    // Periodic sparkle effects on top 3
-    setInterval(() => {
-      const topRows = document.querySelectorAll('.gold-row, .silver-row, .bronze-row');
-      topRows.forEach(row => {
-        if (Math.random() < 0.4) {
-          createRowSparkles(row);
-        }
-      });
-    }, 8000);
+    console.log('🔥 Firebase Elite Catcher Arena System loaded!');
 
-    // Auto-refresh every 5 seconds
-    setInterval(updateData, 100000);
-
-    // Initial load
-    updateData();
-
-    // Add scroll effects
-    let lastScrollTime = 0;
-    window.addEventListener('scroll', (e) => {
-      const now = Date.now();
-      if (now - lastScrollTime > 100) { // Throttle
-        const scrolled = window.pageYOffset;
-        const header = document.querySelector('.header-section');
-        if (header && scrolled > 50) {
-          header.style.transform = `translateY(${Math.min(scrolled * 0.2, 20)}px)`;
-          header.style.opacity = Math.max(0.7, 1 - scrolled * 0.001);
-        }
-        lastScrollTime = now;
-      }
-    });
-
-    // Add keyboard shortcuts
-    document.addEventListener('keydown', function(e) {
-      if (e.ctrlKey || e.metaKey) {
-        switch(e.key) {
-          case '1':
-            e.preventDefault();
-            setSortMode('points');
-            break;
-          case '2':
-            e.preventDefault();
-            setSortMode('level');
-            break;
-          case '3':
-            e.preventDefault();
-            setSortMode('count');
-            break;
-          case 'r':
-            e.preventDefault();
-            forceRefresh();
-            break;
-        }
-      }
-    });
-
-    // Add performance monitoring
-    let performanceStart = Date.now();
-    window.addEventListener('load', function() {
-      const loadTime = Date.now() - performanceStart;
-      console.log(`🏆 Elite Catcher Arena loaded in ${loadTime}ms`);
-    });
-
-    // Add special effects for milestones
-    function checkMilestones() {
-      const totalPoints = allCatchers.reduce((sum, c) => sum + c.totalPoints, 0);
-      const milestones = [100000, 500000, 1000000, 5000000];
-      
-      milestones.forEach(milestone => {
-        if (totalPoints >= milestone && !localStorage.getItem(`milestone_${milestone}`)) {
-          createMilestoneEffect(milestone);
-          localStorage.setItem(`milestone_${milestone}`, 'true');
-        }
-      });
-    }
-
-    function createMilestoneEffect(milestone) {
-      // Create celebration effect
-      for (let i = 0; i < 20; i++) {
-        setTimeout(() => {
-          createTrophy();
-        }, i * 100);
-      }
-      
-      // Show milestone message
-      setTimeout(() => {
-        alert(`🎉 MILESTONE REACHED!\n\n🏆 ${milestone.toLocaleString()} Total Points Achieved!\n\nThe Arena grows stronger! 💪`);
-      }, 1000);
-    }
-
-    // Check milestones after data updates
-    setInterval(checkMilestones, 10000);
   </script>
 </body>
 </html>
