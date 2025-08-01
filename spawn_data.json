@@ -1,21 +1,31 @@
 {
-  "name": "Nuttiki",
-  "level": 4,
+  "name": "Rockoon",
+  "level": 59,
   "rarity": "Common",
   "shiny": false,
-  "sprite": "catchmon/Common/Nuttiki.png",
   "stats": {
-    "ATK": 6,
-    "DEF": 11,
-    "SPD": 2,
-    "WIS": 9,
-    "CHA": 20,
-    "LUK": 23
+    "ATK": 15,
+    "DEF": 6,
+    "SPD": 7,
+    "WIS": 12,
+    "CHA": 12,
+    "LUK": 26
   },
-  "result": null,
+  "sprite": "catchmon/Common/Rockoon.png",
+  "stage": 1,
+  "evolution_line": [
+    "Rockoon"
+  ],
+  "categories": [
+    "Common"
+  ],
+  "gesamtpunkte": 5978,
+  "result": "escaped",
   "winner": null,
   "donation": 0,
-  "duration": 3.0,
-  "timestamp": 1748421105,
-  "spawn_start": 1748421105
+  "duration": 5.0,
+  "timestamp": 1754041978795,
+  "spawn_start": 1754041978,
+  "spawn_interval": 15,
+  "SPAWN_INTERVAL": 15
 }

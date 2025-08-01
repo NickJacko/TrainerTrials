@@ -1,0 +1,19 @@
+{
+  "donation": 0,
+  "duration": 3,
+  "level": 4,
+  "name": "Nuttiki",
+  "rarity": "Common",
+  "shiny": false,
+  "spawn_start": 1748421105,
+  "sprite": "catchmon/Common/Nuttiki.png",
+  "stats": {
+    "ATK": 6,
+    "CHA": 20,
+    "DEF": 11,
+    "LUK": 23,
+    "SPD": 2,
+    "WIS": 9
+  },
+  "timestamp": 1748421105
+}
