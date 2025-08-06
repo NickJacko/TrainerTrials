@@ -1,33 +1,33 @@
 {
-  "name": "Psypus",
+  "name": "Rhinubi",
   "level": 1,
   "rarity": "Common",
   "shiny": false,
   "stats": {
-    "ATK": 0,
-    "DEF": 30,
-    "SPD": 2,
-    "WIS": 26,
-    "CHA": 15,
-    "LUK": 26
+    "ATK": 31,
+    "DEF": 25,
+    "SPD": 24,
+    "WIS": 15,
+    "CHA": 10,
+    "LUK": 8
   },
-  "sprite": "catchmon/Common/Psypus.png",
+  "sprite": "catchmon/Common/Rhinubi.png",
   "stage": 1,
   "evolution_line": [
-    "Psypus",
-    "Hypnoctus",
-    "Hypnoctob"
+    "Rhinubi",
+    "Rhynok",
+    "Rharnox"
   ],
   "categories": [
     "Common"
   ],
-  "gesamtpunkte": 199,
-  "result": null,
+  "gesamtpunkte": 213,
+  "result": "escaped",
   "winner": null,
   "donation": 0,
   "duration": 5.0,
-  "timestamp": 1754042860697,
-  "spawn_start": 1754042860,
+  "timestamp": 1754293944432,
+  "spawn_start": 1754293944,
   "spawn_interval": 15,
   "SPAWN_INTERVAL": 15
 }

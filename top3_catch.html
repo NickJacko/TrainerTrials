@@ -5,7 +5,6 @@
   <title>🎯 Top 3 Catchrates</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta http-equiv="refresh" content="30">
-  <script src="utils.js"></script>
   <style>
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -45,35 +44,35 @@
       gap: 5px;
     }
 
-    .rank-entry {
-      display: flex;
+    .player-slot {
+      display: none;
       align-items: center;
       padding: 6px 8px;
       background: rgba(255, 255, 255, 0.15);
       border-radius: 10px;
       box-shadow: 0 1px 6px rgba(0, 0, 0, 0.08);
       border: 1px solid rgba(255, 255, 255, 0.25);
-      transition: transform 0.3s ease; /* 🎯 NUR für Hover-Effekte */
+      transition: transform 0.3s ease;
       position: relative;
       overflow: hidden;
     }
 
-    .rank-entry:hover {
+    .player-slot:hover {
       transform: translateY(-1px);
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
     }
 
-    .rank-entry.rank-1 {
+    .player-slot.gold {
       background: rgba(255, 215, 0, 0.15);
       border: 1px solid rgba(255, 215, 0, 0.4);
     }
 
-    .rank-entry.rank-2 {
+    .player-slot.silver {
       background: rgba(192, 192, 192, 0.15);
       border: 1px solid rgba(192, 192, 192, 0.4);
     }
 
-    .rank-entry.rank-3 {
+    .player-slot.bronze {
       background: rgba(205, 127, 50, 0.15);
       border: 1px solid rgba(205, 127, 50, 0.4);
     }
@@ -132,7 +131,6 @@
       color: #666;
       font-weight: 500;
       line-height: 1;
-      /* 🎯 KEINE Transition - sofortige Text-Updates */
     }
 
     .progress-section {
@@ -156,7 +154,7 @@
       height: 100%;
       border-radius: 15px;
       position: relative;
-      transition: width 0.6s ease-out; /* 🎯 NUR Progress Bar animieren */
+      transition: width 1s ease-out;
       overflow: hidden;
       display: flex;
       align-items: center;
@@ -165,6 +163,7 @@
       font-size: 0.8rem;
       color: #fff;
       text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+      width: 0%;
     }
 
     .progress-bar::before {
@@ -216,10 +215,8 @@
       z-index: 2;
       font-weight: 800;
       font-size: 0.7rem;
-      /* 🎯 KEINE Transition - sofortige Text-Updates */
     }
 
-    /* Donation Tier Styles - Fixed Animation */
     .catcher-name {
       display: inline-block;
       font-weight: bold;
@@ -264,54 +261,6 @@
       padding: 20px;
       font-size: 0.9rem;
     }
-
-    /* Mobile Responsive */
-    @media (max-width: 768px) {
-      .container {
-        margin: 5px;
-        padding: 10px;
-        max-width: 350px;
-      }
-
-      .rank-entry {
-        padding: 6px 10px;
-      }
-
-      h1 {
-        font-size: 1.2rem;
-        margin-bottom: 12px;
-      }
-
-      .rank-number {
-        width: 25px;
-        height: 25px;
-        font-size: 0.8rem;
-      }
-
-      .player-name {
-        font-size: 0.85rem;
-      }
-
-      .player-level {
-        font-size: 0.7rem;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .container {
-        margin: 2px;
-        padding: 8px;
-        max-width: 300px;
-      }
-
-      .progress-container {
-        height: 20px;
-      }
-
-      .progress-bar {
-        font-size: 0.75rem;
-      }
-    }
   </style>
 </head>
 <body>
@@ -323,13 +272,23 @@
   </div>
 
   <script>
-    // 🎯 ANTI-FLICKER SYSTEM
-    let currentDisplayHash = null;
-    let isUpdating = false;
+    // Player-Slots Map - jeder Spieler behält seinen Slot
+    const playerSlots = new Map();
+    let initialized = false;
+    let lastUpdateData = {};
+
+    function getTierClass(donation) {
+      if (donation >= 2500) return 'god';
+      if (donation >= 500) return 'king';
+      if (donation >= 250) return 'diamond';
+      if (donation >= 100) return 'flame';
+      if (donation >= 50) return 'shine';
+      return 'normal';
+    }
 
     function getPlayerLevel(coins) {
       if (coins >= 10000) return 100;
-      if (coins >= 5000) return 80;
+      if (coins >= 5000) return 80;  
       if (coins >= 2500) return 60;
       if (coins >= 1000) return 40;
       if (coins >= 500) return 25;
@@ -339,153 +298,179 @@
       return Math.max(1, Math.floor(coins / 10));
     }
 
-    function getStyledCatcherName(name, donation) {
-      let tier = 'normal';
+    function createPlayerSlot(playerName, playerData) {
+      const container = document.getElementById('rankingsContainer');
       
-      if (donation >= 2500) tier = 'god';
-      else if (donation >= 500) tier = 'king';
-      else if (donation >= 250) tier = 'diamond';
-      else if (donation >= 100) tier = 'flame';
-      else if (donation >= 50) tier = 'shine';
+      const donation = playerData.donation || 0;
+      const level = playerData.level || getPlayerLevel(playerData.coins || 0);
+      const tierClass = getTierClass(donation);
       
-      return `<span class="catcher-name ${tier}">${name}</span>`;
-    }
-
-    function getProgressColorClass(percent) {
-      if (percent >= 15) return 'high';
-      if (percent >= 8) return 'medium';
-      if (percent >= 3) return 'low';
-      return 'very-low';
-    }
-
-    function getRankClass(index) {
-      if (index === 0) return 'gold';
-      if (index === 1) return 'silver';
-      if (index === 2) return 'bronze';
-      return '';
-    }
-
-    // 🎯 HASH-FUNCTION für intelligenten Update-Check
-    function createDisplayHash(entries) {
-      return entries.map(entry => {
-        const percent = (entry.chance * 100).toFixed(1);
-        return `${entry.name}|${percent}|${entry.level}|${entry.likes}|${entry.donation}`;
-      }).join('||');
-    }
-
-    // 🎯 SMART UPDATE: Nur updaten wenn sich was SICHTBARES geändert hat
-    function updateDisplayIfChanged(entries) {
-      const newHash = createDisplayHash(entries);
-      
-      // Prüfe ob sich was geändert hat
-      if (currentDisplayHash === newHash) {
-        console.log('🚫 No visible changes - skipping update');
-        return;
-      }
-      
-      console.log('✅ Changes detected - updating display');
-      console.log(`📊 Old: ${currentDisplayHash}`);
-      console.log(`📊 New: ${newHash}`);
-      
-      currentDisplayHash = newHash;
-      updateDisplay(entries);
-    }
-
-    function updateDisplay(entries) {
-      const container = document.getElementById("rankingsContainer");
-
-      if (entries.length === 0) {
-        container.innerHTML = '<div class="no-data">No active catch attempts...</div>';
-        return;
-      }
-
-      // 🎯 PROGRESSIVE UPDATE: Bestehende Elemente updaten statt neu bauen
-      const existingEntries = container.querySelectorAll('.rank-entry');
-      
-      entries.forEach((entry, index) => {
-        const percent = (entry.chance * 100).toFixed(1);
-        const donation = entry.donation || 0;
-        const level = entry.level || 1;
-        const rankClass = getRankClass(index);
-        const progressColorClass = getProgressColorClass(parseFloat(percent));
-
-        let rankEntry = existingEntries[index];
-        
-        // Wenn Entry nicht existiert, neu erstellen
-        if (!rankEntry) {
-          rankEntry = document.createElement('div');
-          rankEntry.className = `rank-entry rank-${index + 1}`;
-          container.appendChild(rankEntry);
-        }
-        
-        // 🎯 SMART UPDATE: Nur innerHTML wenn nötig
-        const newInnerHTML = `
-          <div class="rank-number ${rankClass}">${index + 1}</div>
-          <div class="player-info">
-            <div class="player-name">${getStyledCatcherName(entry.name, donation)}</div>
-            <div class="player-level">Level ${level} • ${entry.likes} Likes</div>
+      const slot = document.createElement('div');
+      slot.className = 'player-slot';
+      slot.innerHTML = `
+        <div class="rank-number">1</div>
+        <div class="player-info">
+          <div class="player-name">
+            <span class="catcher-name ${tierClass}">${playerName}</span>
           </div>
-          <div class="progress-section">
-            <div class="progress-container">
-              <div class="progress-bar ${progressColorClass}" style="width: ${percent}%;">
-                <span class="percent-text">${percent}%</span>
-              </div>
+          <div class="player-level">Level ${level}</div>
+        </div>
+        <div class="progress-section">
+          <div class="progress-container">
+            <div class="progress-bar very-low">
+              <span class="percent-text">0%</span>
             </div>
           </div>
-        `;
-        
-        // Nur updaten wenn innerHTML unterschiedlich ist
-        if (rankEntry.innerHTML !== newInnerHTML) {
-          rankEntry.innerHTML = newInnerHTML;
+        </div>
+      `;
+      
+      container.appendChild(slot);
+      return slot;
+    }
+
+    function updateProgressOnly(slot, chance) {
+      const percent = (chance * 100).toFixed(1);
+      const progressBar = slot.querySelector('.progress-bar');
+      const percentText = slot.querySelector('.percent-text');
+      
+      // Nur Progress Bar Width ändern - SMOOTH
+      progressBar.style.width = `${percent}%`;
+      
+      // Nur Percent Text ändern
+      percentText.textContent = `${percent}%`;
+      
+      // Progress Bar Farbe basierend auf Prozent
+      let colorClass = 'very-low';
+      const percentNum = parseFloat(percent);
+      if (percentNum >= 15) colorClass = 'high';
+      else if (percentNum >= 8) colorClass = 'medium';
+      else if (percentNum >= 3) colorClass = 'low';
+      
+      if (!progressBar.classList.contains(colorClass)) {
+        progressBar.className = `progress-bar ${colorClass}`;
+      }
+    }
+
+    function updateRankOrder(topPlayers) {
+      const container = document.getElementById('rankingsContainer');
+      
+      // Alle Slots verstecken
+      playerSlots.forEach(slot => {
+        slot.style.display = 'none';
+        slot.className = 'player-slot';
+      });
+      
+      // Top 3 anzeigen und sortieren
+      topPlayers.slice(0, 3).forEach((player, index) => {
+        const slot = playerSlots.get(player.name);
+        if (slot) {
+          const rank = index + 1;
+          const rankClasses = ['', 'gold', 'silver', 'bronze'];
+          
+          // Slot styling für Rank
+          slot.className = `player-slot ${rankClasses[rank]}`;
+          slot.style.display = 'flex';
+          slot.style.order = rank;
+          
+          // Rank Number updaten
+          const rankNumber = slot.querySelector('.rank-number');
+          rankNumber.textContent = rank;
+          rankNumber.className = `rank-number ${rankClasses[rank]}`;
+          
+          // Nur Progress updaten - KEIN anderer Content
+          updateProgressOnly(slot, player.chance);
         }
       });
+    }
 
-      // 🎯 CLEANUP: Überschüssige Entries entfernen
-      for (let i = entries.length; i < existingEntries.length; i++) {
-        existingEntries[i].remove();
+    function showNoDataMessage() {
+      const container = document.getElementById('rankingsContainer');
+      if (!container.querySelector('.no-data')) {
+        const msg = document.createElement('div');
+        msg.className = 'no-data';
+        msg.textContent = 'No active catch attempts...';
+        container.appendChild(msg);
       }
+    }
 
-      console.log(`✅ Display updated with ${entries.length} entries`);
+    function hideNoDataMessage() {
+      const container = document.getElementById('rankingsContainer');
+      const msg = container.querySelector('.no-data');
+      if (msg) msg.remove();
     }
 
     async function updateCatchrates() {
-      if (isUpdating) return;
-      isUpdating = true;
-
       try {
-        const catchChanceRes = await fetch("catch_chances.json?" + Date.now());
-        if (!catchChanceRes.ok) {
-          isUpdating = false;
-          return;
+        const response = await fetch(`catch_chances.json?_=${Date.now()}`);
+        if (!response.ok) return;
+        
+        const data = await response.json();
+        
+        // ANTI-FLICKER: Ignoriere leere oder ungültige Daten
+        if (!data || Object.keys(data).length === 0) {
+          console.log('🚫 Ignoring empty data - keeping current display');
+          return; // Behalte aktuelle Anzeige
+        }
+        
+        // ANTI-FLICKER: Ignoriere Daten ohne aktive Spieler
+        const hasValidPlayers = Object.values(data).some(info => 
+          info && info.likes > 0 && info.chance > 0
+        );
+        
+        if (!hasValidPlayers) {
+          console.log('🚫 Ignoring data with no valid players - keeping current display');
+          return; // Behalte aktuelle Anzeige
+        }
+        
+        // Prüfe ob sich Daten wirklich geändert haben
+        const dataString = JSON.stringify(data);
+        if (dataString === JSON.stringify(lastUpdateData)) {
+          return; // Keine Änderung
+        }
+        lastUpdateData = data;
+        
+        const validPlayers = Object.entries(data)
+          .filter(([name, info]) => info && info.likes > 0 && info.chance > 0)
+          .map(([name, info]) => ({
+            name,
+            chance: info.chance,
+            likes: info.likes,
+            donation: info.donation || 0,
+            level: info.level || getPlayerLevel(info.coins || 0),
+            coins: info.coins || 0
+          }))
+          .sort((a, b) => b.chance - a.chance);
+
+        // ZUSÄTZLICHE SICHERHEIT: Minimum-Check
+        if (validPlayers.length === 0) {
+          console.log('🚫 No valid players after filtering - keeping current display');
+          return; // Behalte aktuelle Anzeige statt alles zu verstecken
         }
 
-        const catchChances = await catchChanceRes.json();
+        hideNoDataMessage();
+        
+        // Erstelle neue Player-Slots falls nötig (nur einmal)
+        validPlayers.forEach(player => {
+          if (!playerSlots.has(player.name)) {
+            const slot = createPlayerSlot(player.name, player);
+            playerSlots.set(player.name, slot);
+          }
+        });
 
-        const topEntries = Object.entries(catchChances)
-          .map(([name, data]) => ({ 
-            name, 
-            chance: data.chance,
-            likes: data.likes,
-            donation: data.donation,
-            level: data.level || getPlayerLevel(data.coins || 0)
-          }))
-          .sort((a, b) => b.chance - a.chance)
-          .slice(0, 3);
-
-        // 🎯 INTELLIGENT UPDATE: Nur bei sichtbaren Änderungen
-        updateDisplayIfChanged(topEntries);
-
+        // Update nur Ranking und Progress
+        updateRankOrder(validPlayers);
+        
+        console.log(`✅ Updated display with ${validPlayers.length} players`);
+        
       } catch (error) {
-        console.warn("Error loading catchrates:", error);
+        console.log('🚫 JSON parsing error - keeping current display');
+        // Bei JSON-Parse-Fehlern: Aktuelle Anzeige behalten
       }
-
-      isUpdating = false;
     }
 
-    console.log('🎯 Starting Anti-Flicker Top3 Catchrates');
-    
+    // System starten
     updateCatchrates();
-    setInterval(updateCatchrates, 500);
+    setInterval(updateCatchrates, 800);
   </script>
 </body>
 </html>

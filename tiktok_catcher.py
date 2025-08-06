@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-🎯 TikTok Catchmon Game - Firebase Version
+🎯 TikTok Catchmon Game - Firebase Version (Anti-Flicker Fixed)
 Vollständig auf Firebase Realtime Database umgestellt
+FIXED: Atomic JSON writing verhindert Flackern in OBS Overlays
 
 Abhängigkeiten:
 pip install firebase-admin TikTokLive
@@ -18,6 +19,8 @@ import random
 import threading
 import asyncio
 import json
+import os
+import tempfile
 from collections import deque
 from TikTokLive import TikTokLiveClient
 from TikTokLive.events import LikeEvent, ConnectEvent
@@ -68,6 +71,46 @@ if not TESTMODE:
         username = event.user.nickname
         print(f"❤️ @{username} hat geliked!")
         on_like_event(username)
+
+# 🛡️ ATOMIC FILE WRITING - Verhindert Flackern
+def atomic_write_json(filename: str, data: dict, indent: int = 2):
+    """
+    Schreibt JSON atomic - Datei ist niemals leer/korrupt
+    Verhindert Flackern in OBS Overlays
+    """
+    try:
+        # Erstelle temporäre Datei im gleichen Verzeichnis
+        temp_dir = os.path.dirname(os.path.abspath(filename))
+        temp_fd, temp_path = tempfile.mkstemp(dir=temp_dir, suffix='.tmp')
+        
+        try:
+            with os.fdopen(temp_fd, 'w', encoding='utf-8') as temp_file:
+                json.dump(data, temp_file, indent=indent, ensure_ascii=False)
+            
+            # Atomic rename - garantiert keine leere/korrupte Datei
+            if os.name == 'nt':  # Windows
+                try:
+                    os.remove(filename)
+                except FileNotFoundError:
+                    pass
+            os.rename(temp_path, filename)
+            
+        except Exception:
+            # Cleanup bei Fehler
+            try:
+                os.unlink(temp_path)
+            except:
+                pass
+            raise
+            
+    except Exception as e:
+        print(f"❌ Fehler beim atomic write von {filename}: {e}")
+        # Fallback zu normalem write
+        try:
+            with open(filename, "w", encoding="utf-8") as f:
+                json.dump(data, f, indent=indent, ensure_ascii=False)
+        except Exception as e2:
+            print(f"❌ Auch Fallback-Write fehlgeschlagen: {e2}")
 
 # 🧪 TEST-MODUS SIMULATION
 def simulate_like():
@@ -136,7 +179,7 @@ def trigger_donation_animation(donor_name: str, amount: int):
         trainer_data = db.get_trainer_data(donor_name)
         total_donation = trainer_data.get('donation', 0)
         
-        # Animation-Trigger-Datei für OBS erstellen
+        # Animation-Trigger-Datei für OBS erstellen - ATOMIC WRITE
         animation_data = {
             "donor": donor_name,
             "amount": amount,
@@ -144,8 +187,7 @@ def trigger_donation_animation(donor_name: str, amount: int):
             "timestamp": time.time()
         }
         
-        with open("donation_trigger.json", "w", encoding="utf-8") as f:
-            json.dump(animation_data, f, ensure_ascii=False, indent=2)
+        atomic_write_json("donation_trigger.json", animation_data)
         
         print(f"🎬 Spenden-Animation für {donor_name} ({amount} Coins, Total: {total_donation}) ausgelöst!")
         
@@ -165,10 +207,10 @@ def on_like_event(username: str):
         # Global Stats aktualisieren (Firebase - für Lifetime Stats)
         db.increment_global_stat('total_likes_ever')
         
-        # Global Level JSON für OBS aktualisieren
+        # Global Level JSON für OBS aktualisieren - ATOMIC WRITE
         update_global_level_json()
         
-        # FANGCHANCEN SOFORT AKTUALISIEREN
+        # FANGCHANCEN SOFORT AKTUALISIEREN - ATOMIC WRITE
         update_catch_chances_live()
         
         print(f"👍 {username}: +{COINS_PER_LIKE} Coins | Session-Likes: {user_like_counts[username]} | Total Participants: {len(active_participants)}")
@@ -177,23 +219,26 @@ def on_like_event(username: str):
         print(f"❌ Fehler beim Like-Event für {username}: {e}")
 
 def update_global_level_json():
-    """Aktualisiert global_level.json für OBS"""
+    """Aktualisiert global_level.json für OBS - ATOMIC WRITE"""
     try:
         global_stats = db.get_global_stats()
         level_data = {"global_likes": global_stats.get("total_likes_ever", 0)}
         
-        with open("global_level.json", "w", encoding="utf-8") as f:
-            json.dump(level_data, f, indent=2)
+        atomic_write_json("global_level.json", level_data)
+        
     except Exception as e:
         print(f"❌ Fehler beim Update von global_level.json: {e}")
 
 def update_catch_chances_live():
-    """Aktualisiert Fangchancen in Echtzeit für aktuelle Session"""
+    """
+    🛡️ ANTI-FLICKER VERSION
+    Aktualisiert Fangchancen in Echtzeit für aktuelle Session
+    Verwendet atomic writing um Flackern zu verhindern
+    """
     try:
         if not current_catchmon or not active_participants:
-            # Leere Fangchancen wenn kein Spawn oder keine Teilnehmer
-            with open("catch_chances.json", "w", encoding="utf-8") as f:
-                json.dump({}, f)
+            # Leere Fangchancen wenn kein Spawn oder keine Teilnehmer - ATOMIC WRITE
+            atomic_write_json("catch_chances.json", {})
             return
 
         # Like-Daten mit Multiplikatoren sammeln (NUR Session-Likes!)
@@ -244,23 +289,21 @@ def update_catch_chances_live():
                 "coins": trainer_data.get("coins", 0)  # Für Level-Berechnung
             }
 
-        # Fangchancen-Datei für top3_catch.html aktualisieren
-        with open("catch_chances.json", "w", encoding="utf-8") as f:
-            json.dump(detailed_chances, f, indent=2, ensure_ascii=False)
+        # 🛡️ ATOMIC WRITE - Verhindert Flackern in top3_catch.html
+        atomic_write_json("catch_chances.json", detailed_chances)
             
-        print(f"📊 Fangchancen aktualisiert: {len(detailed_chances)} Teilnehmer, {global_likes} gewichtete Likes")
+        print(f"📊 Fangchancen atomic aktualisiert: {len(detailed_chances)} Teilnehmer, {global_likes} gewichtete Likes")
             
     except Exception as e:
         print(f"❌ Fehler beim Update der Fangchancen: {e}")
-        # Fallback: Leere Datei erstellen
+        # Fallback: Leere Datei erstellen - ATOMIC WRITE
         try:
-            with open("catch_chances.json", "w", encoding="utf-8") as f:
-                json.dump({}, f)
+            atomic_write_json("catch_chances.json", {})
         except:
             pass
 
 def save_spawn_data_to_json(catchmon: dict, result: str = None, winner: str = None, donation: int = 0, duration: float = DEFAULT_ANIMATION_DURATION):
-    """Speichert Spawn-Daten als JSON für OBS-Kompatibilität mit korrektem Timestamp"""
+    """Speichert Spawn-Daten als JSON für OBS-Kompatibilität - ATOMIC WRITE"""
     try:
         current_time_ms = int(time.time() * 1000)
         current_time_s = int(time.time())
@@ -277,10 +320,10 @@ def save_spawn_data_to_json(catchmon: dict, result: str = None, winner: str = No
             "SPAWN_INTERVAL": SPAWN_INTERVAL   # Zusätzlich für Kompatibilität
         }
         
-        with open("spawn_data.json", "w", encoding="utf-8") as f:
-            json.dump(spawn_data, f, indent=2, ensure_ascii=False)
+        # ATOMIC WRITE
+        atomic_write_json("spawn_data.json", spawn_data)
             
-        print(f"📄 spawn_data.json aktualisiert: {catchmon['name']} (spawn_start: {current_time_s}, interval: {SPAWN_INTERVAL}s)")
+        print(f"📄 spawn_data.json atomic aktualisiert: {catchmon['name']} (spawn_start: {current_time_s}, interval: {SPAWN_INTERVAL}s)")
             
     except Exception as e:
         print(f"❌ Fehler beim Speichern der Spawn-Daten: {e}")
@@ -299,25 +342,25 @@ def process_spawn_result():
             # Firebase Spawn-Ergebnis setzen
             db.set_spawn_result("escaped", duration=DEFAULT_ANIMATION_DURATION)
             
-            # JSON für OBS
+            # JSON für OBS - ATOMIC UPDATE
             try:
+                # Bestehende Daten lesen
                 with open("spawn_data.json", "r", encoding="utf-8") as f:
                     existing_data = json.load(f)
                 existing_data.update({
                     "result": "escaped",
                     "duration": DEFAULT_ANIMATION_DURATION
                 })
-                with open("spawn_data.json", "w", encoding="utf-8") as f:
-                    json.dump(existing_data, f, indent=2, ensure_ascii=False)
-                print(f"📄 spawn_data.json aktualisiert: escaped (keine Teilnehmer)")
+                # ATOMIC WRITE
+                atomic_write_json("spawn_data.json", existing_data)
+                print(f"📄 spawn_data.json atomic aktualisiert: escaped (keine Teilnehmer)")
             except Exception as e:
                 print(f"❌ Fehler beim Aktualisieren der spawn_data.json: {e}")
                 # Fallback
                 save_spawn_data_to_json(current_catchmon, result="escaped", duration=DEFAULT_ANIMATION_DURATION)
             
-            # Leere Fangchancen für Overlay
-            with open("catch_chances.json", "w", encoding="utf-8") as f:
-                json.dump({}, f)
+            # Leere Fangchancen für Overlay - ATOMIC WRITE
+            atomic_write_json("catch_chances.json", {})
             
             return DEFAULT_ANIMATION_DURATION
         
@@ -348,9 +391,8 @@ def process_spawn_result():
         global_likes = sum(entry["likes"] * entry["multiplier"] for entry in like_data.values())
         chances = calculate_catch_chance(current_catchmon, like_data, global_likes)
 
-        # Fangchancen für OBS speichern
-        with open("catch_chances.json", "w", encoding="utf-8") as f:
-            json.dump(chances, f, indent=2, ensure_ascii=False)
+        # Fangchancen für OBS speichern - ATOMIC WRITE
+        atomic_write_json("catch_chances.json", chances)
 
         # Gewinner ermitteln
         winner = roll_catch(chances)
@@ -393,7 +435,7 @@ def process_spawn_result():
             # Firebase Spawn-Ergebnis setzen
             db.set_spawn_result("escaped", duration=DEFAULT_ANIMATION_DURATION)
             
-            # JSON für OBS (mit Verzögerung für Animation) - BEHALTE spawn_start!
+            # JSON für OBS (mit Verzögerung für Animation) - ATOMIC WRITE
             def delayed_escape():
                 time.sleep(0.3)
                 try:
@@ -403,9 +445,9 @@ def process_spawn_result():
                         "result": "escaped",
                         "duration": DEFAULT_ANIMATION_DURATION
                     })
-                    with open("spawn_data.json", "w", encoding="utf-8") as f:
-                        json.dump(existing_data, f, indent=2, ensure_ascii=False)
-                    print(f"📄 spawn_data.json aktualisiert: escaped")
+                    # ATOMIC WRITE
+                    atomic_write_json("spawn_data.json", existing_data)
+                    print(f"📄 spawn_data.json atomic aktualisiert: escaped")
                 except Exception as e:
                     print(f"❌ Fehler beim Aktualisieren der spawn_data.json: {e}")
                     # Fallback
@@ -428,11 +470,10 @@ def reset_session_data():
     user_like_counts.clear()
     active_participants.clear()
     
-    # Fangchancen-Datei leeren
+    # Fangchancen-Datei leeren - ATOMIC WRITE
     try:
-        with open("catch_chances.json", "w", encoding="utf-8") as f:
-            json.dump({}, f)
-        print("✅ catch_chances.json geleert")
+        atomic_write_json("catch_chances.json", {})
+        print("✅ catch_chances.json atomic geleert")
     except Exception as e:
         print(f"❌ Fehler beim Leeren der catch_chances.json: {e}")
     
@@ -471,19 +512,21 @@ def start_tiktok_listener():
     asyncio.run(client.run())
 
 def init_donation_trigger():
-    """Initialisiert donation_trigger.json falls nicht vorhanden"""
+    """Initialisiert donation_trigger.json falls nicht vorhanden - ATOMIC WRITE"""
     try:
         with open("donation_trigger.json", "r", encoding="utf-8") as f:
             pass  # Datei existiert bereits
     except FileNotFoundError:
-        with open("donation_trigger.json", "w", encoding="utf-8") as f:
-            json.dump({"donor": None, "amount": 0, "total_donation": 0, "timestamp": 0}, f)
+        initial_data = {"donor": None, "amount": 0, "total_donation": 0, "timestamp": 0}
+        atomic_write_json("donation_trigger.json", initial_data)
 
 # 🚀 HAUPTPROGRAMM
 
 def main():
     """Hauptprogramm"""
     global current_catchmon, last_spawn_time, evaluated, animation_end_time
+    
+    print("🛡️ ANTI-FLICKER VERSION - Atomic JSON Writing aktiv!")
     
     # Initialisierung
     init_donation_trigger()
@@ -530,7 +573,7 @@ def main():
                 db.set_current_spawn(current_catchmon)
                 db.increment_global_stat('total_spawns')
                 
-                # JSON für OBS erstellen
+                # JSON für OBS erstellen - ATOMIC WRITE
                 save_spawn_data_to_json(current_catchmon)
                 
                 # Session-Likes zurücksetzen
@@ -545,7 +588,7 @@ def main():
                 print(f"\n⏰ Spawn-Timer abgelaufen! Werte aus...")
                 print(f"📊 Session-Stats: {len(active_participants)} Teilnehmer, {sum(user_like_counts.values())} Session-Likes")
                 
-                # Finale Fangchancen berechnen und anzeigen
+                # Finale Fangchancen berechnen und anzeigen - ATOMIC WRITE
                 update_catch_chances_live()
                 
                 # Top 3 Teilnehmer anzeigen
@@ -577,7 +620,7 @@ def main():
                 current_catchmon = None
                 evaluated = False
 
-            # Fangchancen live aktualisieren
+            # Fangchancen live aktualisieren - ATOMIC WRITE
             update_catch_chances_live()
             
             time.sleep(1)
