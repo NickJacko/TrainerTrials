@@ -196,7 +196,7 @@
     </div>
   </div>
 
-  <button class="refresh-fab" onclick="forceRefresh()" title="Refresh Rankings">🔄</button>
+  <button class="refresh-fab" id="refreshFab" title="Refresh Rankings">🔄</button>
 
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
@@ -385,6 +385,7 @@
       renderTable();
     });
     document.getElementById('searchInput').addEventListener('keyup', filterTable);
+    document.getElementById('refreshFab').addEventListener('click', forceRefresh);
     console.log('🔥 Catcher Ranking loaded — XSS-safe, Firebase realtime');
   </script>
 </body>

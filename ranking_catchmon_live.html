@@ -175,7 +175,7 @@
     </div>
   </div>
 
-  <button class="refresh-fab" onclick="forceRefresh()" title="Refresh Rankings">🔄</button>
+  <button class="refresh-fab" id="refreshFab" title="Refresh Rankings">🔄</button>
 
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
@@ -358,6 +358,7 @@
       window.renderTable();
     });
     document.getElementById('caughtOnly').addEventListener('change', window.renderTable);
+    document.getElementById('refreshFab').addEventListener('click', forceRefresh);
     console.log('🔥 Catchmon Ranking loaded — XSS-safe, Firebase realtime');
   </script>
 </body>
