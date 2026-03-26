@@ -4,6 +4,7 @@
 
 import { initializeApp, getApps } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
 import { getDatabase } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+import { initializeAppCheck, ReCaptchaV3Provider } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app-check.js';
 
 const firebaseConfig = {
   apiKey: "AIzaSyDdStpC5rVtgaZ4XvtKLwQttnyIDXL2z7Q",
@@ -17,6 +18,13 @@ const firebaseConfig = {
 
 // Prevent duplicate app initialization
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
+
+// App Check with reCAPTCHA v3
+initializeAppCheck(app, {
+  provider: new ReCaptchaV3Provider('6LdxDpksAAAAAJV4kudD2q9B3N6tQieOB4_R-Kns'),
+  isTokenAutoRefreshEnabled: true
+});
+
 const db = getDatabase(app);
 
 export { app, db };
