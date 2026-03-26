@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <title>🎯 Top 3 Catchrates</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta http-equiv="refresh" content="30">
   <style>
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -18,12 +17,12 @@
     .container {
       max-width: 320px;
       margin: 0 auto;
-      background: rgba(255, 255, 255, 0.12);
+      background: rgba(255,255,255,0.12);
       backdrop-filter: blur(6px);
       border-radius: 12px;
       padding: 8px;
-      box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
     }
 
     h1 {
@@ -34,120 +33,57 @@
       background-clip: text;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      text-shadow: 0 1px 2px rgba(0,0,0,0.1);
       letter-spacing: 0.5px;
     }
 
-    .rankings {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-    }
+    .rankings { display: flex; flex-direction: column; gap: 5px; }
 
     .player-slot {
       display: none;
       align-items: center;
       padding: 6px 8px;
-      background: rgba(255, 255, 255, 0.15);
+      background: rgba(255,255,255,0.15);
       border-radius: 10px;
-      box-shadow: 0 1px 6px rgba(0, 0, 0, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.25);
+      box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+      border: 1px solid rgba(255,255,255,0.25);
       transition: transform 0.3s ease;
       position: relative;
       overflow: hidden;
     }
 
-    .player-slot:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-    }
-
-    .player-slot.gold {
-      background: rgba(255, 215, 0, 0.15);
-      border: 1px solid rgba(255, 215, 0, 0.4);
-    }
-
-    .player-slot.silver {
-      background: rgba(192, 192, 192, 0.15);
-      border: 1px solid rgba(192, 192, 192, 0.4);
-    }
-
-    .player-slot.bronze {
-      background: rgba(205, 127, 50, 0.15);
-      border: 1px solid rgba(205, 127, 50, 0.4);
-    }
+    .player-slot:hover { transform: translateY(-1px); box-shadow: 0 4px 15px rgba(0,0,0,0.15); }
+    .player-slot.gold { background: rgba(255,215,0,0.15); border: 1px solid rgba(255,215,0,0.4); }
+    .player-slot.silver { background: rgba(192,192,192,0.15); border: 1px solid rgba(192,192,192,0.4); }
+    .player-slot.bronze { background: rgba(205,127,50,0.15); border: 1px solid rgba(205,127,50,0.4); }
 
     .rank-number {
-      width: 24px;
-      height: 24px;
+      width: 24px; height: 24px;
       border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 800;
-      font-size: 0.8rem;
-      margin-right: 8px;
-      flex-shrink: 0;
-      box-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);
-      border: 1px solid rgba(255, 255, 255, 0.6);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 0.8rem;
+      margin-right: 8px; flex-shrink: 0;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.2);
+      border: 1px solid rgba(255,255,255,0.6);
     }
 
-    .rank-number.gold {
-      background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
-      color: #fff;
-      text-shadow: 0 1px 2px rgba(0,0,0,0.3);
-    }
+    .rank-number.gold { background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%); color: #fff; }
+    .rank-number.silver { background: linear-gradient(135deg, #C0C0C0 0%, #A8A8A8 100%); color: #333; }
+    .rank-number.bronze { background: linear-gradient(135deg, #CD7F32 0%, #B8860B 100%); color: #fff; }
 
-    .rank-number.silver {
-      background: linear-gradient(135deg, #C0C0C0 0%, #A8A8A8 100%);
-      color: #333;
-      text-shadow: 0 1px 2px rgba(255,255,255,0.5);
-    }
+    .player-info { flex: 1; display: flex; flex-direction: column; align-items: flex-start; margin-right: 8px; }
+    .player-name { font-size: 0.8rem; font-weight: 700; margin-bottom: 1px; text-align: left; line-height: 1; }
+    .player-level { font-size: 0.65rem; color: #666; font-weight: 500; line-height: 1; }
 
-    .rank-number.bronze {
-      background: linear-gradient(135deg, #CD7F32 0%, #B8860B 100%);
-      color: #fff;
-      text-shadow: 0 1px 2px rgba(0,0,0,0.3);
-    }
-
-    .player-info {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      margin-right: 8px;
-    }
-
-    .player-name {
-      font-size: 0.8rem;
-      font-weight: 700;
-      margin-bottom: 1px;
-      text-align: left;
-      line-height: 1;
-    }
-
-    .player-level {
-      font-size: 0.65rem;
-      color: #666;
-      font-weight: 500;
-      line-height: 1;
-    }
-
-    .progress-section {
-      flex: 1.5;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
+    .progress-section { flex: 1.5; display: flex; flex-direction: column; gap: 4px; }
 
     .progress-container {
       position: relative;
-      background: rgba(255, 255, 255, 0.3);
+      background: rgba(255,255,255,0.3);
       border-radius: 12px;
       height: 18px;
       overflow: hidden;
-      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+      border: 1px solid rgba(255,255,255,0.3);
     }
 
     .progress-bar {
@@ -156,11 +92,8 @@
       position: relative;
       transition: width 1s ease-out;
       overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      font-size: 0.8rem;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 0.8rem;
       color: #fff;
       text-shadow: 0 1px 2px rgba(0,0,0,0.4);
       width: 0%;
@@ -169,98 +102,37 @@
     .progress-bar::before {
       content: '';
       position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(
-        90deg,
-        rgba(255, 255, 255, 0) 0%,
-        rgba(255, 255, 255, 0.4) 30%,
-        rgba(255, 255, 255, 0.6) 50%,
-        rgba(255, 255, 255, 0.4) 70%,
-        rgba(255, 255, 255, 0) 100%
-      );
+      top: 0; left: -100%;
+      width: 100%; height: 100%;
+      background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 30%, rgba(255,255,255,0.6) 50%, rgba(255,255,255,0.4) 70%, rgba(255,255,255,0) 100%);
       animation: shimmer 3s ease-in-out infinite;
     }
 
-    @keyframes shimmer {
-      0% { left: -100%; }
-      50% { left: 100%; }
-      100% { left: 100%; }
-    }
+    @keyframes shimmer { 0% { left: -100%; } 50% { left: 100%; } 100% { left: 100%; } }
 
-    .progress-bar.high {
-      background: linear-gradient(135deg, #4CAF50 0%, #45a049 50%, #66BB6A 100%);
-      box-shadow: 0 0 20px rgba(76, 175, 80, 0.3);
-    }
+    .progress-bar.high { background: linear-gradient(135deg, #4CAF50 0%, #45a049 50%, #66BB6A 100%); box-shadow: 0 0 20px rgba(76,175,80,0.3); }
+    .progress-bar.medium { background: linear-gradient(135deg, #FF9800 0%, #F57C00 50%, #FFB74D 100%); box-shadow: 0 0 20px rgba(255,152,0,0.3); }
+    .progress-bar.low { background: linear-gradient(135deg, #2196F3 0%, #1976D2 50%, #64B5F6 100%); box-shadow: 0 0 20px rgba(33,150,243,0.3); }
+    .progress-bar.very-low { background: linear-gradient(135deg, #9E9E9E 0%, #757575 50%, #BDBDBD 100%); }
 
-    .progress-bar.medium {
-      background: linear-gradient(135deg, #FF9800 0%, #F57C00 50%, #FFB74D 100%);
-      box-shadow: 0 0 20px rgba(255, 152, 0, 0.3);
-    }
-
-    .progress-bar.low {
-      background: linear-gradient(135deg, #2196F3 0%, #1976D2 50%, #64B5F6 100%);
-      box-shadow: 0 0 20px rgba(33, 150, 243, 0.3);
-    }
-
-    .progress-bar.very-low {
-      background: linear-gradient(135deg, #9E9E9E 0%, #757575 50%, #BDBDBD 100%);
-      box-shadow: 0 0 20px rgba(158, 158, 158, 0.3);
-    }
-
-    .percent-text {
-      position: relative;
-      z-index: 2;
-      font-weight: 800;
-      font-size: 0.7rem;
-    }
+    .percent-text { position: relative; z-index: 2; font-weight: 800; font-size: 0.7rem; }
 
     .catcher-name {
-      display: inline-block;
-      font-weight: bold;
+      display: inline-block; font-weight: bold;
       background-size: 200% auto;
-      background-clip: text;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
       animation: shine 3s linear infinite;
     }
 
-    .king, .god {
-      background-image: linear-gradient(90deg, #ffd700, #ffffff, #ffd700);
-    }
-    .flame {
-      background-image: linear-gradient(90deg, #ff0000, #ffffff, #ff0000);
-    }
-    .diamond {
-      background-image: linear-gradient(90deg, #00bfff, #ffffff, #00bfff);
-    }
-    .shine {
-      background-image: linear-gradient(90deg, #32cd32, #ffffff, #32cd32);
-    }
-    .normal {
-      color: #2c3e50;
-      text-shadow: none;
-      font-weight: 700;
-      background: none;
-      -webkit-text-fill-color: inherit;
-      background-clip: unset;
-      animation: none;
-    }
+    .king, .god { background-image: linear-gradient(90deg, #ffd700, #ffffff, #ffd700); }
+    .flame { background-image: linear-gradient(90deg, #ff0000, #ffffff, #ff0000); }
+    .diamond { background-image: linear-gradient(90deg, #00bfff, #ffffff, #00bfff); }
+    .shine { background-image: linear-gradient(90deg, #32cd32, #ffffff, #32cd32); }
+    .normal { color: #2c3e50; font-weight: 700; background: none; -webkit-text-fill-color: inherit; background-clip: unset; animation: none; }
 
-    @keyframes shine {
-      0% { background-position: 0% 50%; }
-      100% { background-position: 200% 50%; }
-    }
+    @keyframes shine { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
 
-    .no-data {
-      text-align: center;
-      color: #666;
-      font-style: italic;
-      padding: 20px;
-      font-size: 0.9rem;
-    }
+    .no-data { text-align: center; color: #666; font-style: italic; padding: 20px; font-size: 0.9rem; }
   </style>
 </head>
 <body>
@@ -271,11 +143,29 @@
     </div>
   </div>
 
-  <script>
-    // Player-Slots Map - jeder Spieler behält seinen Slot
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+    import { getDatabase, ref, onValue } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDdStpC5rVtgaZ4XvtKLwQttnyIDXL2z7Q",
+      authDomain: "trainertrials.firebaseapp.com",
+      databaseURL: "https://trainertrials-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "trainertrials",
+      storageBucket: "trainertrials.firebasestorage.app",
+      messagingSenderId: "22071275267",
+      appId: "1:22071275267:web:92e82d6bfaee169aff8336"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
     const playerSlots = new Map();
-    let initialized = false;
-    let lastUpdateData = {};
+
+    function escapeHtml(input) {
+      const s = String(input ?? "");
+      return s.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#39;");
+    }
 
     function getTierClass(donation) {
       if (donation >= 2500) return 'god';
@@ -286,44 +176,25 @@
       return 'normal';
     }
 
-    function getPlayerLevel(coins) {
-      if (coins >= 10000) return 100;
-      if (coins >= 5000) return 80;  
-      if (coins >= 2500) return 60;
-      if (coins >= 1000) return 40;
-      if (coins >= 500) return 25;
-      if (coins >= 250) return 15;
-      if (coins >= 100) return 10;
-      if (coins >= 50) return 5;
-      return Math.max(1, Math.floor(coins / 10));
-    }
-
     function createPlayerSlot(playerName, playerData) {
       const container = document.getElementById('rankingsContainer');
-      
-      const donation = playerData.donation || 0;
-      const level = playerData.level || getPlayerLevel(playerData.coins || 0);
-      const tierClass = getTierClass(donation);
-      
+      const tierClass = getTierClass(playerData.donation || 0);
+      const level = playerData.level || 1;
+
       const slot = document.createElement('div');
       slot.className = 'player-slot';
       slot.innerHTML = `
         <div class="rank-number">1</div>
         <div class="player-info">
-          <div class="player-name">
-            <span class="catcher-name ${tierClass}">${playerName}</span>
-          </div>
+          <div class="player-name"><span class="catcher-name ${tierClass}">${escapeHtml(playerName)}</span></div>
           <div class="player-level">Level ${level}</div>
         </div>
         <div class="progress-section">
           <div class="progress-container">
-            <div class="progress-bar very-low">
-              <span class="percent-text">0%</span>
-            </div>
+            <div class="progress-bar very-low"><span class="percent-text">0%</span></div>
           </div>
         </div>
       `;
-      
       container.appendChild(slot);
       return slot;
     }
@@ -332,145 +203,88 @@
       const percent = (chance * 100).toFixed(1);
       const progressBar = slot.querySelector('.progress-bar');
       const percentText = slot.querySelector('.percent-text');
-      
-      // Nur Progress Bar Width ändern - SMOOTH
       progressBar.style.width = `${percent}%`;
-      
-      // Nur Percent Text ändern
       percentText.textContent = `${percent}%`;
-      
-      // Progress Bar Farbe basierend auf Prozent
-      let colorClass = 'very-low';
+
       const percentNum = parseFloat(percent);
+      let colorClass = 'very-low';
       if (percentNum >= 15) colorClass = 'high';
       else if (percentNum >= 8) colorClass = 'medium';
       else if (percentNum >= 3) colorClass = 'low';
-      
+
       if (!progressBar.classList.contains(colorClass)) {
         progressBar.className = `progress-bar ${colorClass}`;
       }
     }
 
-    function updateRankOrder(topPlayers) {
+    function renderRankings(trainersData) {
       const container = document.getElementById('rankingsContainer');
-      
-      // Alle Slots verstecken
+
+      if (!trainersData) {
+        container.innerHTML = '<div class="no-data">No active catch attempts...</div>';
+        return;
+      }
+
+      // Build catch chance list from trainer data
+      const validPlayers = Object.entries(trainersData)
+        .filter(([, info]) => info && (info.catch_chance || 0) > 0)
+        .map(([id, info]) => ({
+          name: info.display_name || id,
+          chance: info.catch_chance || 0,
+          donation: info.donation || 0,
+          level: info.level || 1
+        }))
+        .sort((a, b) => b.chance - a.chance);
+
+      if (validPlayers.length === 0) {
+        container.innerHTML = '<div class="no-data">No active catch attempts...</div>';
+        playerSlots.clear();
+        return;
+      }
+
+      // Remove no-data message if present
+      const noData = container.querySelector('.no-data');
+      if (noData) noData.remove();
+
+      // Create slots for new players
+      validPlayers.forEach(player => {
+        if (!playerSlots.has(player.name)) {
+          const slot = createPlayerSlot(player.name, player);
+          playerSlots.set(player.name, slot);
+        }
+      });
+
+      // Hide all slots
       playerSlots.forEach(slot => {
         slot.style.display = 'none';
         slot.className = 'player-slot';
       });
-      
-      // Top 3 anzeigen und sortieren
-      topPlayers.slice(0, 3).forEach((player, index) => {
+
+      // Show top 3
+      const rankClasses = ['', 'gold', 'silver', 'bronze'];
+      validPlayers.slice(0, 3).forEach((player, index) => {
         const slot = playerSlots.get(player.name);
-        if (slot) {
-          const rank = index + 1;
-          const rankClasses = ['', 'gold', 'silver', 'bronze'];
-          
-          // Slot styling für Rank
-          slot.className = `player-slot ${rankClasses[rank]}`;
-          slot.style.display = 'flex';
-          slot.style.order = rank;
-          
-          // Rank Number updaten
-          const rankNumber = slot.querySelector('.rank-number');
-          rankNumber.textContent = rank;
-          rankNumber.className = `rank-number ${rankClasses[rank]}`;
-          
-          // Nur Progress updaten - KEIN anderer Content
-          updateProgressOnly(slot, player.chance);
-        }
+        if (!slot) return;
+        const rank = index + 1;
+        slot.className = `player-slot ${rankClasses[rank]}`;
+        slot.style.display = 'flex';
+        slot.style.order = rank;
+
+        const rankNumber = slot.querySelector('.rank-number');
+        rankNumber.textContent = rank;
+        rankNumber.className = `rank-number ${rankClasses[rank]}`;
+
+        updateProgressOnly(slot, player.chance);
       });
     }
 
-    function showNoDataMessage() {
-      const container = document.getElementById('rankingsContainer');
-      if (!container.querySelector('.no-data')) {
-        const msg = document.createElement('div');
-        msg.className = 'no-data';
-        msg.textContent = 'No active catch attempts...';
-        container.appendChild(msg);
-      }
-    }
-
-    function hideNoDataMessage() {
-      const container = document.getElementById('rankingsContainer');
-      const msg = container.querySelector('.no-data');
-      if (msg) msg.remove();
-    }
-
-    async function updateCatchrates() {
-      try {
-        const response = await fetch(`catch_chances.json?_=${Date.now()}`);
-        if (!response.ok) return;
-        
-        const data = await response.json();
-        
-        // ANTI-FLICKER: Ignoriere leere oder ungültige Daten
-        if (!data || Object.keys(data).length === 0) {
-          console.log('🚫 Ignoring empty data - keeping current display');
-          return; // Behalte aktuelle Anzeige
-        }
-        
-        // ANTI-FLICKER: Ignoriere Daten ohne aktive Spieler
-        const hasValidPlayers = Object.values(data).some(info => 
-          info && info.likes > 0 && info.chance > 0
-        );
-        
-        if (!hasValidPlayers) {
-          console.log('🚫 Ignoring data with no valid players - keeping current display');
-          return; // Behalte aktuelle Anzeige
-        }
-        
-        // Prüfe ob sich Daten wirklich geändert haben
-        const dataString = JSON.stringify(data);
-        if (dataString === JSON.stringify(lastUpdateData)) {
-          return; // Keine Änderung
-        }
-        lastUpdateData = data;
-        
-        const validPlayers = Object.entries(data)
-          .filter(([name, info]) => info && info.likes > 0 && info.chance > 0)
-          .map(([name, info]) => ({
-            name,
-            chance: info.chance,
-            likes: info.likes,
-            donation: info.donation || 0,
-            level: info.level || getPlayerLevel(info.coins || 0),
-            coins: info.coins || 0
-          }))
-          .sort((a, b) => b.chance - a.chance);
-
-        // ZUSÄTZLICHE SICHERHEIT: Minimum-Check
-        if (validPlayers.length === 0) {
-          console.log('🚫 No valid players after filtering - keeping current display');
-          return; // Behalte aktuelle Anzeige statt alles zu verstecken
-        }
-
-        hideNoDataMessage();
-        
-        // Erstelle neue Player-Slots falls nötig (nur einmal)
-        validPlayers.forEach(player => {
-          if (!playerSlots.has(player.name)) {
-            const slot = createPlayerSlot(player.name, player);
-            playerSlots.set(player.name, slot);
-          }
-        });
-
-        // Update nur Ranking und Progress
-        updateRankOrder(validPlayers);
-        
-        console.log(`✅ Updated display with ${validPlayers.length} players`);
-        
-      } catch (error) {
-        console.log('🚫 JSON parsing error - keeping current display');
-        // Bei JSON-Parse-Fehlern: Aktuelle Anzeige behalten
-      }
-    }
-
-    // System starten
-    updateCatchrates();
-    setInterval(updateCatchrates, 800);
+    // Firebase realtime listener
+    onValue(ref(db, 'trainers'), (snapshot) => {
+      renderRankings(snapshot.val());
+    }, (error) => {
+      console.error('Firebase error:', error);
+      document.getElementById('rankingsContainer').innerHTML = '<div class="no-data">Error loading data</div>';
+    });
   </script>
 </body>
 </html>
