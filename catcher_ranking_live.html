@@ -173,7 +173,7 @@
         </div>
         <div class="search-container">
           <div class="search-icon">🔍</div>
-          <input type="text" id="searchInput" placeholder="Search elite catchers..." onkeyup="filterTable()">
+          <input type="text" id="searchInput" placeholder="Search elite catchers...">
         </div>
       </div>
     </div>
@@ -383,7 +383,7 @@
       animateNumber('totalPoints', allCatchers.reduce((sum, c) => sum + c.totalPoints, 0));
       renderTable();
     });
-
+    document.getElementById('searchInput').addEventListener('keyup', filterTable);
     console.log('🔥 Catcher Ranking loaded — XSS-safe, Firebase realtime');
   </script>
 </body>

@@ -150,7 +150,7 @@
     <div class="controls-section">
       <div class="controls-content">
         <label>
-          <input type="checkbox" id="caughtOnly" onchange="renderTable()">
+          <input type="checkbox" id="caughtOnly">
           Show caught only
         </label>
       </div>
@@ -356,7 +356,7 @@
 
       window.renderTable();
     });
-
+    document.getElementById('caughtOnly').addEventListener('change', window.renderTable);
     console.log('🔥 Catchmon Ranking loaded — XSS-safe, Firebase realtime');
   </script>
 </body>

@@ -222,7 +222,7 @@
     <div class="search-section">
       <div class="search-container">
         <div class="search-icon">🔍</div>
-        <input type="text" id="searchInput" class="search-input" onkeyup="filterDex()" placeholder="Search for legendary Catchmon...">
+        <input type="text" id="searchInput" class="search-input" placeholder="Search for legendary Catchmon...">
       </div>
     </div>
 
@@ -378,6 +378,7 @@
     }
 
     init();
+    document.getElementById('searchInput').addEventListener('keyup', window.filterDex);
     console.log("📘 Catchdex loaded — Firebase realtime active");
   </script>
 </body>
