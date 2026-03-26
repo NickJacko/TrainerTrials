@@ -168,9 +168,9 @@
     <div class="controls-section">
       <div class="controls-content">
         <div class="sort-controls">
-          <button class="sort-button active" onclick="setSortMode('points')" id="sortPoints">🏆 Points</button>
-          <button class="sort-button" onclick="setSortMode('level')" id="sortLevel">⚡ Level</button>
-          <button class="sort-button" onclick="setSortMode('count')" id="sortCount">📊 Count</button>
+        <button class="sort-button active" id="sortPoints">🏆 Points</button>
+        <button class="sort-button" id="sortLevel">⚡ Level</button>
+        <button class="sort-button" id="sortCount">📊 Count</button>
         </div>
         <div class="search-container">
           <div class="search-icon">🔍</div>
@@ -386,6 +386,9 @@
     });
     document.getElementById('searchInput').addEventListener('keyup', filterTable);
     document.getElementById('refreshFab').addEventListener('click', forceRefresh);
+    document.getElementById('sortPoints').addEventListener('click', () => window.setSortMode('points'));
+document.getElementById('sortLevel').addEventListener('click', () => window.setSortMode('level'));
+document.getElementById('sortCount').addEventListener('click', () => window.setSortMode('count'));
     console.log('🔥 Catcher Ranking loaded — XSS-safe, Firebase realtime');
   </script>
 </body>
