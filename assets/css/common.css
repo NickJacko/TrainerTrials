@@ -1,0 +1,194 @@
+/* assets/css/common.css */
+/* Shared styles for TrainerTrials */
+
+/* ---- Donation Tier Name Styles ---- */
+.catcher-name {
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 8px;
+  display: inline-block;
+}
+
+.catcher-name.king {
+  background: linear-gradient(90deg, #FFD700, #FFA500);
+  color: #000;
+}
+
+.catcher-name.flame {
+  background: linear-gradient(90deg, #FF4444, #FF6B6B);
+  color: white;
+}
+
+.catcher-name.diamond {
+  background: linear-gradient(90deg, #4ECDC4, #45B7D1);
+  color: white;
+}
+
+.catcher-name.shine {
+  background: linear-gradient(90deg, #4CAF50, #66BB6A);
+  color: white;
+}
+
+.catcher-name.normal {
+  color: white;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* ---- Connection Status ---- */
+.connection-status {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 8px 15px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  z-index: 1000;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+.connection-status.connected {
+  background: rgba(76, 175, 80, 0.9);
+}
+
+.connection-status.disconnected {
+  background: rgba(244, 67, 54, 0.9);
+}
+
+/* ---- Loading Spinner ---- */
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 16px;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.loading-spinner {
+  width: 30px;
+  height: 30px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top: 3px solid #FFD700;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ---- Back Button ---- */
+.back-button {
+  font-size: 16px;
+  text-decoration: none;
+  color: white;
+  font-weight: 700;
+  padding: 12px 20px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+.back-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+/* ---- Error Message ---- */
+.error-message {
+  text-align: center;
+  padding: 40px;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 16px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* ---- Rank Badges ---- */
+.rank-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  font-weight: 800;
+  font-size: 1rem;
+  color: white;
+  position: relative;
+}
+
+.rank-badge.rank-1 {
+  background: linear-gradient(45deg, #FFD700, #FFA500);
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+}
+
+.rank-badge.rank-2 {
+  background: linear-gradient(45deg, #C0C0C0, #E8E8E8);
+  color: #333;
+}
+
+.rank-badge.rank-3 {
+  background: linear-gradient(45deg, #CD7F32, #DAA520);
+}
+
+.rank-badge.rank-other {
+  background: rgba(108, 117, 125, 0.8);
+}
+
+/* ---- Table Base Styles ---- */
+.table-section {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(15px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  overflow: hidden;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+th {
+  background: rgba(255, 215, 0, 0.2);
+  color: white;
+  padding: 15px 12px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 13px;
+  border: none;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+td {
+  padding: 12px;
+  text-align: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+tr:hover td {
+  background: rgba(255, 215, 0, 0.08);
+}
+
+/* ---- Reduce Motion ---- */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
