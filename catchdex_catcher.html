@@ -5,643 +5,169 @@
   <title>📘 Catchdex</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
   <meta name="theme-color" content="#1a1a2e">
-  
-  <!-- Preload critical resources -->
   <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" as="style">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
-  
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-  
   <style>
-    * {
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
-      background: #0f0f23;
-      margin: 0;
-      padding: 0;
-      min-height: 100vh;
-      color: white;
-      overflow-x: hidden;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
+      background: #0f0f23; margin: 0; padding: 0; min-height: 100vh; color: white;
+      overflow-x: hidden; -webkit-font-smoothing: antialiased;
     }
 
-    /* Simplified background with better performance */
     body::before {
-      content: '';
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: radial-gradient(ellipse at center, #1a1a2e 0%, #16213e 30%, #0f0f23 70%, #000000 100%);
       z-index: -2;
     }
 
-    /* Optimized background effects */
-    .bg-effects {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
-      opacity: 0.3;
-      pointer-events: none;
-      will-change: transform;
-    }
+    .bg-effects { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.3; pointer-events: none; }
 
-    .floating-element {
-      position: absolute;
-      font-size: 1.5rem;
-      opacity: 0;
-      animation: floatUp 12s linear infinite;
-      pointer-events: none;
-      will-change: transform, opacity;
-    }
-
+    .floating-element { position: absolute; font-size: 1.5rem; opacity: 0; animation: floatUp 12s linear infinite; pointer-events: none; }
     @keyframes floatUp {
-      0% {
-        transform: translateY(100vh) translateX(0) rotate(0deg) scale(0.5);
-        opacity: 0;
-      }
-      10%, 90% {
-        opacity: 0.3;
-      }
-      100% {
-        transform: translateY(-50px) translateX(20px) rotate(180deg) scale(0.8);
-        opacity: 0;
-      }
+      0% { transform: translateY(100vh) translateX(0) rotate(0deg) scale(0.5); opacity: 0; }
+      10%, 90% { opacity: 0.3; }
+      100% { transform: translateY(-50px) translateX(20px) rotate(180deg) scale(0.8); opacity: 0; }
     }
 
-    .container {
-      max-width: 1400px;
-      margin: auto;
-      padding: 20px;
-      position: relative;
-      z-index: 1;
-    }
+    .container { max-width: 1400px; margin: auto; padding: 20px; position: relative; z-index: 1; }
 
-    /* Optimized header */
     .header-section {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 30px;
-      background: rgba(255,255,255,0.08);
-      backdrop-filter: blur(10px);
-      border-radius: 16px;
-      padding: 20px 24px;
-      border: 1px solid rgba(255,255,255,0.12);
-      position: relative;
-      overflow: hidden;
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 30px; background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(10px); border-radius: 16px; padding: 20px 24px;
+      border: 1px solid rgba(255,255,255,0.12); position: relative; overflow: hidden;
     }
 
     .header-section::before {
-      content: '';
-      position: absolute;
-      top: -2px;
-      left: -100%;
-      width: 100%;
-      height: calc(100% + 4px);
+      content: ''; position: absolute; top: -2px; left: -100%;
+      width: 100%; height: calc(100% + 4px);
       background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
       animation: headerShine 6s ease-in-out infinite;
     }
+    @keyframes headerShine { 0%, 50% { left: -100%; } 100% { left: 100%; } }
 
-    @keyframes headerShine {
-      0%, 50% { left: -100%; }
-      100% { left: 100%; }
-    }
-
-    .header-content {
-      position: relative;
-      z-index: 2;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      width: 100%;
-    }
+    .header-content { position: relative; z-index: 2; display: flex; align-items: center; justify-content: space-between; width: 100%; }
 
     .back-button {
-      font-size: 15px;
-      text-decoration: none;
-      color: white;
-      font-weight: 600;
-      padding: 12px 20px;
-      border-radius: 12px;
-      background: rgba(255,255,255,0.1);
-      border: 1px solid rgba(255,255,255,0.2);
-      transition: all 0.3s ease;
-      backdrop-filter: blur(10px);
-      touch-action: manipulation;
+      font-size: 15px; text-decoration: none; color: white; font-weight: 600;
+      padding: 12px 20px; border-radius: 12px; background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2); transition: all 0.3s ease; touch-action: manipulation;
     }
-
-    .back-button:hover, .back-button:active {
-      transform: translateY(-2px);
-      background: rgba(255,255,255,0.15);
-      border-color: rgba(255,255,255,0.3);
-    }
+    .back-button:hover { transform: translateY(-2px); background: rgba(255,255,255,0.15); }
 
     h1 {
-      text-align: center;
-      flex: 1;
-      font-size: clamp(2rem, 5vw, 3.5rem);
+      text-align: center; flex: 1; font-size: clamp(2rem, 5vw, 3.5rem);
       background: linear-gradient(45deg, #FFD700, #FF6B6B, #4ECDC4, #FFD700);
       background-size: 200% 200%;
-      background-clip: text;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      animation: gradientShift 3s ease-in-out infinite;
-      font-weight: 900;
-      letter-spacing: -0.5px;
-      margin: 0;
+      background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      animation: gradientShift 3s ease-in-out infinite; font-weight: 900; margin: 0;
     }
+    @keyframes gradientShift { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
 
-    @keyframes gradientShift {
-      0%, 100% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-    }
-
-    /* Optimized rarity sections */
     .rarity-section {
-      margin-bottom: 32px;
-      background: rgba(255,255,255,0.06);
-      backdrop-filter: blur(10px);
-      border-radius: 20px;
-      padding: 24px;
-      border: 1px solid rgba(255,255,255,0.1);
-      position: relative;
-      overflow: hidden;
+      margin-bottom: 32px; background: rgba(255,255,255,0.06);
+      backdrop-filter: blur(10px); border-radius: 20px; padding: 24px;
+      border: 1px solid rgba(255,255,255,0.1); position: relative; overflow: hidden;
     }
 
-    .rarity-header {
-      text-align: center;
-      margin-bottom: 24px;
-      position: relative;
-      z-index: 2;
-    }
+    .rarity-header { text-align: center; margin-bottom: 24px; position: relative; z-index: 2; }
+    .rarity-title { font-size: clamp(1.8rem, 4vw, 2.5rem); font-weight: 800; margin: 0 0 12px 0; }
 
-    .rarity-title {
-      font-size: clamp(1.8rem, 4vw, 2.5rem);
-      font-weight: 800;
-      margin: 0 0 12px 0;
-    }
+    .starter .rarity-title { background: linear-gradient(45deg, #4CAF50, #81C784); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .common .rarity-title { background: linear-gradient(45deg, #9E9E9E, #BDBDBD); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .rare .rarity-title { background: linear-gradient(45deg, #2196F3, #64B5F6); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .legendary .rarity-title { background: linear-gradient(45deg, #FF9800, #FFB74D); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: legendaryPulse 2s ease-in-out infinite alternate; }
+    .mythical .rarity-title { background: linear-gradient(45deg, #9C27B0, #BA68C8); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: mythicalPulse 2.5s ease-in-out infinite alternate; }
+    .god .rarity-title { background: linear-gradient(45deg, #000000, #424242, #000000); background-size: 200% auto; background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: godEffect 3s linear infinite; }
+    .god .rarity-section { background: linear-gradient(135deg, rgba(0,0,0,0.4), rgba(64,0,64,0.2), rgba(0,0,0,0.4)); border: 1px solid rgba(128,0,128,0.3); }
 
-    /* Rarity specific optimized styles */
-    .starter .rarity-title {
-      background: linear-gradient(45deg, #4CAF50, #81C784);
-      background-clip: text;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
+    @keyframes legendaryPulse { 0% { filter: brightness(1); } 100% { filter: brightness(1.2); } }
+    @keyframes mythicalPulse { 0% { filter: brightness(1); } 100% { filter: brightness(1.3); } }
+    @keyframes godEffect { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
 
-    .common .rarity-title {
-      background: linear-gradient(45deg, #9E9E9E, #BDBDBD);
-      background-clip: text;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
+    .dex-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 16px; justify-items: center; position: relative; z-index: 2; }
 
-    .rare .rarity-title {
-      background: linear-gradient(45deg, #2196F3, #64B5F6);
-      background-clip: text;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .legendary .rarity-title {
-      background: linear-gradient(45deg, #FF9800, #FFB74D);
-      background-clip: text;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      animation: legendaryPulse 2s ease-in-out infinite alternate;
-    }
-
-    .mythical .rarity-title {
-      background: linear-gradient(45deg, #9C27B0, #BA68C8);
-      background-clip: text;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      animation: mythicalPulse 2.5s ease-in-out infinite alternate;
-    }
-
-    .god .rarity-title {
-      background: linear-gradient(45deg, #000000, #424242, #000000);
-      background-size: 200% auto;
-      background-clip: text;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      animation: godEffect 3s linear infinite;
-    }
-
-    .god .rarity-section {
-      background: linear-gradient(135deg, rgba(0,0,0,0.4), rgba(64,0,64,0.2), rgba(0,0,0,0.4));
-      border: 1px solid rgba(128,0,128,0.3);
-    }
-
-    @keyframes legendaryPulse {
-      0% { filter: brightness(1); }
-      100% { filter: brightness(1.2); }
-    }
-
-    @keyframes mythicalPulse {
-      0% { filter: brightness(1); }
-      100% { filter: brightness(1.3); }
-    }
-
-    @keyframes godEffect {
-      0% { background-position: 0% 50%; }
-      100% { background-position: 200% 50%; }
-    }
-
-    /* Optimized grid */
-    .dex-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-      gap: 16px;
-      justify-items: center;
-      position: relative;
-      z-index: 2;
-    }
-
-    /* Optimized cards */
     .catchmon-card {
-      background: rgba(255,255,255,0.08);
-      border-radius: 16px;
-      width: 140px;
-      min-height: 200px;
-      padding: 14px;
-      text-align: center;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      align-items: center;
-      border: 1px solid rgba(255,255,255,0.1);
-      overflow: hidden;
-      position: relative;
-      backdrop-filter: blur(10px);
-      will-change: transform;
-      touch-action: manipulation;
+      background: rgba(255,255,255,0.08); border-radius: 16px; width: 140px; min-height: 200px;
+      padding: 14px; text-align: center; transition: transform 0.3s ease, box-shadow 0.3s ease;
+      display: flex; flex-direction: column; justify-content: space-between; align-items: center;
+      border: 1px solid rgba(255,255,255,0.1); overflow: hidden; position: relative;
+      backdrop-filter: blur(10px); touch-action: manipulation;
     }
+    .catchmon-card:hover { transform: translateY(-4px) scale(1.02); box-shadow: 0 12px 24px rgba(0,0,0,0.3); border-color: rgba(76,175,80,0.4); }
 
-    .catchmon-card:hover, .catchmon-card:active {
-      transform: translateY(-4px) scale(1.02);
-      box-shadow: 0 12px 24px rgba(0,0,0,0.3);
-      border-color: rgba(76, 175, 80, 0.4);
-    }
+    .god .catchmon-card { background: linear-gradient(145deg, #1a1a1a, #2d2d2d); border: 1px solid rgba(128,0,128,0.4); }
+    .god .catchmon-card::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(45deg, transparent 30%, rgba(128,0,128,0.15) 50%, transparent 70%); animation: godCardGlow 4s ease-in-out infinite; pointer-events: none; border-radius: 16px; }
+    @keyframes godCardGlow { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.6; } }
 
-    .god .catchmon-card {
-      background: linear-gradient(145deg, #1a1a1a, #2d2d2d);
-      border: 1px solid rgba(128,0,128,0.4);
-      position: relative;
-    }
+    .catchmon-card img { width: 90px; height: 90px; object-fit: contain; margin-bottom: 8px; transition: transform 0.25s ease; border-radius: 8px; position: relative; z-index: 2; }
+    .catchmon-card:hover img { transform: scale(1.1); }
+    .god .catchmon-card img { filter: brightness(0.7) contrast(1.3); border: 1px solid rgba(128,0,128,0.3); }
 
-    .god .catchmon-card::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: linear-gradient(45deg, transparent 30%, rgba(128,0,128,0.15) 50%, transparent 70%);
-      animation: godCardGlow 4s ease-in-out infinite;
-      pointer-events: none;
-      border-radius: 16px;
-    }
+    .god .catchmon-card::before { content: '⚡ DIVINE ⚡'; position: absolute; top: 42%; left: 50%; transform: translate(-50%, -50%); color: #DAA520; font-weight: 900; font-size: 9px; z-index: 3; text-shadow: 0 0 8px rgba(218,165,32,0.8); background: rgba(0,0,0,0.8); padding: 2px 5px; border-radius: 6px; border: 1px solid rgba(218,165,32,0.4); animation: divineGlow 3s ease-in-out infinite alternate; }
+    @keyframes divineGlow { 0% { opacity: 0.8; } 100% { opacity: 1; } }
 
-    @keyframes godCardGlow {
-      0%, 100% { opacity: 0.3; }
-      50% { opacity: 0.6; }
-    }
+    .catchmon-card a { text-decoration: none; color: white; font-weight: 600; display: block; position: relative; z-index: 2; }
+    .god .catchmon-card a { color: #9370DB; }
+    .catchmon-card .id-name { font-size: 13px; font-weight: 700; margin-bottom: 6px; color: white; line-height: 1.2; position: relative; z-index: 2; }
+    .god .catchmon-card .id-name { color: #9370DB; }
 
-    /* Optimized images */
-    .catchmon-card img {
-      width: 90px;
-      height: 90px;
-      object-fit: contain;
-      margin-bottom: 8px;
-      transition: transform 0.25s ease;
-      border-radius: 8px;
-      position: relative;
-      z-index: 2;
-      loading: lazy;
-    }
+    .uncaught { opacity: 0.5; }
+    .uncaught img { filter: grayscale(100%) brightness(0.4); }
 
-    .catchmon-card:hover img {
-      transform: scale(1.1);
-    }
+    .star { position: absolute; top: 8px; right: 8px; font-size: 16px; color: gold; z-index: 4; filter: drop-shadow(0 0 6px rgba(255,215,0,0.8)); animation: starTwinkle 2s ease-in-out infinite alternate; }
+    @keyframes starTwinkle { 0% { transform: scale(1); } 100% { transform: scale(1.1); } }
 
-    .god .catchmon-card img {
-      filter: brightness(0.7) contrast(1.3);
-      border: 1px solid rgba(128,0,128,0.3);
-    }
+    .rarity-count { background: rgba(255,255,255,0.15); padding: 6px 12px; border-radius: 16px; font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.9); display: inline-block; }
 
-    .god .catchmon-card::before {
-      content: '⚡ DIVINE ⚡';
-      position: absolute;
-      top: 42%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      color: #DAA520;
-      font-weight: 900;
-      font-size: 9px;
-      z-index: 3;
-      text-shadow: 0 0 8px rgba(218, 165, 32, 0.8);
-      letter-spacing: 0.5px;
-      text-align: center;
-      animation: divineGlow 3s ease-in-out infinite alternate;
-      background: rgba(0,0,0,0.8);
-      padding: 2px 5px;
-      border-radius: 6px;
-      border: 1px solid rgba(218, 165, 32, 0.4);
-    }
-
-    @keyframes divineGlow {
-      0% { opacity: 0.8; }
-      100% { opacity: 1; text-shadow: 0 0 12px rgba(218, 165, 32, 1); }
-    }
-
-    .catchmon-card a {
-      text-decoration: none;
-      color: white;
-      font-weight: 600;
-      display: block;
-      position: relative;
-      z-index: 2;
-    }
-
-    .god .catchmon-card a {
-      color: #9370DB;
-    }
-
-    .catchmon-card .id-name {
-      font-size: 13px;
-      font-weight: 700;
-      margin-bottom: 6px;
-      color: white;
-      line-height: 1.2;
-      position: relative;
-      z-index: 2;
-    }
-
-    .god .catchmon-card .id-name {
-      color: #9370DB;
-      text-shadow: 0 0 4px rgba(147, 112, 219, 0.5);
-    }
-
-    .uncaught {
-      opacity: 0.5;
-    }
-
-    .uncaught img {
-      filter: grayscale(100%) brightness(0.4);
-    }
-
-    .star {
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      font-size: 16px;
-      color: gold;
-      z-index: 4;
-      filter: drop-shadow(0 0 6px rgba(255, 215, 0, 0.8));
-      animation: starTwinkle 2s ease-in-out infinite alternate;
-    }
-
-    @keyframes starTwinkle {
-      0% { transform: scale(1); }
-      100% { transform: scale(1.1); }
-    }
-
-    .rarity-count {
-      background: rgba(255,255,255,0.15);
-      padding: 6px 12px;
-      border-radius: 16px;
-      font-size: 13px;
-      font-weight: 600;
-      color: rgba(255,255,255,0.9);
-      display: inline-block;
-    }
-
-    /* Donation tier styles */
-    .catcher-name {
-      display: inline-block;
-      font-weight: bold;
-      background-size: 200% auto;
-      background-clip: text;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      animation: shine 3s linear infinite;
-    }
-
+    .catcher-name { display: inline-block; font-weight: bold; background-size: 200% auto; background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shine 3s linear infinite; }
     .king { background-image: linear-gradient(90deg, #ffd700, #ffffff, #ffd700); }
     .flame { background-image: linear-gradient(90deg, #ff0000, #ffffff, #ff0000); }
     .diamond { background-image: linear-gradient(90deg, #00bfff, #ffffff, #00bfff); }
     .shine { background-image: linear-gradient(90deg, #32cd32, #ffffff, #32cd32); }
-    .normal {
-      color: white;
-      font-weight: 700;
-      background: none;
-      -webkit-text-fill-color: inherit;
-      animation: none;
-    }
+    .normal { color: white; font-weight: 700; background: none; -webkit-text-fill-color: inherit; animation: none; }
+    @keyframes shine { to { background-position: -200% center; } }
 
-    @keyframes shine {
-      to { background-position: -200% center; }
-    }
+    .loading { display: flex; justify-content: center; align-items: center; height: 200px; color: rgba(255,255,255,0.8); font-size: 16px; }
+    .loading::after { content: ''; width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.3); border-top: 2px solid white; border-radius: 50%; margin-left: 12px; animation: spin 1s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* Loading and error states */
-    .loading {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 200px;
-      color: rgba(255,255,255,0.8);
-      font-size: 16px;
-      position: relative;
-      z-index: 2;
-    }
+    .error-message { text-align: center; padding: 40px; color: rgba(255,255,255,0.8); font-size: 16px; background: rgba(255,255,255,0.06); border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); }
 
-    .loading::after {
-      content: '';
-      width: 20px;
-      height: 20px;
-      border: 2px solid rgba(255,255,255,0.3);
-      border-top: 2px solid white;
-      border-radius: 50%;
-      margin-left: 12px;
-      animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    .error-message {
-      text-align: center;
-      padding: 40px;
-      color: rgba(255,255,255,0.8);
-      font-size: 16px;
-      background: rgba(255,255,255,0.06);
-      backdrop-filter: blur(10px);
-      border-radius: 16px;
-      border: 1px solid rgba(255,255,255,0.1);
-      position: relative;
-      z-index: 2;
-    }
-
-    /* Mobile optimizations */
     @media (max-width: 768px) {
       .container { padding: 12px; }
-      
-      .header-section {
-        flex-direction: column;
-        gap: 16px;
-        padding: 20px 16px;
-      }
-
-      .header-content {
-        flex-direction: column;
-        gap: 16px;
-      }
-
-      .rarity-section {
-        padding: 16px 12px;
-        margin-bottom: 24px;
-      }
-
-      .dex-grid {
-        grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
-        gap: 12px;
-      }
-
-      .catchmon-card {
-        width: 110px;
-        min-height: 160px;
-        padding: 10px;
-      }
-
-      .catchmon-card img {
-        width: 75px;
-        height: 75px;
-        margin-bottom: 6px;
-      }
-
-      .catchmon-card .id-name {
-        font-size: 11px;
-        margin-bottom: 4px;
-      }
-
-      .god .catchmon-card::before {
-        font-size: 7px;
-        padding: 1px 3px;
-      }
-
-      .rarity-count {
-        font-size: 11px;
-        padding: 4px 8px;
-      }
-
-      .floating-element {
-        font-size: 1.2rem;
-      }
-      
-      /* Disable hover effects on mobile */
-      .catchmon-card:hover {
-        transform: none;
-        box-shadow: none;
-        border-color: rgba(255,255,255,0.1);
-      }
-      
-      .catchmon-card:hover img {
-        transform: none;
-      }
-      
-      .back-button:hover {
-        transform: none;
-      }
+      .header-section { flex-direction: column; gap: 16px; padding: 20px 16px; }
+      .header-content { flex-direction: column; gap: 16px; }
+      .rarity-section { padding: 16px 12px; margin-bottom: 24px; }
+      .dex-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 12px; }
+      .catchmon-card { width: 110px; min-height: 160px; padding: 10px; }
+      .catchmon-card img { width: 75px; height: 75px; margin-bottom: 6px; }
+      .catchmon-card .id-name { font-size: 11px; margin-bottom: 4px; }
+      .catchmon-card:hover { transform: none; box-shadow: none; border-color: rgba(255,255,255,0.1); }
+      .catchmon-card:hover img { transform: none; }
     }
 
     @media (max-width: 480px) {
       .container { padding: 8px; }
-      
-      .rarity-section {
-        padding: 12px 8px;
-        margin-bottom: 20px;
-      }
-
-      .dex-grid {
-        grid-template-columns: repeat(auto-fill, minmax(95px, 1fr));
-        gap: 10px;
-      }
-
-      .catchmon-card {
-        width: 95px;
-        min-height: 140px;
-        padding: 8px;
-      }
-
-      .catchmon-card img {
-        width: 65px;
-        height: 65px;
-        margin-bottom: 4px;
-      }
-
-      .catchmon-card .id-name {
-        font-size: 10px;
-        margin-bottom: 2px;
-      }
-
-      .god .catchmon-card::before {
-        font-size: 6px;
-        padding: 1px 2px;
-      }
-
-      .rarity-count {
-        font-size: 10px;
-        padding: 3px 6px;
-      }
+      .rarity-section { padding: 12px 8px; margin-bottom: 20px; }
+      .dex-grid { grid-template-columns: repeat(auto-fill, minmax(95px, 1fr)); gap: 10px; }
+      .catchmon-card { width: 95px; min-height: 140px; padding: 8px; }
+      .catchmon-card img { width: 65px; height: 65px; margin-bottom: 4px; }
+      .catchmon-card .id-name { font-size: 10px; margin-bottom: 2px; }
     }
 
-    /* Reduce motion for accessibility */
     @media (prefers-reduced-motion: reduce) {
-      * {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-      }
-      
-      .floating-element,
-      .header-section::before {
-        animation: none;
-      }
-    }
-
-    /* High contrast mode support */
-    @media (prefers-contrast: high) {
-      .catchmon-card {
-        border: 2px solid white;
-      }
-      
-      .rarity-section {
-        border: 2px solid rgba(255,255,255,0.3);
-      }
+      * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+      .floating-element, .header-section::before { animation: none; }
     }
   </style>
 </head>
 <body>
-  <!-- Optimized Background Effects -->
   <div class="bg-effects" id="bgEffects"></div>
 
   <div class="container">
-    <!-- Header Section -->
     <div class="header-section">
       <div class="header-content">
         <a class="back-button" href="javascript:history.back()">← Back</a>
@@ -649,153 +175,64 @@
         <div></div>
       </div>
     </div>
-
     <div id="dexContainer">
       <div class="loading">Loading Catchmon</div>
     </div>
   </div>
 
-  <script>
-    // Firebase Configuration - ECHTE DATEN
-    const firebaseConfig = {
-      apiKey: "AIzaSyDdStpC5rVtgaZ4XvtKLwQttnyIDXL2z7Q",
-      authDomain: "trainertrials.firebaseapp.com",
-      databaseURL: "https://trainertrials-default-rtdb.europe-west1.firebasedatabase.app",
-      projectId: "trainertrials",
-      storageBucket: "trainertrials.firebasestorage.app",
-      messagingSenderId: "22071275267",
-      appId: "1:22071275267:web:92e82d6bfaee169aff8336",
-      measurementId: "G-WWENZ0HP22"
-    };
+  <script type="module">
+    import { db } from './assets/js/firebase.client.js';
+    import { ref, onValue } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    const database = firebase.database();
-
-    // Performance optimized background effects
-    let animationFrame;
-    let backgroundElements = [];
-    const maxElements = 8;
-    
-    function createFloatingElement() {
-      if (backgroundElements.length >= maxElements) return;
-      
-      const elements = ['🏆', '🥇', '👑', '⭐', '💎', '🔥', '⚡'];
-      const element = document.createElement('div');
-      element.className = 'floating-element';
-      element.textContent = elements[Math.floor(Math.random() * elements.length)];
-      element.style.left = Math.random() * 100 + '%';
-      element.style.animationDuration = (Math.random() * 4 + 8) + 's';
-      element.style.animationDelay = Math.random() * 2 + 's';
-      
-      document.getElementById('bgEffects').appendChild(element);
-      backgroundElements.push(element);
-      
-      setTimeout(() => {
-        if (element.parentNode) {
-          element.parentNode.removeChild(element);
-          backgroundElements = backgroundElements.filter(e => e !== element);
-        }
-      }, 12000);
+    // --- Security ---
+    function escapeHtml(input) {
+      const s = String(input ?? "");
+      return s.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#39;");
     }
 
-    // Throttled background animation
-    let lastAnimationTime = 0;
-    function animateBackground() {
-      const now = Date.now();
-      if (now - lastAnimationTime > 3000) { // Create new element every 3 seconds
-        createFloatingElement();
-        lastAnimationTime = now;
-      }
-      animationFrame = requestAnimationFrame(animateBackground);
+    function validateTrainerName(name) {
+      if (!name) return null;
+      const cleaned = name.trim().slice(0, 60);
+      if (!/^[\w\s\-]+$/.test(cleaned)) return null;
+      return cleaned;
     }
 
-    // Start animations only if user prefers motion
-    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      animateBackground();
-      // Initial elements
-      for (let i = 0; i < 3; i++) {
-        setTimeout(createFloatingElement, i * 1000);
-      }
-    }
+    const rawName = new URLSearchParams(window.location.search).get("name");
+    const trainerName = validateTrainerName(rawName);
 
-    // Clean up on page unload
-    window.addEventListener('beforeunload', () => {
-      if (animationFrame) {
-        cancelAnimationFrame(animationFrame);
-      }
-    });
-
-    // Main application logic
-    const params = new URLSearchParams(window.location.search);
-    const trainerName = params.get("name");
     const rarityOrder = ["Starter", "Common", "Rare", "Legendary", "Mythical", "God"];
-    const rarityEmojis = {
-      "Starter": "🌱",
-      "Common": "⚪",
-      "Rare": "🔵", 
-      "Legendary": "🟡",
-      "Mythical": "🟣",
-      "God": "⚫"
-    };
+    const rarityEmojis = { "Starter": "🌱", "Common": "⚪", "Rare": "🔵", "Legendary": "🟡", "Mythical": "🟣", "God": "⚫" };
 
-    // Cache for better performance
-    const cache = new Map();
-    const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+    function capitalize(str) { return str.charAt(0).toUpperCase() + str.slice(1); }
 
-    function getCachedData(key) {
-      const cached = cache.get(key);
-      if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
-        return cached.data;
-      }
-      return null;
+    function getDonationTier(donation) {
+      if (donation >= 1000) return 'king';
+      if (donation >= 500) return 'flame';
+      if (donation >= 250) return 'diamond';
+      if (donation >= 100) return 'shine';
+      return 'normal';
     }
 
-    function setCachedData(key, data) {
-      cache.set(key, {
-        data: data,
-        timestamp: Date.now()
-      });
-    }
-
-    if (!trainerName) {
-      document.getElementById("dexContainer").innerHTML = '<div class="error-message">No trainer specified.</div>';
-      document.getElementById("catcherTitle").textContent = "📘 Unknown Trainer's Catchdex";
-    } else {
-      loadCatchdex(trainerName.toLowerCase());
-    }
-
-    function censorGodName(name) {
-      return "??? ??? ???";
-    }
-
-    function capitalize(str) {
-      return str.charAt(0).toUpperCase() + str.slice(1);
-    }
-
-    function getStyledCatcherName(name, donation) {
-      const tiers = {
-        1000: 'king',
-        500: 'flame', 
-        250: 'diamond',
-        100: 'shine'
-      };
-      
-      const tier = Object.keys(tiers)
-        .map(Number)
-        .sort((a, b) => b - a)
-        .find(threshold => donation >= threshold);
-      
-      const className = tier ? tiers[tier] : 'normal';
-      return `<span class="catcher-name ${className}">${capitalize(name)}</span>`;
+    // Safe title builder — no innerHTML with user input
+    function setTitle(trainerName, donation) {
+      const titleEl = document.getElementById("catcherTitle");
+      titleEl.textContent = '';
+      const prefix = document.createTextNode('📘 ');
+      titleEl.appendChild(prefix);
+      const tier = getDonationTier(donation);
+      const nameSpan = document.createElement('span');
+      nameSpan.className = `catcher-name ${tier}`;
+      nameSpan.textContent = capitalize(trainerName);
+      titleEl.appendChild(nameSpan);
+      const suffix = document.createTextNode("'s Catchdex");
+      titleEl.appendChild(suffix);
     }
 
     function buildRaritySection(rarity, pokemons, caughtCount) {
       if (pokemons.length === 0) return '';
-      
       const rarityClass = rarity.toLowerCase();
       const emoji = rarityEmojis[rarity] || "❓";
-      
+
       let cardsHtml = '';
       pokemons.forEach(p => {
         const name = p.name.toLowerCase();
@@ -803,21 +240,14 @@
         const count = caughtCount[name] || 0;
         const star = count >= 3;
         const id = String(p.id).padStart(3, "0");
-        
-        let displayName = capitalize(p.name);
-        let displayId = id;
-        
-        if (rarity === "God") {
-          displayName = censorGodName(displayName);
-          displayId = "???";
-        }
-        
+        const displayName = rarity === "God" ? "??? ??? ???" : escapeHtml(capitalize(p.name));
+        const displayId = rarity === "God" ? "???" : id;
         const safeName = capitalize(p.name).replace(/ /g, "_");
 
         cardsHtml += `
           <div class="catchmon-card${caught ? "" : " uncaught"}">
-            <a href="dex_detail.html?name=${safeName}">
-              <img src="${p.sprite}" alt="${capitalize(p.name)}" loading="lazy">
+            <a href="dex_detail.html?name=${encodeURIComponent(safeName)}">
+              <img src="${escapeHtml(p.sprite)}" alt="${escapeHtml(capitalize(p.name))}" loading="lazy">
               <div class="id-name">#${displayId}<br>${displayName}</div>
               ${star ? '<div class="star">★</div>' : ''}
             </a>
@@ -831,229 +261,105 @@
             <h2 class="rarity-title">${emoji} ${rarity}</h2>
             <div class="rarity-count">${pokemons.length} Catchmon</div>
           </div>
-          <div class="dex-grid">
-            ${cardsHtml}
-          </div>
+          <div class="dex-grid">${cardsHtml}</div>
         </div>
       `;
     }
 
-    // Firebase data loading with fallback
-    async function loadFromFirebase(path) {
-      try {
-        const snapshot = await database.ref(path).once('value');
-        return snapshot.val();
-      } catch (error) {
-        console.warn('Firebase loading failed, falling back to JSON:', error);
-        return null;
-      }
-    }
-
-    // Fallback JSON loading
-    async function loadFromJSON(url) {
-      try {
-        const response = await fetch(url);
-        if (!response.ok) throw new Error('Network response was not ok');
-        return await response.json();
-      } catch (error) {
-        console.error('JSON loading failed:', error);
-        throw error;
-      }
-    }
-
     async function loadCatchdex(trainer) {
+      const container = document.getElementById("dexContainer");
+      const titleEl = document.getElementById("catcherTitle");
+
       try {
-        const container = document.getElementById("dexContainer");
-        const titleElement = document.getElementById("catcherTitle");
+        const dexRes = await fetch("dex_list.json?" + Date.now());
+        const dexList = await dexRes.json();
 
-        // Try to load from cache first
-        let dexList = getCachedData('dexList');
-        let catchers = getCachedData('catchers');
+        onValue(ref(db, 'trainers'), (snapshot) => {
+          const trainersData = snapshot.val() || {};
+          const trainerData = trainersData[trainer];
 
-        if (!dexList || !catchers) {
-          // Try Firebase first, then fallback to JSON
-          const [firebaseDex, firebaseCatchers] = await Promise.all([
-            loadFromFirebase('dex_list'),
-            loadFromFirebase('trainers')  // ✅ KORRIGIERT: 'trainers' statt 'catchers'
-          ]);
-
-          dexList = firebaseDex;
-          catchers = firebaseCatchers;
-
-          // Fallback to JSON if Firebase fails
-          if (!dexList || !catchers) {
-            const [dexRes, catcherRes] = await Promise.all([
-              loadFromJSON("dex_list.json"),
-              loadFromJSON("catcher.json")
-            ]);
-            
-            dexList = dexRes;
-            catchers = catcherRes.catcher; // JSON hat .catcher Wrapper
+          if (!trainerData) {
+            titleEl.textContent = `📘 ${capitalize(trainer)}'s Catchdex`;
+            container.innerHTML = '<div class="error-message">Trainer not found.</div>';
+            return;
           }
 
-          // Cache the data
-          setCachedData('dexList', dexList);
-          setCachedData('catchers', catchers);
-        }
-
-        const trainerData = catchers?.[trainer];
-        
-        if (!trainerData) {
-          titleElement.innerHTML = `📘 ${capitalize(trainer)}'s Catchdex`;
-          container.innerHTML = '<div class="error-message">Trainer not found.</div>';
-          return;
-        }
-
-        const team = trainerData.team || [];
-        const donation = trainerData.donation || 0;
-        const caughtCount = {};
-        
-        team.forEach(mon => {
-          const monName = mon.name.toLowerCase();
-          caughtCount[monName] = (caughtCount[monName] || 0) + 1;
-        });
-
-        // Update title with styled name
-        const styledName = getStyledCatcherName(trainer, donation);
-        titleElement.innerHTML = `📘 ${styledName}'s Catchdex`;
-
-        // Group by rarity based on sprite path
-        const byRarity = {};
-        rarityOrder.forEach(r => byRarity[r] = []);
-
-        dexList.forEach(mon => {
-          const parts = mon.sprite.split("/");
-          const rarity = parts.length > 1 ? parts[1] : "Common";
-          if (byRarity[rarity]) {
-            byRarity[rarity].push(mon);
-          } else {
-            byRarity["Common"].push(mon);
-          }
-        });
-
-        // Sort each rarity by ID
-        rarityOrder.forEach(r => {
-          if (byRarity[r]) {
-            byRarity[r].sort((a, b) => a.id - b.id);
-          }
-        });
-
-        // Build HTML for all sections with performance optimization
-        let html = '';
-        rarityOrder.forEach(rarity => {
-          const pokemons = byRarity[rarity] || [];
-          html += buildRaritySection(rarity, pokemons, caughtCount);
-        });
-
-        // Use DocumentFragment for better performance
-        const fragment = document.createDocumentFragment();
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = html;
-        
-        while (tempDiv.firstChild) {
-          fragment.appendChild(tempDiv.firstChild);
-        }
-        
-        container.innerHTML = '';
-        container.appendChild(fragment);
-
-        // Lazy load images that are not in viewport
-        if ('IntersectionObserver' in window) {
-          const imageObserver = new IntersectionObserver((entries, observer) => {
-            entries.forEach(entry => {
-              if (entry.isIntersecting) {
-                const img = entry.target;
-                img.src = img.dataset.src || img.src;
-                img.classList.remove('lazy');
-                observer.unobserve(img);
-              }
-            });
+          const team = Array.isArray(trainerData.team) ? trainerData.team : Object.values(trainerData.team || {});
+          const donation = trainerData.donation || 0;
+          const caughtCount = {};
+          team.forEach(mon => {
+            const monName = mon.name.toLowerCase();
+            caughtCount[monName] = (caughtCount[monName] || 0) + 1;
           });
 
-          container.querySelectorAll('img[loading="lazy"]').forEach(img => {
-            imageObserver.observe(img);
+          setTitle(trainer, donation);
+
+          const byRarity = {};
+          rarityOrder.forEach(r => byRarity[r] = []);
+          dexList.forEach(mon => {
+            const parts = mon.sprite.split("/");
+            const rarity = parts.length > 1 ? parts[1] : "Common";
+            (byRarity[rarity] || byRarity["Common"]).push(mon);
           });
-        }
-        
+          rarityOrder.forEach(r => { if (byRarity[r]) byRarity[r].sort((a, b) => a.id - b.id); });
+
+          container.innerHTML = rarityOrder.map(r => buildRaritySection(r, byRarity[r] || [], caughtCount)).join('');
+        });
+
       } catch (error) {
-        console.error('Error loading catchdex data:', error);
-        const container = document.getElementById("dexContainer");
-        const titleElement = document.getElementById("catcherTitle");
-        titleElement.innerHTML = `📘 ${capitalize(trainer)}'s Catchdex`;
+        console.error('Error loading catchdex:', error);
+        titleEl.textContent = `📘 ${capitalize(trainer)}'s Catchdex`;
         container.innerHTML = '<div class="error-message">Error loading data. Please try again later.</div>';
       }
     }
 
-    // Performance monitoring
-    if ('performance' in window && 'measure' in performance) {
-      window.addEventListener('load', () => {
-        setTimeout(() => {
-          const perfData = performance.getEntriesByType('navigation')[0];
-          console.log('Page load performance:', {
-            domContentLoaded: perfData.domContentLoadedEventEnd - perfData.domContentLoadedEventStart,
-            loadComplete: perfData.loadEventEnd - perfData.loadEventStart,
-            totalTime: perfData.loadEventEnd - perfData.fetchStart
-          });
-        }, 0);
-      });
+    // Background effects
+    let backgroundElements = [];
+    const maxElements = 8;
+
+    function createFloatingElement() {
+      if (backgroundElements.length >= maxElements) return;
+      const elements = ['🏆', '🥇', '👑', '⭐', '💎', '🔥', '⚡'];
+      const el = document.createElement('div');
+      el.className = 'floating-element';
+      el.textContent = elements[Math.floor(Math.random() * elements.length)];
+      el.style.left = Math.random() * 100 + '%';
+      el.style.animationDuration = (Math.random() * 4 + 8) + 's';
+      el.style.animationDelay = Math.random() * 2 + 's';
+      document.getElementById('bgEffects').appendChild(el);
+      backgroundElements.push(el);
+      setTimeout(() => { if (el.parentNode) el.parentNode.removeChild(el); backgroundElements = backgroundElements.filter(e => e !== el); }, 12000);
     }
 
-    // Service Worker registration for offline support (optional)
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      let lastTime = 0;
+      function animate() {
+        const now = Date.now();
+        if (now - lastTime > 3000) { createFloatingElement(); lastTime = now; }
+        requestAnimationFrame(animate);
+      }
+      animate();
+      for (let i = 0; i < 3; i++) setTimeout(createFloatingElement, i * 1000);
+    }
+
+    // Init
+    if (!trainerName) {
+      document.getElementById("dexContainer").innerHTML = '<div class="error-message">Invalid or missing trainer name.</div>';
+      document.getElementById("catcherTitle").textContent = "📘 Unknown Trainer's Catchdex";
+    } else {
+      loadCatchdex(trainerName.toLowerCase());
+    }
+
+    // Service Worker — relative path for GitHub Pages
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js')
-          .then(registration => {
-            console.log('SW registered: ', registration);
-          })
-          .catch(registrationError => {
-            console.log('SW registration failed: ', registrationError);
-          });
+        navigator.serviceWorker.register('./sw.js')
+          .then(reg => console.log('SW registered:', reg.scope))
+          .catch(err => console.log('SW registration failed:', err));
       });
     }
 
-    // Memory cleanup on page unload
-    window.addEventListener('beforeunload', () => {
-      // Clear cache if it gets too large
-      if (cache.size > 10) {
-        cache.clear();
-      }
-      
-      // Cancel any pending animations
-      if (animationFrame) {
-        cancelAnimationFrame(animationFrame);
-      }
-      
-      // Remove background elements
-      backgroundElements.forEach(element => {
-        if (element.parentNode) {
-          element.parentNode.removeChild(element);
-        }
-      });
-    });
-
-    // Handle orientation change on mobile
-    window.addEventListener('orientationchange', () => {
-      setTimeout(() => {
-        // Force recalculation of viewport units
-        const vh = window.innerHeight * 0.01;
-        document.documentElement.style.setProperty('--vh', `${vh}px`);
-      }, 100);
-    });
-
-    // Initial viewport height calculation for mobile
-    const vh = window.innerHeight * 0.01;
-    document.documentElement.style.setProperty('--vh', `${vh}px`);
-
-    // Error boundary for unhandled errors
-    window.addEventListener('error', (event) => {
-      console.error('Unhandled error:', event.error);
-      // Could send error to Firebase Analytics here
-    });
-
-    window.addEventListener('unhandledrejection', (event) => {
-      console.error('Unhandled promise rejection:', event.reason);
-      // Could send error to Firebase Analytics here
-    });
+    console.log('📘 Catchdex loaded — XSS-safe, Firebase v10 modular');
   </script>
 </body>
 </html>
