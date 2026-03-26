@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <script src="utils.js"></script>
   <audio id="wobbleSound" src="sounds/wobble.mp3" preload="auto"></audio>
   <audio id="breakOut" src="sounds/breakout.mp3" preload="auto"></audio>  
   <meta charset="UTF-8" />
@@ -54,12 +53,7 @@
     }
 
     .ring-progress {
-      background: conic-gradient(
-        from 0deg,
-        #4CAF50 0deg, 
-        #45a049 180deg, 
-        #66BB6A 360deg
-      );
+      background: conic-gradient(from 0deg, #4CAF50 0deg, #45a049 180deg, #66BB6A 360deg);
       filter: drop-shadow(0 0 10px rgba(76, 175, 80, 0.5));
       transition: filter 0.3s ease;
     }
@@ -69,12 +63,8 @@
     }
 
     @keyframes ringPulse {
-      0% { 
-        filter: drop-shadow(0 0 10px rgba(76, 175, 80, 0.5));
-      }
-      100% { 
-        filter: drop-shadow(0 0 25px rgba(76, 175, 80, 0.8)) brightness(1.2);
-      }
+      0% { filter: drop-shadow(0 0 10px rgba(76, 175, 80, 0.5)); }
+      100% { filter: drop-shadow(0 0 25px rgba(76, 175, 80, 0.8)) brightness(1.2); }
     }
 
     .catchmon {
@@ -96,253 +86,113 @@
       position: relative;
       border-radius: 15px;
       filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.3));
-      /* FIXED: Prevent animation conflicts */
       animation-fill-mode: both;
       transform-origin: center center;
     }
 
-    /* FIXED: Simplified and smoother entrance animation */
     .entrance-animation {
       animation: smoothEntrance 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.1) forwards;
     }
 
     @keyframes smoothEntrance {
-      0% {
-        transform: scale(0.3) translateY(30px);
-        opacity: 0;
-        filter: blur(8px) drop-shadow(0 0 30px rgba(255, 215, 0, 0.8));
-      }
-      60% {
-        transform: scale(1.1) translateY(-5px);
-        opacity: 0.8;
-        filter: blur(2px) drop-shadow(0 0 20px rgba(255, 255, 255, 0.6));
-      }
-      80% {
-        transform: scale(0.95) translateY(2px);
-        opacity: 0.95;
-        filter: blur(1px) drop-shadow(0 0 15px rgba(0, 0, 0, 0.4));
-      }
-      100% {
-        transform: scale(1) translateY(0px);
-        opacity: 1;
-        filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.3));
-      }
+      0% { transform: scale(0.3) translateY(30px); opacity: 0; filter: blur(8px) drop-shadow(0 0 30px rgba(255, 215, 0, 0.8)); }
+      60% { transform: scale(1.1) translateY(-5px); opacity: 0.8; filter: blur(2px) drop-shadow(0 0 20px rgba(255, 255, 255, 0.6)); }
+      80% { transform: scale(0.95) translateY(2px); opacity: 0.95; filter: blur(1px) drop-shadow(0 0 15px rgba(0, 0, 0, 0.4)); }
+      100% { transform: scale(1) translateY(0px); opacity: 1; filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.3)); }
     }
 
-    /* FIXED: Proper idle animation states that can be cleanly stopped */
-    .idle-breathing {
-      animation: idleBreathing 4s ease-in-out infinite;
-    }
+    .idle-breathing { animation: idleBreathing 4s ease-in-out infinite; }
+    .idle-bounce { animation: idleBounce 3s ease-in-out infinite; }
+    .idle-sway { animation: idleSway 5s ease-in-out infinite; }
+    .idle-pulse { animation: idlePulse 3.5s ease-in-out infinite; }
+    .idle-wiggle { animation: idleWiggle 4s ease-in-out infinite; }
+    .idle-float { animation: idleFloat 6s ease-in-out infinite; }
 
-    .idle-bounce {
-      animation: idleBounce 3s ease-in-out infinite;
-    }
-
-    .idle-sway {
-      animation: idleSway 5s ease-in-out infinite;
-    }
-
-    .idle-pulse {
-      animation: idlePulse 3.5s ease-in-out infinite;
-    }
-
-    .idle-wiggle {
-      animation: idleWiggle 4s ease-in-out infinite;
-    }
-
-    .idle-float {
-      animation: idleFloat 6s ease-in-out infinite;
-    }
-
-    /* FIXED: Simplified idle animation keyframes */
     @keyframes idleBreathing {
-      0%, 100% { 
-        transform: scale(1) translateY(0px);
-      }
-      50% { 
-        transform: scale(1.02) translateY(-3px);
-      }
+      0%, 100% { transform: scale(1) translateY(0px); }
+      50% { transform: scale(1.02) translateY(-3px); }
     }
-
     @keyframes idleBounce {
-      0%, 100% { 
-        transform: translateY(0px) scale(1);
-      }
-      50% { 
-        transform: translateY(-8px) scale(1.01);
-      }
+      0%, 100% { transform: translateY(0px) scale(1); }
+      50% { transform: translateY(-8px) scale(1.01); }
     }
-
     @keyframes idleSway {
-      0%, 100% { 
-        transform: rotate(0deg);
-      }
-      25% { 
-        transform: rotate(2deg);
-      }
-      75% { 
-        transform: rotate(-2deg);
-      }
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(2deg); }
+      75% { transform: rotate(-2deg); }
     }
-
     @keyframes idlePulse {
-      0%, 100% { 
-        transform: scale(1);
-        filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.3)) brightness(1);
-      }
-      50% { 
-        transform: scale(1.05);
-        filter: drop-shadow(0 8px 25px rgba(0, 0, 0, 0.4)) brightness(1.1);
-      }
+      0%, 100% { transform: scale(1); filter: drop-shadow(0 5px 15px rgba(0,0,0,0.3)) brightness(1); }
+      50% { transform: scale(1.05); filter: drop-shadow(0 8px 25px rgba(0,0,0,0.4)) brightness(1.1); }
     }
-
     @keyframes idleWiggle {
-      0%, 100% { 
-        transform: rotate(0deg);
-      }
-      25% { 
-        transform: rotate(1deg);
-      }
-      75% { 
-        transform: rotate(-1deg);
-      }
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(1deg); }
+      75% { transform: rotate(-1deg); }
     }
-
     @keyframes idleFloat {
-      0%, 100% { 
-        transform: translateY(0px);
-      }
-      50% { 
-        transform: translateY(-6px);
-      }
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-6px); }
     }
 
-    /* FIXED: Clean shake animation that doesn't conflict */
     .shake-animation {
       animation: cleanShake 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
     }
 
     @keyframes cleanShake {
-      0%, 100% { 
-        transform: translateX(0) scale(1); 
-      }
-      10% { 
-        transform: translateX(-8px) scale(1.01); 
-      }
-      20% { 
-        transform: translateX(8px) scale(0.99); 
-      }
-      30% { 
-        transform: translateX(-6px) scale(1.005); 
-      }
-      40% { 
-        transform: translateX(6px) scale(0.995); 
-      }
-      50% { 
-        transform: translateX(-4px) scale(1); 
-      }
-      60% { 
-        transform: translateX(4px) scale(1); 
-      }
-      70% { 
-        transform: translateX(-2px) scale(1); 
-      }
-      80% { 
-        transform: translateX(2px) scale(1); 
-      }
-      90% { 
-        transform: translateX(-1px) scale(1); 
-      }
+      0%, 100% { transform: translateX(0) scale(1); }
+      10% { transform: translateX(-8px) scale(1.01); }
+      20% { transform: translateX(8px) scale(0.99); }
+      30% { transform: translateX(-6px) scale(1.005); }
+      40% { transform: translateX(6px) scale(0.995); }
+      50% { transform: translateX(-4px) scale(1); }
+      60% { transform: translateX(4px) scale(1); }
+      70% { transform: translateX(-2px) scale(1); }
+      80% { transform: translateX(2px) scale(1); }
+      90% { transform: translateX(-1px) scale(1); }
     }
 
-    /* Special effects for shiny Catchmon */
-    .shiny-effect {
-      position: relative;
-    }
-
+    .shiny-effect { position: relative; }
     .shiny-effect::before {
       content: '';
       position: absolute;
-      top: -10px;
-      left: -10px;
-      right: -10px;
-      bottom: -10px;
-      background: linear-gradient(45deg, 
-        transparent, 
-        rgba(255, 215, 0, 0.3), 
-        transparent, 
-        rgba(255, 192, 203, 0.3), 
-        transparent, 
-        rgba(173, 216, 230, 0.3), 
-        transparent);
+      top: -10px; left: -10px; right: -10px; bottom: -10px;
+      background: linear-gradient(45deg, transparent, rgba(255,215,0,0.3), transparent, rgba(255,192,203,0.3), transparent, rgba(173,216,230,0.3), transparent);
       border-radius: 15px;
       animation: shinySparkle 3s linear infinite;
       z-index: 0;
     }
 
     @keyframes shinySparkle {
-      0% { 
-        transform: rotate(0deg);
-        opacity: 0.5;
-      }
-      50% {
-        opacity: 0.8;
-      }
-      100% { 
-        transform: rotate(360deg);
-        opacity: 0.5;
-      }
+      0% { transform: rotate(0deg); opacity: 0.5; }
+      50% { opacity: 0.8; }
+      100% { transform: rotate(360deg); opacity: 0.5; }
     }
 
-    /* Rarity-based glow effects */
-    .rarity-common {
-      filter: drop-shadow(0 0 10px rgba(158, 158, 158, 0.4));
-    }
-
-    .rarity-rare {
-      filter: drop-shadow(0 0 15px rgba(33, 150, 243, 0.5));
-    }
-
-    .rarity-legendary {
-      filter: drop-shadow(0 0 20px rgba(255, 152, 0, 0.6));
-      animation: legendaryGlow 4s ease-in-out infinite alternate;
-    }
-
-    .rarity-mythical {
-      filter: drop-shadow(0 0 25px rgba(156, 39, 176, 0.7));
-      animation: mythicalGlow 3s ease-in-out infinite alternate;
-    }
-
-    .rarity-god {
-      filter: drop-shadow(0 0 30px rgba(128, 0, 128, 0.8));
-      animation: godGlow 2s ease-in-out infinite alternate;
-    }
+    .rarity-common { filter: drop-shadow(0 0 10px rgba(158,158,158,0.4)); }
+    .rarity-rare { filter: drop-shadow(0 0 15px rgba(33,150,243,0.5)); }
+    .rarity-legendary { filter: drop-shadow(0 0 20px rgba(255,152,0,0.6)); animation: legendaryGlow 4s ease-in-out infinite alternate; }
+    .rarity-mythical { filter: drop-shadow(0 0 25px rgba(156,39,176,0.7)); animation: mythicalGlow 3s ease-in-out infinite alternate; }
+    .rarity-god { filter: drop-shadow(0 0 30px rgba(128,0,128,0.8)); animation: godGlow 2s ease-in-out infinite alternate; }
 
     @keyframes legendaryGlow {
-      0% { filter: drop-shadow(0 0 20px rgba(255, 152, 0, 0.6)) brightness(1); }
-      100% { filter: drop-shadow(0 0 35px rgba(255, 152, 0, 0.9)) brightness(1.2); }
+      0% { filter: drop-shadow(0 0 20px rgba(255,152,0,0.6)) brightness(1); }
+      100% { filter: drop-shadow(0 0 35px rgba(255,152,0,0.9)) brightness(1.2); }
     }
-
     @keyframes mythicalGlow {
-      0% { filter: drop-shadow(0 0 25px rgba(156, 39, 176, 0.7)) brightness(1); }
-      100% { filter: drop-shadow(0 0 40px rgba(156, 39, 176, 1)) brightness(1.3); }
+      0% { filter: drop-shadow(0 0 25px rgba(156,39,176,0.7)) brightness(1); }
+      100% { filter: drop-shadow(0 0 40px rgba(156,39,176,1)) brightness(1.3); }
     }
-
     @keyframes godGlow {
-      0% { filter: drop-shadow(0 0 30px rgba(128, 0, 128, 0.8)) brightness(0.8) contrast(1.2); }
-      100% { filter: drop-shadow(0 0 50px rgba(128, 0, 128, 1)) brightness(1.1) contrast(1.5); }
+      0% { filter: drop-shadow(0 0 30px rgba(128,0,128,0.8)) brightness(0.8) contrast(1.2); }
+      100% { filter: drop-shadow(0 0 50px rgba(128,0,128,1)) brightness(1.1) contrast(1.5); }
     }
 
     .glitter {
       position: absolute;
       width: 280px; height: 280px;
       top: -40px; left: -40px;
-      background: radial-gradient(
-        circle, 
-        rgba(255, 255, 255, 0.3) 0%, 
-        rgba(255, 215, 0, 0.2) 30%,
-        transparent 70%
-      );
+      background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, rgba(255,215,0,0.2) 30%, transparent 70%);
       border-radius: 50%;
       animation: modernShimmer 3s ease-in-out infinite;
       z-index: 0;
@@ -350,18 +200,9 @@
     }
 
     @keyframes modernShimmer {
-      0% { 
-        transform: rotate(0deg) scale(1); 
-        opacity: 0.4; 
-      }
-      50% { 
-        transform: rotate(180deg) scale(1.1); 
-        opacity: 0.8; 
-      }
-      100% { 
-        transform: rotate(360deg) scale(1); 
-        opacity: 0.4; 
-      }
+      0% { transform: rotate(0deg) scale(1); opacity: 0.4; }
+      50% { transform: rotate(180deg) scale(1.1); opacity: 0.8; }
+      100% { transform: rotate(360deg) scale(1); opacity: 0.4; }
     }
 
     .timer-text {
@@ -371,11 +212,11 @@
       color: #fff;
       text-shadow: 0 2px 8px rgba(0,0,0,0.5);
       text-align: center;
-      background: rgba(0, 0, 0, 0.2);
+      background: rgba(0,0,0,0.2);
       padding: 8px 16px;
       border-radius: 20px;
       backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255,255,255,0.1);
     }
 
     .info {
@@ -395,7 +236,7 @@
       text-shadow: 0 1px 3px rgba(0,0,0,0.5);
       width: 100%;
       max-width: 420px;
-      background: rgba(255, 255, 255, 0.08);
+      background: rgba(255,255,255,0.08);
       border-radius: 8px;
       overflow: hidden;
       backdrop-filter: blur(10px);
@@ -409,21 +250,21 @@
     }
 
     .stat-table th { 
-      background: rgba(76, 175, 80, 0.3);
+      background: rgba(76,175,80,0.3);
       font-weight: 700;
       font-size: 10px;
       letter-spacing: 0.5px;
     }
 
     .stat-table td {
-      background: rgba(255, 255, 255, 0.05);
+      background: rgba(255,255,255,0.05);
       font-size: 12px;
       font-weight: 700;
       transition: all 0.3s ease;
     }
 
     .stat-table tr:hover td {
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(255,255,255,0.1);
       transform: scale(1.02);
     }
 
@@ -441,10 +282,7 @@
     .message {
       font-size: 18px;
       font-weight: 800;
-      text-shadow: 
-        0 0 20px currentColor,
-        0 0 40px currentColor,
-        0 4px 8px rgba(0,0,0,0.7);
+      text-shadow: 0 0 20px currentColor, 0 0 40px currentColor, 0 4px 8px rgba(0,0,0,0.7);
       opacity: 0;
       transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
       text-align: center;
@@ -452,14 +290,8 @@
       position: relative;
     }
 
-    .message.show { 
-      opacity: 1; 
-    }
-
-    .message.success {
-      display: none;
-    }
-
+    .message.show { opacity: 1; }
+    .message.success { display: none; }
     .message.escaped {
       color: #ff4757;
       background: linear-gradient(135deg, #ff4757, #ff3742, #ff6b7a);
@@ -471,113 +303,32 @@
     }
 
     @keyframes escapeGlow {
-      0% { 
-        background-position: 0% 50%;
-        filter: drop-shadow(0 0 15px rgba(255, 71, 87, 0.6));
-      }
-      100% { 
-        background-position: 100% 50%;
-        filter: drop-shadow(0 0 25px rgba(255, 71, 87, 0.9));
-      }
+      0% { background-position: 0% 50%; filter: drop-shadow(0 0 15px rgba(255,71,87,0.6)); }
+      100% { background-position: 100% 50%; filter: drop-shadow(0 0 25px rgba(255,71,87,0.9)); }
     }
 
-    /* Responsive Design */
     @media (max-width: 768px) {
-      .catchmon-ring {
-        width: 220px;
-        height: 220px;
-      }
-
-      .ring-base, .ring-progress {
-        width: 220px;
-        height: 220px;
-        mask-image: radial-gradient(circle, transparent 88px, black 89px);
-        -webkit-mask-image: radial-gradient(circle, transparent 88px, black 89px);
-      }
-
-      .catchmon {
-        top: 18px;
-        left: 18px;
-        width: 184px;
-        height: 184px;
-      }
-
-      #catchImg {
-        width: 160px;
-      }
-
-      .glitter {
-        width: 250px;
-        height: 250px;
-        top: -32px;
-        left: -32px;
-      }
-
-      .timer-text {
-        font-size: 20px;
-      }
-
-      .info {
-        font-size: 13px;
-      }
-
-      .message {
-        font-size: 16px;
-      }
-
-      .message-wrapper {
-        width: 350px;
-        max-width: 350px;
-        min-width: 350px;
-      }
-
-      .stat-table th, .stat-table td {
-        padding: 5px 3px;
-        font-size: 10px;
-      }
-
-      .stat-table th {
-        font-size: 9px;
-      }
+      .catchmon-ring { width: 220px; height: 220px; }
+      .ring-base, .ring-progress { width: 220px; height: 220px; mask-image: radial-gradient(circle, transparent 88px, black 89px); -webkit-mask-image: radial-gradient(circle, transparent 88px, black 89px); }
+      .catchmon { top: 18px; left: 18px; width: 184px; height: 184px; }
+      #catchImg { width: 160px; }
+      .glitter { width: 250px; height: 250px; top: -32px; left: -32px; }
+      .timer-text { font-size: 20px; }
+      .info { font-size: 13px; }
+      .message { font-size: 16px; }
+      .message-wrapper { width: 350px; max-width: 350px; min-width: 350px; }
+      .stat-table th, .stat-table td { padding: 5px 3px; font-size: 10px; }
+      .stat-table th { font-size: 9px; }
     }
 
     @media (max-width: 480px) {
-      .catchmon-ring {
-        width: 200px;
-        height: 200px;
-      }
-
-      .ring-base, .ring-progress {
-        width: 200px;
-        height: 200px;
-        mask-image: radial-gradient(circle, transparent 80px, black 81px);
-        -webkit-mask-image: radial-gradient(circle, transparent 80px, black 81px);
-      }
-
-      .catchmon {
-        top: 17px;
-        left: 17px;
-        width: 166px;
-        height: 166px;
-      }
-
-      #catchImg {
-        width: 145px;
-      }
-
-      .message {
-        font-size: 14px;
-      }
-
-      .message-wrapper {
-        width: 320px;
-        max-width: 320px;
-        min-width: 320px;
-      }
-
-      .timer-text {
-        font-size: 18px;
-      }
+      .catchmon-ring { width: 200px; height: 200px; }
+      .ring-base, .ring-progress { width: 200px; height: 200px; mask-image: radial-gradient(circle, transparent 80px, black 81px); -webkit-mask-image: radial-gradient(circle, transparent 80px, black 81px); }
+      .catchmon { top: 17px; left: 17px; width: 166px; height: 166px; }
+      #catchImg { width: 145px; }
+      .message { font-size: 14px; }
+      .message-wrapper { width: 320px; max-width: 320px; min-width: 320px; }
+      .timer-text { font-size: 18px; }
     }
   </style>
 </head>
@@ -594,12 +345,8 @@
     <div class="info" id="infoText">Waiting for wild Catchmon...</div>
     
     <table class="stat-table">
-      <thead>
-        <tr id="statHead"></tr>
-      </thead>
-      <tbody>
-        <tr id="statRow"></tr>
-      </tbody>
+      <thead><tr id="statHead"></tr></thead>
+      <tbody><tr id="statRow"></tr></tbody>
     </table>
     
     <div class="message-wrapper">
@@ -607,16 +354,30 @@
     </div>
   </div>
 
-  <script>
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+    import { getDatabase, ref, onValue } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDdStpC5rVtgaZ4XvtKLwQttnyIDXL2z7Q",
+      authDomain: "trainertrials.firebaseapp.com",
+      databaseURL: "https://trainertrials-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "trainertrials",
+      storageBucket: "trainertrials.firebasestorage.app",
+      messagingSenderId: "22071275267",
+      appId: "1:22071275267:web:92e82d6bfaee169aff8336"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    // State
     let spawnData = null;
     let lastTimestamp = 0;
     let currentIdleInterval = null;
-    // 🎯 WICHTIGSTE ÄNDERUNG: Dynamischer SPAWN_INTERVAL statt hardcodiert 120
-    let SPAWN_INTERVAL = 15; // Default, wird aus JSON überschrieben
+    let SPAWN_INTERVAL = 120;
 
-    // FIXED: Simplified animation system
     const IDLE_ANIMATIONS = ['breathing', 'bounce', 'sway', 'pulse', 'wiggle', 'float'];
-    
     const RARITY_ANIMATIONS = {
       'Common': ['breathing', 'bounce'],
       'Rare': ['pulse', 'sway'],
@@ -640,21 +401,15 @@
       return animations[Math.floor(Math.random() * animations.length)];
     }
 
-    // FIXED: Clean animation state management
     function startIdleAnimation(img, rarity) {
       stopIdleAnimation(img);
-      
       const animationType = getIdleAnimationForRarity(rarity);
       const rarityClass = `rarity-${rarity.toLowerCase()}`;
-      
-      // Apply animation classes
       img.className = `idle-${animationType} ${rarityClass}`;
-      
-      // Change animation periodically for variety
       currentIdleInterval = setInterval(() => {
         const newAnimation = getIdleAnimationForRarity(rarity);
         img.className = `idle-${newAnimation} ${rarityClass}`;
-      }, Math.random() * 10000 + 15000); // 15-25 seconds
+      }, Math.random() * 10000 + 15000);
     }
 
     function stopIdleAnimation(img) {
@@ -662,162 +417,62 @@
         clearInterval(currentIdleInterval);
         currentIdleInterval = null;
       }
-      // Clear all animation classes except rarity
       const rarityClass = Array.from(img.classList).find(cls => cls.startsWith('rarity-'));
       img.className = rarityClass || '';
     }
 
-    async function fetchSpawn() {
-      try {
-        const res = await fetch("spawn_data.json?" + Date.now());
-        const data = await res.json();
-        
-        // 🎯 WICHTIG: Prüfe ob sich das Result geändert hat, nicht nur der Timestamp
-        const hasResultChanged = spawnData && (spawnData.result !== data.result);
-        const isNewSpawn = !data.timestamp || data.timestamp !== lastTimestamp;
-        
-        if (!isNewSpawn && !hasResultChanged) return;
-        
-        console.log(`📡 Fetch: New spawn: ${isNewSpawn}, Result changed: ${hasResultChanged}`);
-        console.log(`📡 Data: ${data.name}, result: ${data.result}, timestamp: ${data.timestamp}`);
-        
-        lastTimestamp = data.timestamp;
-        
-        // 🎯 TIMER-FIX: Spawn-Interval aus JSON lesen!
-        if (data.spawn_interval || data.SPAWN_INTERVAL) {
-          SPAWN_INTERVAL = data.spawn_interval || data.SPAWN_INTERVAL;
-          console.log(`🔄 Timer-Interval aktualisiert: ${SPAWN_INTERVAL}s`);
-        }
-        
-        // 🎯 RESULT UPDATE: Wenn nur das Result sich geändert hat, update das bestehende Spawn
-        if (hasResultChanged && spawnData && spawnData.name === data.name) {
-          console.log(`🔄 Result-Update erkannt: ${spawnData.result} → ${data.result}`);
-          spawnData = data;
-          
-          // Trigger die Result-Animation ohne kompletten Re-render
-          triggerResultAnimation(data);
-          return;
-        }
-        
-        // Normaler neuer Spawn
-        spawnData = data;
-        renderSpawn(data);
-        
-      } catch (err) {
-        console.error("Fehler beim Laden:", err);
-      }
-    }
-
-    // 🎯 NEUE FUNKTION: Trigger Result-Animation ohne Re-render
     function triggerResultAnimation(data) {
       const { result, winner, donation = 0, name } = data;
       const img = document.getElementById("catchImg");
       const msg = document.getElementById("catchMsg");
       const ringProgress = document.getElementById("ringProgress");
-      
-      if (!img) {
-        console.log("❌ Kein Catchmon-Image gefunden für Result-Animation");
-        return;
-      }
-      
-      console.log(`🎬 Triggering result animation: ${result}`);
-      
-      // Shake Logic
-      let shakeCount = 0;
-      if (result === "caught") {
-        shakeCount = 3;
-        console.log(`🎣 Caught detected! Will shake ${shakeCount} times`);
-      } else if (result === "escaped") {
-        shakeCount = 1 + Math.floor(Math.random() * 2);
-        console.log(`💨 Escaped detected! Will shake ${shakeCount} times`);
-      }
 
-      if (shakeCount === 0) {
-        console.log("⏳ No valid result for animation");
-        return;
-      }
+      if (!img) return;
+
+      let shakeCount = 0;
+      if (result === "caught") shakeCount = 3;
+      else if (result === "escaped") shakeCount = 1 + Math.floor(Math.random() * 2);
+      if (shakeCount === 0) return;
 
       let currentShake = 0;
 
       function doShake() {
         if (currentShake < shakeCount) {
-          console.log(`🌀 Starting shake ${currentShake + 1}/${shakeCount}`);
-          
-          // Stop idle animation during shake
           stopIdleAnimation(img);
-          
-          // Clean slate - remove all animation classes
           img.className = img.className.replace(/idle-\w+/g, '').trim();
-          
-          // Add shake animation
           img.classList.add("shake-animation");
-          
-          // Play sound
+
           const wobbleAudio = document.getElementById("wobbleSound");
-          if (wobbleAudio) {
-            wobbleAudio.currentTime = 0;
-            wobbleAudio.play().catch(() => console.log("🔇 Wobble sound failed"));
-          }
-          
+          if (wobbleAudio) { wobbleAudio.currentTime = 0; wobbleAudio.play().catch(() => {}); }
+
           currentShake++;
-          
-          // Remove shake class and continue
           setTimeout(() => {
             img.classList.remove("shake-animation");
-            if (currentShake < shakeCount) {
-              setTimeout(doShake, 200); // Short pause between shakes
-            } else {
-              console.log(`✅ All shakes done, handling final result: ${result}`);
-              handleFinalResult();
-            }
-          }, 1200); // Match shake animation duration
+            if (currentShake < shakeCount) setTimeout(doShake, 200);
+            else handleFinalResult();
+          }, 1200);
         }
       }
 
       function handleFinalResult() {
         if (ringProgress) ringProgress.classList.remove("pulse");
-        
+
         if (result === "caught") {
-          console.log(`🎉 Processing caught result for ${winner}, donation: ${donation}`);
-          
-          // Success effect
           stopIdleAnimation(img);
-          img.style.filter = "brightness(2) saturate(1.5) drop-shadow(0 0 30px rgba(76, 175, 80, 0.8))";
-          
-          setTimeout(() => {
-            img.style.filter = "brightness(1.2) drop-shadow(0 5px 15px rgba(0, 0, 0, 0.3))";
-          }, 800);
-
-          // Trigger catch effect
+          img.style.filter = "brightness(2) saturate(1.5) drop-shadow(0 0 30px rgba(76,175,80,0.8))";
+          setTimeout(() => { img.style.filter = "brightness(1.2) drop-shadow(0 5px 15px rgba(0,0,0,0.3))"; }, 800);
           reloadEffect(donation);
-
-          setTimeout(() => {
-            const effectFrame = document.getElementById("catchEffect");
-            if (effectFrame) effectFrame.remove();
-          }, 6000);
-          
+          setTimeout(() => { const ef = document.getElementById("catchEffect"); if (ef) ef.remove(); }, 6000);
         } else if (result === "escaped") {
-          console.log(`💨 Processing escaped result`);
-          
-          // Escape effect
           stopIdleAnimation(img);
           img.style.opacity = "0.3";
           img.style.filter = "grayscale(100%) blur(3px)";
-          if (msg) {
-            msg.textContent = `💨 ${name} escaped...`;
-            msg.classList.add("show", "escaped");
-          }
-          
+          if (msg) { msg.textContent = `💨 ${name} escaped...`; msg.classList.add("show", "escaped"); }
           const breakOutAudio = document.getElementById("breakOut");
-          if (breakOutAudio) {
-            breakOutAudio.currentTime = 0;
-            breakOutAudio.play().catch(() => console.log("🔇 Breakout sound failed"));
-          }
+          if (breakOutAudio) { breakOutAudio.currentTime = 0; breakOutAudio.play().catch(() => {}); }
         }
       }
 
-      // Start shake sequence
-      console.log(`🎬 Starting shake sequence in 500ms...`);
       setTimeout(doShake, 500);
     }
 
@@ -825,24 +480,22 @@
       const { name, level, rarity, shiny, sprite, stats, result, winner, donation = 0 } = data;
 
       document.getElementById("infoText").innerHTML = `✨ Wild <strong>${name}</strong> appeared!<br>Level: ${level} • ${rarity}${shiny ? ' ✨ <em>Shiny!</em>' : ''}`;
-      
+
       const head = document.getElementById("statHead");
       const row = document.getElementById("statRow");
-      head.innerHTML = ""; 
+      head.innerHTML = "";
       row.innerHTML = "";
-      
+
       for (let key in stats) {
         head.innerHTML += `<th>${key}</th>`;
         const val = stats[key];
         let color = "#FFD700";
-        
         if (val === 0) color = "#FF69B4";
         else if (val === 31) color = "#9C27B0";
         else if (val >= 28) color = "#4CAF50";
         else if (val >= 20) color = "#FF9800";
         else if (val >= 15) color = "#2196F3";
         else if (val < 10) color = "#F44336";
-        
         row.innerHTML += `<td style="color:${color}; text-shadow: 0 0 10px ${color};">${val}</td>`;
       }
 
@@ -853,7 +506,6 @@
       const wrapper = document.getElementById("catchWrapper");
       wrapper.innerHTML = "";
 
-      // Add glitter for shiny
       if (shiny) {
         const glitter = document.createElement("div");
         glitter.className = "glitter";
@@ -864,8 +516,7 @@
       img.id = "catchImg";
       img.src = sprite;
       img.alt = name;
-      
-      // Add shiny wrapper if needed
+
       if (shiny) {
         const shinyWrapper = document.createElement("div");
         shinyWrapper.className = "shiny-effect";
@@ -875,103 +526,63 @@
         wrapper.appendChild(img);
       }
 
-      // FIXED: Clean entrance animation
       img.classList.add("entrance-animation");
-      
-      // Ring pulse effect
       const ringProgress = document.getElementById("ringProgress");
       ringProgress.classList.add("pulse");
 
-      // After entrance, start idle animation
       setTimeout(() => {
         img.classList.remove("entrance-animation");
         startIdleAnimation(img, rarity);
-      }, 1500); // Match entrance animation duration
+      }, 1500);
 
-      // FIXED: Improved shake logic
       let shakeCount = 0;
-      if (result === "caught") {
-        shakeCount = 3;
-      } else if (result === "escaped") {
-        shakeCount = 1 + Math.floor(Math.random() * 2);
-      }
+      if (result === "caught") shakeCount = 3;
+      else if (result === "escaped") shakeCount = 1 + Math.floor(Math.random() * 2);
 
       let currentShake = 0;
 
       function doShake() {
         if (currentShake < shakeCount) {
-          // FIXED: Completely stop idle animation during shake
           stopIdleAnimation(img);
-          
-          // Clean slate - remove all animation classes
           img.className = img.className.replace(/idle-\w+/g, '').trim();
-          
-          // Add shake animation
           img.classList.add("shake-animation");
-          
-          // Play sound
           const wobbleAudio = document.getElementById("wobbleSound");
           wobbleAudio.currentTime = 0;
           wobbleAudio.play().catch(() => {});
-          
           currentShake++;
-          
-          // Remove shake class and continue
           setTimeout(() => {
             img.classList.remove("shake-animation");
-            if (currentShake < shakeCount) {
-              setTimeout(doShake, 200); // Short pause between shakes
-            } else {
-              handleFinalResult();
-            }
-          }, 1200); // Match shake animation duration
-          
+            if (currentShake < shakeCount) setTimeout(doShake, 200);
+            else handleFinalResult();
+          }, 1200);
         }
       }
 
       function handleFinalResult() {
         ringProgress.classList.remove("pulse");
-        
         if (result === "caught") {
-          // Success effect
           stopIdleAnimation(img);
-          img.style.filter = "brightness(2) saturate(1.5) drop-shadow(0 0 30px rgba(76, 175, 80, 0.8))";
-          
-          setTimeout(() => {
-            img.style.filter = "brightness(1.2) drop-shadow(0 5px 15px rgba(0, 0, 0, 0.3))";
-          }, 800);
-
+          img.style.filter = "brightness(2) saturate(1.5) drop-shadow(0 0 30px rgba(76,175,80,0.8))";
+          setTimeout(() => { img.style.filter = "brightness(1.2) drop-shadow(0 5px 15px rgba(0,0,0,0.3))"; }, 800);
           reloadEffect(donation);
-
-          setTimeout(() => {
-            const effectFrame = document.getElementById("catchEffect");
-            if (effectFrame) effectFrame.remove();
-          }, 6000);
-          
+          setTimeout(() => { const ef = document.getElementById("catchEffect"); if (ef) ef.remove(); }, 6000);
         } else if (result === "escaped") {
-          // Escape effect
           stopIdleAnimation(img);
           img.style.opacity = "0.3";
           img.style.filter = "grayscale(100%) blur(3px)";
           msg.textContent = `💨 ${name} escaped...`;
           msg.classList.add("show", "escaped");
-          
           const breakOutAudio = document.getElementById("breakOut");
           breakOutAudio.currentTime = 0;
           breakOutAudio.play().catch(() => {});
-          
         } else {
-          // No result yet, restart idle
           const rarityClass = `rarity-${rarity.toLowerCase()}`;
           img.className = rarityClass;
           startIdleAnimation(img, rarity);
         }
       }
 
-      // Start shake sequence if there's a result
-      if (result && shakeCount > 0) {
-        setTimeout(doShake, 500); // Small delay before first shake
-      }
+      if (result && shakeCount > 0) setTimeout(doShake, 500);
     }
 
     function reloadEffect(donation) {
@@ -979,126 +590,83 @@
       setTimeout(() => {
         const oldFrame = document.getElementById("catchEffect");
         if (oldFrame) oldFrame.remove();
-
         const newFrame = document.createElement("iframe");
         newFrame.id = "catchEffect";
-        newFrame.style.cssText = `
-          position: fixed;
-          top: 0;
-          left: 0;
-          width: 100vw;
-          height: 100vh;
-          border: none;
-          z-index: 999;
-          pointer-events: none;
-          background: transparent;
-          opacity: 0;
-          transition: opacity 0.1s ease;
-        `;
-        newFrame.onload = () => {
-          newFrame.style.opacity = 1;
-        };
+        newFrame.style.cssText = `position:fixed;top:0;left:0;width:100vw;height:100vh;border:none;z-index:999;pointer-events:none;background:transparent;opacity:0;transition:opacity 0.1s ease;`;
+        newFrame.onload = () => { newFrame.style.opacity = 1; };
         newFrame.src = `${tier}_effect.html?` + Date.now();
         document.body.appendChild(newFrame);
       }, 50);
     }
 
-    // 🎯 TIMER-FUNKTIONEN - Jetzt mit dynamischem SPAWN_INTERVAL
     function updateRingProgress() {
       if (spawnData && spawnData.spawn_start) {
         const elapsed = (Date.now() / 1000) - spawnData.spawn_start;
-        const remaining = Math.max(0, SPAWN_INTERVAL - elapsed);
         const angle = Math.min(1.0, elapsed / SPAWN_INTERVAL) * 360;
-
         const ring = document.getElementById("ringProgress");
-        ring.style.background = `conic-gradient(
-          from 0deg,
-          #4CAF50 ${angle}deg, 
-          rgba(255, 255, 255, 0.1) ${angle}deg
-        )`;
+        ring.style.background = `conic-gradient(from 0deg, #4CAF50 ${angle}deg, rgba(255,255,255,0.1) ${angle}deg)`;
       }
       requestAnimationFrame(updateRingProgress);
     }
 
     function updateTimer() {
       if (!spawnData || !spawnData.spawn_start) return;
-
       const elapsed = Math.floor(Date.now() / 1000) - spawnData.spawn_start;
       const remaining = Math.max(0, SPAWN_INTERVAL - elapsed);
-
       const mm = String(Math.floor(remaining / 60)).padStart(2, '0');
       const ss = String(remaining % 60).padStart(2, '0');
       document.getElementById("timerText").textContent = `${mm}:${ss}`;
     }
 
-    // Add some random environmental effects for atmosphere
-    function createAtmosphericEffect() {
-      const effects = ['💨', '✨', '🌟', '💫', '⭐'];
-      const effect = document.createElement('div');
-      effect.textContent = effects[Math.floor(Math.random() * effects.length)];
-      effect.style.cssText = `
-        position: fixed;
-        left: ${Math.random() * 100}%;
-        top: ${Math.random() * 100}%;
-        font-size: ${Math.random() * 20 + 10}px;
-        opacity: 0.6;
-        pointer-events: none;
-        z-index: -1;
-        animation: atmosphericFloat 8s ease-out forwards;
-      `;
-      
-      document.body.appendChild(effect);
-      
-      setTimeout(() => {
-        if (effect.parentNode) {
-          effect.parentNode.removeChild(effect);
-        }
-      }, 8000);
-    }
-
-    // Add atmospheric effect keyframes
+    // Atmospheric effects
     const atmosphericStyle = document.createElement('style');
-    atmosphericStyle.textContent = `
-      @keyframes atmosphericFloat {
-        0% { 
-          opacity: 0.6;
-          transform: translateY(0px) scale(1) rotate(0deg);
-        }
-        50% {
-          opacity: 0.3;
-          transform: translateY(-50px) scale(1.2) rotate(180deg);
-        }
-        100% { 
-          opacity: 0;
-          transform: translateY(-100px) scale(0.5) rotate(360deg);
-        }
-      }
-    `;
+    atmosphericStyle.textContent = `@keyframes atmosphericFloat { 0% { opacity:0.6; transform:translateY(0px) scale(1) rotate(0deg); } 50% { opacity:0.3; transform:translateY(-50px) scale(1.2) rotate(180deg); } 100% { opacity:0; transform:translateY(-100px) scale(0.5) rotate(360deg); } }`;
     document.head.appendChild(atmosphericStyle);
 
-    // Create atmospheric effects periodically
     setInterval(() => {
-      if (Math.random() < 0.3) { // 30% chance every 5 seconds
-        createAtmosphericEffect();
+      if (Math.random() < 0.3) {
+        const effects = ['💨', '✨', '🌟', '💫', '⭐'];
+        const effect = document.createElement('div');
+        effect.textContent = effects[Math.floor(Math.random() * effects.length)];
+        effect.style.cssText = `position:fixed;left:${Math.random()*100}%;top:${Math.random()*100}%;font-size:${Math.random()*20+10}px;opacity:0.6;pointer-events:none;z-index:-1;animation:atmosphericFloat 8s ease-out forwards;`;
+        document.body.appendChild(effect);
+        setTimeout(() => { if (effect.parentNode) effect.parentNode.removeChild(effect); }, 8000);
       }
     }, 5000);
 
-    // Start smooth ring animation
-    requestAnimationFrame(updateRingProgress);
-    
-    // Keep original intervals
-    setInterval(updateTimer, 500);
-    setInterval(fetchSpawn, 500);
-    fetchSpawn();
+    // Firebase listener — replaces all JSON polling
+    onValue(ref(db, 'spawn/current'), (snapshot) => {
+      const data = snapshot.val();
+      if (!data) return;
 
-    // Cleanup when page unloads
-    window.addEventListener('beforeunload', () => {
-      if (currentIdleInterval) {
-        clearInterval(currentIdleInterval);
+      const hasResultChanged = spawnData && (spawnData.result !== data.result);
+      const isNewSpawn = data.timestamp !== lastTimestamp;
+
+      if (!isNewSpawn && !hasResultChanged) return;
+
+      lastTimestamp = data.timestamp;
+      if (data.spawn_interval) SPAWN_INTERVAL = data.spawn_interval;
+
+      if (hasResultChanged && spawnData && spawnData.name === data.name) {
+        spawnData = data;
+        triggerResultAnimation(data);
+        return;
       }
+
+      spawnData = data;
+      renderSpawn(data);
     });
 
-    console.log('🔥 Spawn System loaded with dynamic timer fix!');
+    // Start timers
+    requestAnimationFrame(updateRingProgress);
+    setInterval(updateTimer, 500);
+
+    // Cleanup
+    window.addEventListener('beforeunload', () => {
+      if (currentIdleInterval) clearInterval(currentIdleInterval);
+    });
+
+    console.log('🔥 Spawn System loaded — Firebase realtime active');
   </script>
 </body>
 </html>
