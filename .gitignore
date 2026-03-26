@@ -1,0 +1,29 @@
+# ---- Secrets / Credentials ----
+serviceAccountKey.json
+**/serviceAccountKey.json
+*.pem
+*.key
+.env
+.env.*
+
+# ---- Python ----
+__pycache__/
+*.pyc
+*.pyo
+*.log
+
+# ---- Generated runtime state (MUST NOT be committed) ----
+catcher.json
+spawn_data.json
+catch_chances.json
+seen_caught.json
+global_stats.json
+global_likes.json
+global_level.json
+donation_trigger.json
+fusion_trigger.json
+backup_json_*/
+
+# ---- OS ----
+.DS_Store
+Thumbs.db
