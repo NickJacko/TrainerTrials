@@ -26,6 +26,10 @@
     "connection_test": {
       ".read": false,
       ".write": false
+    },
+    "dex": {
+    ".read": true,
+    ".write": false
     }
   }
 }
