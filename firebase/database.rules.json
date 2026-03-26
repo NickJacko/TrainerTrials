@@ -1,0 +1,31 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+
+    "trainers": {
+      ".read": true,
+      ".write": false
+    },
+    "spawn": {
+      ".read": true,
+      ".write": false
+    },
+    "global": {
+      ".read": true,
+      ".write": false
+    },
+    "escaped": {
+      ".read": true,
+      ".write": false
+    },
+    "dex_list": {
+      ".read": true,
+      ".write": false
+    },
+    "connection_test": {
+      ".read": false,
+      ".write": false
+    }
+  }
+}
