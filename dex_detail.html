@@ -7,95 +7,36 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
-      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%);
-      margin: 0; padding: 0; min-height: 100vh; color: white; overflow-x: hidden;
-    }
-
-    body.god-mode {
-      background: linear-gradient(135deg, #0a0a0a 0%, #1a001a 30%, #000000 70%, #2d002d 100%);
-    }
-
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%); margin: 0; padding: 0; min-height: 100vh; color: white; overflow-x: hidden; }
+    body.god-mode { background: linear-gradient(135deg, #0a0a0a 0%, #1a001a 30%, #000000 70%, #2d002d 100%); }
     .container { max-width: 1200px; margin: 0 auto; padding: 20px; position: relative; z-index: 10; }
-
-    .connection-status {
-      position: fixed; top: 10px; right: 10px;
-      background: rgba(0,0,0,0.8); color: white;
-      padding: 8px 15px; border-radius: 20px; font-size: 14px; font-weight: 600;
-      z-index: 1000; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2);
-    }
+    .connection-status { position: fixed; top: 10px; right: 10px; background: rgba(0,0,0,0.8); color: white; padding: 8px 15px; border-radius: 20px; font-size: 14px; font-weight: 600; z-index: 1000; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); }
     .connection-status.connected { background: rgba(76,175,80,0.9); }
     .connection-status.disconnected { background: rgba(244,67,54,0.9); }
-
-    .top-bar {
-      display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 30px; background: rgba(255,255,255,0.1);
-      backdrop-filter: blur(15px); border-radius: 20px; padding: 20px 30px;
-      border: 1px solid rgba(255,255,255,0.2);
-    }
-
-    .back-button {
-      font-size: 16px; text-decoration: none; color: white; font-weight: 700;
-      padding: 12px 20px; border-radius: 12px; background: rgba(255,255,255,0.1);
-      border: 1px solid rgba(255,255,255,0.2); transition: all 0.2s ease;
-    }
+    .top-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 30px; background: rgba(255,255,255,0.1); backdrop-filter: blur(15px); border-radius: 20px; padding: 20px 30px; border: 1px solid rgba(255,255,255,0.2); }
+    .back-button { font-size: 16px; text-decoration: none; color: white; font-weight: 700; padding: 12px 20px; border-radius: 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); transition: all 0.2s ease; }
     .back-button:hover { background: rgba(255,255,255,0.2); transform: translateY(-2px); }
     body.god-mode .back-button { background: rgba(128,0,128,0.3); border: 1px solid rgba(147,112,219,0.4); color: #DDA0DD; }
-
     .hero-section { display: grid; grid-template-columns: 1fr 2fr; gap: 30px; margin-bottom: 40px; align-items: start; }
-
-    .image-container {
-      background: rgba(255,255,255,0.1); backdrop-filter: blur(15px);
-      border-radius: 20px; padding: 25px; text-align: center;
-      border: 1px solid rgba(255,255,255,0.2); position: relative;
-    }
-
+    .image-container { background: rgba(255,255,255,0.1); backdrop-filter: blur(15px); border-radius: 20px; padding: 25px; text-align: center; border: 1px solid rgba(255,255,255,0.2); position: relative; }
     .catchmon-image { width: 250px; height: 250px; object-fit: contain; border-radius: 15px; transition: transform 0.3s ease; filter: drop-shadow(0 8px 20px rgba(0,0,0,0.3)); }
     .catchmon-image:hover { transform: scale(1.05); }
-    body.god-mode .catchmon-image { filter: brightness(0.2) saturate(0) contrast(2); border: 2px solid rgba(128,0,128,0.6); box-shadow: 0 0 20px rgba(128,0,128,0.5); }
-
-    .god-image-overlay {
-      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-      color: #9370DB; font-weight: 900; font-size: 14px;
-      text-shadow: 0 0 15px rgba(147,112,219,0.8); text-align: center;
-      background: rgba(0,0,0,0.8); padding: 10px 15px; border-radius: 12px;
-      border: 1px solid rgba(147,112,219,0.5); opacity: 0; white-space: nowrap; z-index: 3;
-    }
+    body.god-mode .catchmon-image { filter: brightness(0.2) saturate(0) contrast(2); border: 2px solid rgba(128,0,128,0.6); }
+    .god-image-overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #9370DB; font-weight: 900; font-size: 14px; text-align: center; background: rgba(0,0,0,0.8); padding: 10px 15px; border-radius: 12px; border: 1px solid rgba(147,112,219,0.5); opacity: 0; white-space: nowrap; z-index: 3; }
     body.god-mode .god-image-overlay { opacity: 1; }
-
     .info-section { display: flex; flex-direction: column; gap: 20px; }
-
-    .catchmon-title {
-      font-size: clamp(2rem, 5vw, 3rem); font-weight: 800; margin-bottom: 15px;
-      background: linear-gradient(45deg, #FFD700, #FF6B6B, #4ECDC4, #45B7D1);
-      background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -1px;
-    }
-    body.god-mode .catchmon-title { color: #9370DB; background: none; -webkit-text-fill-color: #9370DB; text-shadow: 0 0 15px rgba(147,112,219,0.6); }
-
+    .catchmon-title { font-size: clamp(2rem, 5vw, 3rem); font-weight: 800; margin-bottom: 15px; background: linear-gradient(45deg, #FFD700, #FF6B6B, #4ECDC4, #45B7D1); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -1px; }
+    body.god-mode .catchmon-title { color: #9370DB; background: none; -webkit-text-fill-color: #9370DB; }
     .stats-summary { background: rgba(255,255,255,0.1); backdrop-filter: blur(15px); border-radius: 15px; padding: 20px; border: 1px solid rgba(255,255,255,0.2); }
     .summary-text { font-size: 1.2rem; color: rgba(255,255,255,0.9); margin-bottom: 10px; font-weight: 600; }
     body.god-mode .summary-text { color: #DDA0DD; }
-
-    .filter-section {
-      background: rgba(255,255,255,0.1); backdrop-filter: blur(15px);
-      border-radius: 15px; padding: 20px; text-align: center;
-      border: 1px solid rgba(255,255,255,0.2); margin-bottom: 30px;
-    }
-    .filter-section label {
-      color: white; font-weight: 700; font-size: 1rem;
-      background: rgba(255,255,255,0.1); padding: 10px 20px; border-radius: 20px;
-      border: 1px solid rgba(255,255,255,0.2); cursor: pointer; transition: all 0.2s ease;
-      display: inline-flex; align-items: center; gap: 10px;
-    }
+    .filter-section { background: rgba(255,255,255,0.1); backdrop-filter: blur(15px); border-radius: 15px; padding: 20px; text-align: center; border: 1px solid rgba(255,255,255,0.2); margin-bottom: 30px; }
+    .filter-section label { color: white; font-weight: 700; font-size: 1rem; background: rgba(255,255,255,0.1); padding: 10px 20px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2); cursor: pointer; transition: all 0.2s ease; display: inline-flex; align-items: center; gap: 10px; }
     .filter-section label:hover { background: rgba(255,255,255,0.2); }
     body.god-mode .filter-section label { background: rgba(75,0,130,0.2); border: 1px solid rgba(128,0,128,0.3); color: #DDA0DD; }
     #caughtOnly { width: 18px; height: 18px; accent-color: #9370DB; cursor: pointer; }
-
     .table-section { background: rgba(255,255,255,0.1); backdrop-filter: blur(15px); border-radius: 20px; padding: 0; border: 1px solid rgba(255,255,255,0.2); overflow: hidden; }
     body.god-mode .table-section { background: rgba(25,0,25,0.8); border: 1px solid rgba(75,0,130,0.4); }
-
     table { width: 100%; border-collapse: collapse; font-size: 14px; }
     th { background: rgba(255,215,0,0.2); color: white; padding: 15px 12px; text-align: center; font-weight: 700; font-size: 13px; border: none; position: sticky; top: 0; z-index: 10; }
     body.god-mode th { background: rgba(75,0,130,0.4); color: #DDA0DD; }
@@ -103,7 +44,6 @@
     body.god-mode td { color: #DDA0DD; border-bottom: 1px solid rgba(75,0,130,0.2); }
     tr:hover td { background: rgba(255,215,0,0.1); }
     body.god-mode tr:hover td { background: rgba(75,0,130,0.2); }
-
     .catcher-name { font-weight: 700; padding: 4px 8px; border-radius: 8px; }
     .king { background: linear-gradient(90deg, #FFD700, #FFA500); color: #000; }
     .flame { background: linear-gradient(90deg, #FF4444, #FF6B6B); color: white; }
@@ -111,11 +51,9 @@
     .shine { background: linear-gradient(90deg, #4CAF50, #66BB6A); color: white; }
     .normal { color: white; background: rgba(255,255,255,0.1); }
     body.god-mode .normal { color: #DDA0DD; background: rgba(75,0,130,0.2); }
-
     .loading { text-align: center; padding: 40px; color: rgba(255,255,255,0.8); font-size: 16px; display: flex; flex-direction: column; align-items: center; gap: 15px; }
     .loading-spinner { width: 30px; height: 30px; border: 3px solid rgba(255,255,255,0.3); border-top: 3px solid #FFD700; border-radius: 50%; animation: spin 1s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
-
     @media (max-width: 1024px) { .hero-section { grid-template-columns: 1fr; gap: 25px; text-align: center; } .catchmon-image { width: 200px; height: 200px; } }
     @media (max-width: 768px) { .container { padding: 15px; } .top-bar { flex-direction: column; gap: 15px; padding: 20px; } .catchmon-image { width: 180px; height: 180px; } table { font-size: 12px; } th, td { padding: 10px 6px; } }
     @media (max-width: 600px) { .table-section { overflow-x: auto; } table { min-width: 600px; } }
@@ -125,265 +63,37 @@
 </head>
 <body>
   <div class="connection-status" id="connectionStatus">🔄 Verbinde...</div>
-
   <div class="container">
     <div class="top-bar">
       <a class="back-button" href="javascript:history.back()">← Back to Arena</a>
       <div></div>
     </div>
-
     <div class="hero-section">
       <div class="image-section">
         <div class="image-container">
           <img id="catchImg" class="catchmon-image" src="" alt="Catchmon" loading="lazy">
-          <div class="god-image-overlay">⚡ CLASSIFIED ENTITY ⚡<br>ACCESS RESTRICTED</div>
+          <div class="god-image-overlay">CLASSIFIED ENTITY<br>ACCESS RESTRICTED</div>
         </div>
       </div>
       <div class="info-section">
-        <div>
-          <h1 id="catchTitle" class="catchmon-title">Loading...</h1>
-        </div>
-        <div class="stats-summary">
-          <p id="summary" class="summary-text">Loading statistics...</p>
-        </div>
+        <div><h1 id="catchTitle" class="catchmon-title">Loading...</h1></div>
+        <div class="stats-summary"><p id="summary" class="summary-text">Loading statistics...</p></div>
       </div>
     </div>
-
     <div class="filter-section">
-      <label>
-        <input type="checkbox" id="caughtOnly">
-        <span>Show caught only</span>
-      </label>
+      <label><input type="checkbox" id="caughtOnly"><span>Show caught only</span></label>
     </div>
-
     <div class="table-section">
       <table id="dataTable">
         <thead>
-          <tr>
-            <th>Catcher</th><th>Points</th><th>Level</th><th>Shiny</th><th>Sum</th>
-            <th>ATK</th><th>DEF</th><th>SPD</th><th>WIS</th><th>CHA</th><th>LUK</th>
-          </tr>
+          <tr><th>Catcher</th><th>Points</th><th>Level</th><th>Shiny</th><th>Sum</th><th>ATK</th><th>DEF</th><th>SPD</th><th>WIS</th><th>CHA</th><th>LUK</th></tr>
         </thead>
         <tbody>
-          <tr><td colspan="11" class="loading">
-            <div class="loading-spinner"></div>
-            <div>Loading Catchmon data...</div>
-          </td></tr>
+          <tr><td colspan="11" class="loading"><div class="loading-spinner"></div><div>Loading Catchmon data...</div></td></tr>
         </tbody>
       </table>
     </div>
   </div>
-
-  <script type="module">
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-    import { getDatabase, ref, onValue } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyDdStpC5rVtgaZ4XvtKLwQttnyIDXL2z7Q",
-      authDomain: "trainertrials.firebaseapp.com",
-      databaseURL: "https://trainertrials-default-rtdb.europe-west1.firebasedatabase.app",
-      projectId: "trainertrials",
-      storageBucket: "trainertrials.firebasestorage.app",
-      messagingSenderId: "22071275267",
-      appId: "1:22071275267:web:92e82d6bfaee169aff8336"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-
-    const statsOrder = ["ATK", "DEF", "SPD", "WIS", "CHA", "LUK"];
-    let allEntries = [];
-    let catcherDonations = {};
-    let dexList = [];
-    let isGodMode = false;
-
-    // --- Security: sanitize query param ---
-    function escapeHtml(input) {
-      const s = String(input ?? "");
-      return s.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#39;");
-    }
-
-    function validateCatchmonName(name) {
-      if (!name) return null;
-      const cleaned = name.trim().slice(0, 60);
-      if (!/^[\w\s\-]+$/.test(cleaned)) return null;
-      return cleaned;
-    }
-
-    const rawName = new URLSearchParams(window.location.search).get("name");
-    const catchmonName = validateCatchmonName(rawName);
-
-    if (!catchmonName) {
-      document.getElementById("catchTitle").textContent = "Invalid Catchmon name.";
-      document.getElementById("summary").textContent = "";
-    }
-
-    // --- Firebase ---
-    onValue(ref(db, '.info/connected'), (snapshot) => {
-      const el = document.getElementById('connectionStatus');
-      if (snapshot.val()) {
-        el.textContent = '🟢 Connected'; el.className = 'connection-status connected';
-      } else {
-        el.textContent = '🔴 Offline'; el.className = 'connection-status disconnected';
-      }
-    });
-
-    onValue(ref(db, 'trainers'), (snapshot) => {
-      const trainersData = snapshot.val() || {};
-      if (catchmonName && dexList.length > 0) processData(trainersData);
-      else if (catchmonName) pendingTrainers = trainersData;
-    });
-
-    let pendingTrainers = null;
-
-    // --- Utilities ---
-    function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
-    function sumStats(stats) { return Object.values(stats || {}).reduce((a, b) => a + (b || 0), 0); }
-
-    function calcPoints(catchmon) {
-      if (!catchmon) return 0;
-      const level = catchmon.level || 1;
-      const stats = catchmon.stats || {};
-      const statSum = Object.values(stats).reduce((sum, val) => sum + (val || 0), 0);
-      let points = level * 10 + statSum;
-      const rarityMultipliers = { "Common": 1, "Uncommon": 1.2, "Rare": 1.5, "Epic": 2, "Legendary": 3, "Mythical": 5 };
-      points *= rarityMultipliers[catchmon.rarity] || 1;
-      if (catchmon.shiny) points *= 2;
-      return Math.round(points);
-    }
-
-    function getDonationTier(donation) {
-      if (donation >= 2500) return "king";
-      if (donation >= 500) return "flame";
-      if (donation >= 250) return "diamond";
-      if (donation >= 100) return "shine";
-      return "normal";
-    }
-
-    function isGodCatchmon(sprite) { return sprite && sprite.includes('/God/'); }
-
-    window.renderTable = function() {
-      const tbody = document.querySelector("#dataTable tbody");
-      const showCaughtOnly = document.getElementById("caughtOnly").checked;
-
-      if (allEntries.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="11" class="loading"><div class="loading-spinner"></div><div>No data available</div></td></tr>';
-        return;
-      }
-
-      const fragment = document.createDocumentFragment();
-
-      allEntries
-        .filter(e => !showCaughtOnly || e.catcher)
-        .sort((a, b) => calcPoints(b) - calcPoints(a))
-        .forEach(e => {
-          const tr = document.createElement("tr");
-
-          // Catcher cell — safe DOM build
-          const tdCatcher = document.createElement('td');
-          if (!e.catcher) {
-            tdCatcher.textContent = "❌";
-          } else if (isGodMode) {
-            const span = document.createElement('span');
-            span.style.color = '#9370DB';
-            span.textContent = '█████';
-            tdCatcher.appendChild(span);
-          } else {
-            const tier = getDonationTier(catcherDonations[e.catcher] || 0);
-            if (tier !== "normal") {
-              const span = document.createElement('span');
-              span.className = `catcher-name ${tier}`;
-              span.textContent = capitalize(e.catcher);
-              tdCatcher.appendChild(span);
-            } else {
-              tdCatcher.textContent = capitalize(e.catcher);
-            }
-          }
-
-          const tdPoints = document.createElement('td');
-          tdPoints.textContent = calcPoints(e).toLocaleString('de-DE');
-
-          const tdLevel = document.createElement('td');
-          tdLevel.textContent = e.level || 1;
-
-          const tdShiny = document.createElement('td');
-          tdShiny.textContent = e.shiny ? "✨" : "";
-
-          const tdSum = document.createElement('td');
-          tdSum.textContent = sumStats(e.stats).toLocaleString('de-DE');
-
-          tr.append(tdCatcher, tdPoints, tdLevel, tdShiny, tdSum);
-
-          statsOrder.forEach(s => {
-            const td = document.createElement('td');
-            td.textContent = e.stats?.[s] ?? 0;
-            tr.appendChild(td);
-          });
-
-          fragment.appendChild(tr);
-        });
-
-      tbody.innerHTML = '';
-      tbody.appendChild(fragment);
-    };
-
-    function processData(trainersData) {
-      const lowerName = catchmonName.toLowerCase();
-      const entries = [];
-      catcherDonations = {};
-
-      Object.entries(trainersData).forEach(([catcher, info]) => {
-        catcherDonations[catcher] = info.donation || 0;
-        const team = Array.isArray(info.team) ? info.team : Object.values(info.team || {});
-        team.forEach(p => {
-          if (p.name && p.name.toLowerCase() === lowerName) {
-            entries.push({ ...p, catcher });
-          }
-        });
-      });
-
-      const dexEntry = dexList.find(p => p.name.toLowerCase() === lowerName);
-      const sprite = dexEntry?.sprite || "";
-
-      if (isGodCatchmon(sprite)) {
-        isGodMode = true;
-        document.body.classList.add('god-mode');
-        document.getElementById("catchTitle").textContent = "#??? ??? ??? ???";
-        document.getElementById("summary").textContent = "█ CLASSIFIED / █ CLASSIFIED";
-      } else {
-        // Safe: textContent only
-        document.getElementById("catchTitle").textContent =
-          `#${String(dexEntry?.id || "").padStart(3, "0")} ${capitalize(catchmonName)}`;
-        document.getElementById("summary").textContent =
-          `${entries.length} caught`;
-      }
-
-      const imgEl = document.getElementById("catchImg");
-      imgEl.src = sprite;
-      imgEl.alt = escapeHtml(catchmonName);
-
-      allEntries = entries;
-      window.renderTable();
-    }
-
-    async function init() {
-      if (!catchmonName) return;
-      try {
-        const res = await fetch("dex_list.json?" + Date.now());
-        dexList = await res.json();
-        if (pendingTrainers) {
-          processData(pendingTrainers);
-          pendingTrainers = null;
-        }
-      } catch (err) {
-        console.error("Error loading dex list:", err);
-        document.getElementById("catchTitle").textContent = "Error loading data";
-      }
-    }
-
-    init();
-    document.getElementById('caughtOnly').addEventListener('change', window.renderTable);
-    console.log('🔥 Dex Detail loaded — XSS-safe, Firebase realtime');
-  </script>
+  <script type="module" src="assets/js/pages/dex_detail.js"></script>
 </body>
 </html>
