@@ -7,87 +7,35 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
-      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%);
-      margin: 0; padding: 0; min-height: 100vh; color: white; overflow-x: hidden;
-    }
-
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%); margin: 0; padding: 0; min-height: 100vh; color: white; overflow-x: hidden; }
     .container { max-width: 1400px; margin: auto; padding: 20px; position: relative; z-index: 1; }
-
-    .connection-status {
-      position: fixed; top: 10px; right: 10px;
-      background: rgba(0,0,0,0.8); color: white;
-      padding: 8px 15px; border-radius: 20px; font-size: 14px; font-weight: 600;
-      z-index: 1000; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2);
-    }
+    .connection-status { position: fixed; top: 10px; right: 10px; background: rgba(0,0,0,0.8); color: white; padding: 8px 15px; border-radius: 20px; font-size: 14px; font-weight: 600; z-index: 1000; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); }
     .connection-status.connected { background: rgba(76,175,80,0.9); }
     .connection-status.disconnected { background: rgba(244,67,54,0.9); }
-
-    .header-section {
-      display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 30px; background: rgba(255,255,255,0.1);
-      backdrop-filter: blur(15px); border-radius: 20px; padding: 20px 30px;
-      border: 1px solid rgba(255,255,255,0.2);
-    }
-
+    .header-section { display: flex; align-items: center; justify-content: space-between; margin-bottom: 30px; background: rgba(255,255,255,0.1); backdrop-filter: blur(15px); border-radius: 20px; padding: 20px 30px; border: 1px solid rgba(255,255,255,0.2); }
     .header-content { display: flex; align-items: center; justify-content: space-between; width: 100%; }
-
-    .back-button {
-      font-size: 16px; text-decoration: none; color: white; font-weight: 700;
-      padding: 12px 20px; border-radius: 12px; background: rgba(255,255,255,0.1);
-      border: 1px solid rgba(255,255,255,0.2); transition: all 0.2s ease;
-    }
+    .back-button { font-size: 16px; text-decoration: none; color: white; font-weight: 700; padding: 12px 20px; border-radius: 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); transition: all 0.2s ease; }
     .back-button:hover { background: rgba(255,255,255,0.2); transform: translateY(-2px); }
-
-    h1 {
-      text-align: center; flex: 1; font-size: clamp(1.8rem, 5vw, 3rem);
-      background: linear-gradient(45deg, #FFD700, #FF6B6B, #4ECDC4, #45B7D1);
-      background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      font-weight: 800; letter-spacing: -1px;
-    }
-
+    h1 { text-align: center; flex: 1; font-size: clamp(1.8rem, 5vw, 3rem); background: linear-gradient(45deg, #FFD700, #FF6B6B, #4ECDC4, #45B7D1); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; letter-spacing: -1px; }
     .stats-display { display: flex; gap: 15px; font-size: 0.85rem; }
     .stat-item { text-align: center; padding: 6px 10px; background: rgba(255,255,255,0.1); border-radius: 8px; }
     .stat-number { font-size: 1.1rem; font-weight: 800; color: #FFD700; display: block; }
-
-    .controls-section {
-      background: rgba(255,255,255,0.1); backdrop-filter: blur(15px);
-      border-radius: 15px; padding: 20px; margin-bottom: 25px; border: 1px solid rgba(255,255,255,0.2);
-    }
+    .controls-section { background: rgba(255,255,255,0.1); backdrop-filter: blur(15px); border-radius: 15px; padding: 20px; margin-bottom: 25px; border: 1px solid rgba(255,255,255,0.2); }
     .controls-content { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px; }
     .sort-controls { display: flex; gap: 10px; align-items: center; }
-
-    .sort-button {
-      background: rgba(76,175,80,0.8); color: white; border: none;
-      padding: 10px 16px; border-radius: 12px; font-weight: 700; cursor: pointer;
-      transition: all 0.2s ease; font-size: 0.85rem; border: 1px solid rgba(255,255,255,0.2);
-    }
+    .sort-button { background: rgba(76,175,80,0.8); color: white; border: 1px solid rgba(255,255,255,0.2); padding: 10px 16px; border-radius: 12px; font-weight: 700; cursor: pointer; transition: all 0.2s ease; font-size: 0.85rem; }
     .sort-button.active { background: rgba(255,215,0,0.9); color: #000; transform: translateY(-1px); }
     .sort-button:hover { transform: translateY(-1px); }
-
     .search-container { position: relative; }
-    #searchInput {
-      padding: 10px 16px 10px 35px; font-size: 14px;
-      border: 1px solid rgba(255,255,255,0.2); border-radius: 15px;
-      background: rgba(255,255,255,0.1); backdrop-filter: blur(10px);
-      color: white; width: 250px; transition: all 0.2s ease;
-    }
+    #searchInput { padding: 10px 16px 10px 35px; font-size: 14px; border: 1px solid rgba(255,255,255,0.2); border-radius: 15px; background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); color: white; width: 250px; transition: all 0.2s ease; }
     #searchInput::placeholder { color: rgba(255,255,255,0.6); }
     #searchInput:focus { outline: none; border-color: rgba(255,215,0,0.5); background: rgba(255,255,255,0.15); }
     .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 1rem; opacity: 0.6; }
-
-    .table-section {
-      background: rgba(255,255,255,0.1); backdrop-filter: blur(15px);
-      border-radius: 20px; padding: 0; border: 1px solid rgba(255,255,255,0.2); overflow: hidden;
-    }
-
+    .table-section { background: rgba(255,255,255,0.1); backdrop-filter: blur(15px); border-radius: 20px; padding: 0; border: 1px solid rgba(255,255,255,0.2); overflow: hidden; }
     table { width: 100%; border-collapse: collapse; font-size: 14px; }
     th { background: rgba(255,215,0,0.2); color: white; padding: 15px 12px; text-align: center; font-weight: 700; font-size: 13px; border: none; position: sticky; top: 0; z-index: 10; }
     td { padding: 12px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); transition: background-color 0.2s ease; color: white; }
     tr:hover td { background: rgba(255,215,0,0.1); }
-
     .rank-badge { display: inline-flex; align-items: center; justify-content: center; width: 35px; height: 35px; border-radius: 50%; font-weight: 800; font-size: 1rem; color: white; position: relative; }
     .rank-1 { background: linear-gradient(45deg, #FFD700, #FFA500); box-shadow: 0 0 15px rgba(255,215,0,0.5); }
     .rank-2 { background: linear-gradient(45deg, #C0C0C0, #E8E8E8); color: #333; }
@@ -96,49 +44,26 @@
     .rank-1::after { content: '👑'; position: absolute; top: -6px; right: -6px; font-size: 1rem; }
     .rank-2::after { content: '🥈'; position: absolute; top: -5px; right: -5px; font-size: 0.9rem; }
     .rank-3::after { content: '🥉'; position: absolute; top: -5px; right: -5px; font-size: 0.9rem; }
-
     .gold-row td { background: rgba(255,215,0,0.15); border-bottom: 1px solid rgba(255,215,0,0.3); }
     .silver-row td { background: rgba(192,192,192,0.15); border-bottom: 1px solid rgba(192,192,192,0.3); }
     .bronze-row td { background: rgba(205,127,50,0.15); border-bottom: 1px solid rgba(205,127,50,0.3); }
-
     .catcher-cell { font-weight: 700; font-size: 1rem; }
     .level-display { font-size: 0.8rem; opacity: 0.8; margin-top: 3px; }
     .points-cell { font-weight: 700; color: #FFD700; font-size: 1.1rem; }
     .team-count { color: #4ECDC4; font-weight: 600; }
-
     .catcher-name { font-weight: 700; padding: 4px 8px; border-radius: 8px; }
     .king { background: linear-gradient(90deg, #FFD700, #FFA500); color: #000; }
     .flame { background: linear-gradient(90deg, #FF4444, #FF6B6B); color: white; }
     .diamond { background: linear-gradient(90deg, #4ECDC4, #45B7D1); color: white; }
     .shine { background: linear-gradient(90deg, #4CAF50, #66BB6A); color: white; }
     .normal { color: white; background: rgba(255,255,255,0.1); }
-
     .loading { text-align: center; padding: 40px; color: rgba(255,255,255,0.8); font-size: 16px; display: flex; flex-direction: column; align-items: center; gap: 15px; }
     .loading-spinner { width: 30px; height: 30px; border: 3px solid rgba(255,255,255,0.3); border-top: 3px solid #FFD700; border-radius: 50%; animation: spin 1s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
-
-    .refresh-fab {
-      position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px;
-      background: linear-gradient(45deg, #4ECDC4, #44A08D); border: none; border-radius: 50%;
-      color: white; font-size: 1.2rem; cursor: pointer; transition: transform 0.2s ease;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 1000;
-    }
+    .refresh-fab { position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; background: linear-gradient(45deg, #4ECDC4, #44A08D); border: none; border-radius: 50%; color: white; font-size: 1.2rem; cursor: pointer; transition: transform 0.2s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 1000; }
     .refresh-fab:hover { transform: scale(1.1); }
-
     @media (max-width: 1024px) { th:nth-child(5), td:nth-child(5) { display: none; } }
-    @media (max-width: 768px) {
-      .container { padding: 15px; }
-      .header-section { flex-direction: column; gap: 15px; padding: 20px; }
-      .header-content { flex-direction: column; gap: 15px; }
-      .stats-display { flex-direction: column; gap: 8px; }
-      .controls-content { flex-direction: column; gap: 12px; }
-      .sort-controls { flex-wrap: wrap; justify-content: center; }
-      #searchInput { width: 100%; max-width: 250px; }
-      table { font-size: 12px; }
-      th, td { padding: 10px 6px; }
-      .rank-badge { width: 28px; height: 28px; font-size: 0.8rem; }
-      th:nth-child(4), td:nth-child(4) { display: none; }
-    }
+    @media (max-width: 768px) { .container { padding: 15px; } .header-section { flex-direction: column; gap: 15px; padding: 20px; } .header-content { flex-direction: column; gap: 15px; } .stats-display { flex-direction: column; gap: 8px; } .controls-content { flex-direction: column; gap: 12px; } .sort-controls { flex-wrap: wrap; justify-content: center; } #searchInput { width: 100%; max-width: 250px; } table { font-size: 12px; } th, td { padding: 10px 6px; } .rank-badge { width: 28px; height: 28px; font-size: 0.8rem; } th:nth-child(4), td:nth-child(4) { display: none; } }
     @media (max-width: 600px) { .table-section { overflow-x: auto; } table { min-width: 400px; } }
     @media (max-width: 480px) { .container { padding: 10px; } table { font-size: 11px; } th, td { padding: 8px 4px; } .rank-badge { width: 24px; height: 24px; font-size: 0.7rem; } }
     @media (prefers-reduced-motion: reduce) { * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; } }
@@ -146,31 +71,23 @@
 </head>
 <body>
   <div class="connection-status" id="connectionStatus">🔄 Verbinde...</div>
-
   <div class="container">
     <div class="header-section">
       <div class="header-content">
         <a class="back-button" href="javascript:history.back()">← Back</a>
         <h1>🏆 Elite Catcher Arena</h1>
         <div class="stats-display">
-          <div class="stat-item">
-            <span class="stat-number" id="totalCatchers">0</span>
-            <span>Catchers</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-number" id="totalPoints">0</span>
-            <span>Total Points</span>
-          </div>
+          <div class="stat-item"><span class="stat-number" id="totalCatchers">0</span><span>Catchers</span></div>
+          <div class="stat-item"><span class="stat-number" id="totalPoints">0</span><span>Total Points</span></div>
         </div>
       </div>
     </div>
-
     <div class="controls-section">
       <div class="controls-content">
         <div class="sort-controls">
-        <button class="sort-button active" id="sortPoints">🏆 Points</button>
-        <button class="sort-button" id="sortLevel">⚡ Level</button>
-        <button class="sort-button" id="sortCount">📊 Count</button>
+          <button class="sort-button active" id="sortPoints">🏆 Points</button>
+          <button class="sort-button" id="sortLevel">⚡ Level</button>
+          <button class="sort-button" id="sortCount">📊 Count</button>
         </div>
         <div class="search-container">
           <div class="search-icon">🔍</div>
@@ -178,218 +95,18 @@
         </div>
       </div>
     </div>
-
     <div class="table-section">
       <table>
         <thead>
-          <tr>
-            <th>Rank</th><th>Catcher</th><th>Total Points</th><th>Catchmon</th><th>Level</th>
-          </tr>
+          <tr><th>Rank</th><th>Catcher</th><th>Total Points</th><th>Catchmon</th><th>Level</th></tr>
         </thead>
         <tbody id="rankingBody">
-          <tr><td colspan="5" class="loading">
-            <div class="loading-spinner"></div>
-            <div>Loading Elite Catchers...</div>
-          </td></tr>
+          <tr><td colspan="5" class="loading"><div class="loading-spinner"></div><div>Loading Elite Catchers...</div></td></tr>
         </tbody>
       </table>
     </div>
   </div>
-
   <button class="refresh-fab" id="refreshFab" title="Refresh Rankings">🔄</button>
-
-  <script type="module">
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-    import { getDatabase, ref, onValue } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyDdStpC5rVtgaZ4XvtKLwQttnyIDXL2z7Q",
-      authDomain: "trainertrials.firebaseapp.com",
-      databaseURL: "https://trainertrials-default-rtdb.europe-west1.firebasedatabase.app",
-      projectId: "trainertrials",
-      storageBucket: "trainertrials.firebasestorage.app",
-      messagingSenderId: "22071275267",
-      appId: "1:22071275267:web:92e82d6bfaee169aff8336"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-
-    let currentSortMode = 'points';
-    let allCatchers = [];
-
-    function capitalize(str) { return str.charAt(0).toUpperCase() + str.slice(1); }
-
-    function calcPoints(catchmon) {
-      if (!catchmon) return 0;
-      const level = catchmon.level || 1;
-      const stats = catchmon.stats || {};
-      const statSum = Object.values(stats).reduce((sum, val) => sum + (val || 0), 0);
-      let points = level * 10 + statSum;
-      const rarityMultipliers = { "Common": 1, "Uncommon": 1.2, "Rare": 1.5, "Epic": 2, "Legendary": 3, "Mythical": 5 };
-      points *= rarityMultipliers[catchmon.rarity] || 1;
-      if (catchmon.shiny) points *= 2;
-      return Math.round(points);
-    }
-
-    function calcLevel(points) { return Math.floor(Math.pow(points / 500, 0.6)); }
-
-    function getDonationTier(donation) {
-      if (donation >= 2500) return "king";
-      if (donation >= 500) return "flame";
-      if (donation >= 250) return "diamond";
-      if (donation >= 100) return "shine";
-      return "normal";
-    }
-
-    // Safe DOM builder for catcher name cell — no innerHTML with user data
-    function buildCatcherNameEl(name, donation) {
-      const tier = getDonationTier(donation);
-      const link = document.createElement('a');
-      link.href = `catcher_detail.html?name=${encodeURIComponent(name)}`;
-      link.style.cssText = 'text-decoration:none;color:inherit;';
-
-      const nameDiv = document.createElement('div');
-      if (tier !== "normal") {
-        const span = document.createElement('span');
-        span.className = `catcher-name ${tier}`;
-        span.textContent = capitalize(name);
-        nameDiv.appendChild(span);
-      } else {
-        nameDiv.textContent = capitalize(name);
-      }
-
-      const levelDiv = document.createElement('div');
-      levelDiv.className = 'level-display';
-
-      link.appendChild(nameDiv);
-      link.appendChild(levelDiv);
-      return { link, levelDiv };
-    }
-
-    function animateNumber(elementId, targetNumber) {
-      const element = document.getElementById(elementId);
-      const startNumber = parseInt(element.textContent.replace(/\D/g, '')) || 0;
-      const duration = 1000;
-      const startTime = Date.now();
-      function update() {
-        const progress = Math.min((Date.now() - startTime) / duration, 1);
-        const eased = 1 - Math.pow(1 - progress, 3);
-        const current = Math.floor(startNumber + (targetNumber - startNumber) * eased);
-        element.textContent = elementId === 'totalPoints' ? current.toLocaleString('de-DE') : current;
-        if (progress < 1) requestAnimationFrame(update);
-      }
-      update();
-    }
-
-    window.setSortMode = function(mode) {
-      currentSortMode = mode;
-      document.querySelectorAll('.sort-button').forEach(btn => btn.classList.remove('active'));
-      document.getElementById(`sort${mode.charAt(0).toUpperCase() + mode.slice(1)}`).classList.add('active');
-      renderTable();
-    };
-
-    window.filterTable = function() {
-      const input = document.getElementById("searchInput").value.toUpperCase();
-      document.getElementById("rankingBody").querySelectorAll("tr").forEach(row => {
-        const nameCell = row.querySelector("td:nth-child(2)");
-        if (nameCell) row.style.display = nameCell.textContent.toUpperCase().includes(input) ? "" : "none";
-      });
-    };
-
-    window.forceRefresh = function() {
-      const fab = document.querySelector('.refresh-fab');
-      fab.style.transform = 'scale(1.2)';
-      setTimeout(() => { fab.style.transform = ''; }, 200);
-      renderTable();
-    };
-
-    function renderTable() {
-      const tbody = document.getElementById("rankingBody");
-
-      if (allCatchers.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" class="loading"><div class="loading-spinner"></div><div>No catchers found</div></td></tr>';
-        return;
-      }
-
-      const sorted = [...allCatchers].sort((a, b) => {
-        if (currentSortMode === 'points') return b.totalPoints - a.totalPoints;
-        if (currentSortMode === 'level') return b.level - a.level;
-        if (currentSortMode === 'count') return b.teamSize - a.teamSize;
-        return 0;
-      });
-
-      const rankClasses = ['rank-1', 'rank-2', 'rank-3'];
-      const rowClasses = ['gold-row', 'silver-row', 'bronze-row'];
-      const fragment = document.createDocumentFragment();
-
-      sorted.forEach((catcher, index) => {
-        const tr = document.createElement("tr");
-        if (rowClasses[index]) tr.classList.add(rowClasses[index]);
-
-        // Rank cell
-        const tdRank = document.createElement('td');
-        const badge = document.createElement('div');
-        badge.className = `rank-badge ${rankClasses[index] || 'rank-other'}`;
-        badge.textContent = index + 1;
-        tdRank.appendChild(badge);
-
-        // Catcher name cell — safe DOM build
-        const tdName = document.createElement('td');
-        tdName.className = 'catcher-cell';
-        const { link, levelDiv } = buildCatcherNameEl(catcher.name, catcher.donation);
-        levelDiv.textContent = `Level ${catcher.level}`;
-        tdName.appendChild(link);
-
-        // Points
-        const tdPoints = document.createElement('td');
-        tdPoints.className = 'points-cell';
-        tdPoints.textContent = catcher.totalPoints.toLocaleString('de-DE');
-
-        // Team count
-        const tdTeam = document.createElement('td');
-        tdTeam.className = 'team-count';
-        tdTeam.textContent = catcher.teamSize;
-
-        // Level
-        const tdLevel = document.createElement('td');
-        tdLevel.textContent = catcher.level;
-
-        tr.append(tdRank, tdName, tdPoints, tdTeam, tdLevel);
-        fragment.appendChild(tr);
-      });
-
-      tbody.innerHTML = '';
-      tbody.appendChild(fragment);
-    }
-
-    // Firebase listeners
-    onValue(ref(db, '.info/connected'), (snapshot) => {
-      const el = document.getElementById('connectionStatus');
-      if (snapshot.val()) {
-        el.textContent = '🟢 Connected'; el.className = 'connection-status connected';
-      } else {
-        el.textContent = '🔴 Offline'; el.className = 'connection-status disconnected';
-      }
-    });
-
-    onValue(ref(db, 'trainers'), (snapshot) => {
-      const trainersData = snapshot.val() || {};
-      allCatchers = Object.entries(trainersData).map(([name, info]) => {
-        const team = Array.isArray(info.team) ? info.team : Object.values(info.team || {});
-        const totalPoints = team.reduce((sum, p) => sum + calcPoints(p), 0);
-        return { name, teamSize: team.length, totalPoints, level: calcLevel(totalPoints), donation: info.donation || 0 };
-      });
-      animateNumber('totalCatchers', allCatchers.length);
-      animateNumber('totalPoints', allCatchers.reduce((sum, c) => sum + c.totalPoints, 0));
-      renderTable();
-    });
-    document.getElementById('searchInput').addEventListener('keyup', filterTable);
-    document.getElementById('refreshFab').addEventListener('click', forceRefresh);
-    document.getElementById('sortPoints').addEventListener('click', () => window.setSortMode('points'));
-document.getElementById('sortLevel').addEventListener('click', () => window.setSortMode('level'));
-document.getElementById('sortCount').addEventListener('click', () => window.setSortMode('count'));
-    console.log('🔥 Catcher Ranking loaded — XSS-safe, Firebase realtime');
-  </script>
+  <script type="module" src="assets/js/pages/catcher_ranking.js"></script>
 </body>
 </html>
