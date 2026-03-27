@@ -6,72 +6,27 @@
   <title>🎮 Elite Catcher Profile - Firebase Live</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
   <meta name="theme-color" content="#1a1a2e">
-  
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-
-    body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
-      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%);
-      margin: 0; padding: 0; min-height: 100vh; color: white;
-      overflow-x: hidden; -webkit-font-smoothing: antialiased;
-    }
-
+    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%); margin: 0; padding: 0; min-height: 100vh; color: white; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
     .container { max-width: 1400px; margin: auto; padding: 20px; position: relative; z-index: 1; }
-
-    .connection-status {
-      position: fixed; top: 10px; right: 10px;
-      background: rgba(0,0,0,0.8); color: white;
-      padding: 8px 15px; border-radius: 20px; font-size: 14px; font-weight: 600;
-      z-index: 1000; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2);
-      transition: all 0.3s ease;
-    }
+    .connection-status { position: fixed; top: 10px; right: 10px; background: rgba(0,0,0,0.8); color: white; padding: 8px 15px; border-radius: 20px; font-size: 14px; font-weight: 600; z-index: 1000; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); transition: all 0.3s ease; }
     .connection-status.connected { background: rgba(76,175,80,0.9); }
     .connection-status.disconnected { background: rgba(244,67,54,0.9); }
-
-    .header-section {
-      display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 30px; background: rgba(255,255,255,0.08);
-      backdrop-filter: blur(15px); border-radius: 20px; padding: 20px 30px;
-      border: 1px solid rgba(255,255,255,0.15);
-    }
-
+    .header-section { display: flex; align-items: center; justify-content: space-between; margin-bottom: 30px; background: rgba(255,255,255,0.08); backdrop-filter: blur(15px); border-radius: 20px; padding: 20px 30px; border: 1px solid rgba(255,255,255,0.15); }
     .header-content { display: flex; align-items: center; justify-content: space-between; width: 100%; }
-
-    .back-button {
-      font-size: 16px; text-decoration: none; color: white; font-weight: 600;
-      padding: 12px 20px; border-radius: 12px; background: rgba(255,255,255,0.1);
-      border: 1px solid rgba(255,255,255,0.2); transition: all 0.3s ease; touch-action: manipulation;
-    }
+    .back-button { font-size: 16px; text-decoration: none; color: white; font-weight: 600; padding: 12px 20px; border-radius: 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); transition: all 0.3s ease; touch-action: manipulation; }
     .back-button:hover { background: rgba(255,255,255,0.15); transform: translateY(-2px); }
-
     .title-section { text-align: center; flex: 1; }
-
-    h1 {
-      margin: 0 0 10px 0; font-size: clamp(1.8rem, 5vw, 3rem);
-      background: linear-gradient(45deg, #FFD700, #FF6B6B, #4ECDC4, #45B7D1);
-      background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      font-weight: 800; letter-spacing: -1px;
-    }
-
+    h1 { margin: 0 0 10px 0; font-size: clamp(1.8rem, 5vw, 3rem); background: linear-gradient(45deg, #FFD700, #FF6B6B, #4ECDC4, #45B7D1); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; letter-spacing: -1px; }
     .subtitle { font-size: clamp(0.9rem, 3vw, 1.3rem); color: rgba(255,255,255,0.8); font-weight: 600; }
-
     .stats-section { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px; }
-
-    .stat-card {
-      background: rgba(255,255,255,0.08); backdrop-filter: blur(15px);
-      border-radius: 15px; padding: 20px; border: 1px solid rgba(255,255,255,0.15); transition: all 0.3s ease;
-    }
+    .stat-card { background: rgba(255,255,255,0.08); backdrop-filter: blur(15px); border-radius: 15px; padding: 20px; border: 1px solid rgba(255,255,255,0.15); transition: all 0.3s ease; }
     .stat-card:hover { transform: translateY(-3px); background: rgba(255,255,255,0.12); }
-
     .stat-title { font-size: 1rem; font-weight: 700; color: #FFD700; margin-bottom: 10px; }
     .stat-value { font-size: 2rem; font-weight: 800; color: white; margin-bottom: 8px; }
     .stat-description { color: rgba(255,255,255,0.7); font-size: 0.85rem; }
-
-    .level-section {
-      background: rgba(255,255,255,0.08); backdrop-filter: blur(15px);
-      border-radius: 15px; padding: 20px; margin-bottom: 25px; border: 1px solid rgba(255,255,255,0.15);
-    }
+    .level-section { background: rgba(255,255,255,0.08); backdrop-filter: blur(15px); border-radius: 15px; padding: 20px; margin-bottom: 25px; border: 1px solid rgba(255,255,255,0.15); }
     .level-title { text-align: center; font-size: 1.2rem; font-weight: 700; color: #FFD700; margin-bottom: 15px; }
     .level-bar-container { background: rgba(255,255,255,0.1); border-radius: 20px; height: 30px; overflow: hidden; position: relative; border: 1px solid rgba(255,255,255,0.2); }
     .level-bar { height: 100%; position: relative; transition: width 1.5s ease; border-radius: 20px; display: flex; align-items: center; justify-content: center; font-weight: 700; color: white; font-size: 0.9rem; }
@@ -86,81 +41,40 @@
     .level-lightgreen { background: linear-gradient(90deg, #4CAF50, #66BB6A); }
     .level-gray { background: linear-gradient(90deg, #6C757D, #9E9E9E); }
     .level-text { font-size: 1rem; text-align: center; margin-top: 12px; font-weight: 600; color: rgba(255,255,255,0.9); }
-
     .catchdex-section { text-align: center; margin-bottom: 25px; }
-    .catchdex-button {
-      display: inline-block; padding: 15px 30px;
-      background: linear-gradient(135deg, #4CAF50, #45a049); color: white;
-      font-weight: 700; border-radius: 15px; text-decoration: none;
-      box-shadow: 0 6px 20px rgba(76,175,80,0.4); transition: all 0.3s ease;
-      font-size: 1.1rem; border: 2px solid rgba(76,175,80,0.3); touch-action: manipulation;
-    }
+    .catchdex-button { display: inline-block; padding: 15px 30px; background: linear-gradient(135deg, #4CAF50, #45a049); color: white; font-weight: 700; border-radius: 15px; text-decoration: none; box-shadow: 0 6px 20px rgba(76,175,80,0.4); transition: all 0.3s ease; font-size: 1.1rem; border: 2px solid rgba(76,175,80,0.3); touch-action: manipulation; }
     .catchdex-button:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 8px 25px rgba(76,175,80,0.5); }
-
     .team-section { background: rgba(255,255,255,0.08); backdrop-filter: blur(15px); border-radius: 20px; padding: 0; border: 1px solid rgba(255,255,255,0.15); overflow: hidden; }
     .team-title { text-align: center; font-size: 1.5rem; font-weight: 800; color: #FFD700; padding: 20px; margin: 0; background: rgba(255,255,255,0.08); }
-
     table { width: 100%; border-collapse: collapse; font-size: 14px; }
     th { background: rgba(255,215,0,0.15); color: white; padding: 15px 12px; text-align: center; font-weight: 700; font-size: 13px; border: none; position: sticky; top: 0; z-index: 10; }
     td { padding: 12px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); transition: background-color 0.3s ease; color: white; }
     tr:hover td { background: rgba(255,215,0,0.08); }
-
     .catchmon-image { width: 60px; height: 60px; object-fit: contain; border-radius: 8px; transition: transform 0.3s ease; border: 1px solid rgba(255,255,255,0.2); }
     .catchmon-image:hover { transform: scale(1.1); }
     .catchmon-name { font-weight: 700; font-size: 1rem; color: white; }
     .points-cell { font-weight: 700; color: #FFD700; font-size: 1.1rem; }
     .level-cell { font-weight: 600; color: #4ECDC4; }
     .stats-cell { font-weight: 600; color: #FF6B6B; }
-
     a { text-decoration: none; font-weight: 600; color: inherit; transition: color 0.3s ease; }
     a:hover { color: #4CAF50; }
-
     .catcher-name { font-weight: 700; padding: 4px 8px; border-radius: 8px; }
     .king { background: linear-gradient(90deg, #FFD700, #FFA500); color: #000; }
     .flame { background: linear-gradient(90deg, #FF4444, #FF6B6B); color: white; }
     .diamond { background: linear-gradient(90deg, #4ECDC4, #45B7D1); color: white; }
     .shine { background: linear-gradient(90deg, #4CAF50, #66BB6A); color: white; }
     .normal { color: white; background: rgba(255,255,255,0.1); }
-
     .loading { display: flex; justify-content: center; align-items: center; height: 150px; color: rgba(255,255,255,0.8); font-size: 16px; gap: 15px; }
     .loading-spinner { width: 30px; height: 30px; border: 3px solid rgba(255,255,255,0.3); border-top: 3px solid #FFD700; border-radius: 50%; animation: spin 1s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
     .error-message { text-align: center; padding: 40px; color: rgba(255,255,255,0.8); font-size: 16px; background: rgba(255,255,255,0.08); border-radius: 15px; border: 1px solid rgba(255,255,255,0.15); }
-
-    @media (max-width: 768px) {
-      .container { padding: 15px; }
-      .header-section { flex-direction: column; gap: 15px; padding: 20px; }
-      .header-content { flex-direction: column; gap: 15px; }
-      .stats-section { grid-template-columns: 1fr; gap: 15px; }
-      .stat-card { padding: 15px; }
-      .level-section { padding: 15px; }
-      .level-bar-container { height: 25px; }
-      .level-bar { font-size: 0.8rem; }
-      .catchdex-button { padding: 12px 25px; font-size: 1rem; }
-      table { font-size: 12px; }
-      th, td { padding: 10px 6px; }
-      .catchmon-image { width: 45px; height: 45px; }
-    }
-
-    @media (max-width: 480px) {
-      .container { padding: 10px; }
-      .stat-card { padding: 12px; }
-      .level-section { padding: 12px; }
-      .level-bar-container { height: 22px; }
-      table { font-size: 11px; }
-      th, td { padding: 8px 4px; }
-      .catchmon-image { width: 35px; height: 35px; }
-      .catchdex-button { padding: 10px 20px; font-size: 0.9rem; }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
-    }
+    @media (max-width: 768px) { .container { padding: 15px; } .header-section { flex-direction: column; gap: 15px; padding: 20px; } .header-content { flex-direction: column; gap: 15px; } .stats-section { grid-template-columns: 1fr; gap: 15px; } .stat-card { padding: 15px; } .level-section { padding: 15px; } .level-bar-container { height: 25px; } .level-bar { font-size: 0.8rem; } .catchdex-button { padding: 12px 25px; font-size: 1rem; } table { font-size: 12px; } th, td { padding: 10px 6px; } .catchmon-image { width: 45px; height: 45px; } }
+    @media (max-width: 480px) { .container { padding: 10px; } .stat-card { padding: 12px; } .level-section { padding: 12px; } .level-bar-container { height: 22px; } table { font-size: 11px; } th, td { padding: 8px 4px; } .catchmon-image { width: 35px; height: 35px; } .catchdex-button { padding: 10px 20px; font-size: 0.9rem; } }
+    @media (prefers-reduced-motion: reduce) { * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; } }
   </style>
 </head>
 <body>
   <div class="connection-status" id="connectionStatus">🔄 Verbinde...</div>
-
   <div class="container">
     <div class="header-section">
       <div class="header-content">
@@ -172,278 +86,31 @@
         <div></div>
       </div>
     </div>
-
     <div class="stats-section">
-      <div class="stat-card">
-        <div class="stat-title">🏆 Total Points</div>
-        <div class="stat-value" id="statPoints">0</div>
-        <div class="stat-description">Combined power of all Catchmon</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-title">🐲 Team Size</div>
-        <div class="stat-value" id="statTeam">0</div>
-        <div class="stat-description">Catchmon in collection</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-title">⚡ Player Level</div>
-        <div class="stat-value" id="statLevel">1</div>
-        <div class="stat-description">Based on total points earned</div>
-      </div>
+      <div class="stat-card"><div class="stat-title">🏆 Total Points</div><div class="stat-value" id="statPoints">0</div><div class="stat-description">Combined power of all Catchmon</div></div>
+      <div class="stat-card"><div class="stat-title">🐲 Team Size</div><div class="stat-value" id="statTeam">0</div><div class="stat-description">Catchmon in collection</div></div>
+      <div class="stat-card"><div class="stat-title">⚡ Player Level</div><div class="stat-value" id="statLevel">1</div><div class="stat-description">Based on total points earned</div></div>
     </div>
-
     <div class="level-section">
       <div class="level-title">Experience Progress</div>
       <div class="level-bar-container">
-        <div class="level-bar" id="levelFill">
-          <span id="levelPercentText">0%</span>
-        </div>
+        <div class="level-bar" id="levelFill"><span id="levelPercentText">0%</span></div>
       </div>
       <div class="level-text" id="levelLabel">Level 1 – 0 / 100 XP</div>
     </div>
-
     <div class="catchdex-section">
       <a id="catchdexLink" href="#" class="catchdex-button">📘 View Complete Catchdex</a>
     </div>
-
     <div class="team-section">
       <h2 class="team-title">🌟 Elite Team Roster</h2>
       <table>
-        <thead>
-          <tr>
-            <th>Sprite</th>
-            <th>Name</th>
-            <th>Level</th>
-            <th>Stats Sum</th>
-            <th>Points</th>
-          </tr>
-        </thead>
+        <thead><tr><th>Sprite</th><th>Name</th><th>Level</th><th>Stats Sum</th><th>Points</th></tr></thead>
         <tbody id="teamTable">
-          <tr><td colspan="5" class="loading">
-            <div class="loading-spinner"></div>
-            <div>Loading Elite Team</div>
-          </td></tr>
+          <tr><td colspan="5" class="loading"><div class="loading-spinner"></div><div>Loading Elite Team</div></td></tr>
         </tbody>
       </table>
     </div>
   </div>
-
-  <script type="module">
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-    import { getDatabase, ref, onValue } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyDdStpC5rVtgaZ4XvtKLwQttnyIDXL2z7Q",
-      authDomain: "trainertrials.firebaseapp.com",
-      databaseURL: "https://trainertrials-default-rtdb.europe-west1.firebasedatabase.app",
-      projectId: "trainertrials",
-      storageBucket: "trainertrials.firebasestorage.app",
-      messagingSenderId: "22071275267",
-      appId: "1:22071275267:web:92e82d6bfaee169aff8336"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-
-    // --- Security: sanitize query param ---
-    function escapeHtml(input) {
-      const s = String(input ?? "");
-      return s.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#39;");
-    }
-
-    function validateTrainerName(name) {
-      if (!name) return null;
-      // Only allow alphanumeric, spaces, hyphens, underscores — max 60 chars
-      const cleaned = name.trim().slice(0, 60);
-      if (!/^[\w\s\-]+$/.test(cleaned)) return null;
-      return cleaned;
-    }
-
-    const rawName = new URLSearchParams(window.location.search).get("name");
-    const trainerName = validateTrainerName(rawName);
-
-    if (!trainerName) {
-      document.getElementById("teamTable").innerHTML =
-        '<tr><td colspan="5" class="error-message">Invalid or missing trainer name.</td></tr>';
-    }
-
-    // --- Firebase ---
-    onValue(ref(db, '.info/connected'), (snapshot) => {
-      const el = document.getElementById('connectionStatus');
-      if (snapshot.val()) {
-        el.textContent = '🟢 Connected'; el.className = 'connection-status connected';
-      } else {
-        el.textContent = '🔴 Offline'; el.className = 'connection-status disconnected';
-      }
-    });
-
-    onValue(ref(db, 'trainers'), (snapshot) => {
-      const trainersData = snapshot.val() || {};
-      if (trainerName) loadCatcherData(trainersData);
-    });
-
-    // --- Utilities ---
-    function capitalize(str) { return str.charAt(0).toUpperCase() + str.slice(1); }
-
-    function calcPoints(catchmon) {
-      if (!catchmon) return 0;
-      const level = catchmon.level || 1;
-      const stats = catchmon.stats || {};
-      const statSum = Object.values(stats).reduce((sum, val) => sum + (val || 0), 0);
-      let points = level * 10 + statSum;
-      const rarityMultipliers = { "Common": 1, "Uncommon": 1.2, "Rare": 1.5, "Epic": 2, "Legendary": 3, "Mythical": 5 };
-      points *= rarityMultipliers[catchmon.rarity] || 1;
-      if (catchmon.shiny) points *= 2;
-      return Math.round(points);
-    }
-
-    function getDonationTier(donation) {
-      if (donation >= 2500) return "king";
-      if (donation >= 500) return "flame";
-      if (donation >= 250) return "diamond";
-      if (donation >= 100) return "shine";
-      return "normal";
-    }
-
-    function getPlayerLevel(totalPoints) { return Math.floor(Math.pow(totalPoints / 500, 0.6)); }
-    function getXpForLevel(level) { return Math.pow(level, 1.666) * 500; }
-
-    function getLevelColor(level) {
-      if (level >= 50) return "level-rainbow";
-      if (level >= 40) return "level-deepred";
-      if (level >= 35) return "level-red";
-      if (level >= 30) return "level-orange";
-      if (level >= 25) return "level-yellow";
-      if (level >= 20) return "level-blue";
-      if (level >= 15) return "level-cyan";
-      if (level >= 10) return "level-green";
-      if (level >= 5) return "level-lightgreen";
-      return "level-gray";
-    }
-
-    function animateNumber(elementId, targetNumber) {
-      const element = document.getElementById(elementId);
-      const duration = 1500;
-      const startTime = Date.now();
-      function update() {
-        const progress = Math.min((Date.now() - startTime) / duration, 1);
-        const eased = 1 - Math.pow(1 - progress, 3);
-        const current = Math.floor(targetNumber * eased);
-        element.textContent = elementId === 'statPoints' ? current.toLocaleString('de-DE') : current;
-        if (progress < 1) requestAnimationFrame(update);
-      }
-      update();
-    }
-
-    function loadCatcherData(trainersData) {
-      const trainer = trainerName.toLowerCase();
-      const catcher = trainersData[trainer];
-
-      if (!catcher) {
-        document.getElementById("teamTable").innerHTML =
-          '<tr><td colspan="5" class="error-message">Trainer not found or no data available.</td></tr>';
-        return;
-      }
-
-      const tier = getDonationTier(catcher.donation || 0);
-
-      // Safe: use textContent for the name, only tier class in span
-      const titleEl = document.getElementById("catcherTitle");
-      titleEl.textContent = '';
-      const prefix = document.createTextNode('🎮 ');
-      titleEl.appendChild(prefix);
-      if (tier !== "normal") {
-        const span = document.createElement('span');
-        span.className = `catcher-name ${tier}`;
-        span.textContent = capitalize(trainer);
-        titleEl.appendChild(span);
-      } else {
-        titleEl.appendChild(document.createTextNode(capitalize(trainer)));
-      }
-
-      const team = Array.isArray(catcher.team) ? catcher.team : Object.values(catcher.team || {});
-      const sorted = team.slice().sort((a, b) => calcPoints(b) - calcPoints(a));
-      const totalPoints = sorted.reduce((sum, p) => sum + calcPoints(p), 0);
-
-      animateNumber('statPoints', totalPoints);
-      animateNumber('statTeam', sorted.length);
-      const level = getPlayerLevel(totalPoints);
-      animateNumber('statLevel', level);
-
-      document.getElementById("totalPoints").textContent = `${totalPoints.toLocaleString('de-DE')} Total Points`;
-
-      const xpNow = totalPoints;
-      const xpPrev = getXpForLevel(level);
-      const xpNext = getXpForLevel(level + 1);
-      const percent = Math.min(100, ((xpNow - xpPrev) / (xpNext - xpPrev)) * 100);
-
-      setTimeout(() => {
-        const fill = document.getElementById("levelFill");
-        fill.style.width = `${percent.toFixed(1)}%`;
-        fill.className = `level-bar ${getLevelColor(level)}`;
-        document.getElementById("levelPercentText").textContent = `${percent.toFixed(1)}%`;
-      }, 500);
-
-      document.getElementById("levelLabel").textContent =
-        `Level ${level} – ${Math.floor(xpNow).toLocaleString('de-DE')} / ${Math.floor(xpNext).toLocaleString('de-DE')} XP`;
-
-      document.getElementById("catchdexLink").href =
-        `catchdex_catcher.html?name=${encodeURIComponent(trainerName)}`;
-
-      const tbody = document.getElementById("teamTable");
-
-      if (sorted.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" class="error-message">No Catchmon in team yet</td></tr>';
-        return;
-      }
-
-      const fragment = document.createDocumentFragment();
-      sorted.forEach((p) => {
-        const row = document.createElement("tr");
-        const sumStats = Object.values(p.stats || {}).reduce((a, b) => a + (b || 0), 0);
-        const points = calcPoints(p);
-        const catchLink = `dex_detail.html?name=${encodeURIComponent(p.name)}`;
-
-        // Use DOM APIs — no unescaped innerHTML for user data
-        const tdSprite = document.createElement('td');
-        const spriteLink = document.createElement('a');
-        spriteLink.href = catchLink;
-        const img = document.createElement('img');
-        img.className = 'catchmon-image';
-        img.src = p.sprite || '';
-        img.alt = escapeHtml(p.name);
-        img.loading = 'lazy';
-        img.onerror = function() { this.style.display = 'none'; };
-        spriteLink.appendChild(img);
-        tdSprite.appendChild(spriteLink);
-
-        const tdName = document.createElement('td');
-        tdName.className = 'catchmon-name';
-        const nameLink = document.createElement('a');
-        nameLink.href = catchLink;
-        nameLink.textContent = p.name;
-        tdName.appendChild(nameLink);
-
-        const tdLevel = document.createElement('td');
-        tdLevel.className = 'level-cell';
-        tdLevel.textContent = p.level;
-
-        const tdStats = document.createElement('td');
-        tdStats.className = 'stats-cell';
-        tdStats.textContent = sumStats.toLocaleString('de-DE');
-
-        const tdPoints = document.createElement('td');
-        tdPoints.className = 'points-cell';
-        tdPoints.textContent = points.toLocaleString('de-DE');
-
-        row.append(tdSprite, tdName, tdLevel, tdStats, tdPoints);
-        fragment.appendChild(row);
-      });
-
-      tbody.innerHTML = '';
-      tbody.appendChild(fragment);
-    }
-
-    console.log('🔥 Catcher Detail loaded — XSS-safe, Firebase realtime');
-  </script>
+  <script type="module" src="assets/js/pages/catcher_detail.js"></script>
 </body>
 </html>
