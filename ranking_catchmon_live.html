@@ -7,138 +7,64 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
-      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%);
-      margin: 0; padding: 0; min-height: 100vh; color: white; overflow-x: hidden;
-    }
-
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%); margin: 0; padding: 0; min-height: 100vh; color: white; overflow-x: hidden; }
     .container { max-width: 1400px; margin: auto; padding: 20px; position: relative; z-index: 1; }
-
-    .connection-status {
-      position: fixed; top: 10px; right: 10px;
-      background: rgba(0,0,0,0.8); color: white;
-      padding: 8px 15px; border-radius: 20px; font-size: 14px; font-weight: 600;
-      z-index: 1000; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2);
-    }
+    .connection-status { position: fixed; top: 10px; right: 10px; background: rgba(0,0,0,0.8); color: white; padding: 8px 15px; border-radius: 20px; font-size: 14px; font-weight: 600; z-index: 1000; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); }
     .connection-status.connected { background: rgba(76,175,80,0.9); }
     .connection-status.disconnected { background: rgba(244,67,54,0.9); }
-
-    .header-section {
-      display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 30px; background: rgba(255,255,255,0.1);
-      backdrop-filter: blur(15px); border-radius: 20px; padding: 20px 30px;
-      border: 1px solid rgba(255,255,255,0.2);
-    }
+    .header-section { display: flex; align-items: center; justify-content: space-between; margin-bottom: 30px; background: rgba(255,255,255,0.1); backdrop-filter: blur(15px); border-radius: 20px; padding: 20px 30px; border: 1px solid rgba(255,255,255,0.2); }
     .header-content { display: flex; align-items: center; justify-content: space-between; width: 100%; }
-
-    .back-button {
-      font-size: 16px; text-decoration: none; color: white; font-weight: 700;
-      padding: 12px 20px; border-radius: 12px; background: rgba(255,255,255,0.1);
-      border: 1px solid rgba(255,255,255,0.2); transition: all 0.2s ease;
-    }
+    .back-button { font-size: 16px; text-decoration: none; color: white; font-weight: 700; padding: 12px 20px; border-radius: 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); transition: all 0.2s ease; }
     .back-button:hover { background: rgba(255,255,255,0.2); transform: translateY(-2px); }
-
-    h1 {
-      text-align: center; flex: 1; font-size: clamp(1.8rem, 5vw, 3rem);
-      background: linear-gradient(45deg, #FFD700, #FF6B6B, #4ECDC4, #45B7D1);
-      background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      font-weight: 800; letter-spacing: -1px;
-    }
-
-    .controls-section {
-      background: rgba(255,255,255,0.1); backdrop-filter: blur(15px);
-      border-radius: 15px; padding: 20px; margin-bottom: 25px; border: 1px solid rgba(255,255,255,0.2);
-    }
+    h1 { text-align: center; flex: 1; font-size: clamp(1.8rem, 5vw, 3rem); background: linear-gradient(45deg, #FFD700, #FF6B6B, #4ECDC4, #45B7D1); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; letter-spacing: -1px; }
+    .controls-section { background: rgba(255,255,255,0.1); backdrop-filter: blur(15px); border-radius: 15px; padding: 20px; margin-bottom: 25px; border: 1px solid rgba(255,255,255,0.2); }
     .controls-content { text-align: center; }
-    .controls-content label {
-      display: inline-flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 600;
-      color: white; cursor: pointer; padding: 12px 20px; background: rgba(255,255,255,0.1);
-      border-radius: 20px; transition: all 0.2s ease; border: 1px solid rgba(255,255,255,0.2);
-    }
+    .controls-content label { display: inline-flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 600; color: white; cursor: pointer; padding: 12px 20px; background: rgba(255,255,255,0.1); border-radius: 20px; transition: all 0.2s ease; border: 1px solid rgba(255,255,255,0.2); }
     .controls-content label:hover { background: rgba(255,255,255,0.2); }
     .controls-content input[type="checkbox"] { width: 18px; height: 18px; accent-color: #FFD700; cursor: pointer; }
-
-    .table-section {
-      background: rgba(255,255,255,0.05); backdrop-filter: blur(20px);
-      border-radius: 20px; padding: 0; border: 1px solid rgba(255,255,255,0.2);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.2); overflow: hidden;
-    }
-
+    .table-section { background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); border-radius: 20px; padding: 0; border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 10px 30px rgba(0,0,0,0.2); overflow: hidden; }
     table { width: 100%; border-collapse: collapse; font-size: 15px; }
     th { background: rgba(255,215,0,0.2); color: white; padding: 15px 12px; text-align: center; font-weight: 700; font-size: 14px; border: none; position: sticky; top: 0; z-index: 10; }
     td { padding: 12px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); color: white; }
     tr:hover td { background: rgba(255,215,0,0.1); }
-
     .rank-badge { display: inline-flex; align-items: center; justify-content: center; width: 35px; height: 35px; border-radius: 50%; font-weight: 800; font-size: 1rem; color: white; }
     .rank-1 { background: linear-gradient(45deg, #FFD700, #FFA500); box-shadow: 0 0 15px rgba(255,215,0,0.5); }
     .rank-2 { background: linear-gradient(45deg, #C0C0C0, #E8E8E8); color: #333; }
     .rank-3 { background: linear-gradient(45deg, #CD7F32, #DAA520); }
     .rank-other { background: rgba(108,117,125,0.8); }
-
     .gold-row td { background: rgba(255,215,0,0.15); border-bottom: 1px solid rgba(255,215,0,0.3); }
     .silver-row td { background: rgba(192,192,192,0.15); border-bottom: 1px solid rgba(192,192,192,0.3); }
     .bronze-row td { background: rgba(205,127,50,0.15); border-bottom: 1px solid rgba(205,127,50,0.3); }
-
     img.catchmon-sprite { width: 60px; height: 60px; object-fit: contain; border-radius: 8px; transition: transform 0.2s ease; border: 1px solid rgba(255,255,255,0.2); }
     img.catchmon-sprite:hover { transform: scale(1.1); }
-
     a { text-decoration: none; font-weight: 600; color: inherit; transition: color 0.2s ease; }
     a:hover { color: #4CAF50; }
-
     .name-cell { font-weight: 700; font-size: 1rem; color: white; }
     .points-cell { font-weight: 700; color: #FFD700; font-size: 1.1rem; }
     .level-cell { font-weight: 600; color: #4ECDC4; }
     .stats-cell { font-weight: 600; color: #FF6B6B; }
     .shiny-badge { font-size: 20px; }
     .catcher-cell { font-weight: 600; }
-
     .catcher-name { font-weight: 700; padding: 4px 8px; border-radius: 8px; }
     .king { background: linear-gradient(90deg, #FFD700, #FFA500); color: #000; }
     .flame { background: linear-gradient(90deg, #FF4444, #FF6B6B); color: white; }
     .diamond { background: linear-gradient(90deg, #4ECDC4, #45B7D1); color: white; }
     .shine { background: linear-gradient(90deg, #4CAF50, #66BB6A); color: white; }
     .normal { color: white; background: rgba(255,255,255,0.1); }
-
     .loading { text-align: center; padding: 40px; color: rgba(255,255,255,0.8); font-size: 16px; display: flex; flex-direction: column; align-items: center; gap: 15px; }
     .loading-spinner { width: 30px; height: 30px; border: 3px solid rgba(255,255,255,0.3); border-top: 3px solid #FFD700; border-radius: 50%; animation: spin 1s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
-
-    .refresh-fab {
-      position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px;
-      background: linear-gradient(45deg, #4ECDC4, #44A08D); border: none; border-radius: 50%;
-      color: white; font-size: 1.2rem; cursor: pointer; transition: transform 0.2s ease;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 1000;
-    }
+    .refresh-fab { position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; background: linear-gradient(45deg, #4ECDC4, #44A08D); border: none; border-radius: 50%; color: white; font-size: 1.2rem; cursor: pointer; transition: transform 0.2s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 1000; }
     .refresh-fab:hover { transform: scale(1.1); }
-
     @media (max-width: 1024px) { th:nth-child(6), td:nth-child(6) { display: none; } }
-    @media (max-width: 768px) {
-      .container { padding: 15px; }
-      .header-section { flex-direction: column; gap: 15px; padding: 20px; }
-      .header-content { flex-direction: column; gap: 15px; }
-      table { font-size: 13px; }
-      th, td { padding: 10px 6px; }
-      img.catchmon-sprite { width: 45px; height: 45px; }
-      .rank-badge { width: 28px; height: 28px; font-size: 0.8rem; }
-      th:nth-child(7), td:nth-child(7) { display: none; }
-    }
+    @media (max-width: 768px) { .container { padding: 15px; } .header-section { flex-direction: column; gap: 15px; padding: 20px; } .header-content { flex-direction: column; gap: 15px; } table { font-size: 13px; } th, td { padding: 10px 6px; } img.catchmon-sprite { width: 45px; height: 45px; } .rank-badge { width: 28px; height: 28px; font-size: 0.8rem; } th:nth-child(7), td:nth-child(7) { display: none; } }
     @media (max-width: 600px) { .table-section { overflow-x: auto; } table { min-width: 400px; } }
-    @media (max-width: 480px) {
-      .container { padding: 10px; }
-      table { font-size: 12px; }
-      th, td { padding: 8px 4px; }
-      img.catchmon-sprite { width: 35px; height: 35px; }
-      .rank-badge { width: 24px; height: 24px; font-size: 0.7rem; }
-      th:nth-child(4), td:nth-child(4) { display: none; }
-    }
+    @media (max-width: 480px) { .container { padding: 10px; } table { font-size: 12px; } th, td { padding: 8px 4px; } img.catchmon-sprite { width: 35px; height: 35px; } .rank-badge { width: 24px; height: 24px; font-size: 0.7rem; } th:nth-child(4), td:nth-child(4) { display: none; } }
     @media (prefers-reduced-motion: reduce) { * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; } }
   </style>
 </head>
 <body>
   <div class="connection-status" id="connectionStatus">🔄 Verbinde...</div>
-
   <div class="container">
     <div class="header-section">
       <div class="header-content">
@@ -147,7 +73,6 @@
         <div></div>
       </div>
     </div>
-
     <div class="controls-section">
       <div class="controls-content">
         <label>
@@ -156,210 +81,18 @@
         </label>
       </div>
     </div>
-
     <div class="table-section">
       <table>
         <thead>
-          <tr>
-            <th>#</th><th>Image</th><th>Name</th><th>Catcher</th>
-            <th>Points</th><th>Level</th><th>Stats</th><th>Shiny</th>
-          </tr>
+          <tr><th>#</th><th>Image</th><th>Name</th><th>Catcher</th><th>Points</th><th>Level</th><th>Stats</th><th>Shiny</th></tr>
         </thead>
         <tbody id="rankingBody">
-          <tr><td colspan="8" class="loading">
-            <div class="loading-spinner"></div>
-            <div>🔥 Connecting to Firebase...</div>
-          </td></tr>
+          <tr><td colspan="8" class="loading"><div class="loading-spinner"></div><div>🔥 Connecting to Firebase...</div></td></tr>
         </tbody>
       </table>
     </div>
   </div>
-
   <button class="refresh-fab" id="refreshFab" title="Refresh Rankings">🔄</button>
-
-  <script type="module">
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-    import { getDatabase, ref, onValue } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyDdStpC5rVtgaZ4XvtKLwQttnyIDXL2z7Q",
-      authDomain: "trainertrials.firebaseapp.com",
-      databaseURL: "https://trainertrials-default-rtdb.europe-west1.firebasedatabase.app",
-      projectId: "trainertrials",
-      storageBucket: "trainertrials.firebasestorage.app",
-      messagingSenderId: "22071275267",
-      appId: "1:22071275267:web:92e82d6bfaee169aff8336"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-
-    let allCatchmon = [];
-    let catcherDonations = {};
-
-    function sumStats(stats) { return Object.values(stats || {}).reduce((a, b) => a + (b || 0), 0); }
-
-    function calcPoints(catchmon) {
-      if (!catchmon) return 0;
-      const level = catchmon.level || 1;
-      const statSum = sumStats(catchmon.stats);
-      let points = level * 10 + statSum;
-      const rarityMultipliers = { "Common": 1, "Uncommon": 1.2, "Rare": 1.5, "Epic": 2, "Legendary": 3, "Mythical": 5 };
-      points *= rarityMultipliers[catchmon.rarity] || 1;
-      if (catchmon.shiny) points *= 2;
-      return Math.round(points);
-    }
-
-    function getDonationTier(donation) {
-      if (donation >= 1000) return "king";
-      if (donation >= 500) return "flame";
-      if (donation >= 250) return "diamond";
-      if (donation >= 100) return "shine";
-      return "normal";
-    }
-
-    // Safe DOM builder for catcher name
-    function buildCatcherCell(catcherName, donation) {
-      const tier = getDonationTier(donation);
-      const span = document.createElement('span');
-      span.className = `catcher-name ${tier}`;
-      span.textContent = catcherName;
-      return span;
-    }
-
-    window.renderTable = function() {
-      const tbody = document.getElementById("rankingBody");
-      const showCaughtOnly = document.getElementById("caughtOnly").checked;
-
-      const visible = allCatchmon
-        .filter(p => !showCaughtOnly || p.caught)
-        .sort((a, b) => b.points - a.points);
-
-      if (visible.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="8" class="loading"><div class="loading-spinner"></div><div>No Catchmon found</div></td></tr>';
-        return;
-      }
-
-      const rankClasses = ['rank-1', 'rank-2', 'rank-3'];
-      const rowClasses = ['gold-row', 'silver-row', 'bronze-row'];
-      const fragment = document.createDocumentFragment();
-
-      visible.forEach((p, index) => {
-        const tr = document.createElement("tr");
-        if (rowClasses[index]) tr.classList.add(rowClasses[index]);
-
-        // Rank
-        const tdRank = document.createElement('td');
-        const badge = document.createElement('div');
-        badge.className = `rank-badge ${rankClasses[index] || 'rank-other'}`;
-        badge.textContent = index + 1;
-        tdRank.appendChild(badge);
-
-        // Sprite
-        const tdSprite = document.createElement('td');
-        const spriteLink = document.createElement('a');
-        spriteLink.href = `dex_detail.html?name=${encodeURIComponent(p.name)}`;
-        const img = document.createElement('img');
-        img.className = 'catchmon-sprite';
-        img.src = p.sprite || '';
-        img.alt = p.name;
-        img.loading = 'lazy';
-        img.onerror = function() { this.style.display = 'none'; };
-        spriteLink.appendChild(img);
-        tdSprite.appendChild(spriteLink);
-
-        // Name
-        const tdName = document.createElement('td');
-        tdName.className = 'name-cell';
-        const nameLink = document.createElement('a');
-        nameLink.href = `dex_detail.html?name=${encodeURIComponent(p.name)}`;
-        nameLink.textContent = p.name;
-        tdName.appendChild(nameLink);
-
-        // Catcher — safe DOM build
-        const tdCatcher = document.createElement('td');
-        tdCatcher.className = 'catcher-cell';
-        tdCatcher.appendChild(buildCatcherCell(p.catcher, catcherDonations[p.catcher] || 0));
-
-        // Points
-        const tdPoints = document.createElement('td');
-        tdPoints.className = 'points-cell';
-        tdPoints.textContent = p.points.toLocaleString('de-DE');
-
-        // Level
-        const tdLevel = document.createElement('td');
-        tdLevel.className = 'level-cell';
-        tdLevel.textContent = p.level;
-
-        // Stats
-        const tdStats = document.createElement('td');
-        tdStats.className = 'stats-cell';
-        tdStats.textContent = p.statSum.toLocaleString('de-DE');
-
-        // Shiny
-        const tdShiny = document.createElement('td');
-        if (p.shiny) {
-          const shinySpan = document.createElement('span');
-          shinySpan.className = 'shiny-badge';
-          shinySpan.textContent = '✨';
-          tdShiny.appendChild(shinySpan);
-        }
-
-        tr.append(tdRank, tdSprite, tdName, tdCatcher, tdPoints, tdLevel, tdStats, tdShiny);
-        fragment.appendChild(tr);
-      });
-
-      tbody.innerHTML = '';
-      tbody.appendChild(fragment);
-    };
-
-    window.forceRefresh = function() {
-      document.getElementById("rankingBody").innerHTML =
-        '<tr><td colspan="8" class="loading"><div class="loading-spinner"></div><div>Refreshing...</div></td></tr>';
-      window.renderTable();
-    };
-
-    // Firebase listeners
-    onValue(ref(db, '.info/connected'), (snapshot) => {
-      const el = document.getElementById('connectionStatus');
-      if (snapshot.val()) {
-        el.textContent = '🟢 Connected'; el.className = 'connection-status connected';
-      } else {
-        el.textContent = '🔴 Offline'; el.className = 'connection-status disconnected';
-      }
-    });
-
-    onValue(ref(db, 'trainers'), (snapshot) => {
-      const trainersData = snapshot.val() || {};
-      allCatchmon = [];
-      catcherDonations = {};
-
-      for (const [catcher, info] of Object.entries(trainersData)) {
-        catcherDonations[catcher] = info.donation || 0;
-        const team = Array.isArray(info.team) ? info.team : Object.values(info.team || {});
-        for (const c of team) {
-          if (c && c.name) {
-            allCatchmon.push({
-              catcher,
-              name: c.name,
-              level: c.level || 1,
-              shiny: c.shiny || false,
-              stats: c.stats || {},
-              rarity: c.rarity || "Common",
-              sprite: c.sprite || "",
-              points: calcPoints(c),
-              statSum: sumStats(c.stats),
-              caught: true
-            });
-          }
-        }
-      }
-
-      window.renderTable();
-    });
-    document.getElementById('caughtOnly').addEventListener('change', window.renderTable);
-    document.getElementById('refreshFab').addEventListener('click', forceRefresh);
-    console.log('🔥 Catchmon Ranking loaded — XSS-safe, Firebase realtime');
-  </script>
+  <script type="module" src="assets/js/pages/ranking_catchmon.js"></script>
 </body>
 </html>
