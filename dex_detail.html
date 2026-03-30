@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com https://www.google.com https://*.firebasedatabase.app; connect-src 'self' https://*.firebasedatabase.app https://*.firebaseio.com https://www.googleapis.com; img-src 'self' data: https:; style-src 'self' 'unsafe-inline'; font-src https://fonts.gstatic.com; base-uri 'self';">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com https://www.google.com https://*.firebasedatabase.app; connect-src 'self' https://*.firebasedatabase.app https://*.firebaseio.com https://www.googleapis.com wss://*.firebasedatabase.app; frame-src 'self' https://www.google.com https://*.firebasedatabase.app; img-src 'self' data: https:; style-src 'self' 'unsafe-inline'; font-src https://fonts.gstatic.com; base-uri 'self';">
   <title>Catchmon Detail - Firebase Live</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
@@ -65,7 +65,7 @@
   <div class="connection-status" id="connectionStatus">🔄 Verbinde...</div>
   <div class="container">
     <div class="top-bar">
-      <a class="back-button" href="javascript:history.back()">← Back to Arena</a>
+      <a class="back-button" href="#" id="backBtn">← Back to Arena</a>
       <div></div>
     </div>
     <div class="hero-section">
