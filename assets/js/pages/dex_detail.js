@@ -11,7 +11,7 @@ let pendingTrainers = null;
 
 function escapeHtml(input) {
   const s = String(input ?? "");
-  return s.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#39;");
+  return s.replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#39;");
 }
 
 function validateCatchmonName(name) {
@@ -46,73 +46,100 @@ function calcPoints(catchmon) {
 
 function getDonationTier(donation) {
   if (donation >= 2500) return "king";
-  if (donation >= 500) return "flame";
-  if (donation >= 250) return "diamond";
-  if (donation >= 100) return "shine";
+  if (donation >= 500)  return "flame";
+  if (donation >= 250)  return "diamond";
+  if (donation >= 100)  return "shine";
   return "normal";
 }
 
 function isGodCatchmon(sprite) { return sprite && sprite.includes('/God/'); }
 
+// Relative time: "vor 2 Tagen", "vor 3 Std.", etc.
+function relativeTime(tsMs) {
+  if (!tsMs) return null;
+  const diff = Date.now() - tsMs;
+  const min  = Math.floor(diff / 60000);
+  const h    = Math.floor(diff / 3600000);
+  const d    = Math.floor(diff / 86400000);
+  if (min < 2)  return 'gerade eben';
+  if (min < 60) return `vor ${min} Min.`;
+  if (h < 24)   return `vor ${h} Std.`;
+  if (d < 30)   return `vor ${d} Tag${d === 1 ? '' : 'en'}`;
+  return `vor ${Math.floor(d / 30)} Monat${Math.floor(d / 30) === 1 ? '' : 'en'}`;
+}
+
 function renderTable() {
   const tbody = document.querySelector("#dataTable tbody");
   const showCaughtOnly = document.getElementById("caughtOnly").checked;
 
-  if (allEntries.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="11" class="loading"><div class="loading-spinner"></div><div>No data available</div></td></tr>';
+  const visible = allEntries.filter(e => !showCaughtOnly || e.catcher);
+
+  if (visible.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="12" class="loading"><div class="loading-spinner"></div><div>No data available</div></td></tr>';
     return;
   }
 
+  // Caught first, sorted by points; uncaught after
+  const caught   = visible.filter(e => e.catcher).sort((a, b) => calcPoints(b) - calcPoints(a));
+  const uncaught = visible.filter(e => !e.catcher);
+  const sorted   = [...caught, ...uncaught];
+
   const fragment = document.createDocumentFragment();
 
-  allEntries
-    .filter(e => !showCaughtOnly || e.catcher)
-    .sort((a, b) => calcPoints(b) - calcPoints(a))
-    .forEach(e => {
-      const tr = document.createElement("tr");
+  sorted.forEach(e => {
+    const tr = document.createElement("tr");
+    if (!e.catcher) tr.classList.add('uncaught-row');
 
-      const tdCatcher = document.createElement('td');
-      if (!e.catcher) {
-        tdCatcher.textContent = "❌";
-      } else if (isGodMode) {
-        const span = document.createElement('span');
-        span.style.color = '#9370DB';
-        span.textContent = '█████';
-        tdCatcher.appendChild(span);
-      } else {
-        const tier = getDonationTier(catcherDonations[e.catcher] || 0);
-        if (tier !== "normal") {
-          const span = document.createElement('span');
-          span.className = `catcher-name ${tier}`;
-          span.textContent = capitalize(e.catcher);
-          tdCatcher.appendChild(span);
-        } else {
-          tdCatcher.textContent = capitalize(e.catcher);
-        }
-      }
-
-      const tdPoints = document.createElement('td');
-      tdPoints.textContent = calcPoints(e).toLocaleString('de-DE');
-
-      const tdLevel = document.createElement('td');
-      tdLevel.textContent = e.level || 1;
-
-      const tdShiny = document.createElement('td');
-      tdShiny.textContent = e.shiny ? "✨" : "";
-
-      const tdSum = document.createElement('td');
-      tdSum.textContent = sumStats(e.stats).toLocaleString('de-DE');
-
-      tr.append(tdCatcher, tdPoints, tdLevel, tdShiny, tdSum);
-
-      statsOrder.forEach(s => {
-        const td = document.createElement('td');
-        td.textContent = e.stats?.[s] ?? 0;
-        tr.appendChild(td);
+    // Catcher cell — clickable to catcher_detail
+    const tdCatcher = document.createElement('td');
+    if (!e.catcher) {
+      tdCatcher.innerHTML = '<span style="opacity:0.4">—</span>';
+    } else if (isGodMode) {
+      const span = document.createElement('span');
+      span.style.color = '#9370DB';
+      span.textContent = '█████';
+      tdCatcher.appendChild(span);
+    } else {
+      const tier = getDonationTier(catcherDonations[e.catcher] || 0);
+      const el = document.createElement('span');
+      el.className = `catcher-name ${tier}`;
+      el.textContent = capitalize(e.catcher);
+      el.style.cursor = 'pointer';
+      el.addEventListener('click', () => {
+        window.location.href = `catcher_detail.html?name=${encodeURIComponent(e.catcher)}`;
       });
+      tdCatcher.appendChild(el);
+    }
 
-      fragment.appendChild(tr);
+    const tdPoints = document.createElement('td');
+    tdPoints.textContent = e.catcher ? calcPoints(e).toLocaleString('de-DE') : '—';
+
+    const tdLevel = document.createElement('td');
+    tdLevel.textContent = e.catcher ? (e.level || 1) : '—';
+
+    const tdShiny = document.createElement('td');
+    tdShiny.textContent = e.shiny ? "✨" : "";
+
+    const tdSum = document.createElement('td');
+    tdSum.textContent = e.catcher ? sumStats(e.stats).toLocaleString('de-DE') : '—';
+
+    // Timestamp
+    const tdTime = document.createElement('td');
+    tdTime.className = 'time-cell';
+    const rel = relativeTime(e.caught_at);
+    tdTime.textContent = rel || '—';
+    if (rel) tdTime.title = e.caught_at ? new Date(e.caught_at).toLocaleString('de-DE') : '';
+
+    tr.append(tdCatcher, tdPoints, tdLevel, tdShiny, tdSum, tdTime);
+
+    statsOrder.forEach(s => {
+      const td = document.createElement('td');
+      td.textContent = e.catcher ? (e.stats?.[s] ?? 0) : '—';
+      tr.appendChild(td);
     });
+
+    fragment.appendChild(tr);
+  });
 
   tbody.innerHTML = '';
   tbody.appendChild(fragment);
@@ -120,15 +147,16 @@ function renderTable() {
 
 function processData(trainersData) {
   const lowerName = catchmonName.toLowerCase();
-  const entries = [];
+  const caughtEntries = [];
   catcherDonations = {};
 
+  // Collect all caught instances
   Object.entries(trainersData).forEach(([catcher, info]) => {
     catcherDonations[catcher] = info.donation || 0;
     const team = Array.isArray(info.team) ? info.team : Object.values(info.team || {});
     team.forEach(p => {
       if (p.name && p.name.toLowerCase() === lowerName) {
-        entries.push({ ...p, catcher });
+        caughtEntries.push({ ...p, catcher });
       }
     });
   });
@@ -144,18 +172,22 @@ function processData(trainersData) {
   } else {
     document.getElementById("catchTitle").textContent =
       `#${String(dexEntry?.id || "").padStart(3, "0")} ${capitalize(catchmonName)}`;
-    document.getElementById("summary").textContent = `${entries.length} caught`;
+    const caughtCount = caughtEntries.length;
+    const trainerCount = new Set(caughtEntries.map(e => e.catcher)).size;
+    document.getElementById("summary").textContent =
+      `${caughtCount} gefangen · ${trainerCount} Trainer`;
   }
 
   const imgEl = document.getElementById("catchImg");
   imgEl.src = sprite;
   imgEl.alt = escapeHtml(catchmonName);
 
-  allEntries = entries;
+  // allEntries = caught only (ungefangen haben keine Stats zum zeigen)
+  allEntries = caughtEntries;
   renderTable();
 }
 
-// Firebase listeners
+// Firebase
 onValue(ref(db, '.info/connected'), (snapshot) => {
   const el = document.getElementById('connectionStatus');
   if (snapshot.val()) {
@@ -188,4 +220,4 @@ async function init() {
 
 init();
 document.getElementById('caughtOnly').addEventListener('change', renderTable);
-console.log('🔥 Dex Detail loaded — XSS-safe, Firebase realtime');
+console.log('🔥 Dex Detail loaded — timestamps, clickable catchers');
