@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com https://www.google.com https://*.firebasedatabase.app; connect-src 'self' https://*.firebasedatabase.app https://*.firebaseio.com https://www.googleapis.com wss://*.firebasedatabase.app https://www.google.com https://content-firebaseappcheck.googleapis.com https://firebaseappcheck.googleapis.com; frame-src 'self' https://www.google.com https://*.firebasedatabase.app; img-src 'self' data: https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; base-uri 'self';">
-  <title>🏆 Elite Catcher Arena - Firebase Live</title>
+  <title>🏆 Elite Catcher Arena</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -35,7 +35,9 @@
     table { width: 100%; border-collapse: collapse; font-size: 14px; }
     th { background: rgba(255,215,0,0.2); color: white; padding: 15px 12px; text-align: center; font-weight: 700; font-size: 13px; border: none; position: sticky; top: 0; z-index: 10; }
     td { padding: 12px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); transition: background-color 0.2s ease; color: white; }
-    tr:hover td { background: rgba(255,215,0,0.1); }
+    /* Clickable rows */
+    tbody tr { cursor: pointer; transition: background-color 0.15s ease, transform 0.15s ease; }
+    tbody tr:hover td { background: rgba(255,215,0,0.12); }
     .rank-badge { display: inline-flex; align-items: center; justify-content: center; width: 35px; height: 35px; border-radius: 50%; font-weight: 800; font-size: 1rem; color: white; position: relative; }
     .rank-1 { background: linear-gradient(45deg, #FFD700, #FFA500); box-shadow: 0 0 15px rgba(255,215,0,0.5); }
     .rank-2 { background: linear-gradient(45deg, #C0C0C0, #E8E8E8); color: #333; }
@@ -108,5 +110,5 @@
   </div>
   <button class="refresh-fab" id="refreshFab" title="Refresh Rankings">🔄</button>
   <script type="module" src="assets/js/pages/catcher_ranking.js"></script>
-<script src="assets/js/back.js"></script><script src="assets/js/back.js"></script></body>
+</body>
 </html>

@@ -23,31 +23,10 @@ function calcLevel(points) { return Math.floor(Math.pow(points / 500, 0.6)); }
 
 function getDonationTier(donation) {
   if (donation >= 2500) return "king";
-  if (donation >= 500) return "flame";
-  if (donation >= 250) return "diamond";
-  if (donation >= 100) return "shine";
+  if (donation >= 500)  return "flame";
+  if (donation >= 250)  return "diamond";
+  if (donation >= 100)  return "shine";
   return "normal";
-}
-
-function buildCatcherNameEl(name, donation) {
-  const tier = getDonationTier(donation);
-  const link = document.createElement('a');
-  link.href = `catcher_detail.html?name=${encodeURIComponent(name)}`;
-  link.style.cssText = 'text-decoration:none;color:inherit;';
-  const nameDiv = document.createElement('div');
-  if (tier !== "normal") {
-    const span = document.createElement('span');
-    span.className = `catcher-name ${tier}`;
-    span.textContent = capitalize(name);
-    nameDiv.appendChild(span);
-  } else {
-    nameDiv.textContent = capitalize(name);
-  }
-  const levelDiv = document.createElement('div');
-  levelDiv.className = 'level-display';
-  link.appendChild(nameDiv);
-  link.appendChild(levelDiv);
-  return { link, levelDiv };
 }
 
 function animateNumber(elementId, targetNumber) {
@@ -93,44 +72,77 @@ function renderTable() {
     tbody.innerHTML = '<tr><td colspan="5" class="loading"><div class="loading-spinner"></div><div>No catchers found</div></td></tr>';
     return;
   }
+
   const sorted = [...allCatchers].sort((a, b) => {
     if (currentSortMode === 'points') return b.totalPoints - a.totalPoints;
-    if (currentSortMode === 'level') return b.level - a.level;
-    if (currentSortMode === 'count') return b.teamSize - a.teamSize;
+    if (currentSortMode === 'level')  return b.level - a.level;
+    if (currentSortMode === 'count')  return b.teamSize - a.teamSize;
     return 0;
   });
+
   const rankClasses = ['rank-1', 'rank-2', 'rank-3'];
-  const rowClasses = ['gold-row', 'silver-row', 'bronze-row'];
+  const rowClasses  = ['gold-row', 'silver-row', 'bronze-row'];
   const fragment = document.createDocumentFragment();
+
   sorted.forEach((catcher, index) => {
     const tr = document.createElement("tr");
     if (rowClasses[index]) tr.classList.add(rowClasses[index]);
+
+    // Ganze Zeile klickbar
+    tr.style.cursor = 'pointer';
+    tr.addEventListener('click', () => {
+      window.location.href = `catcher_detail.html?name=${encodeURIComponent(catcher.name)}`;
+    });
+
+    // Rank
     const tdRank = document.createElement('td');
     const badge = document.createElement('div');
     badge.className = `rank-badge ${rankClasses[index] || 'rank-other'}`;
     badge.textContent = index + 1;
     tdRank.appendChild(badge);
+
+    // Name
     const tdName = document.createElement('td');
     tdName.className = 'catcher-cell';
-    const { link, levelDiv } = buildCatcherNameEl(catcher.name, catcher.donation);
+    const tier = getDonationTier(catcher.donation);
+    const nameDiv = document.createElement('div');
+    if (tier !== 'normal') {
+      const span = document.createElement('span');
+      span.className = `catcher-name ${tier}`;
+      span.textContent = capitalize(catcher.name);
+      nameDiv.appendChild(span);
+    } else {
+      nameDiv.textContent = capitalize(catcher.name);
+    }
+    const levelDiv = document.createElement('div');
+    levelDiv.className = 'level-display';
     levelDiv.textContent = `Level ${catcher.level}`;
-    tdName.appendChild(link);
+    tdName.appendChild(nameDiv);
+    tdName.appendChild(levelDiv);
+
+    // Points
     const tdPoints = document.createElement('td');
     tdPoints.className = 'points-cell';
     tdPoints.textContent = catcher.totalPoints.toLocaleString('de-DE');
+
+    // Team
     const tdTeam = document.createElement('td');
     tdTeam.className = 'team-count';
     tdTeam.textContent = catcher.teamSize;
+
+    // Level
     const tdLevel = document.createElement('td');
     tdLevel.textContent = catcher.level;
+
     tr.append(tdRank, tdName, tdPoints, tdTeam, tdLevel);
     fragment.appendChild(tr);
   });
+
   tbody.innerHTML = '';
   tbody.appendChild(fragment);
 }
 
-// Firebase listeners
+// Firebase
 onValue(ref(db, '.info/connected'), (snapshot) => {
   const el = document.getElementById('connectionStatus');
   if (snapshot.val()) {
@@ -155,7 +167,7 @@ onValue(ref(db, 'trainers'), (snapshot) => {
 document.getElementById('searchInput').addEventListener('keyup', filterTable);
 document.getElementById('refreshFab').addEventListener('click', forceRefresh);
 document.getElementById('sortPoints').addEventListener('click', () => setSortMode('points'));
-document.getElementById('sortLevel').addEventListener('click', () => setSortMode('level'));
-document.getElementById('sortCount').addEventListener('click', () => setSortMode('count'));
+document.getElementById('sortLevel').addEventListener('click',  () => setSortMode('level'));
+document.getElementById('sortCount').addEventListener('click',  () => setSortMode('count'));
 
-console.log('🔥 Catcher Ranking loaded — XSS-safe, Firebase realtime');
+console.log('🔥 Catcher Ranking loaded — clickable rows');
