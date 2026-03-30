@@ -4,6 +4,7 @@ import { ref, onValue } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase
 
 let allCatchmon = [];
 let catcherDonations = {};
+let activeRarityFilter = 'all';
 
 function sumStats(stats) { return Object.values(stats || {}).reduce((a, b) => a + (b || 0), 0); }
 
@@ -20,9 +21,9 @@ function calcPoints(catchmon) {
 
 function getDonationTier(donation) {
   if (donation >= 1000) return "king";
-  if (donation >= 500) return "flame";
-  if (donation >= 250) return "diamond";
-  if (donation >= 100) return "shine";
+  if (donation >= 500)  return "flame";
+  if (donation >= 250)  return "diamond";
+  if (donation >= 100)  return "shine";
   return "normal";
 }
 
@@ -34,12 +35,19 @@ function buildCatcherCell(catcherName, donation) {
   return span;
 }
 
+function updateRarityButtons() {
+  document.querySelectorAll('.rarity-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.rarity === activeRarityFilter);
+  });
+}
+
 function renderTable() {
   const tbody = document.getElementById("rankingBody");
   const showCaughtOnly = document.getElementById("caughtOnly").checked;
 
   const visible = allCatchmon
     .filter(p => !showCaughtOnly || p.caught)
+    .filter(p => activeRarityFilter === 'all' || p.rarity === activeRarityFilter)
     .sort((a, b) => b.points - a.points);
 
   if (visible.length === 0) {
@@ -48,41 +56,59 @@ function renderTable() {
   }
 
   const rankClasses = ['rank-1', 'rank-2', 'rank-3'];
-  const rowClasses = ['gold-row', 'silver-row', 'bronze-row'];
+  const rowClasses  = ['gold-row', 'silver-row', 'bronze-row'];
   const fragment = document.createDocumentFragment();
 
   visible.forEach((p, index) => {
     const tr = document.createElement("tr");
     if (rowClasses[index]) tr.classList.add(rowClasses[index]);
 
+    // Ganze Zeile → dex_detail
+    tr.style.cursor = 'pointer';
+    tr.addEventListener('click', () => {
+      window.location.href = `dex_detail.html?name=${encodeURIComponent(p.name)}`;
+    });
+
+    // Rank
     const tdRank = document.createElement('td');
     const badge = document.createElement('div');
     badge.className = `rank-badge ${rankClasses[index] || 'rank-other'}`;
     badge.textContent = index + 1;
     tdRank.appendChild(badge);
 
+    // Sprite
     const tdSprite = document.createElement('td');
-    const spriteLink = document.createElement('a');
-    spriteLink.href = `dex_detail.html?name=${encodeURIComponent(p.name)}`;
     const img = document.createElement('img');
     img.className = 'catchmon-sprite';
     img.src = p.sprite || '';
     img.alt = p.name;
     img.loading = 'lazy';
     img.onerror = function() { this.style.display = 'none'; };
-    spriteLink.appendChild(img);
-    tdSprite.appendChild(spriteLink);
+    tdSprite.appendChild(img);
 
+    // Name + rarity badge
     const tdName = document.createElement('td');
     tdName.className = 'name-cell';
-    const nameLink = document.createElement('a');
-    nameLink.href = `dex_detail.html?name=${encodeURIComponent(p.name)}`;
-    nameLink.textContent = p.name;
-    tdName.appendChild(nameLink);
+    const nameSpan = document.createElement('span');
+    nameSpan.textContent = p.name;
+    const rarityBadge = document.createElement('span');
+    rarityBadge.className = `rarity-pill rarity-${(p.rarity || 'common').toLowerCase()}`;
+    rarityBadge.textContent = p.rarity || 'Common';
+    tdName.appendChild(nameSpan);
+    tdName.appendChild(document.createTextNode(' '));
+    tdName.appendChild(rarityBadge);
 
+    // Catcher — klick nur auf Trainer, nicht auf Catchmon-Link
     const tdCatcher = document.createElement('td');
     tdCatcher.className = 'catcher-cell';
-    tdCatcher.appendChild(buildCatcherCell(p.catcher, catcherDonations[p.catcher] || 0));
+    const catcherEl = buildCatcherCell(p.catcher, catcherDonations[p.catcher] || 0);
+    // Catcher-Klick → catcher_detail (stopPropagation damit nicht dex_detail öffnet)
+    catcherEl.style.cursor = 'pointer';
+    catcherEl.addEventListener('click', (e) => {
+      e.stopPropagation();
+      window.location.href = `catcher_detail.html?name=${encodeURIComponent(p.catcher)}`;
+    });
+    tdCatcher.appendChild(catcherEl);
 
     const tdPoints = document.createElement('td');
     tdPoints.className = 'points-cell';
@@ -98,10 +124,10 @@ function renderTable() {
 
     const tdShiny = document.createElement('td');
     if (p.shiny) {
-      const shinySpan = document.createElement('span');
-      shinySpan.className = 'shiny-badge';
-      shinySpan.textContent = '✨';
-      tdShiny.appendChild(shinySpan);
+      const s = document.createElement('span');
+      s.className = 'shiny-badge';
+      s.textContent = '✨';
+      tdShiny.appendChild(s);
     }
 
     tr.append(tdRank, tdSprite, tdName, tdCatcher, tdPoints, tdLevel, tdStats, tdShiny);
@@ -118,6 +144,7 @@ function forceRefresh() {
   renderTable();
 }
 
+// Firebase
 onValue(ref(db, '.info/connected'), (snapshot) => {
   const el = document.getElementById('connectionStatus');
   if (snapshot.val()) {
@@ -147,7 +174,16 @@ onValue(ref(db, 'trainers'), (snapshot) => {
   renderTable();
 });
 
+// Rarity filter buttons
+document.querySelectorAll('.rarity-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    activeRarityFilter = btn.dataset.rarity;
+    updateRarityButtons();
+    renderTable();
+  });
+});
+
 document.getElementById('caughtOnly').addEventListener('change', renderTable);
 document.getElementById('refreshFab').addEventListener('click', forceRefresh);
 
-console.log('🔥 Catchmon Ranking loaded — XSS-safe, Firebase realtime');
+console.log('🔥 Catchmon Ranking loaded — rarity filter, clickable rows');
