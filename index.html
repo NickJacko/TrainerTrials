@@ -8,91 +8,140 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
-      background: radial-gradient(ellipse at center, #1a1a2e 0%, #16213e 30%, #0f0f23 70%, #000000 100%);
-      min-height: 100vh; color: white; overflow-x: hidden;
-    }
-
-    .connection-status {
-      position: fixed; top: 12px; right: 12px;
-      background: rgba(244,67,54,0.85); color: white;
-      padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600;
-      z-index: 1000; backdrop-filter: blur(10px);
-      border: 1px solid rgba(255,255,255,0.15); transition: all 0.3s ease;
-    }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; background: radial-gradient(ellipse at center, #1a1a2e 0%, #16213e 30%, #0f0f23 70%, #000000 100%); min-height: 100vh; color: white; overflow-x: hidden; }
+    .connection-status { position: fixed; top: 12px; right: 12px; background: rgba(244,67,54,0.85); color: white; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; z-index: 1000; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.15); transition: all 0.3s ease; }
     .connection-status.connected { background: rgba(76,175,80,0.85); }
-
     .container { max-width: 1100px; margin: auto; padding: 24px 20px; }
 
+    /* ── TRAINER PICKER MODAL ── */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 9000;
+      background: rgba(0,0,0,0.85); backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px;
+      opacity: 0; transition: opacity 0.3s ease;
+      pointer-events: none;
+    }
+    .modal-overlay.visible { opacity: 1; pointer-events: all; }
+
+    .modal {
+      background: linear-gradient(145deg, #1a1a2e, #16213e);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 28px; padding: 32px;
+      width: 100%; max-width: 520px;
+      max-height: 85vh; display: flex; flex-direction: column;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+      transform: translateY(20px); transition: transform 0.3s ease;
+    }
+    .modal-overlay.visible .modal { transform: translateY(0); }
+
+    .modal-header { text-align: center; margin-bottom: 24px; }
+    .modal-icon { font-size: 3rem; margin-bottom: 12px; }
+    .modal-title { font-size: 1.8rem; font-weight: 900; margin-bottom: 6px;
+      background: linear-gradient(45deg, #FFD700, #4ECDC4); background-clip: text;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .modal-sub { font-size: 0.95rem; opacity: 0.6; }
+
+    .modal-search {
+      position: relative; margin-bottom: 16px; flex-shrink: 0;
+    }
+    .modal-search input {
+      width: 100%; padding: 14px 18px 14px 44px; font-size: 15px;
+      background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 16px; color: white; outline: none; transition: all 0.2s;
+    }
+    .modal-search input::placeholder { color: rgba(255,255,255,0.4); }
+    .modal-search input:focus { border-color: rgba(255,215,0,0.5); background: rgba(255,255,255,0.12); }
+    .modal-search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 1.1rem; opacity: 0.5; }
+
+    .modal-list {
+      flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;
+      padding-right: 4px;
+    }
+    .modal-list::-webkit-scrollbar { width: 4px; }
+    .modal-list::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 4px; }
+    .modal-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+
+    .trainer-item {
+      display: flex; align-items: center; gap: 14px;
+      padding: 14px 16px; border-radius: 16px;
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08);
+      cursor: pointer; transition: all 0.15s ease;
+    }
+    .trainer-item:hover { background: rgba(255,255,255,0.12); border-color: rgba(255,215,0,0.3); transform: translateX(4px); }
+    .trainer-item.selected { background: rgba(255,215,0,0.15); border-color: rgba(255,215,0,0.5); }
+    .trainer-rank { width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; flex-shrink: 0; color: rgba(255,255,255,0.6); }
+    .trainer-rank.r1 { background: linear-gradient(45deg, #ffd700, #ffed4e); color: #333; }
+    .trainer-rank.r2 { background: linear-gradient(45deg, #c0c0c0, #e8e8e8); color: #333; }
+    .trainer-rank.r3 { background: linear-gradient(45deg, #cd7f32, #daa520); color: white; }
+    .trainer-info { flex: 1; min-width: 0; }
+    .trainer-name-row { font-size: 1rem; font-weight: 700; margin-bottom: 3px; }
+    .trainer-meta { font-size: 12px; opacity: 0.55; }
+    .trainer-pts { font-size: 1rem; font-weight: 800; color: #FFD700; flex-shrink: 0; }
+
+    .modal-footer { margin-top: 20px; flex-shrink: 0; display: flex; gap: 10px; }
+    .modal-skip { flex: 1; padding: 13px; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12); border-radius: 14px; color: rgba(255,255,255,0.6); font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .modal-skip:hover { background: rgba(255,255,255,0.12); color: white; }
+    .modal-confirm { flex: 2; padding: 13px; background: linear-gradient(135deg, #FFD700, #FFA500); border: none; border-radius: 14px; color: #1a1a1a; font-size: 15px; font-weight: 800; cursor: pointer; transition: all 0.2s; opacity: 0.4; pointer-events: none; }
+    .modal-confirm.ready { opacity: 1; pointer-events: all; }
+    .modal-confirm.ready:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(255,215,0,0.4); }
+
+    .modal-loading { text-align: center; padding: 40px; opacity: 0.6; }
+    .modal-loading-spinner { width: 28px; height: 28px; border: 3px solid rgba(255,255,255,0.2); border-top-color: #FFD700; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px; }
+
+    /* ── TRAINER WIDGET (oben rechts wenn eingeloggt) ── */
+    .trainer-widget {
+      position: fixed; top: 12px; left: 12px; z-index: 999;
+      display: flex; align-items: center; gap: 10px;
+      background: rgba(255,255,255,0.08); backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.15); border-radius: 20px;
+      padding: 8px 14px; cursor: pointer; transition: all 0.2s ease;
+      text-decoration: none; color: white; max-width: 200px;
+    }
+    .trainer-widget:hover { background: rgba(255,255,255,0.14); border-color: rgba(255,215,0,0.35); }
+    .trainer-widget-avatar { font-size: 1.3rem; }
+    .trainer-widget-info { min-width: 0; }
+    .trainer-widget-name { font-size: 13px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .trainer-widget-level { font-size: 11px; opacity: 0.55; }
+    .trainer-widget-change { font-size: 11px; opacity: 0.4; margin-left: auto; flex-shrink: 0; }
+    .trainer-widget.hidden { display: none; }
+
     /* ── HERO ── */
-    .hero {
-      text-align: center; padding: 60px 20px 50px;
-      background: rgba(255,255,255,0.04);
-      border-radius: 28px; border: 1px solid rgba(255,255,255,0.1);
-      backdrop-filter: blur(20px); margin-bottom: 32px;
-      position: relative; overflow: hidden;
-    }
-    .hero::before {
-      content: ''; position: absolute; inset: 0;
-      background: linear-gradient(135deg, rgba(255,107,107,0.05), rgba(78,205,196,0.05), rgba(150,206,180,0.05));
-      background-size: 300% 300%; animation: heroShift 8s ease-in-out infinite;
-    }
+    .hero { text-align: center; padding: 60px 20px 50px; background: rgba(255,255,255,0.04); border-radius: 28px; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(20px); margin-bottom: 32px; position: relative; overflow: hidden; }
+    .hero::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(255,107,107,0.05), rgba(78,205,196,0.05), rgba(150,206,180,0.05)); background-size: 300% 300%; animation: heroShift 8s ease-in-out infinite; }
     @keyframes heroShift { 0%,100%{background-position:0% 50%} 50%{background-position:100% 50%} }
     .hero-content { position: relative; z-index: 2; }
-
-    h1 {
-      font-size: clamp(2.8rem, 8vw, 5.5rem); font-weight: 900; letter-spacing: -2px;
-      background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #ffeaa7, #ff6b6b);
-      background-size: 300% 300%; background-clip: text; -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent; animation: gradientShift 5s ease-in-out infinite;
-      margin-bottom: 12px;
-    }
+    h1 { font-size: clamp(2.8rem, 8vw, 5.5rem); font-weight: 900; letter-spacing: -2px; background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #ffeaa7, #ff6b6b); background-size: 300% 300%; background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: gradientShift 5s ease-in-out infinite; margin-bottom: 12px; }
     @keyframes gradientShift { 0%,100%{background-position:0% 50%} 50%{background-position:100% 50%} }
-
     .hero-sub { font-size: clamp(1rem, 2.5vw, 1.4rem); opacity: 0.75; margin-bottom: 28px; font-weight: 300; }
 
-    .live-pill {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: rgba(255,0,0,0.15); border: 1.5px solid rgba(255,0,0,0.35);
-      padding: 10px 22px; border-radius: 30px; font-weight: 700; font-size: 1rem;
-      animation: livePulse 2s ease-in-out infinite;
+    /* My Profile Button in Hero */
+    .my-profile-btn {
+      display: none; margin: 0 auto 20px; padding: 12px 28px;
+      background: linear-gradient(135deg, rgba(255,215,0,0.2), rgba(255,165,0,0.15));
+      border: 1.5px solid rgba(255,215,0,0.4); border-radius: 20px;
+      color: white; font-weight: 700; font-size: 1rem; cursor: pointer;
+      text-decoration: none; transition: all 0.2s ease;
     }
+    .my-profile-btn:hover { background: linear-gradient(135deg, rgba(255,215,0,0.3), rgba(255,165,0,0.25)); transform: translateY(-2px); }
+    .my-profile-btn.visible { display: inline-block; }
+
+    .live-pill { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,0,0,0.15); border: 1.5px solid rgba(255,0,0,0.35); padding: 10px 22px; border-radius: 30px; font-weight: 700; font-size: 1rem; animation: livePulse 2s ease-in-out infinite; }
     .live-dot { width: 10px; height: 10px; background: #ff3333; border-radius: 50%; animation: dotPulse 1.5s ease-in-out infinite; box-shadow: 0 0 8px #ff3333; }
     @keyframes livePulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.03)} }
     @keyframes dotPulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.6;transform:scale(1.3)} }
 
     /* ── SPAWN WIDGET ── */
-    .spawn-widget {
-      display: flex; align-items: center; gap: 20px;
-      background: rgba(255,255,255,0.06); border-radius: 20px;
-      padding: 20px 24px; margin-bottom: 32px;
-      border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(15px);
-      transition: border-color 0.4s ease;
-    }
+    .spawn-widget { display: flex; align-items: center; gap: 20px; background: rgba(255,255,255,0.06); border-radius: 20px; padding: 20px 24px; margin-bottom: 32px; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(15px); transition: border-color 0.4s ease; }
     .spawn-widget.active { border-color: rgba(76,175,80,0.4); }
-    .spawn-img-wrap {
-      width: 72px; height: 72px; flex-shrink: 0;
-      border-radius: 14px; overflow: hidden;
-      background: rgba(255,255,255,0.05);
-      display: flex; align-items: center; justify-content: center;
-    }
+    .spawn-img-wrap { width: 72px; height: 72px; flex-shrink: 0; border-radius: 14px; overflow: hidden; background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; }
     .spawn-img-wrap img { width: 64px; height: 64px; object-fit: contain; }
     .spawn-info { flex: 1; }
     .spawn-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; opacity: 0.5; margin-bottom: 4px; }
     .spawn-name { font-size: 1.3rem; font-weight: 800; margin-bottom: 4px; }
     .spawn-meta { font-size: 13px; opacity: 0.65; }
-    .spawn-timer {
-      font-size: 2rem; font-weight: 900; font-variant-numeric: tabular-nums;
-      background: linear-gradient(45deg, #4ecdc4, #45b7d1);
-      background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      min-width: 60px; text-align: right;
-    }
-    .rarity-badge {
-      display: inline-block; font-size: 11px; font-weight: 700;
-      padding: 2px 8px; border-radius: 8px; margin-left: 6px;
-    }
+    .spawn-timer { font-size: 2rem; font-weight: 900; font-variant-numeric: tabular-nums; background: linear-gradient(45deg, #4ecdc4, #45b7d1); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; min-width: 60px; text-align: right; }
+    .rarity-badge { display: inline-block; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 8px; margin-left: 6px; }
     .r-common   { background: rgba(158,158,158,0.25); color: #e0e0e0; }
     .r-starter  { background: rgba(76,175,80,0.25);  color: #81c784; }
     .r-rare     { background: rgba(33,150,243,0.25); color: #64b5f6; }
@@ -101,68 +150,28 @@
     .r-god      { background: rgba(128,0,128,0.25);  color: #ba68c8; }
 
     /* ── STATS ── */
-    .stats-row {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-      gap: 14px; margin-bottom: 32px;
-    }
-    .stat-card {
-      background: rgba(255,255,255,0.06); border-radius: 16px; padding: 18px;
-      text-align: center; border: 1px solid rgba(255,255,255,0.1);
-      backdrop-filter: blur(10px); transition: transform 0.2s ease;
-    }
+    .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; margin-bottom: 32px; }
+    .stat-card { background: rgba(255,255,255,0.06); border-radius: 16px; padding: 18px; text-align: center; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px); transition: transform 0.2s ease; }
     .stat-card:hover { transform: translateY(-3px); }
     .stat-number { font-size: 2rem; font-weight: 900; color: #FFD700; margin-bottom: 4px; }
     .stat-label  { font-size: 12px; opacity: 0.6; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
     .stat-sub    { font-size: 11px; opacity: 0.45; margin-top: 3px; }
 
     /* ── SECTIONS ── */
-    .section {
-      background: rgba(255,255,255,0.03); border-radius: 24px;
-      padding: 32px 24px; margin-bottom: 28px;
-      border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(12px);
-    }
-    .section-header {
-      display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 28px;
-    }
+    .section { background: rgba(255,255,255,0.03); border-radius: 24px; padding: 32px 24px; margin-bottom: 28px; border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(12px); }
+    .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; }
     .section-title { font-size: clamp(1.4rem, 3vw, 2rem); font-weight: 800; }
-    .view-all-btn {
-      font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.6);
-      text-decoration: none; padding: 7px 16px;
-      border: 1px solid rgba(255,255,255,0.15); border-radius: 20px;
-      transition: all 0.2s ease; white-space: nowrap;
-    }
+    .view-all-btn { font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.6); text-decoration: none; padding: 7px 16px; border: 1px solid rgba(255,255,255,0.15); border-radius: 20px; transition: all 0.2s ease; white-space: nowrap; }
     .view-all-btn:hover { color: white; border-color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.08); }
 
     /* ── CARDS ── */
-    .card-row {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 20px; align-items: end;
-    }
-    .card {
-      background: linear-gradient(145deg, rgba(255,255,255,0.1), rgba(255,255,255,0.04));
-      border-radius: 20px; padding: 28px 22px; text-align: center;
-      position: relative; cursor: pointer;
-      border: 1.5px solid rgba(255,255,255,0.1);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-      backdrop-filter: blur(12px);
-      transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-    }
+    .card-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; align-items: end; }
+    .card { background: linear-gradient(145deg, rgba(255,255,255,0.1), rgba(255,255,255,0.04)); border-radius: 20px; padding: 28px 22px; text-align: center; position: relative; cursor: pointer; border: 1.5px solid rgba(255,255,255,0.1); box-shadow: 0 8px 24px rgba(0,0,0,0.2); backdrop-filter: blur(12px); transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease; }
     .card:hover { transform: translateY(-10px) scale(1.02); box-shadow: 0 20px 45px rgba(0,0,0,0.35); border-color: rgba(255,255,255,0.25); }
-    .card.medal-1 {
-      transform: translateY(-12px) scale(1.05);
-      background: linear-gradient(145deg, rgba(255,215,0,0.18), rgba(255,215,0,0.06));
-      border: 2px solid rgba(255,215,0,0.45);
-      box-shadow: 0 18px 50px rgba(255,215,0,0.3);
-    }
+    .card.medal-1 { transform: translateY(-12px) scale(1.05); background: linear-gradient(145deg, rgba(255,215,0,0.18), rgba(255,215,0,0.06)); border: 2px solid rgba(255,215,0,0.45); box-shadow: 0 18px 50px rgba(255,215,0,0.3); }
     .card.medal-1::after { content: '👑'; position: absolute; top: -12px; right: -10px; font-size: 2rem; animation: crownFloat 3s ease-in-out infinite alternate; }
     @keyframes crownFloat { 0%{transform:translateY(0) rotate(-5deg)} 100%{transform:translateY(-6px) rotate(5deg)} }
-    .badge {
-      position: absolute; top: -12px; left: -12px; width: 44px; height: 44px;
-      border-radius: 50%; display: flex; align-items: center; justify-content: center;
-      font-size: 16px; font-weight: 800; z-index: 4;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    }
+    .badge { position: absolute; top: -12px; left: -12px; width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 800; z-index: 4; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
     .medal-1 .badge { background: linear-gradient(45deg, #ffd700, #ffed4e); color: #333; }
     .medal-2 .badge { background: linear-gradient(45deg, #c0c0c0, #e8e8e8); color: #333; }
     .medal-3 .badge { background: linear-gradient(45deg, #cd7f32, #daa520); color: white; }
@@ -170,17 +179,9 @@
     .card-stat  { font-size: 0.95rem; opacity: 0.75; margin-bottom: 7px; }
     .pts { font-size: 1.6rem; font-weight: 900; color: #FFD700; margin-top: 10px; text-shadow: 0 0 12px rgba(255,215,0,0.4); }
 
-    /* ── NAV CARDS (bottom) ── */
-    .nav-cards {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 14px; margin-bottom: 28px;
-    }
-    .nav-card {
-      padding: 20px 16px; border-radius: 18px; text-align: center;
-      text-decoration: none; color: white; font-weight: 700; font-size: 1rem;
-      background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1);
-      backdrop-filter: blur(10px); transition: all 0.3s ease;
-    }
+    /* ── NAV CARDS ── */
+    .nav-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-bottom: 28px; }
+    .nav-card { padding: 20px 16px; border-radius: 18px; text-align: center; text-decoration: none; color: white; font-weight: 700; font-size: 1rem; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px); transition: all 0.3s ease; }
     .nav-card:hover { transform: translateY(-5px); background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.25); }
     .nav-card .nav-icon { font-size: 2rem; display: block; margin-bottom: 8px; }
     .nav-card.highlight { background: linear-gradient(145deg, rgba(255,215,0,0.2), rgba(255,193,7,0.1)); border-color: rgba(255,215,0,0.3); }
@@ -191,7 +192,7 @@
     .footer a { color: rgba(255,255,255,0.4); text-decoration: none; font-size: 13px; margin: 0 14px; transition: color 0.2s; }
     .footer a:hover { color: rgba(255,255,255,0.8); }
 
-    /* ── CATCHER NAME TIERS ── */
+    /* ── NAME TIERS ── */
     .catcher-name { display: inline-block; font-weight: 800; background-size: 200% auto; background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shine 3s linear infinite; }
     .king, .god { background-image: linear-gradient(90deg, #ffd700, #fff, #ffd700); }
     .flame   { background-image: linear-gradient(90deg, #ff4444, #fff, #ff4444); }
@@ -209,10 +210,47 @@
       .spawn-timer { width: 100%; text-align: center; font-size: 1.6rem; }
       .card.medal-1 { transform: none; }
       .section-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+      .trainer-widget { max-width: 160px; }
     }
   </style>
 </head>
 <body>
+
+  <!-- TRAINER PICKER MODAL -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-icon">🎮</div>
+        <div class="modal-title">Choose your Trainer</div>
+        <div class="modal-sub">Select your name to track your progress</div>
+      </div>
+      <div class="modal-search">
+        <div class="modal-search-icon">🔍</div>
+        <input type="text" id="modalSearch" placeholder="Search trainer...">
+      </div>
+      <div class="modal-list" id="modalList">
+        <div class="modal-loading">
+          <div class="modal-loading-spinner"></div>
+          <div>Loading trainers...</div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="modal-skip" id="modalSkip">Skip for now</button>
+        <button class="modal-confirm" id="modalConfirm">✓ Select Trainer</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TRAINER WIDGET (top left) -->
+  <a class="trainer-widget hidden" id="trainerWidget" href="#">
+    <span class="trainer-widget-avatar">👤</span>
+    <div class="trainer-widget-info">
+      <div class="trainer-widget-name" id="trainerWidgetName">—</div>
+      <div class="trainer-widget-level" id="trainerWidgetLevel">—</div>
+    </div>
+    <span class="trainer-widget-change">✎</span>
+  </a>
+
   <div class="connection-status" id="connectionStatus">🔄 Verbinde...</div>
 
   <div class="container">
@@ -222,6 +260,7 @@
       <div class="hero-content">
         <h1>🎮 Catchmon Arena</h1>
         <p class="hero-sub">Like the stream — catch legendary creatures — build your team</p>
+        <a class="my-profile-btn" id="myProfileBtn" href="#">👤 My Profile</a>
         <div class="live-pill">
           <div class="live-dot"></div>
           <span id="liveStatusText">Connecting...</span>
@@ -231,9 +270,7 @@
 
     <!-- LIVE SPAWN WIDGET -->
     <div class="spawn-widget" id="spawnWidget">
-      <div class="spawn-img-wrap" id="spawnImgWrap">
-        <span style="font-size:2rem;">🥚</span>
-      </div>
+      <div class="spawn-img-wrap" id="spawnImgWrap"><span style="font-size:2rem;">🥚</span></div>
       <div class="spawn-info">
         <div class="spawn-label">Currently Spawning</div>
         <div class="spawn-name" id="spawnName">Waiting for spawn...</div>
@@ -244,23 +281,10 @@
 
     <!-- STATS -->
     <div class="stats-row">
-      <div class="stat-card">
-        <div class="stat-number" id="totalSpawns">0</div>
-        <div class="stat-label">Total Spawns</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-number" id="catchRate">0%</div>
-        <div class="stat-label">Catch Rate</div>
-        <div class="stat-sub" id="catchRateSub">0 caught / 0 spawns</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-number" id="totalLikesEver">0</div>
-        <div class="stat-label">Total Likes</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-number" id="totalCatchers">0</div>
-        <div class="stat-label">Active Trainers</div>
-      </div>
+      <div class="stat-card"><div class="stat-number" id="totalSpawns">0</div><div class="stat-label">Total Spawns</div></div>
+      <div class="stat-card"><div class="stat-number" id="catchRate">0%</div><div class="stat-label">Catch Rate</div><div class="stat-sub" id="catchRateSub">0 caught / 0 spawns</div></div>
+      <div class="stat-card"><div class="stat-number" id="totalLikesEver">0</div><div class="stat-label">Total Likes</div></div>
+      <div class="stat-card"><div class="stat-number" id="totalCatchers">0</div><div class="stat-label">Active Trainers</div></div>
     </div>
 
     <!-- ELITE CATCHERS -->
@@ -269,9 +293,7 @@
         <div class="section-title">🏆 Elite Catchers</div>
         <a href="catcher_ranking_live.html" class="view-all-btn">View Full Ranking →</a>
       </div>
-      <div id="catcherRow" class="card-row">
-        <div class="loading"><div class="loading-spinner"></div><div>Loading Champions...</div></div>
-      </div>
+      <div id="catcherRow" class="card-row"><div class="loading"><div class="loading-spinner"></div><div>Loading Champions...</div></div></div>
     </div>
 
     <!-- LEGENDARY CATCHMON -->
@@ -280,22 +302,14 @@
         <div class="section-title">🐲 Strongest Catchmon</div>
         <a href="ranking_catchmon_live.html" class="view-all-btn">View All Catchmon →</a>
       </div>
-      <div id="catchmonRow" class="card-row">
-        <div class="loading"><div class="loading-spinner"></div><div>Loading Legends...</div></div>
-      </div>
+      <div id="catchmonRow" class="card-row"><div class="loading"><div class="loading-spinner"></div><div>Loading Legends...</div></div></div>
     </div>
 
     <!-- NAV CARDS -->
     <div class="nav-cards">
-      <a href="catchdex_live.html" class="nav-card">
-        <span class="nav-icon">📘</span>Catchdex
-      </a>
-      <a href="howto.html" class="nav-card">
-        <span class="nav-icon">🧠</span>How to Play
-      </a>
-      <a href="donations.html" class="nav-card highlight">
-        <span class="nav-icon">💎</span>Power Up
-      </a>
+      <a href="catchdex_live.html" class="nav-card"><span class="nav-icon">📘</span>Catchdex</a>
+      <a href="howto.html" class="nav-card"><span class="nav-icon">🧠</span>How to Play</a>
+      <a href="donations.html" class="nav-card highlight"><span class="nav-icon">💎</span>Power Up</a>
     </div>
 
     <!-- FOOTER -->
@@ -303,7 +317,6 @@
       <a href="imprint.html">Imprint</a>
       <a href="privacy.html">Privacy</a>
     </div>
-
   </div>
 
   <script type="module" src="assets/js/pages/index.js"></script>
