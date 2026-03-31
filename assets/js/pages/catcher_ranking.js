@@ -2,8 +2,15 @@
 import { db } from '../firebase.client.js';
 import { ref, onValue } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 
+const STORAGE_KEY = 'catchmon_trainer_name';
 let currentSortMode = 'points';
 let allCatchers = [];
+let hasScrolled = false;
+
+function getSavedTrainer() {
+  try { return localStorage.getItem(STORAGE_KEY) || null; }
+  catch { return null; }
+}
 
 function capitalize(str) { return str.charAt(0).toUpperCase() + str.slice(1); }
 
@@ -48,6 +55,7 @@ function setSortMode(mode) {
   currentSortMode = mode;
   document.querySelectorAll('.sort-button').forEach(btn => btn.classList.remove('active'));
   document.getElementById(`sort${mode.charAt(0).toUpperCase() + mode.slice(1)}`).classList.add('active');
+  hasScrolled = false; // Allow re-scroll on sort change
   renderTable();
 }
 
@@ -66,8 +74,21 @@ function forceRefresh() {
   renderTable();
 }
 
+function scrollToMyRow() {
+  if (hasScrolled) return;
+  const myRow = document.querySelector('tr.my-row');
+  if (!myRow) return;
+  hasScrolled = true;
+  // Kurze Verzögerung damit DOM bereit ist
+  setTimeout(() => {
+    myRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 400);
+}
+
 function renderTable() {
   const tbody = document.getElementById("rankingBody");
+  const savedTrainer = getSavedTrainer();
+
   if (allCatchers.length === 0) {
     tbody.innerHTML = '<tr><td colspan="5" class="loading"><div class="loading-spinner"></div><div>No catchers found</div></td></tr>';
     return;
@@ -85,10 +106,11 @@ function renderTable() {
   const fragment = document.createDocumentFragment();
 
   sorted.forEach((catcher, index) => {
+    const isMe = savedTrainer && catcher.name.toLowerCase() === savedTrainer.toLowerCase();
     const tr = document.createElement("tr");
     if (rowClasses[index]) tr.classList.add(rowClasses[index]);
+    if (isMe) tr.classList.add('my-row');
 
-    // Ganze Zeile klickbar
     tr.style.cursor = 'pointer';
     tr.addEventListener('click', () => {
       window.location.href = `catcher_detail.html?name=${encodeURIComponent(catcher.name)}`;
@@ -106,6 +128,7 @@ function renderTable() {
     tdName.className = 'catcher-cell';
     const tier = getDonationTier(catcher.donation);
     const nameDiv = document.createElement('div');
+
     if (tier !== 'normal') {
       const span = document.createElement('span');
       span.className = `catcher-name ${tier}`;
@@ -114,23 +137,29 @@ function renderTable() {
     } else {
       nameDiv.textContent = capitalize(catcher.name);
     }
+
+    // "You" Badge
+    if (isMe) {
+      const youBadge = document.createElement('span');
+      youBadge.className = 'you-badge';
+      youBadge.textContent = 'YOU';
+      nameDiv.appendChild(youBadge);
+    }
+
     const levelDiv = document.createElement('div');
     levelDiv.className = 'level-display';
     levelDiv.textContent = `Level ${catcher.level}`;
     tdName.appendChild(nameDiv);
     tdName.appendChild(levelDiv);
 
-    // Points
     const tdPoints = document.createElement('td');
     tdPoints.className = 'points-cell';
     tdPoints.textContent = catcher.totalPoints.toLocaleString('de-DE');
 
-    // Team
     const tdTeam = document.createElement('td');
     tdTeam.className = 'team-count';
     tdTeam.textContent = catcher.teamSize;
 
-    // Level
     const tdLevel = document.createElement('td');
     tdLevel.textContent = catcher.level;
 
@@ -140,13 +169,16 @@ function renderTable() {
 
   tbody.innerHTML = '';
   tbody.appendChild(fragment);
+
+  // Auto-scroll zu eigener Zeile
+  scrollToMyRow();
 }
 
 // Firebase
 onValue(ref(db, '.info/connected'), (snapshot) => {
   const el = document.getElementById('connectionStatus');
   if (snapshot.val()) {
-    el.textContent = '🟢 Connected'; el.className = 'connection-status connected';
+    el.textContent = '🟢 Live'; el.className = 'connection-status connected';
   } else {
     el.textContent = '🔴 Offline'; el.className = 'connection-status disconnected';
   }
@@ -170,4 +202,4 @@ document.getElementById('sortPoints').addEventListener('click', () => setSortMod
 document.getElementById('sortLevel').addEventListener('click',  () => setSortMode('level'));
 document.getElementById('sortCount').addEventListener('click',  () => setSortMode('count'));
 
-console.log('🔥 Catcher Ranking loaded — clickable rows');
+console.log('🔥 Catcher Ranking loaded — my-row highlight + auto-scroll');

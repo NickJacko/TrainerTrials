@@ -8,10 +8,10 @@
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%); margin: 0; padding: 0; min-height: 100vh; color: white; overflow-x: hidden; }
-    .container { max-width: 1400px; margin: auto; padding: 20px; position: relative; z-index: 1; }
-    .connection-status { position: fixed; top: 10px; right: 10px; background: rgba(0,0,0,0.8); color: white; padding: 8px 15px; border-radius: 20px; font-size: 14px; font-weight: 600; z-index: 1000; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); }
-    .connection-status.connected { background: rgba(76,175,80,0.9); }
-    .connection-status.disconnected { background: rgba(244,67,54,0.9); }
+    .container { max-width: 1400px; margin: auto; padding: 20px; }
+    .connection-status { position: fixed; top: 12px; left: 12px; background: rgba(0,0,0,0.7); color: white; padding: 6px 13px; border-radius: 16px; font-size: 12px; font-weight: 600; z-index: 900; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.15); }
+    .connection-status.connected { background: rgba(76,175,80,0.85); }
+    .connection-status.disconnected { background: rgba(244,67,54,0.85); }
     .header-section { display: flex; align-items: center; justify-content: space-between; margin-bottom: 30px; background: rgba(255,255,255,0.1); backdrop-filter: blur(15px); border-radius: 20px; padding: 20px 30px; border: 1px solid rgba(255,255,255,0.2); }
     .header-content { display: flex; align-items: center; justify-content: space-between; width: 100%; }
     .back-button { font-size: 16px; text-decoration: none; color: white; font-weight: 700; padding: 12px 20px; border-radius: 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); transition: all 0.2s ease; }
@@ -35,9 +35,29 @@
     table { width: 100%; border-collapse: collapse; font-size: 14px; }
     th { background: rgba(255,215,0,0.2); color: white; padding: 15px 12px; text-align: center; font-weight: 700; font-size: 13px; border: none; position: sticky; top: 0; z-index: 10; }
     td { padding: 12px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); transition: background-color 0.2s ease; color: white; }
-    /* Clickable rows */
-    tbody tr { cursor: pointer; transition: background-color 0.15s ease, transform 0.15s ease; }
-    tbody tr:hover td { background: rgba(255,215,0,0.12); }
+    tbody tr { cursor: pointer; transition: background-color 0.15s ease; }
+    tbody tr:hover td { background: rgba(255,215,0,0.1); }
+
+    /* ── MY ROW HIGHLIGHT ── */
+    tbody tr.my-row td {
+      background: rgba(78,205,196,0.13) !important;
+      border-bottom: 1px solid rgba(78,205,196,0.3) !important;
+    }
+    tbody tr.my-row:hover td { background: rgba(78,205,196,0.22) !important; }
+    /* Linke Akzentlinie */
+    tbody tr.my-row td:first-child {
+      border-left: 3px solid #4ECDC4;
+    }
+
+    /* YOU badge */
+    .you-badge {
+      display: inline-block; font-size: 9px; font-weight: 800;
+      padding: 2px 6px; border-radius: 6px; margin-left: 7px;
+      background: rgba(78,205,196,0.3); color: #4ECDC4;
+      border: 1px solid rgba(78,205,196,0.5);
+      vertical-align: middle; letter-spacing: 0.5px;
+    }
+
     .rank-badge { display: inline-flex; align-items: center; justify-content: center; width: 35px; height: 35px; border-radius: 50%; font-weight: 800; font-size: 1rem; color: white; position: relative; }
     .rank-1 { background: linear-gradient(45deg, #FFD700, #FFA500); box-shadow: 0 0 15px rgba(255,215,0,0.5); }
     .rank-2 { background: linear-gradient(45deg, #C0C0C0, #E8E8E8); color: #333; }
@@ -46,19 +66,20 @@
     .rank-1::after { content: '👑'; position: absolute; top: -6px; right: -6px; font-size: 1rem; }
     .rank-2::after { content: '🥈'; position: absolute; top: -5px; right: -5px; font-size: 0.9rem; }
     .rank-3::after { content: '🥉'; position: absolute; top: -5px; right: -5px; font-size: 0.9rem; }
-    .gold-row td { background: rgba(255,215,0,0.15); border-bottom: 1px solid rgba(255,215,0,0.3); }
+    .gold-row td   { background: rgba(255,215,0,0.15);   border-bottom: 1px solid rgba(255,215,0,0.3); }
     .silver-row td { background: rgba(192,192,192,0.15); border-bottom: 1px solid rgba(192,192,192,0.3); }
-    .bronze-row td { background: rgba(205,127,50,0.15); border-bottom: 1px solid rgba(205,127,50,0.3); }
+    .bronze-row td { background: rgba(205,127,50,0.15);  border-bottom: 1px solid rgba(205,127,50,0.3); }
     .catcher-cell { font-weight: 700; font-size: 1rem; }
     .level-display { font-size: 0.8rem; opacity: 0.8; margin-top: 3px; }
     .points-cell { font-weight: 700; color: #FFD700; font-size: 1.1rem; }
     .team-count { color: #4ECDC4; font-weight: 600; }
-    .catcher-name { font-weight: 700; padding: 4px 8px; border-radius: 8px; }
-    .king { background: linear-gradient(90deg, #FFD700, #FFA500); color: #000; }
-    .flame { background: linear-gradient(90deg, #FF4444, #FF6B6B); color: white; }
-    .diamond { background: linear-gradient(90deg, #4ECDC4, #45B7D1); color: white; }
-    .shine { background: linear-gradient(90deg, #4CAF50, #66BB6A); color: white; }
-    .normal { color: white; background: rgba(255,255,255,0.1); }
+    .catcher-name { display: inline-block; font-weight: 700; padding: 3px 8px; border-radius: 8px; background-size: 200% auto; background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shine 3s linear infinite; }
+    .king,.god { background-image: linear-gradient(90deg,#ffd700,#fff,#ffd700); }
+    .flame   { background-image: linear-gradient(90deg,#ff4444,#fff,#ff4444); }
+    .diamond { background-image: linear-gradient(90deg,#00bfff,#fff,#00bfff); }
+    .shine   { background-image: linear-gradient(90deg,#32cd32,#fff,#32cd32); }
+    .normal  { color: white; background: rgba(255,255,255,0.1); -webkit-text-fill-color: white; animation: none; }
+    @keyframes shine { to { background-position: -200% center; } }
     .loading { text-align: center; padding: 40px; color: rgba(255,255,255,0.8); font-size: 16px; display: flex; flex-direction: column; align-items: center; gap: 15px; }
     .loading-spinner { width: 30px; height: 30px; border: 3px solid rgba(255,255,255,0.3); border-top: 3px solid #FFD700; border-radius: 50%; animation: spin 1s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
@@ -110,5 +131,6 @@
   </div>
   <button class="refresh-fab" id="refreshFab" title="Refresh Rankings">🔄</button>
   <script type="module" src="assets/js/pages/catcher_ranking.js"></script>
+  <script type="module" src="assets/js/trainer_widget.js"></script>
 </body>
 </html>
