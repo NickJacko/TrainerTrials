@@ -10,9 +10,6 @@
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%); min-height: 100vh; color: white; overflow-x: hidden; }
     body.god-mode { background: linear-gradient(135deg, #0a0a0a 0%, #1a001a 30%, #000000 70%, #2d002d 100%); }
     .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
-    .connection-status { position: fixed; top: 10px; right: 10px; background: rgba(0,0,0,0.8); color: white; padding: 8px 15px; border-radius: 20px; font-size: 14px; font-weight: 600; z-index: 1000; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); }
-    .connection-status.connected { background: rgba(76,175,80,0.9); }
-    .connection-status.disconnected { background: rgba(244,67,54,0.9); }
 
     .top-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 30px; background: rgba(255,255,255,0.1); backdrop-filter: blur(15px); border-radius: 20px; padding: 20px 30px; border: 1px solid rgba(255,255,255,0.2); }
     .back-button { font-size: 16px; text-decoration: none; color: white; font-weight: 700; padding: 12px 20px; border-radius: 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); transition: all 0.2s ease; }
@@ -26,7 +23,6 @@
     body.god-mode .catchmon-image { filter: brightness(0.2) saturate(0) contrast(2); border: 2px solid rgba(128,0,128,0.6); }
     .god-image-overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); color: #9370DB; font-weight: 900; font-size: 14px; text-align: center; background: rgba(0,0,0,0.8); padding: 10px 15px; border-radius: 12px; border: 1px solid rgba(147,112,219,0.5); opacity: 0; white-space: nowrap; z-index: 3; }
     body.god-mode .god-image-overlay { opacity: 1; }
-
     .info-section { display: flex; flex-direction: column; gap: 16px; }
     .catchmon-title { font-size: clamp(2rem, 5vw, 3rem); font-weight: 800; background: linear-gradient(45deg, #FFD700, #FF6B6B, #4ECDC4, #45B7D1); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -1px; }
     body.god-mode .catchmon-title { color: #9370DB; background: none; -webkit-text-fill-color: #9370DB; }
@@ -50,9 +46,22 @@
     tbody tr { transition: background-color 0.15s ease; }
     tbody tr:hover td { background: rgba(255,215,0,0.08); }
     body.god-mode tbody tr:hover td { background: rgba(75,0,130,0.2); }
-    /* Uncaught rows — dimmed */
     tr.uncaught-row td { opacity: 0.45; }
-    tr.uncaught-row:hover td { opacity: 0.65; background: rgba(255,255,255,0.04); }
+    tr.uncaught-row:hover td { opacity: 0.65; background: rgba(255,255,255,0.04) !important; }
+
+    /* ── MY ROW HIGHLIGHT ── */
+    tbody tr.my-row td {
+      background: rgba(78,205,196,0.13) !important;
+      border-bottom: 1px solid rgba(78,205,196,0.25) !important;
+    }
+    tbody tr.my-row:hover td { background: rgba(78,205,196,0.22) !important; }
+    tbody tr.my-row td:first-child { border-left: 3px solid #4ECDC4; }
+    .you-tag {
+      display: inline-block; font-size: 9px; font-weight: 800;
+      padding: 1px 5px; border-radius: 5px; margin-left: 6px;
+      background: rgba(78,205,196,0.25); color: #4ECDC4;
+      border: 1px solid rgba(78,205,196,0.4); vertical-align: middle;
+    }
 
     .time-cell { font-size: 11px; color: rgba(255,255,255,0.5); font-style: italic; }
     .catcher-name { font-weight: 700; padding: 3px 8px; border-radius: 8px; cursor: pointer; }
@@ -73,7 +82,6 @@
   </style>
 </head>
 <body>
-  <div class="connection-status" id="connectionStatus">🔄 Verbinde...</div>
   <div class="container">
     <div class="top-bar">
       <a class="back-button" href="catchdex_live.html">← Catchdex</a>
@@ -108,5 +116,6 @@
     </div>
   </div>
   <script type="module" src="assets/js/pages/dex_detail.js"></script>
+  <script type="module" src="assets/js/trainer_widget.js"></script>
 </body>
 </html>

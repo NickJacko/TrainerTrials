@@ -9,6 +9,11 @@ let dexList = [];
 let isGodMode = false;
 let pendingTrainers = null;
 
+function getSavedTrainer() {
+  try { return localStorage.getItem('catchmon_trainer_name') || null; }
+  catch { return null; }
+}
+
 function escapeHtml(input) {
   const s = String(input ?? "");
   return s.replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#39;");
@@ -54,7 +59,6 @@ function getDonationTier(donation) {
 
 function isGodCatchmon(sprite) { return sprite && sprite.includes('/God/'); }
 
-// Relative time: "vor 2 Tagen", "vor 3 Std.", etc.
 function relativeTime(tsMs) {
   if (!tsMs) return null;
   const diff = Date.now() - tsMs;
@@ -69,8 +73,9 @@ function relativeTime(tsMs) {
 }
 
 function renderTable() {
-  const tbody = document.querySelector("#dataTable tbody");
+  const tbody       = document.querySelector("#dataTable tbody");
   const showCaughtOnly = document.getElementById("caughtOnly").checked;
+  const savedTrainer   = getSavedTrainer();
 
   const visible = allEntries.filter(e => !showCaughtOnly || e.catcher);
 
@@ -79,7 +84,6 @@ function renderTable() {
     return;
   }
 
-  // Caught first, sorted by points; uncaught after
   const caught   = visible.filter(e => e.catcher).sort((a, b) => calcPoints(b) - calcPoints(a));
   const uncaught = visible.filter(e => !e.catcher);
   const sorted   = [...caught, ...uncaught];
@@ -90,7 +94,11 @@ function renderTable() {
     const tr = document.createElement("tr");
     if (!e.catcher) tr.classList.add('uncaught-row');
 
-    // Catcher cell — clickable to catcher_detail
+    // Highlight eigener Eintrag
+    const isMe = savedTrainer && e.catcher && e.catcher.toLowerCase() === savedTrainer.toLowerCase();
+    if (isMe) tr.classList.add('my-row');
+
+    // Catcher cell
     const tdCatcher = document.createElement('td');
     if (!e.catcher) {
       tdCatcher.innerHTML = '<span style="opacity:0.4">—</span>';
@@ -104,11 +112,18 @@ function renderTable() {
       const el = document.createElement('span');
       el.className = `catcher-name ${tier}`;
       el.textContent = capitalize(e.catcher);
-      el.style.cursor = 'pointer';
       el.addEventListener('click', () => {
         window.location.href = `catcher_detail.html?name=${encodeURIComponent(e.catcher)}`;
       });
       tdCatcher.appendChild(el);
+
+      // YOU badge
+      if (isMe) {
+        const you = document.createElement('span');
+        you.className = 'you-tag';
+        you.textContent = 'YOU';
+        tdCatcher.appendChild(you);
+      }
     }
 
     const tdPoints = document.createElement('td');
@@ -123,7 +138,6 @@ function renderTable() {
     const tdSum = document.createElement('td');
     tdSum.textContent = e.catcher ? sumStats(e.stats).toLocaleString('de-DE') : '—';
 
-    // Timestamp
     const tdTime = document.createElement('td');
     tdTime.className = 'time-cell';
     const rel = relativeTime(e.caught_at);
@@ -150,7 +164,6 @@ function processData(trainersData) {
   const caughtEntries = [];
   catcherDonations = {};
 
-  // Collect all caught instances
   Object.entries(trainersData).forEach(([catcher, info]) => {
     catcherDonations[catcher] = info.donation || 0;
     const team = Array.isArray(info.team) ? info.team : Object.values(info.team || {});
@@ -162,7 +175,7 @@ function processData(trainersData) {
   });
 
   const dexEntry = dexList.find(p => p.name.toLowerCase() === lowerName);
-  const sprite = dexEntry?.sprite || "";
+  const sprite   = dexEntry?.sprite || "";
 
   if (isGodCatchmon(sprite)) {
     isGodMode = true;
@@ -172,30 +185,18 @@ function processData(trainersData) {
   } else {
     document.getElementById("catchTitle").textContent =
       `#${String(dexEntry?.id || "").padStart(3, "0")} ${capitalize(catchmonName)}`;
-    const caughtCount = caughtEntries.length;
     const trainerCount = new Set(caughtEntries.map(e => e.catcher)).size;
     document.getElementById("summary").textContent =
-      `${caughtCount} gefangen · ${trainerCount} Trainer`;
+      `${caughtEntries.length} gefangen · ${trainerCount} Trainer`;
   }
 
   const imgEl = document.getElementById("catchImg");
   imgEl.src = sprite;
   imgEl.alt = escapeHtml(catchmonName);
 
-  // allEntries = caught only (ungefangen haben keine Stats zum zeigen)
   allEntries = caughtEntries;
   renderTable();
 }
-
-// Firebase
-onValue(ref(db, '.info/connected'), (snapshot) => {
-  const el = document.getElementById('connectionStatus');
-  if (snapshot.val()) {
-    el.textContent = '🟢 Connected'; el.className = 'connection-status connected';
-  } else {
-    el.textContent = '🔴 Offline'; el.className = 'connection-status disconnected';
-  }
-});
 
 onValue(ref(db, 'trainers'), (snapshot) => {
   const trainersData = snapshot.val() || {};
@@ -220,4 +221,4 @@ async function init() {
 
 init();
 document.getElementById('caughtOnly').addEventListener('change', renderTable);
-console.log('🔥 Dex Detail loaded — timestamps, clickable catchers');
+console.log('🔥 Dex Detail loaded — my-row highlight, trainer widget');
