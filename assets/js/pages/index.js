@@ -2,34 +2,27 @@
 import { db } from '../firebase.client.js';
 import { ref, onValue } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 
-// ── Helpers ──────────────────────────────────────────────────────────────────
+// ── Helpers ───────────────────────────────────────────────────────────────────
 
 function escapeHtml(s) {
   return String(s ?? "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#39;");
 }
-
 function getDonationTier(d) {
-  if (d >= 2500) return 'god';
-  if (d >= 500)  return 'king';
-  if (d >= 250)  return 'diamond';
-  if (d >= 100)  return 'flame';
-  if (d >= 50)   return 'shine';
-  return 'normal';
+  if (d >= 2500) return 'god'; if (d >= 500) return 'king';
+  if (d >= 250)  return 'diamond'; if (d >= 100) return 'flame';
+  if (d >= 50)   return 'shine'; return 'normal';
 }
-
 function buildNameEl(name, donation) {
   const span = document.createElement('span');
   span.className = `catcher-name ${getDonationTier(donation)}`;
   span.textContent = name;
   return span;
 }
-
 function fmt(num) {
   if (num >= 1_000_000) return (num / 1_000_000).toFixed(1) + 'M';
   if (num >= 1_000)     return (num / 1_000).toFixed(1) + 'K';
   return String(num);
 }
-
 function calcPts(c) {
   if (!c) return 0;
   const stats = c.stats || {};
@@ -38,193 +31,21 @@ function calcPts(c) {
   if (c.shiny) p *= 1.5;
   return Math.floor(p);
 }
-
 function calcTeamPts(team) {
   if (!team) return 0;
   return (Array.isArray(team) ? team : Object.values(team)).reduce((s,c) => s + calcPts(c), 0);
 }
+function rarityClass(rarity) { return 'r-' + (rarity || 'common').toLowerCase(); }
+function capitalize(s) { return String(s ?? "").charAt(0).toUpperCase() + String(s ?? "").slice(1); }
 
-function calcLevel(totalPoints) {
-  return Math.floor(Math.pow(totalPoints / 500, 0.6));
-}
-
-function rarityClass(rarity) {
-  return 'r-' + (rarity || 'common').toLowerCase();
-}
-
-function capitalize(s) {
-  return String(s ?? "").charAt(0).toUpperCase() + String(s ?? "").slice(1);
-}
-
-// ── Trainer Picker Modal ──────────────────────────────────────────────────────
-
-const STORAGE_KEY = 'catchmon_trainer_name';
-let allTrainersData = {};
-let selectedTrainer = null;
-
-function getSavedTrainer() {
-  try { return localStorage.getItem(STORAGE_KEY) || null; }
-  catch { return null; }
-}
-
-function saveTrainer(name) {
-  try { localStorage.setItem(STORAGE_KEY, name); }
-  catch {}
-}
-
-function clearTrainer() {
-  try { localStorage.removeItem(STORAGE_KEY); }
-  catch {}
-}
-
-function showModal() {
-  const overlay = document.getElementById('modalOverlay');
-  overlay.classList.add('visible');
-  selectedTrainer = null;
-  updateConfirmBtn();
-  document.getElementById('modalSearch').value = '';
-  document.getElementById('modalSearch').focus();
-}
-window.showModal = showModal; // Global damit trainer_widget.js darauf zugreifen kann
-
-function hideModal() {
-  document.getElementById('modalOverlay').classList.remove('visible');
-}
-
-function updateConfirmBtn() {
-  const btn = document.getElementById('modalConfirm');
-  btn.classList.toggle('ready', !!selectedTrainer);
-}
-
-function renderModalList(trainersData, filter = '') {
-  const list = document.getElementById('modalList');
-  const filterLower = filter.toLowerCase();
-
-  const trainers = Object.entries(trainersData)
-    .map(([name, info]) => {
-      const team = Array.isArray(info.team) ? info.team : Object.values(info.team || {});
-      const totalPoints = calcTeamPts(team);
-      return { name, totalPoints, teamSize: team.length, donation: info.donation || 0 };
-    })
-    .filter(t => t.teamSize > 0)
-    .filter(t => !filter || t.name.toLowerCase().includes(filterLower))
-    .sort((a, b) => b.totalPoints - a.totalPoints);
-
-  if (trainers.length === 0) {
-    list.innerHTML = `<div style="text-align:center;padding:32px;opacity:0.5">
-      ${filter ? 'No trainer found for "' + escapeHtml(filter) + '"' : 'No trainers yet'}
-    </div>`;
-    return;
-  }
-
-  list.innerHTML = '';
-  trainers.forEach((t, i) => {
-    const item = document.createElement('div');
-    item.className = 'trainer-item' + (t.name === selectedTrainer ? ' selected' : '');
-    item.dataset.name = t.name;
-
-    const rankClass = i === 0 ? 'r1' : i === 1 ? 'r2' : i === 2 ? 'r3' : '';
-    const level = calcLevel(t.totalPoints);
-
-    item.innerHTML = `
-      <div class="trainer-rank ${rankClass}">${i + 1}</div>
-      <div class="trainer-info">
-        <div class="trainer-name-row"></div>
-        <div class="trainer-meta">Lvl ${level} · ${t.teamSize} Catchmon</div>
-      </div>
-      <div class="trainer-pts">${fmt(t.totalPoints)}</div>
-    `;
-
-    // Name mit Donation-Tier
-    const nameRow = item.querySelector('.trainer-name-row');
-    nameRow.appendChild(buildNameEl(capitalize(t.name), t.donation));
-
-    item.addEventListener('click', () => {
-      document.querySelectorAll('.trainer-item').forEach(el => el.classList.remove('selected'));
-      item.classList.add('selected');
-      selectedTrainer = t.name;
-      updateConfirmBtn();
-    });
-
-    list.appendChild(item);
-  });
-}
-
-function initModal(trainersData) {
-  allTrainersData = trainersData;
-
-  // Search
-  document.getElementById('modalSearch').addEventListener('input', e => {
-    renderModalList(allTrainersData, e.target.value);
-  });
-
-  // Skip
-  document.getElementById('modalSkip').addEventListener('click', () => {
-    hideModal();
-  });
-
-  // Confirm
-  document.getElementById('modalConfirm').addEventListener('click', () => {
-    if (!selectedTrainer) return;
-    saveTrainer(selectedTrainer);
-    hideModal();
-    applyTrainer(selectedTrainer, allTrainersData);
-  });
-
-  renderModalList(trainersData);
-}
-
-window.applyTrainer = applyTrainer;
-function applyTrainer(name, trainersData) {
-  if (!name) return;
-
-  const info  = trainersData[name] || trainersData[name.toLowerCase()];
-  const team  = info ? (Array.isArray(info.team) ? info.team : Object.values(info.team || {})) : [];
-  const pts   = calcTeamPts(team);
-  const level = calcLevel(pts);
-  const donation = info?.donation || 0;
-
-  // Widget top-left
-  const widget = document.getElementById('trainerWidget');
-  widget.classList.remove('hidden');
-  widget.href = `catcher_detail.html?name=${encodeURIComponent(name)}`;
-
-  const nameEl = document.getElementById('trainerWidgetName');
-  nameEl.textContent = '';
-  nameEl.appendChild(buildNameEl(capitalize(name), donation));
-
-  document.getElementById('trainerWidgetLevel').textContent =
-    `Level ${level} · ${fmt(pts)} pts`;
-
-  // Change trainer on widget click — prevent navigation, open modal instead
-  widget.addEventListener('click', e => {
-    e.preventDefault();
-    showModal();
-  });
-
-  // My Profile Button in Hero
-  const profileBtn = document.getElementById('myProfileBtn');
-  profileBtn.classList.add('visible');
-  profileBtn.textContent = `👤 My Profile`;
-  profileBtn.href = `catcher_detail.html?name=${encodeURIComponent(name)}`;
-  profileBtn.addEventListener('click', e => {
-    e.stopPropagation();
-    window.location.href = profileBtn.href;
-  });
-}
-
-// ── Connection ────────────────────────────────────────────────────────────────
+// ── Connection ─────────────────────────────────────────────────────────────────
+// Connection-Status geht jetzt in die live-pill im Hero
 
 onValue(ref(db, '.info/connected'), snap => {
-  const el   = document.getElementById('connectionStatus');
   const live = document.getElementById('liveStatusText');
   if (snap.val()) {
-    el.textContent = '🔥 Live';
-    el.className = 'connection-status connected';
     live.textContent = 'LIVE — Like to catch!';
   } else {
-    el.textContent = '🔴 Offline';
-    el.className = 'connection-status';
     live.textContent = 'Reconnecting...';
   }
 });
@@ -236,10 +57,8 @@ onValue(ref(db, 'global'), snap => {
   const spawns  = d.total_spawns    || 0;
   const catches = d.total_catches   || 0;
   const likes   = d.total_likes_ever || 0;
-
   document.getElementById('totalSpawns').textContent    = fmt(spawns);
   document.getElementById('totalLikesEver').textContent = fmt(likes);
-
   const rate = spawns > 0 ? ((catches / spawns) * 100).toFixed(1) + '%' : '0%';
   document.getElementById('catchRate').textContent    = rate;
   document.getElementById('catchRateSub').textContent = `${fmt(catches)} caught / ${fmt(spawns)} spawns`;
@@ -269,12 +88,10 @@ onValue(ref(db, 'spawn/current'), snap => {
   }
 
   widget.classList.add('active');
-
   imgWrap.innerHTML = '';
   if (data.sprite) {
     const img = document.createElement('img');
-    img.src = data.sprite;
-    img.alt = escapeHtml(data.name);
+    img.src = data.sprite; img.alt = escapeHtml(data.name);
     img.onerror = () => { imgWrap.innerHTML = '<span style="font-size:2rem;">❓</span>'; };
     imgWrap.appendChild(img);
   } else {
@@ -287,12 +104,10 @@ onValue(ref(db, 'spawn/current'), snap => {
   rb.className = `rarity-badge ${rarityClass(data.rarity)}`;
   rb.textContent = data.rarity || 'Common';
   nameEl.appendChild(rb);
-
   metaEl.textContent = `Level ${data.level || '?'}`;
 
   const interval   = data.spawn_interval || data.SPAWN_INTERVAL || 15;
   const spawnStart = data.spawn_start || Math.floor(Date.now() / 1000);
-
   function tick() {
     const remaining = Math.max(0, interval - (Math.floor(Date.now() / 1000) - spawnStart));
     timerEl.textContent =
@@ -305,46 +120,15 @@ onValue(ref(db, 'spawn/current'), snap => {
 
 // ── Trainers ──────────────────────────────────────────────────────────────────
 
-let trainersLoaded = false;
-
 onValue(ref(db, 'trainers'), snap => {
   const data = snap.val() || {};
-  allTrainersData = data;
-
   const active = Object.values(data).filter(t => {
     const team = Array.isArray(t.team) ? t.team : Object.values(t.team || {});
     return team.length > 0;
   }).length;
   document.getElementById('totalCatchers').textContent = fmt(active);
-
   renderTopCatchers(data);
   renderTopCatchmon(data);
-
-  // Modal initialisieren (nur einmal)
-  if (!trainersLoaded) {
-    trainersLoaded = true;
-    initModal(data);
-
-    const saved = getSavedTrainer();
-    if (saved && data[saved]) {
-      // Bekannter Trainer → direkt Widget zeigen, kein Modal
-      applyTrainer(saved, data);
-    } else {
-      // Erster Besuch oder unbekannter Name → Modal zeigen
-      clearTrainer();
-      showModal();
-    }
-  } else {
-    // Bei Live-Updates Widget aktualisieren falls Trainer bekannt
-    const saved = getSavedTrainer();
-    if (saved) applyTrainer(saved, data);
-    // Modal-Liste aktualisieren falls offen
-    const overlay = document.getElementById('modalOverlay');
-    if (overlay.classList.contains('visible')) {
-      const searchVal = document.getElementById('modalSearch').value;
-      renderModalList(data, searchVal);
-    }
-  }
 });
 
 // ── Top Catchers ──────────────────────────────────────────────────────────────
@@ -357,33 +141,22 @@ function renderTopCatchers(data) {
              donation: info.donation || 0, catches: info.stats?.total_catches || 0 };
   }).filter(t => t.teamSize > 0).sort((a,b) => b.totalPoints - a.totalPoints).slice(0, 3);
 
-  if (list.length === 0) {
-    container.innerHTML = '<div class="loading"><div>No trainers yet</div></div>';
-    return;
-  }
-
+  if (list.length === 0) { container.innerHTML = '<div class="loading"><div>No trainers yet</div></div>'; return; }
   container.innerHTML = '';
   list.forEach((t, i) => {
     const medal = ['medal-1','medal-2','medal-3'][i] || '';
     const card  = document.createElement('div');
     card.className = `card ${medal}`;
-
-    const badge = document.createElement('div');
-    badge.className = 'badge';
-    badge.textContent = i + 1;
-
+    const badge = document.createElement('div'); badge.className = 'badge'; badge.textContent = i + 1;
     const content = document.createElement('div');
-    const title   = document.createElement('div'); title.className = 'card-title';
+    const title = document.createElement('div'); title.className = 'card-title';
     title.appendChild(buildNameEl(capitalize(t.name), t.donation));
-    const s1  = document.createElement('div'); s1.className = 'card-stat';  s1.textContent = `🐲 ${t.teamSize} Catchmon`;
-    const s2  = document.createElement('div'); s2.className = 'card-stat';  s2.textContent = `✅ ${fmt(t.catches)} Catches`;
-    const pts = document.createElement('div'); pts.className = 'pts';        pts.textContent = `${fmt(t.totalPoints)} pts`;
-
+    const s1 = document.createElement('div'); s1.className = 'card-stat'; s1.textContent = `🐲 ${t.teamSize} Catchmon`;
+    const s2 = document.createElement('div'); s2.className = 'card-stat'; s2.textContent = `✅ ${fmt(t.catches)} Catches`;
+    const pts = document.createElement('div'); pts.className = 'pts'; pts.textContent = `${fmt(t.totalPoints)} pts`;
     content.append(title, s1, s2, pts);
     card.append(badge, content);
-    card.addEventListener('click', () => {
-      window.location.href = `catcher_detail.html?name=${encodeURIComponent(t.name)}`;
-    });
+    card.addEventListener('click', () => { window.location.href = `catcher_detail.html?name=${encodeURIComponent(t.name)}`; });
     container.appendChild(card);
   });
 }
@@ -393,138 +166,94 @@ function renderTopCatchers(data) {
 function renderTopCatchmon(data) {
   const container = document.getElementById('catchmonRow');
   const all = [];
-
   for (const [trainer, info] of Object.entries(data)) {
     const team = Array.isArray(info.team) ? info.team : Object.values(info.team || {});
-    team.forEach(c => {
-      if (c?.name) all.push({ ...c, caughtBy: trainer, trainerDonation: info.donation || 0 });
-    });
+    team.forEach(c => { if (c?.name) all.push({ ...c, caughtBy: trainer, trainerDonation: info.donation || 0 }); });
   }
-
-  if (all.length === 0) {
-    container.innerHTML = '<div class="loading"><div>No Catchmon caught yet</div></div>';
-    return;
-  }
-
+  if (all.length === 0) { container.innerHTML = '<div class="loading"><div>No Catchmon caught yet</div></div>'; return; }
   const top3 = all.sort((a,b) => calcPts(b) - calcPts(a)).slice(0, 3);
   container.innerHTML = '';
-
   top3.forEach((c, i) => {
     const medal = ['medal-1','medal-2','medal-3'][i] || '';
-    const card  = document.createElement('div');
-    card.className = `card ${medal}`;
-
+    const card  = document.createElement('div'); card.className = `card ${medal}`;
     const badge = document.createElement('div'); badge.className = 'badge'; badge.textContent = i + 1;
     const content = document.createElement('div');
-
     const img = document.createElement('img');
-    img.src = c.sprite || '';
-    img.alt = escapeHtml(c.name);
+    img.src = c.sprite || ''; img.alt = escapeHtml(c.name);
     img.style.cssText = 'width:72px;height:72px;object-fit:contain;margin-bottom:10px;filter:drop-shadow(0 0 8px rgba(255,255,255,0.2));';
     img.onerror = () => { img.style.display = 'none'; };
-
     const title = document.createElement('div'); title.className = 'card-title';
     title.textContent = c.name + (c.shiny ? ' ✨' : '');
     const rb = document.createElement('span');
-    rb.className = `rarity-badge ${rarityClass(c.rarity)}`;
-    rb.textContent = c.rarity || 'Common';
-    title.appendChild(document.createTextNode(' '));
-    title.appendChild(rb);
-
-    const lvl        = document.createElement('div'); lvl.className = 'card-stat'; lvl.textContent = `Level ${c.level || 1}`;
+    rb.className = `rarity-badge ${rarityClass(c.rarity)}`; rb.textContent = c.rarity || 'Common';
+    title.appendChild(document.createTextNode(' ')); title.appendChild(rb);
+    const lvl = document.createElement('div'); lvl.className = 'card-stat'; lvl.textContent = `Level ${c.level || 1}`;
     const catcherDiv = document.createElement('div'); catcherDiv.className = 'card-stat';
     catcherDiv.appendChild(document.createTextNode('by '));
     catcherDiv.appendChild(buildNameEl(capitalize(c.caughtBy), c.trainerDonation));
     const pts = document.createElement('div'); pts.className = 'pts'; pts.textContent = `${fmt(calcPts(c))} pts`;
-
     content.append(img, title, lvl, catcherDiv, pts);
     card.append(badge, content);
-    card.addEventListener('click', () => {
-      window.location.href = `catcher_detail.html?name=${encodeURIComponent(c.caughtBy)}`;
-    });
+    card.addEventListener('click', () => { window.location.href = `catcher_detail.html?name=${encodeURIComponent(c.caughtBy)}`; });
     container.appendChild(card);
   });
 }
 
-console.log('🎮 Catchmon Arena Hub loaded — Trainer Picker active');
-
-
-// ── Live Catch Chances Leaderboard ───────────────────────────────────────────
+// ── Live Catch Chances Leaderboard ────────────────────────────────────────────
 
 onValue(ref(db, 'spawn/chances'), snap => {
-  const data = snap.val();
-  renderChancesLeaderboard(data);
+  renderChancesLeaderboard(snap.val());
 });
 
 function renderChancesLeaderboard(data) {
-  const section  = document.getElementById('chancesSection');
-  const list     = document.getElementById('chancesList');
-  const myRank   = document.getElementById('chancesMyRank');
-  const myRankRow= document.getElementById('myRankRow');
-  const info     = document.getElementById('chancesSpawnInfo');
-  const savedTrainer = getSavedTrainerName();
+  const section   = document.getElementById('chancesSection');
+  const list      = document.getElementById('chancesList');
+  const myRank    = document.getElementById('chancesMyRank');
+  const myRankRow = document.getElementById('myRankRow');
+  const info      = document.getElementById('chancesSpawnInfo');
 
-  // Kein aktiver Spawn oder keine Teilnehmer → Section ausblenden
-  if (!data || Object.keys(data).length === 0) {
-    section.style.display = 'none';
-    return;
-  }
+  // Trainer aus localStorage (via trainer_widget.js)
+  const savedTrainer = (() => { try { return localStorage.getItem('catchmon_trainer_name') || null; } catch { return null; } })();
 
+  if (!data || Object.keys(data).length === 0) { section.style.display = 'none'; return; }
   section.style.display = 'block';
 
-  // Sortieren nach Chance
-  const sorted = Object.values(data)
-    .sort((a, b) => b.chance - a.chance);
-
+  const sorted    = Object.values(data).sort((a, b) => b.chance - a.chance);
   const maxChance = sorted[0]?.chance || 1;
 
-  // Spawn-Info
-  const spawnName = document.getElementById('spawnName')?.textContent?.replace(/\s*(Common|Rare|Starter|Legendary|Mythical|God)\s*$/,'').trim();
-  info.textContent = spawnName && spawnName !== 'Waiting for spawn...' ? `for ${spawnName}` : '';
+  const spawnNameEl = document.getElementById('spawnName');
+  const spawnText   = spawnNameEl?.textContent?.replace(/\s*(Common|Rare|Starter|Legendary|Mythical|God)\s*$/, '').trim();
+  info.textContent  = spawnText && spawnText !== 'Waiting for spawn...' ? `for ${spawnText}` : '';
 
-  // Top 5 rendern
   const top5 = sorted.slice(0, 5);
   list.innerHTML = '';
-
   top5.forEach((entry, i) => {
-    const isMe = savedTrainer && entry.name.toLowerCase() === savedTrainer.toLowerCase();
-    const row  = buildChanceRow(entry, i, maxChance, isMe, sorted);
-    list.appendChild(row);
+    const isMe = savedTrainer && entry.name?.toLowerCase() === savedTrainer.toLowerCase();
+    list.appendChild(buildChanceRow(entry, i, maxChance, isMe));
   });
 
-  // Mein Rang — nur zeigen wenn ich nicht in Top 5 bin
   myRank.style.display = 'none';
   if (savedTrainer) {
-    const myIndex = sorted.findIndex(e => e.name.toLowerCase() === savedTrainer.toLowerCase());
+    const myIndex = sorted.findIndex(e => e.name?.toLowerCase() === savedTrainer.toLowerCase());
     if (myIndex >= 5) {
       myRank.style.display = 'block';
       myRankRow.innerHTML = '';
-      // Zeile über mir
-      if (myIndex > 0) {
-        const above = sorted[myIndex - 1];
-        myRankRow.appendChild(buildChanceRow(above, myIndex - 1, maxChance, false, sorted));
-      }
-      // Meine Zeile
-      myRankRow.appendChild(buildChanceRow(sorted[myIndex], myIndex, maxChance, true, sorted));
-      // Zeile unter mir
-      if (myIndex < sorted.length - 1) {
-        const below = sorted[myIndex + 1];
-        myRankRow.appendChild(buildChanceRow(below, myIndex + 1, maxChance, false, sorted));
-      }
+      if (myIndex > 0) myRankRow.appendChild(buildChanceRow(sorted[myIndex - 1], myIndex - 1, maxChance, false));
+      myRankRow.appendChild(buildChanceRow(sorted[myIndex], myIndex, maxChance, true));
+      if (myIndex < sorted.length - 1) myRankRow.appendChild(buildChanceRow(sorted[myIndex + 1], myIndex + 1, maxChance, false));
     }
   }
 }
 
-function buildChanceRow(entry, index, maxChance, isMe, sorted) {
+function buildChanceRow(entry, index, maxChance, isMe) {
   const row = document.createElement('div');
   const rankClass = index === 0 ? 'top1' : index === 1 ? 'top2' : index === 2 ? 'top3' : '';
   row.className = `chance-row ${rankClass} ${isMe ? 'is-me' : ''}`;
 
-  const rankEmoji = ['🥇','🥈','🥉'][index] || `${index + 1}`;
-  const barPct    = maxChance > 0 ? Math.round((entry.chance / maxChance) * 100) : 0;
+  const rankEmoji     = ['🥇','🥈','🥉'][index] || `${index + 1}`;
+  const barPct        = maxChance > 0 ? Math.round((entry.chance / maxChance) * 100) : 0;
   const chanceDisplay = entry.chance < 0.01 ? '<0.01%' : entry.chance.toFixed(2) + '%';
-  const tier      = getDonationTier(entry.donation || 0);
-  const meTag     = isMe ? ' <span style="font-size:10px;opacity:0.6;font-weight:600">(you)</span>' : '';
+  const tier          = getDonationTier(entry.donation || 0);
 
   row.innerHTML = `
     <div class="chance-rank">${rankEmoji}</div>
@@ -534,8 +263,7 @@ function buildChanceRow(entry, index, maxChance, isMe, sorted) {
     <div class="chance-pct">${chanceDisplay}</div>
   `;
 
-  // Name mit Tier-Styling
-  const nameEl = row.querySelector('.chance-name');
+  const nameEl   = row.querySelector('.chance-name');
   const nameSpan = document.createElement('span');
   nameSpan.className = `catcher-name ${tier}`;
   nameSpan.textContent = capitalize(entry.name || '');
@@ -546,12 +274,7 @@ function buildChanceRow(entry, index, maxChance, isMe, sorted) {
     tag.textContent = '(you)';
     nameEl.appendChild(tag);
   }
-
   return row;
 }
 
-// Helfer: gespeicherten Trainer-Namen holen (für chances)
-function getSavedTrainerName() {
-  try { return localStorage.getItem('catchmon_trainer_name') || null; }
-  catch { return null; }
-}
+console.log('🎮 Catchmon Arena Hub loaded');

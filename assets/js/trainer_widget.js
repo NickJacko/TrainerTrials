@@ -470,12 +470,18 @@ async function initTrainerWidget() {
   if (trainerName) {
     await loadAndBuildWidget(trainerName);
   } else {
-    // Kein Trainer → Trainers trotzdem für Modal laden
+    // Kein Trainer → Trainer laden + Modal beim ersten Besuch öffnen
+    let modalOpened = false;
     try {
       const { db } = await import('./firebase.client.js');
       const { ref, onValue } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js');
       onValue(ref(db, 'trainers'), snap => {
         twAllTrainers = snap.val() || {};
+        if (!modalOpened && Object.keys(twAllTrainers).length > 0) {
+          modalOpened = true;
+          renderModalList(twAllTrainers, '');
+          showModal();
+        }
       });
     } catch {}
   }
