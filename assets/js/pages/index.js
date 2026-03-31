@@ -445,3 +445,111 @@ function renderTopCatchmon(data) {
 }
 
 console.log('🎮 Catchmon Arena Hub loaded — Trainer Picker active');
+
+
+// ── Live Catch Chances Leaderboard ───────────────────────────────────────────
+
+onValue(ref(db, 'spawn/chances'), snap => {
+  const data = snap.val();
+  renderChancesLeaderboard(data);
+});
+
+function renderChancesLeaderboard(data) {
+  const section  = document.getElementById('chancesSection');
+  const list     = document.getElementById('chancesList');
+  const myRank   = document.getElementById('chancesMyRank');
+  const myRankRow= document.getElementById('myRankRow');
+  const info     = document.getElementById('chancesSpawnInfo');
+  const savedTrainer = getSavedTrainerName();
+
+  // Kein aktiver Spawn oder keine Teilnehmer → Section ausblenden
+  if (!data || Object.keys(data).length === 0) {
+    section.style.display = 'none';
+    return;
+  }
+
+  section.style.display = 'block';
+
+  // Sortieren nach Chance
+  const sorted = Object.values(data)
+    .sort((a, b) => b.chance - a.chance);
+
+  const maxChance = sorted[0]?.chance || 1;
+
+  // Spawn-Info
+  const spawnName = document.getElementById('spawnName')?.textContent?.replace(/\s*(Common|Rare|Starter|Legendary|Mythical|God)\s*$/,'').trim();
+  info.textContent = spawnName && spawnName !== 'Waiting for spawn...' ? `for ${spawnName}` : '';
+
+  // Top 5 rendern
+  const top5 = sorted.slice(0, 5);
+  list.innerHTML = '';
+
+  top5.forEach((entry, i) => {
+    const isMe = savedTrainer && entry.name.toLowerCase() === savedTrainer.toLowerCase();
+    const row  = buildChanceRow(entry, i, maxChance, isMe, sorted);
+    list.appendChild(row);
+  });
+
+  // Mein Rang — nur zeigen wenn ich nicht in Top 5 bin
+  myRank.style.display = 'none';
+  if (savedTrainer) {
+    const myIndex = sorted.findIndex(e => e.name.toLowerCase() === savedTrainer.toLowerCase());
+    if (myIndex >= 5) {
+      myRank.style.display = 'block';
+      myRankRow.innerHTML = '';
+      // Zeile über mir
+      if (myIndex > 0) {
+        const above = sorted[myIndex - 1];
+        myRankRow.appendChild(buildChanceRow(above, myIndex - 1, maxChance, false, sorted));
+      }
+      // Meine Zeile
+      myRankRow.appendChild(buildChanceRow(sorted[myIndex], myIndex, maxChance, true, sorted));
+      // Zeile unter mir
+      if (myIndex < sorted.length - 1) {
+        const below = sorted[myIndex + 1];
+        myRankRow.appendChild(buildChanceRow(below, myIndex + 1, maxChance, false, sorted));
+      }
+    }
+  }
+}
+
+function buildChanceRow(entry, index, maxChance, isMe, sorted) {
+  const row = document.createElement('div');
+  const rankClass = index === 0 ? 'top1' : index === 1 ? 'top2' : index === 2 ? 'top3' : '';
+  row.className = `chance-row ${rankClass} ${isMe ? 'is-me' : ''}`;
+
+  const rankEmoji = ['🥇','🥈','🥉'][index] || `${index + 1}`;
+  const barPct    = maxChance > 0 ? Math.round((entry.chance / maxChance) * 100) : 0;
+  const chanceDisplay = entry.chance < 0.01 ? '<0.01%' : entry.chance.toFixed(2) + '%';
+  const tier      = getDonationTier(entry.donation || 0);
+  const meTag     = isMe ? ' <span style="font-size:10px;opacity:0.6;font-weight:600">(you)</span>' : '';
+
+  row.innerHTML = `
+    <div class="chance-rank">${rankEmoji}</div>
+    <div class="chance-name"></div>
+    <div class="chance-likes">❤️ ${fmt(entry.likes || 0)}</div>
+    <div class="chance-bar-wrap"><div class="chance-bar" style="width:${barPct}%"></div></div>
+    <div class="chance-pct">${chanceDisplay}</div>
+  `;
+
+  // Name mit Tier-Styling
+  const nameEl = row.querySelector('.chance-name');
+  const nameSpan = document.createElement('span');
+  nameSpan.className = `catcher-name ${tier}`;
+  nameSpan.textContent = capitalize(entry.name || '');
+  nameEl.appendChild(nameSpan);
+  if (isMe) {
+    const tag = document.createElement('span');
+    tag.style.cssText = 'font-size:10px;opacity:0.6;font-weight:600;margin-left:5px;-webkit-text-fill-color:rgba(255,255,255,0.6);background:none;animation:none;';
+    tag.textContent = '(you)';
+    nameEl.appendChild(tag);
+  }
+
+  return row;
+}
+
+// Helfer: gespeicherten Trainer-Namen holen (für chances)
+function getSavedTrainerName() {
+  try { return localStorage.getItem('catchmon_trainer_name') || null; }
+  catch { return null; }
+}
