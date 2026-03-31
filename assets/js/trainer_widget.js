@@ -259,7 +259,10 @@ function buildModal() {
   document.getElementById('twSearch').addEventListener('input', e => {
     renderModalList(twAllTrainers, e.target.value);
   });
-  document.getElementById('twSkip').addEventListener('click', hideModal);
+  document.getElementById('twSkip').addEventListener('click', () => {
+    hideModal();
+    if (!getSavedTrainer()) buildGuestWidget();
+  });
   document.getElementById('twConfirm').addEventListener('click', () => {
     if (!twSelectedTrainer) return;
     saveTrainer(twSelectedTrainer);
@@ -470,7 +473,8 @@ async function initTrainerWidget() {
   if (trainerName) {
     await loadAndBuildWidget(trainerName);
   } else {
-    // Kein Trainer → Trainer laden + Modal beim ersten Besuch öffnen
+    // Kein Trainer → Guest-Widget sofort zeigen (klickbar), dann Modal öffnen
+    buildGuestWidget();
     let modalOpened = false;
     try {
       const { db } = await import('./firebase.client.js');
