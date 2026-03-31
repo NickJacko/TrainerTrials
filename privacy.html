@@ -5,73 +5,16 @@
   <title>Privacy Policy</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #f9f9f9;
-      margin: 0;
-      padding: 0;
-      color: #333;
-    }
-
-    .container {
-      max-width: 800px;
-      margin: auto;
-      padding: 24px;
-    }
-
-    .top-bar {
-      display: flex;
-      align-items: center;
-      margin-bottom: 16px;
-    }
-
-    .back-button {
-      font-size: 16px;
-      text-decoration: none;
-      color: #555;
-      font-weight: bold;
-      padding: 6px 12px;
-      border-radius: 6px;
-      background: #e0e0e0;
-      transition: background 0.2s ease;
-    }
-
-    .back-button:hover {
-      background: #ccc;
-    }
-
-    h1 {
-      text-align: center;
-      color: #2c3e50;
-      font-size: 26px;
-      margin-top: 0;
-    }
-
-    h2 {
-      margin-top: 32px;
-      color: #2c3e50;
-      font-size: 20px;
-    }
-
-    p {
-      line-height: 1.6;
-      margin-bottom: 16px;
-    }
-
-    @media (max-width: 600px) {
-      .container {
-        padding: 16px;
-      }
-
-      h1 {
-        font-size: 22px;
-      }
-
-      .back-button {
-        font-size: 14px;
-        padding: 5px 10px;
-      }
-    }
+    body { font-family: 'Segoe UI', sans-serif; background: #f9f9f9; margin: 0; padding: 0; color: #333; }
+    .container { max-width: 800px; margin: auto; padding: 24px; }
+    .top-bar { display: flex; align-items: center; margin-bottom: 16px; }
+    .back-button { font-size: 16px; text-decoration: none; color: #555; font-weight: bold; padding: 6px 12px; border-radius: 6px; background: #e0e0e0; transition: background 0.2s ease; }
+    .back-button:hover { background: #ccc; }
+    h1 { text-align: center; color: #2c3e50; font-size: 26px; margin-top: 0; }
+    h2 { margin-top: 32px; color: #2c3e50; font-size: 20px; }
+    p { line-height: 1.6; margin-bottom: 16px; }
+    ul { margin: 0 0 16px 20px; line-height: 1.8; }
+    @media (max-width: 600px) { .container { padding: 16px; } h1 { font-size: 22px; } .back-button { font-size: 14px; padding: 5px 10px; } }
   </style>
 </head>
 <body>
@@ -96,13 +39,13 @@
     <h2>2. Data Collected</h2>
     <p>
       The following data is collected when users interact with the live stream:
-      <ul>
-        <li>TikTok username of users who send likes</li>
-        <li>Number of likes sent per user</li>
-        <li>Amount of donations and donor usernames</li>
-      </ul>
-      No additional personal data such as IP addresses, device IDs or cookies are collected.
     </p>
+    <ul>
+      <li>TikTok username of users who send likes</li>
+      <li>Number of likes sent per user</li>
+      <li>Amount of donations and donor usernames</li>
+    </ul>
+    <p>No additional personal data such as IP addresses, device IDs or cookies are collected.</p>
 
     <h2>3. Purpose of Data Processing</h2>
     <p>
@@ -111,7 +54,10 @@
 
     <h2>4. Storage and Hosting</h2>
     <p>
-      All data is stored as JSON files within the public GitHub repository that hosts this website. The repository does not contain sensitive personal data beyond publicly available TikTok usernames.
+      The website is hosted via GitHub Pages. All user interaction data (usernames, likes, donations, caught Catchmon) is stored in Google Firebase Realtime Database, operated by Google LLC, located in the EU region (europe-west1). Firebase is subject to Google's privacy policy: <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">policies.google.com/privacy</a>.
+    </p>
+    <p>
+      No sensitive personal data beyond publicly available TikTok usernames is stored.
     </p>
 
     <h2>5. Legal Basis</h2>
@@ -126,7 +72,7 @@
 
     <h2>7. No Tracking / Cookies</h2>
     <p>
-      This website does not use cookies, trackers, analytics tools or advertising networks. No behavioral or cross-site tracking occurs.
+      This website does not use cookies, trackers, analytics tools or advertising networks. No behavioral or cross-site tracking occurs. Google Firebase uses reCAPTCHA v3 for abuse protection; this is subject to Google's Terms of Service.
     </p>
 
     <h2>8. Changes to This Policy</h2>
@@ -136,4 +82,3 @@
   </div>
 </body>
 </html>
-
