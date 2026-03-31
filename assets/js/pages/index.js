@@ -85,6 +85,7 @@ function showModal() {
   document.getElementById('modalSearch').value = '';
   document.getElementById('modalSearch').focus();
 }
+window.showModal = showModal; // Global damit trainer_widget.js darauf zugreifen kann
 
 function hideModal() {
   document.getElementById('modalOverlay').classList.remove('visible');
@@ -173,6 +174,7 @@ function initModal(trainersData) {
   renderModalList(trainersData);
 }
 
+window.applyTrainer = applyTrainer;
 function applyTrainer(name, trainersData) {
   if (!name) return;
 
