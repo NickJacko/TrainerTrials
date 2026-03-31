@@ -5,6 +5,12 @@ import { ref, onValue } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase
 let allCatchmon = [];
 let catcherDonations = {};
 let activeRarityFilter = 'all';
+let hasScrolled = false;
+
+function getSavedTrainer() {
+  try { return localStorage.getItem('catchmon_trainer_name') || null; }
+  catch { return null; }
+}
 
 function sumStats(stats) { return Object.values(stats || {}).reduce((a, b) => a + (b || 0), 0); }
 
@@ -27,12 +33,28 @@ function getDonationTier(donation) {
   return "normal";
 }
 
-function buildCatcherCell(catcherName, donation) {
+function buildCatcherCell(catcherName, donation, isMe) {
   const tier = getDonationTier(donation);
+  const wrap = document.createElement('span');
+
   const span = document.createElement('span');
   span.className = `catcher-name ${tier}`;
   span.textContent = catcherName;
-  return span;
+  span.style.cursor = 'pointer';
+  span.addEventListener('click', (e) => {
+    e.stopPropagation();
+    window.location.href = `catcher_detail.html?name=${encodeURIComponent(catcherName)}`;
+  });
+  wrap.appendChild(span);
+
+  if (isMe) {
+    const you = document.createElement('span');
+    you.className = 'you-tag';
+    you.textContent = 'YOU';
+    wrap.appendChild(you);
+  }
+
+  return wrap;
 }
 
 function updateRarityButtons() {
@@ -41,9 +63,18 @@ function updateRarityButtons() {
   });
 }
 
+function scrollToMyRow() {
+  if (hasScrolled) return;
+  const myRow = document.querySelector('tr.my-row');
+  if (!myRow) return;
+  hasScrolled = true;
+  setTimeout(() => { myRow.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 400);
+}
+
 function renderTable() {
-  const tbody = document.getElementById("rankingBody");
+  const tbody        = document.getElementById("rankingBody");
   const showCaughtOnly = document.getElementById("caughtOnly").checked;
+  const savedTrainer   = getSavedTrainer();
 
   const visible = allCatchmon
     .filter(p => !showCaughtOnly || p.caught)
@@ -57,21 +88,21 @@ function renderTable() {
 
   const rankClasses = ['rank-1', 'rank-2', 'rank-3'];
   const rowClasses  = ['gold-row', 'silver-row', 'bronze-row'];
-  const fragment = document.createDocumentFragment();
+  const fragment    = document.createDocumentFragment();
 
   visible.forEach((p, index) => {
-    const tr = document.createElement("tr");
+    const tr    = document.createElement("tr");
+    const isMe  = savedTrainer && p.catcher?.toLowerCase() === savedTrainer.toLowerCase();
     if (rowClasses[index]) tr.classList.add(rowClasses[index]);
+    if (isMe) tr.classList.add('my-row');
 
-    // Ganze Zeile → dex_detail
-    tr.style.cursor = 'pointer';
     tr.addEventListener('click', () => {
       window.location.href = `dex_detail.html?name=${encodeURIComponent(p.name)}`;
     });
 
     // Rank
     const tdRank = document.createElement('td');
-    const badge = document.createElement('div');
+    const badge  = document.createElement('div');
     badge.className = `rank-badge ${rankClasses[index] || 'rank-other'}`;
     badge.textContent = index + 1;
     tdRank.appendChild(badge);
@@ -80,13 +111,11 @@ function renderTable() {
     const tdSprite = document.createElement('td');
     const img = document.createElement('img');
     img.className = 'catchmon-sprite';
-    img.src = p.sprite || '';
-    img.alt = p.name;
-    img.loading = 'lazy';
+    img.src = p.sprite || ''; img.alt = p.name; img.loading = 'lazy';
     img.onerror = function() { this.style.display = 'none'; };
     tdSprite.appendChild(img);
 
-    // Name + rarity badge
+    // Name + rarity pill
     const tdName = document.createElement('td');
     tdName.className = 'name-cell';
     const nameSpan = document.createElement('span');
@@ -98,17 +127,10 @@ function renderTable() {
     tdName.appendChild(document.createTextNode(' '));
     tdName.appendChild(rarityBadge);
 
-    // Catcher — klick nur auf Trainer, nicht auf Catchmon-Link
+    // Catcher
     const tdCatcher = document.createElement('td');
     tdCatcher.className = 'catcher-cell';
-    const catcherEl = buildCatcherCell(p.catcher, catcherDonations[p.catcher] || 0);
-    // Catcher-Klick → catcher_detail (stopPropagation damit nicht dex_detail öffnet)
-    catcherEl.style.cursor = 'pointer';
-    catcherEl.addEventListener('click', (e) => {
-      e.stopPropagation();
-      window.location.href = `catcher_detail.html?name=${encodeURIComponent(p.catcher)}`;
-    });
-    tdCatcher.appendChild(catcherEl);
+    tdCatcher.appendChild(buildCatcherCell(p.catcher, catcherDonations[p.catcher] || 0, isMe));
 
     const tdPoints = document.createElement('td');
     tdPoints.className = 'points-cell';
@@ -123,12 +145,7 @@ function renderTable() {
     tdStats.textContent = p.statSum.toLocaleString('de-DE');
 
     const tdShiny = document.createElement('td');
-    if (p.shiny) {
-      const s = document.createElement('span');
-      s.className = 'shiny-badge';
-      s.textContent = '✨';
-      tdShiny.appendChild(s);
-    }
+    if (p.shiny) { const s = document.createElement('span'); s.className = 'shiny-badge'; s.textContent = '✨'; tdShiny.appendChild(s); }
 
     tr.append(tdRank, tdSprite, tdName, tdCatcher, tdPoints, tdLevel, tdStats, tdShiny);
     fragment.appendChild(tr);
@@ -136,11 +153,13 @@ function renderTable() {
 
   tbody.innerHTML = '';
   tbody.appendChild(fragment);
+  scrollToMyRow();
 }
 
 function forceRefresh() {
   document.getElementById("rankingBody").innerHTML =
     '<tr><td colspan="8" class="loading"><div class="loading-spinner"></div><div>Refreshing...</div></td></tr>';
+  hasScrolled = false;
   renderTable();
 }
 
@@ -148,7 +167,7 @@ function forceRefresh() {
 onValue(ref(db, '.info/connected'), (snapshot) => {
   const el = document.getElementById('connectionStatus');
   if (snapshot.val()) {
-    el.textContent = '🟢 Connected'; el.className = 'connection-status connected';
+    el.textContent = '🟢 Live'; el.className = 'connection-status connected';
   } else {
     el.textContent = '🔴 Offline'; el.className = 'connection-status disconnected';
   }
@@ -174,16 +193,16 @@ onValue(ref(db, 'trainers'), (snapshot) => {
   renderTable();
 });
 
-// Rarity filter buttons
 document.querySelectorAll('.rarity-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     activeRarityFilter = btn.dataset.rarity;
+    hasScrolled = false;
     updateRarityButtons();
     renderTable();
   });
 });
 
-document.getElementById('caughtOnly').addEventListener('change', renderTable);
+document.getElementById('caughtOnly').addEventListener('change', () => { hasScrolled = false; renderTable(); });
 document.getElementById('refreshFab').addEventListener('click', forceRefresh);
 
-console.log('🔥 Catchmon Ranking loaded — rarity filter, clickable rows');
+console.log('🔥 Catchmon Ranking loaded — my-row highlight, auto-scroll, trainer widget');
