@@ -1,6 +1,7 @@
 // assets/js/pages/catcher_detail.js
 import { db } from '../firebase.client.js';
 import { ref, onValue, get } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+import { runCatchup } from '../catchup.js';
 
 function escapeHtml(input) {
   const s = String(input ?? "");
@@ -252,6 +253,9 @@ function loadCatcherData(trainersData) {
 
   // Team grouped by rarity
   renderTeamGrouped(team);
+
+  // Catchup — zeige neue Catchmon seit letztem Besuch
+  runCatchup(trainerName, team);
 }
 
 
