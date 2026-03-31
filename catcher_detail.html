@@ -10,11 +10,7 @@
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%); min-height: 100vh; color: white; overflow-x: hidden; }
     .container { max-width: 1400px; margin: auto; padding: 20px; }
-    .connection-status { position: fixed; top: 10px; right: 10px; background: rgba(0,0,0,0.8); color: white; padding: 8px 15px; border-radius: 20px; font-size: 14px; font-weight: 600; z-index: 1000; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); }
-    .connection-status.connected { background: rgba(76,175,80,0.9); }
-    .connection-status.disconnected { background: rgba(244,67,54,0.9); }
 
-    /* Header */
     .header-section { display: flex; align-items: center; justify-content: space-between; margin-bottom: 30px; background: rgba(255,255,255,0.08); backdrop-filter: blur(15px); border-radius: 20px; padding: 20px 30px; border: 1px solid rgba(255,255,255,0.15); }
     .header-content { display: flex; align-items: center; justify-content: space-between; width: 100%; }
     .back-button { font-size: 16px; text-decoration: none; color: white; font-weight: 600; padding: 12px 20px; border-radius: 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); transition: all 0.3s ease; }
@@ -23,7 +19,6 @@
     h1 { margin: 0 0 8px 0; font-size: clamp(1.8rem, 5vw, 3rem); background: linear-gradient(45deg, #FFD700, #FF6B6B, #4ECDC4, #45B7D1); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; letter-spacing: -1px; }
     .subtitle { font-size: clamp(0.9rem, 3vw, 1.2rem); color: rgba(255,255,255,0.75); font-weight: 600; }
 
-    /* Stats cards */
     .stats-section { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; margin-bottom: 24px; }
     .stat-card { background: rgba(255,255,255,0.08); backdrop-filter: blur(15px); border-radius: 15px; padding: 18px; border: 1px solid rgba(255,255,255,0.12); transition: all 0.3s ease; }
     .stat-card:hover { transform: translateY(-3px); background: rgba(255,255,255,0.12); }
@@ -31,7 +26,6 @@
     .stat-value { font-size: 2rem; font-weight: 800; color: white; margin-bottom: 5px; }
     .stat-desc { color: rgba(255,255,255,0.6); font-size: 0.8rem; }
 
-    /* XP bar */
     .level-section { background: rgba(255,255,255,0.08); border-radius: 15px; padding: 20px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.12); }
     .level-title { text-align: center; font-size: 1.1rem; font-weight: 700; color: #FFD700; margin-bottom: 14px; }
     .level-bar-container { background: rgba(255,255,255,0.1); border-radius: 20px; height: 28px; overflow: hidden; border: 1px solid rgba(255,255,255,0.15); }
@@ -48,13 +42,7 @@
     .level-gray     { background: linear-gradient(90deg, #6C757D, #9E9E9E); }
     .level-text { text-align: center; margin-top: 10px; font-size: 0.9rem; font-weight: 600; color: rgba(255,255,255,0.8); }
 
-    /* Dex completion */
-    .dex-completion {
-      background: rgba(255,255,255,0.06); border-radius: 15px;
-      padding: 18px 20px; margin-bottom: 20px;
-      border: 1px solid rgba(255,255,255,0.1);
-      display: flex; align-items: center; gap: 18px;
-    }
+    .dex-completion { background: rgba(255,255,255,0.06); border-radius: 15px; padding: 18px 20px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; gap: 18px; }
     .dex-completion-info { flex: 1; }
     .dex-label { font-size: 0.85rem; font-weight: 700; color: rgba(255,255,255,0.55); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; }
     .dex-numbers { font-size: 1.5rem; font-weight: 900; color: white; margin-bottom: 8px; }
@@ -62,24 +50,15 @@
     .dex-bar-wrap { background: rgba(255,255,255,0.1); border-radius: 10px; height: 8px; overflow: hidden; }
     .dex-bar { height: 100%; width: 0%; border-radius: 10px; background: linear-gradient(90deg, #4ECDC4, #45b7d1); transition: width 1.2s ease; }
     .dex-pct { font-size: 1.6rem; font-weight: 900; color: #4ECDC4; min-width: 56px; text-align: right; }
-    .catchdex-btn {
-      display: inline-block; padding: 13px 26px;
-      background: linear-gradient(135deg, #4CAF50, #45a049); color: white;
-      font-weight: 700; border-radius: 14px; text-decoration: none;
-      box-shadow: 0 5px 18px rgba(76,175,80,0.35); transition: all 0.3s ease;
-      font-size: 1rem; border: 2px solid rgba(76,175,80,0.3);
-    }
+    .catchdex-btn { display: inline-block; padding: 13px 26px; background: linear-gradient(135deg, #4CAF50, #45a049); color: white; font-weight: 700; border-radius: 14px; text-decoration: none; box-shadow: 0 5px 18px rgba(76,175,80,0.35); transition: all 0.3s ease; font-size: 1rem; border: 2px solid rgba(76,175,80,0.3); }
     .catchdex-btn:hover { transform: translateY(-3px) scale(1.02); }
 
-    /* Team table */
     .team-section { background: rgba(255,255,255,0.07); backdrop-filter: blur(15px); border-radius: 20px; overflow: hidden; border: 1px solid rgba(255,255,255,0.12); }
     .team-title { text-align: center; font-size: 1.4rem; font-weight: 800; color: #FFD700; padding: 18px; background: rgba(255,255,255,0.07); }
     table { width: 100%; border-collapse: collapse; font-size: 14px; }
     th { background: rgba(255,215,0,0.15); color: white; padding: 13px 12px; text-align: center; font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; border: none; position: sticky; top: 0; z-index: 10; }
     td { padding: 11px 12px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.07); color: white; }
-    /* Rarity group header rows */
     tr.rarity-group-header td { cursor: default !important; }
-    /* Clickable catchmon rows */
     tbody tr:not(.rarity-group-header) { cursor: pointer; transition: background-color 0.15s ease; }
     tbody tr:not(.rarity-group-header):hover td { background: rgba(255,215,0,0.08); }
     .catchmon-image { width: 52px; height: 52px; object-fit: contain; border-radius: 8px; transition: transform 0.2s ease; border: 1px solid rgba(255,255,255,0.15); }
@@ -119,10 +98,8 @@
   </style>
 </head>
 <body>
-  <div class="connection-status" id="connectionStatus">🔄 Verbinde...</div>
   <div class="container">
 
-    <!-- Header -->
     <div class="header-section">
       <div class="header-content">
         <a class="back-button" href="catcher_ranking_live.html">← Rankings</a>
@@ -134,26 +111,12 @@
       </div>
     </div>
 
-    <!-- Stats -->
     <div class="stats-section">
-      <div class="stat-card">
-        <div class="stat-title">🏆 Total Points</div>
-        <div class="stat-value" id="statPoints">0</div>
-        <div class="stat-desc">Combined team power</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-title">🐲 Team Size</div>
-        <div class="stat-value" id="statTeam">0</div>
-        <div class="stat-desc">Catchmon collected</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-title">⚡ Player Level</div>
-        <div class="stat-value" id="statLevel">1</div>
-        <div class="stat-desc">Based on total points</div>
-      </div>
+      <div class="stat-card"><div class="stat-title">🏆 Total Points</div><div class="stat-value" id="statPoints">0</div><div class="stat-desc">Combined team power</div></div>
+      <div class="stat-card"><div class="stat-title">🐲 Team Size</div><div class="stat-value" id="statTeam">0</div><div class="stat-desc">Catchmon collected</div></div>
+      <div class="stat-card"><div class="stat-title">⚡ Player Level</div><div class="stat-value" id="statLevel">1</div><div class="stat-desc">Based on total points</div></div>
     </div>
 
-    <!-- XP bar -->
     <div class="level-section">
       <div class="level-title">Experience Progress</div>
       <div class="level-bar-container">
@@ -162,7 +125,6 @@
       <div class="level-text" id="levelLabel">Level 1 – 0 / 100 XP</div>
     </div>
 
-    <!-- Dex Completion -->
     <div class="dex-completion">
       <div class="dex-completion-info">
         <div class="dex-label">📘 Catchdex Completion</div>
@@ -173,7 +135,6 @@
       <a id="catchdexLink" href="#" class="catchdex-btn">📘 View Catchdex</a>
     </div>
 
-    <!-- Team grouped by rarity -->
     <div class="team-section">
       <h2 class="team-title">🌟 Elite Team Roster</h2>
       <table>
@@ -186,5 +147,6 @@
 
   </div>
   <script type="module" src="assets/js/pages/catcher_detail.js"></script>
+  <script type="module" src="assets/js/trainer_widget.js"></script>
 </body>
 </html>

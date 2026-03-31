@@ -254,14 +254,6 @@ function loadCatcherData(trainersData) {
   renderTeamGrouped(team);
 }
 
-onValue(ref(db, '.info/connected'), (snapshot) => {
-  const el = document.getElementById('connectionStatus');
-  if (snapshot.val()) {
-    el.textContent = '🟢 Connected'; el.className = 'connection-status connected';
-  } else {
-    el.textContent = '🔴 Offline'; el.className = 'connection-status disconnected';
-  }
-});
 
 onValue(ref(db, 'trainers'), (snapshot) => {
   const trainersData = snapshot.val() || {};
