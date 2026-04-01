@@ -5,131 +5,55 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com https://www.google.com https://*.firebasedatabase.app; connect-src 'self' https://*.firebasedatabase.app https://*.firebaseio.com https://www.googleapis.com wss://*.firebasedatabase.app https://www.google.com https://content-firebaseappcheck.googleapis.com https://firebaseappcheck.googleapis.com; frame-src 'self' https://www.google.com https://*.firebasedatabase.app; img-src 'self' data: https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; base-uri 'self';">
   <title>🏆 Elite Catcher Arena</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%); margin: 0; padding: 0; min-height: 100vh; color: white; overflow-x: hidden; }
-    .container { max-width: 1400px; margin: auto; padding: 20px; }
-    .connection-status { position: fixed; top: 12px; left: 12px; background: rgba(0,0,0,0.7); color: white; padding: 6px 13px; border-radius: 16px; font-size: 12px; font-weight: 600; z-index: 900; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.15); }
-    .connection-status.connected { background: rgba(76,175,80,0.85); }
-    .connection-status.disconnected { background: rgba(244,67,54,0.85); }
-    .header-section { display: flex; align-items: center; justify-content: space-between; margin-bottom: 30px; background: rgba(255,255,255,0.1); backdrop-filter: blur(15px); border-radius: 20px; padding: 20px 30px; border: 1px solid rgba(255,255,255,0.2); }
-    .header-content { display: flex; align-items: center; justify-content: space-between; width: 100%; }
-    .back-button { font-size: 16px; text-decoration: none; color: white; font-weight: 700; padding: 12px 20px; border-radius: 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); transition: all 0.2s ease; }
-    .back-button:hover { background: rgba(255,255,255,0.2); transform: translateY(-2px); }
-    h1 { text-align: center; flex: 1; font-size: clamp(1.8rem, 5vw, 3rem); background: linear-gradient(45deg, #FFD700, #FF6B6B, #4ECDC4, #45B7D1); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; letter-spacing: -1px; }
-    .stats-display { display: flex; gap: 15px; font-size: 0.85rem; }
-    .stat-item { text-align: center; padding: 6px 10px; background: rgba(255,255,255,0.1); border-radius: 8px; }
-    .stat-number { font-size: 1.1rem; font-weight: 800; color: #FFD700; display: block; }
-    .controls-section { background: rgba(255,255,255,0.1); backdrop-filter: blur(15px); border-radius: 15px; padding: 20px; margin-bottom: 25px; border: 1px solid rgba(255,255,255,0.2); }
-    .controls-content { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px; }
-    .sort-controls { display: flex; gap: 10px; align-items: center; }
-    .sort-button { background: rgba(76,175,80,0.8); color: white; border: 1px solid rgba(255,255,255,0.2); padding: 10px 16px; border-radius: 12px; font-weight: 700; cursor: pointer; transition: all 0.2s ease; font-size: 0.85rem; }
-    .sort-button.active { background: rgba(255,215,0,0.9); color: #000; transform: translateY(-1px); }
-    .sort-button:hover { transform: translateY(-1px); }
-    .search-container { position: relative; }
-    #searchInput { padding: 10px 16px 10px 35px; font-size: 14px; border: 1px solid rgba(255,255,255,0.2); border-radius: 15px; background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); color: white; width: 250px; transition: all 0.2s ease; }
-    #searchInput::placeholder { color: rgba(255,255,255,0.6); }
-    #searchInput:focus { outline: none; border-color: rgba(255,215,0,0.5); background: rgba(255,255,255,0.15); }
-    .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 1rem; opacity: 0.6; }
-    .table-section { background: rgba(255,255,255,0.1); backdrop-filter: blur(15px); border-radius: 20px; padding: 0; border: 1px solid rgba(255,255,255,0.2); overflow: hidden; }
-    table { width: 100%; border-collapse: collapse; font-size: 14px; }
-    th { background: rgba(255,215,0,0.2); color: white; padding: 15px 12px; text-align: center; font-weight: 700; font-size: 13px; border: none; position: sticky; top: 0; z-index: 10; }
-    td { padding: 12px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); transition: background-color 0.2s ease; color: white; }
-    tbody tr { cursor: pointer; transition: background-color 0.15s ease; }
-    tbody tr:hover td { background: rgba(255,215,0,0.1); }
-
-    /* ── MY ROW HIGHLIGHT ── */
-    tbody tr.my-row td {
-      background: rgba(78,205,196,0.13) !important;
-      border-bottom: 1px solid rgba(78,205,196,0.3) !important;
-    }
-    tbody tr.my-row:hover td { background: rgba(78,205,196,0.22) !important; }
-    /* Linke Akzentlinie */
-    tbody tr.my-row td:first-child {
-      border-left: 3px solid #4ECDC4;
-    }
-
-    /* YOU badge */
-    .you-badge {
-      display: inline-block; font-size: 9px; font-weight: 800;
-      padding: 2px 6px; border-radius: 6px; margin-left: 7px;
-      background: rgba(78,205,196,0.3); color: #4ECDC4;
-      border: 1px solid rgba(78,205,196,0.5);
-      vertical-align: middle; letter-spacing: 0.5px;
-    }
-
-    .rank-badge { display: inline-flex; align-items: center; justify-content: center; width: 35px; height: 35px; border-radius: 50%; font-weight: 800; font-size: 1rem; color: white; position: relative; }
-    .rank-1 { background: linear-gradient(45deg, #FFD700, #FFA500); box-shadow: 0 0 15px rgba(255,215,0,0.5); }
-    .rank-2 { background: linear-gradient(45deg, #C0C0C0, #E8E8E8); color: #333; }
-    .rank-3 { background: linear-gradient(45deg, #CD7F32, #DAA520); }
-    .rank-other { background: rgba(108,117,125,0.8); }
-    .rank-1::after { content: '👑'; position: absolute; top: -6px; right: -6px; font-size: 1rem; }
-    .rank-2::after { content: '🥈'; position: absolute; top: -5px; right: -5px; font-size: 0.9rem; }
-    .rank-3::after { content: '🥉'; position: absolute; top: -5px; right: -5px; font-size: 0.9rem; }
-    .gold-row td   { background: rgba(255,215,0,0.15);   border-bottom: 1px solid rgba(255,215,0,0.3); }
-    .silver-row td { background: rgba(192,192,192,0.15); border-bottom: 1px solid rgba(192,192,192,0.3); }
-    .bronze-row td { background: rgba(205,127,50,0.15);  border-bottom: 1px solid rgba(205,127,50,0.3); }
-    .catcher-cell { font-weight: 700; font-size: 1rem; }
-    .level-display { font-size: 0.8rem; opacity: 0.8; margin-top: 3px; }
-    .points-cell { font-weight: 700; color: #FFD700; font-size: 1.1rem; }
-    .team-count { color: #4ECDC4; font-weight: 600; }
-    .catcher-name { display: inline-block; font-weight: 700; padding: 3px 8px; border-radius: 8px; background-size: 200% auto; background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shine 3s linear infinite; }
-    .king,.god { background-image: linear-gradient(90deg,#ffd700,#fff,#ffd700); }
-    .flame   { background-image: linear-gradient(90deg,#ff4444,#fff,#ff4444); }
-    .diamond { background-image: linear-gradient(90deg,#00bfff,#fff,#00bfff); }
-    .shine   { background-image: linear-gradient(90deg,#32cd32,#fff,#32cd32); }
-    .normal  { color: white; background: rgba(255,255,255,0.1); -webkit-text-fill-color: white; animation: none; }
-    @keyframes shine { to { background-position: -200% center; } }
-    .loading { text-align: center; padding: 40px; color: rgba(255,255,255,0.8); font-size: 16px; display: flex; flex-direction: column; align-items: center; gap: 15px; }
-    .loading-spinner { width: 30px; height: 30px; border: 3px solid rgba(255,255,255,0.3); border-top: 3px solid #FFD700; border-radius: 50%; animation: spin 1s linear infinite; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .refresh-fab { position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; background: linear-gradient(45deg, #4ECDC4, #44A08D); border: none; border-radius: 50%; color: white; font-size: 1.2rem; cursor: pointer; transition: transform 0.2s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 1000; }
-    .refresh-fab:hover { transform: scale(1.1); }
-    @media (max-width: 1024px) { th:nth-child(5), td:nth-child(5) { display: none; } }
-    @media (max-width: 768px) { .container { padding: 15px; } .header-section { flex-direction: column; gap: 15px; padding: 20px; } .header-content { flex-direction: column; gap: 15px; } .stats-display { flex-direction: column; gap: 8px; } .controls-content { flex-direction: column; gap: 12px; } .sort-controls { flex-wrap: wrap; justify-content: center; } #searchInput { width: 100%; max-width: 250px; } table { font-size: 12px; } th, td { padding: 10px 6px; } .rank-badge { width: 28px; height: 28px; font-size: 0.8rem; } th:nth-child(4), td:nth-child(4) { display: none; } }
-    @media (max-width: 600px) { .table-section { overflow-x: auto; } table { min-width: 400px; } }
-    @media (max-width: 480px) { .container { padding: 10px; } table { font-size: 11px; } th, td { padding: 8px 4px; } .rank-badge { width: 24px; height: 24px; font-size: 0.7rem; } }
-    @media (prefers-reduced-motion: reduce) { * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; } }
-  </style>
+  <link rel="stylesheet" href="assets/css/catcher_ranking.css">
 </head>
 <body>
-  <div class="connection-status" id="connectionStatus">🔄 Verbinde...</div>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="connection-status" id="connectionStatus">🔄 Connecting...</div>
+
   <div class="container">
-    <div class="header-section">
-      <div class="header-content">
-        <a class="back-button" href="index.html">← Back</a>
-        <h1>🏆 Elite Catcher Arena</h1>
-        <div class="stats-display">
-          <div class="stat-item"><span class="stat-number" id="totalCatchers">0</span><span>Catchers</span></div>
-          <div class="stat-item"><span class="stat-number" id="totalPoints">0</span><span>Total Points</span></div>
-        </div>
+
+    <div class="top-bar reveal">
+      <a class="back-btn" href="index.html">← Arena</a>
+      <div class="header-stats">
+        <div class="hstat"><span class="hstat-num" id="totalCatchers">—</span><span class="hstat-label">Catchers</span></div>
+        <div class="hstat"><span class="hstat-num gold" id="totalPoints">—</span><span class="hstat-label">Total Points</span></div>
       </div>
     </div>
-    <div class="controls-section">
-      <div class="controls-content">
-        <div class="sort-controls">
-          <button class="sort-button active" id="sortPoints">🏆 Points</button>
-          <button class="sort-button" id="sortLevel">⚡ Level</button>
-          <button class="sort-button" id="sortCount">📊 Count</button>
-        </div>
-        <div class="search-container">
-          <div class="search-icon">🔍</div>
-          <input type="text" id="searchInput" placeholder="Search elite catchers...">
-        </div>
+
+    <div class="page-header reveal">
+      <div class="eyebrow">Catchmon Arena · Rankings</div>
+      <h1><span class="line-white">Elite</span><span class="line-grad">Catcher Arena</span></h1>
+    </div>
+
+    <div class="controls reveal">
+      <div class="sort-row">
+        <button class="sort-btn active" id="sortPoints">🏆 Points</button>
+        <button class="sort-btn" id="sortLevel">⚡ Level</button>
+        <button class="sort-btn" id="sortCount">🐲 Count</button>
+      </div>
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="searchInput" class="search-input" placeholder="Search catchers...">
       </div>
     </div>
-    <div class="table-section">
+
+    <div class="table-wrap reveal">
       <table>
         <thead>
-          <tr><th>Rank</th><th>Catcher</th><th>Total Points</th><th>Catchmon</th><th>Level</th></tr>
+          <tr><th>Rank</th><th>Catcher</th><th>Points</th><th>Catchmon</th><th>Level</th></tr>
         </thead>
         <tbody id="rankingBody">
-          <tr><td colspan="5" class="loading"><div class="loading-spinner"></div><div>Loading Elite Catchers...</div></td></tr>
+          <tr><td colspan="5" class="loading"><div class="spinner"></div><div>Loading...</div></td></tr>
         </tbody>
       </table>
     </div>
+
   </div>
-  <button class="refresh-fab" id="refreshFab" title="Refresh Rankings">🔄</button>
+
+  <button class="refresh-fab" id="refreshFab" title="Refresh">🔄</button>
+
   <script type="module" src="assets/js/pages/catcher_ranking.js"></script>
   <script type="module" src="assets/js/trainer_widget.js"></script>
 </body>
