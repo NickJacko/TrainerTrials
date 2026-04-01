@@ -4,16 +4,10 @@
 const STORAGE_KEY = 'catchmon_trainer_name';
 
 function getSavedTrainer() {
-  try { return localStorage.getItem(STORAGE_KEY) || null; }
-  catch { return null; }
+  try { return localStorage.getItem(STORAGE_KEY) || null; } catch { return null; }
 }
 function saveTrainer(name) {
-  try { localStorage.setItem(STORAGE_KEY, name); }
-  catch {}
-}
-function clearTrainer() {
-  try { localStorage.removeItem(STORAGE_KEY); }
-  catch {}
+  try { localStorage.setItem(STORAGE_KEY, name); } catch {}
 }
 
 function getDonationTier(d) {
@@ -24,7 +18,6 @@ function getDonationTier(d) {
   if (d >= 50)   return 'shine';
   return 'normal';
 }
-
 function calcTeamPts(team) {
   if (!team) return 0;
   const arr = Array.isArray(team) ? team : Object.values(team);
@@ -37,7 +30,6 @@ function calcTeamPts(team) {
     return s + Math.floor(p);
   }, 0);
 }
-
 function calcLevel(pts) { return Math.floor(Math.pow(pts / 500, 0.6)); }
 function capitalize(s) { return String(s ?? '').charAt(0).toUpperCase() + String(s ?? '').slice(1); }
 function fmt(num) {
@@ -45,12 +37,8 @@ function fmt(num) {
   if (num >= 1000)    return (num / 1000).toFixed(1) + 'K';
   return String(num);
 }
-function escapeHtml(s) {
-  return String(s ?? "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;");
-}
 
 // ── CSS ───────────────────────────────────────────────────────────────────────
-
 function injectCSS() {
   if (document.getElementById('tw-css')) return;
   const style = document.createElement('style');
@@ -58,161 +46,212 @@ function injectCSS() {
   style.textContent = `
     /* ── WIDGET ── */
     #twWidget {
-      position: fixed; top: 12px; right: 12px; z-index: 1100;
-      display: flex; align-items: stretch; gap: 0;
-      background: rgba(255,255,255,0.08); backdrop-filter: blur(12px);
-      border: 1px solid rgba(255,255,255,0.15); border-radius: 20px;
-      overflow: hidden; transition: border-color 0.2s ease;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+      position: fixed; top: 14px; right: 14px; z-index: 1100;
+      display: flex; align-items: stretch;
+      background: rgba(8,8,24,0.85);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px; overflow: hidden;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
     }
-    #twWidget:hover { border-color: rgba(255,215,0,0.35); }
+    #twWidget:hover { border-color: rgba(255,215,0,0.3); box-shadow: 0 4px 24px rgba(255,215,0,0.1); }
+
     #twWidget .tw-profile {
-      display: flex; align-items: center; gap: 9px;
-      padding: 8px 12px 8px 14px;
+      display: flex; align-items: center; gap: 10px;
+      padding: 9px 10px 9px 13px;
       text-decoration: none; color: white;
-      transition: background 0.15s ease;
+      transition: background 0.15s;
     }
-    #twWidget .tw-profile:hover { background: rgba(255,255,255,0.06); }
-    #twWidget .tw-avatar { font-size: 1.15rem; line-height: 1; }
-    #twWidget .tw-info { line-height: 1.25; }
+    #twWidget .tw-profile:hover { background: rgba(255,255,255,0.05); }
+    #twWidget .tw-avatar { font-size: 1.1rem; line-height: 1; opacity: 0.8; }
+    #twWidget .tw-info { line-height: 1.2; }
     #twWidget .tw-name {
-      font-size: 13px; font-weight: 700; white-space: nowrap;
-      max-width: 130px; overflow: hidden; text-overflow: ellipsis;
+      font-size: 13px; font-weight: 800; white-space: nowrap;
+      max-width: 120px; overflow: hidden; text-overflow: ellipsis;
     }
-    #twWidget .tw-level { font-size: 11px; opacity: 0.5; }
+    #twWidget .tw-level { font-size: 10px; opacity: 0.38; font-weight: 600; letter-spacing: 0.3px; margin-top: 1px; }
+
     #twWidget .tw-edit {
       display: flex; align-items: center; justify-content: center;
-      width: 36px; border-left: 1px solid rgba(255,255,255,0.1);
-      cursor: pointer; font-size: 14px; opacity: 0.45; color: white;
-      transition: all 0.15s ease; background: transparent; border-top: none; border-right: none; border-bottom: none;
+      width: 34px; border-left: 1px solid rgba(255,255,255,0.07);
+      cursor: pointer; font-size: 13px; opacity: 0.35; color: white;
+      transition: all 0.15s; background: transparent;
+      border-top: none; border-right: none; border-bottom: none;
     }
-    #twWidget .tw-edit:hover { opacity: 1; background: rgba(255,255,255,0.08); }
+    #twWidget .tw-edit:hover { opacity: 0.9; background: rgba(255,215,0,0.08); }
 
-    /* Name tier styles */
+    /* Name tiers */
     #twWidget .cn-god, #twWidget .cn-king {
-      background-image: linear-gradient(90deg,#ffd700,#fff,#ffd700);
+      background-image: linear-gradient(90deg,#ffd700,#fff8,#ffd700);
       background-size:200% auto; background-clip:text;
       -webkit-background-clip:text; -webkit-text-fill-color:transparent;
       animation: tw-shine 3s linear infinite;
     }
     #twWidget .cn-flame {
-      background-image: linear-gradient(90deg,#ff4444,#fff,#ff4444);
+      background-image: linear-gradient(90deg,#ff4444,#fff8,#ff4444);
       background-size:200% auto; background-clip:text;
       -webkit-background-clip:text; -webkit-text-fill-color:transparent;
       animation: tw-shine 3s linear infinite;
     }
     #twWidget .cn-diamond {
-      background-image: linear-gradient(90deg,#00bfff,#fff,#00bfff);
+      background-image: linear-gradient(90deg,#00bfff,#fff8,#00bfff);
       background-size:200% auto; background-clip:text;
       -webkit-background-clip:text; -webkit-text-fill-color:transparent;
       animation: tw-shine 3s linear infinite;
     }
     #twWidget .cn-shine {
-      background-image: linear-gradient(90deg,#32cd32,#fff,#32cd32);
+      background-image: linear-gradient(90deg,#32cd32,#fff8,#32cd32);
       background-size:200% auto; background-clip:text;
       -webkit-background-clip:text; -webkit-text-fill-color:transparent;
       animation: tw-shine 3s linear infinite;
     }
     @keyframes tw-shine { to { background-position: -200% center; } }
 
-    /* ── MODAL ── */
+    /* ── MODAL OVERLAY ── */
     #twModalOverlay {
       position: fixed; inset: 0; z-index: 9000;
-      background: rgba(0,0,0,0.85); backdrop-filter: blur(8px);
+      background: rgba(4,2,14,0.92);
+      backdrop-filter: blur(16px);
       display: flex; align-items: center; justify-content: center; padding: 20px;
       opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      overflow: hidden;
+    }
+    #twModalOverlay::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(78,205,196,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(78,205,196,0.03) 1px, transparent 1px);
+      background-size: 56px 56px;
+      pointer-events: none;
     }
     #twModalOverlay.visible { opacity: 1; pointer-events: all; }
+
+    /* ── MODAL ── */
     #twModal {
-      background: linear-gradient(145deg, #1a1a2e, #16213e);
-      border: 1px solid rgba(255,255,255,0.15); border-radius: 28px; padding: 32px;
-      width: 100%; max-width: 520px; max-height: 85vh;
+      background: rgba(10,10,28,0.98);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 24px; padding: 28px 24px;
+      width: 100%; max-width: 480px; max-height: 82vh;
       display: flex; flex-direction: column;
-      box-shadow: 0 30px 80px rgba(0,0,0,0.5);
-      transform: translateY(20px); transition: transform 0.3s ease; color: white;
+      box-shadow: 0 40px 100px rgba(0,0,0,0.7);
+      transform: translateY(24px) scale(0.97);
+      transition: transform 0.35s cubic-bezier(0.22,1,0.36,1);
+      color: white; position: relative; z-index: 1;
     }
-    #twModalOverlay.visible #twModal { transform: translateY(0); }
-    .tw-modal-header { text-align: center; margin-bottom: 24px; }
-    .tw-modal-icon { font-size: 3rem; margin-bottom: 12px; }
+    #twModalOverlay.visible #twModal { transform: translateY(0) scale(1); }
+
+    /* Header */
+    .tw-modal-header { margin-bottom: 20px; }
+    .tw-modal-eyebrow {
+      font-size: 10px; font-weight: 700; letter-spacing: 3px;
+      text-transform: uppercase; color: #4ECDC4; opacity: 0.65; margin-bottom: 8px;
+    }
     .tw-modal-title {
-      font-size: 1.8rem; font-weight: 900; margin-bottom: 6px;
-      background: linear-gradient(45deg, #FFD700, #4ECDC4);
+      font-size: 1.9rem; font-weight: 900; letter-spacing: -1px; margin-bottom: 4px;
+      background: linear-gradient(90deg,#FFD700,#4ECDC4);
       background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     }
-    .tw-modal-sub { font-size: 0.95rem; opacity: 0.6; }
-    .tw-modal-search { position: relative; margin-bottom: 16px; flex-shrink: 0; }
+    .tw-modal-sub { font-size: 0.85rem; opacity: 0.4; }
+
+    /* Search */
+    .tw-modal-search { position: relative; margin-bottom: 14px; flex-shrink: 0; }
     .tw-modal-search input {
-      width: 100%; padding: 14px 18px 14px 44px; font-size: 15px;
-      background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
-      border-radius: 16px; color: white; outline: none; transition: all 0.2s;
+      width: 100%; padding: 12px 16px 12px 42px; font-size: 14px;
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px; color: white; outline: none; transition: all 0.2s;
+      font-family: inherit;
     }
-    .tw-modal-search input::placeholder { color: rgba(255,255,255,0.4); }
-    .tw-modal-search input:focus { border-color: rgba(255,215,0,0.5); background: rgba(255,255,255,0.12); }
-    .tw-modal-search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 1.1rem; opacity: 0.5; }
+    .tw-modal-search input::placeholder { color: rgba(255,255,255,0.3); }
+    .tw-modal-search input:focus { border-color: rgba(78,205,196,0.4); background: rgba(255,255,255,0.08); }
+    .tw-modal-search-icon { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); font-size: 1rem; opacity: 0.35; }
+
+    /* List */
     .tw-modal-list {
-      flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding-right: 4px;
+      flex: 1; overflow-y: auto; display: flex; flex-direction: column;
+      gap: 5px; padding-right: 2px; min-height: 0;
     }
-    .tw-modal-list::-webkit-scrollbar { width: 4px; }
-    .tw-modal-list::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 4px; }
-    .tw-modal-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+    .tw-modal-list::-webkit-scrollbar { width: 3px; }
+    .tw-modal-list::-webkit-scrollbar-track { background: transparent; }
+    .tw-modal-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 3px; }
+
     .tw-trainer-item {
-      display: flex; align-items: center; gap: 14px;
-      padding: 14px 16px; border-radius: 16px;
-      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08);
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 14px; border-radius: 12px;
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07);
       cursor: pointer; transition: all 0.15s ease;
     }
-    .tw-trainer-item:hover { background: rgba(255,255,255,0.12); border-color: rgba(255,215,0,0.3); transform: translateX(4px); }
-    .tw-trainer-item.selected { background: rgba(255,215,0,0.15); border-color: rgba(255,215,0,0.5); }
-    .tw-rank { width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; flex-shrink: 0; color: rgba(255,255,255,0.6); }
+    .tw-trainer-item:hover { background: rgba(255,255,255,0.09); border-color: rgba(255,215,0,0.25); transform: translateX(3px); }
+    .tw-trainer-item.selected { background: rgba(255,215,0,0.1); border-color: rgba(255,215,0,0.4); }
+
+    .tw-rank {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: rgba(255,255,255,0.07); display: flex; align-items: center;
+      justify-content: center; font-size: 11px; font-weight: 800; flex-shrink: 0;
+      color: rgba(255,255,255,0.5);
+    }
     .tw-rank.r1 { background: linear-gradient(45deg,#ffd700,#ffed4e); color: #333; }
     .tw-rank.r2 { background: linear-gradient(45deg,#c0c0c0,#e8e8e8); color: #333; }
     .tw-rank.r3 { background: linear-gradient(45deg,#cd7f32,#daa520); color: white; }
+
     .tw-item-info { flex: 1; min-width: 0; }
-    .tw-item-name { font-size: 1rem; font-weight: 700; margin-bottom: 3px; }
-    .tw-item-meta { font-size: 12px; opacity: 0.55; }
-    .tw-item-pts { font-size: 1rem; font-weight: 800; color: #FFD700; flex-shrink: 0; }
-    .tw-modal-footer { margin-top: 20px; flex-shrink: 0; display: flex; gap: 10px; }
+    .tw-item-name { font-size: 0.95rem; font-weight: 800; margin-bottom: 2px; }
+    .tw-item-meta { font-size: 11px; opacity: 0.4; }
+    .tw-item-pts  { font-size: 0.9rem; font-weight: 800; color: #FFD700; flex-shrink: 0; }
+
+    /* Footer */
+    .tw-modal-footer { margin-top: 16px; flex-shrink: 0; display: flex; gap: 8px; }
     .tw-btn-skip {
-      flex: 1; padding: 13px; background: rgba(255,255,255,0.07);
-      border: 1px solid rgba(255,255,255,0.12); border-radius: 14px;
-      color: rgba(255,255,255,0.6); font-size: 14px; font-weight: 600;
-      cursor: pointer; transition: all 0.2s;
+      flex: 1; padding: 12px; background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1); border-radius: 12px;
+      color: rgba(255,255,255,0.5); font-size: 13px; font-weight: 700;
+      cursor: pointer; transition: all 0.2s; font-family: inherit;
     }
-    .tw-btn-skip:hover { background: rgba(255,255,255,0.12); color: white; }
+    .tw-btn-skip:hover { background: rgba(255,255,255,0.1); color: white; }
     .tw-btn-confirm {
-      flex: 2; padding: 13px; background: linear-gradient(135deg,#FFD700,#FFA500);
-      border: none; border-radius: 14px; color: #1a1a1a;
-      font-size: 15px; font-weight: 800; cursor: pointer;
-      transition: all 0.2s; opacity: 0.4; pointer-events: none;
+      flex: 2; padding: 12px;
+      background: linear-gradient(135deg,#FFD700,#FFA500);
+      border: none; border-radius: 12px; color: #1a1a1a;
+      font-size: 14px; font-weight: 900; cursor: pointer;
+      transition: all 0.2s; opacity: 0.35; pointer-events: none;
+      font-family: inherit;
     }
     .tw-btn-confirm.ready { opacity: 1; pointer-events: all; }
-    .tw-btn-confirm.ready:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(255,215,0,0.4); }
-    .tw-modal-loading { text-align: center; padding: 40px; opacity: 0.6; }
-    .tw-loading-spinner { width: 28px; height: 28px; border: 3px solid rgba(255,255,255,0.2); border-top-color: #FFD700; border-radius: 50%; animation: tw-spin 0.8s linear infinite; margin: 0 auto 12px; }
+    .tw-btn-confirm.ready:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(255,215,0,0.35); }
+
+    /* Loading */
+    .tw-modal-loading { text-align: center; padding: 36px; opacity: 0.4; font-size: 13px; }
+    .tw-loading-spinner {
+      width: 22px; height: 22px; border: 2px solid rgba(255,255,255,0.15);
+      border-top-color: #FFD700; border-radius: 50%;
+      animation: tw-spin 0.8s linear infinite; margin: 0 auto 10px;
+    }
     @keyframes tw-spin { to { transform: rotate(360deg); } }
 
-    /* Catcher name tiers in modal list */
+    /* Name tiers in modal */
     .tw-trainer-item .cn-god, .tw-trainer-item .cn-king {
-      background-image: linear-gradient(90deg,#ffd700,#fff,#ffd700);
+      background-image: linear-gradient(90deg,#ffd700,#fff8,#ffd700);
       background-size:200% auto; background-clip:text;
       -webkit-background-clip:text; -webkit-text-fill-color:transparent;
       animation: tw-shine 3s linear infinite;
     }
     .tw-trainer-item .cn-flame {
-      background-image: linear-gradient(90deg,#ff4444,#fff,#ff4444);
+      background-image: linear-gradient(90deg,#ff4444,#fff8,#ff4444);
       background-size:200% auto; background-clip:text;
       -webkit-background-clip:text; -webkit-text-fill-color:transparent;
       animation: tw-shine 3s linear infinite;
     }
     .tw-trainer-item .cn-diamond {
-      background-image: linear-gradient(90deg,#00bfff,#fff,#00bfff);
+      background-image: linear-gradient(90deg,#00bfff,#fff8,#00bfff);
       background-size:200% auto; background-clip:text;
       -webkit-background-clip:text; -webkit-text-fill-color:transparent;
       animation: tw-shine 3s linear infinite;
     }
     .tw-trainer-item .cn-shine {
-      background-image: linear-gradient(90deg,#32cd32,#fff,#32cd32);
+      background-image: linear-gradient(90deg,#32cd32,#fff8,#32cd32);
       background-size:200% auto; background-clip:text;
       -webkit-background-clip:text; -webkit-text-fill-color:transparent;
       animation: tw-shine 3s linear infinite;
@@ -222,21 +261,19 @@ function injectCSS() {
 }
 
 // ── MODAL ─────────────────────────────────────────────────────────────────────
-
 let twAllTrainers = {};
 let twSelectedTrainer = null;
 
 function buildModal() {
   if (document.getElementById('twModalOverlay')) return;
-
   const overlay = document.createElement('div');
   overlay.id = 'twModalOverlay';
   overlay.innerHTML = `
     <div id="twModal">
       <div class="tw-modal-header">
-        <div class="tw-modal-icon">🎮</div>
+        <div class="tw-modal-eyebrow">Catchmon Arena · Profile</div>
         <div class="tw-modal-title">Choose your Trainer</div>
-        <div class="tw-modal-sub">Select your name to track your progress</div>
+        <div class="tw-modal-sub">Select your name to track progress across all pages</div>
       </div>
       <div class="tw-modal-search">
         <div class="tw-modal-search-icon">🔍</div>
@@ -267,9 +304,7 @@ function buildModal() {
     if (!twSelectedTrainer) return;
     saveTrainer(twSelectedTrainer);
     hideModal();
-    // Widget neu bauen mit neuem Trainer
     loadAndBuildWidget(twSelectedTrainer);
-    // Falls index.js applyTrainer kennt, aufrufen
     if (typeof window.applyTrainer === 'function') {
       window.applyTrainer(twSelectedTrainer, twAllTrainers);
     }
@@ -281,19 +316,15 @@ function showModal() {
   twSelectedTrainer = null;
   updateConfirmBtn();
   const search = document.getElementById('twSearch');
-  if (search) { search.value = ''; }
-  if (Object.keys(twAllTrainers).length > 0) {
-    renderModalList(twAllTrainers, '');
-  }
+  if (search) search.value = '';
+  if (Object.keys(twAllTrainers).length > 0) renderModalList(twAllTrainers, '');
   document.getElementById('twModalOverlay').classList.add('visible');
   setTimeout(() => document.getElementById('twSearch')?.focus(), 100);
 }
-
 function hideModal() {
-  const overlay = document.getElementById('twModalOverlay');
-  if (overlay) overlay.classList.remove('visible');
+  const o = document.getElementById('twModalOverlay');
+  if (o) o.classList.remove('visible');
 }
-
 function updateConfirmBtn() {
   const btn = document.getElementById('twConfirm');
   if (btn) btn.classList.toggle('ready', !!twSelectedTrainer);
@@ -302,22 +333,19 @@ function updateConfirmBtn() {
 function renderModalList(trainersData, filter = '') {
   const list = document.getElementById('twList');
   if (!list) return;
-  const filterLower = filter.toLowerCase();
+  const fl = filter.toLowerCase();
 
   const trainers = Object.entries(trainersData)
     .map(([name, info]) => {
       const team = Array.isArray(info.team) ? info.team : Object.values(info.team || {});
-      const totalPoints = calcTeamPts(team);
-      return { name, totalPoints, teamSize: team.length, donation: info.donation || 0 };
+      return { name, totalPoints: calcTeamPts(team), teamSize: team.length, donation: info.donation || 0 };
     })
     .filter(t => t.teamSize > 0)
-    .filter(t => !filter || t.name.toLowerCase().includes(filterLower))
+    .filter(t => !filter || t.name.toLowerCase().includes(fl))
     .sort((a, b) => b.totalPoints - a.totalPoints);
 
   if (trainers.length === 0) {
-    list.innerHTML = `<div style="text-align:center;padding:32px;opacity:0.5">
-      ${filter ? 'No trainer found' : 'No trainers yet'}
-    </div>`;
+    list.innerHTML = `<div style="text-align:center;padding:32px;opacity:0.35;font-size:13px">${filter ? 'No trainer found' : 'No trainers yet'}</div>`;
     return;
   }
 
@@ -328,35 +356,25 @@ function renderModalList(trainersData, filter = '') {
     item.dataset.name = t.name;
 
     const rankClass = i === 0 ? 'r1' : i === 1 ? 'r2' : i === 2 ? 'r3' : '';
-    const level = calcLevel(t.totalPoints);
-    const tier  = getDonationTier(t.donation);
+    const tier       = getDonationTier(t.donation);
 
     const rankEl = document.createElement('div');
     rankEl.className = `tw-rank ${rankClass}`;
     rankEl.textContent = i + 1;
 
-    const infoEl = document.createElement('div');
-    infoEl.className = 'tw-item-info';
-
-    const nameRow = document.createElement('div');
-    nameRow.className = 'tw-item-name';
+    const infoEl  = document.createElement('div'); infoEl.className = 'tw-item-info';
+    const nameRow = document.createElement('div'); nameRow.className = 'tw-item-name';
     if (tier !== 'normal') {
       const span = document.createElement('span');
-      span.className = `cn-${tier}`;
-      span.textContent = capitalize(t.name);
+      span.className = `cn-${tier}`; span.textContent = capitalize(t.name);
       nameRow.appendChild(span);
-    } else {
-      nameRow.textContent = capitalize(t.name);
-    }
+    } else { nameRow.textContent = capitalize(t.name); }
 
-    const meta = document.createElement('div');
-    meta.className = 'tw-item-meta';
-    meta.textContent = `Lvl ${level} · ${t.teamSize} Catchmon`;
-
+    const meta = document.createElement('div'); meta.className = 'tw-item-meta';
+    meta.textContent = `Lvl ${calcLevel(t.totalPoints)} · ${t.teamSize} Catchmon`;
     infoEl.append(nameRow, meta);
 
-    const ptsEl = document.createElement('div');
-    ptsEl.className = 'tw-item-pts';
+    const ptsEl = document.createElement('div'); ptsEl.className = 'tw-item-pts';
     ptsEl.textContent = fmt(t.totalPoints);
 
     item.append(rankEl, infoEl, ptsEl);
@@ -366,114 +384,100 @@ function renderModalList(trainersData, filter = '') {
       twSelectedTrainer = t.name;
       updateConfirmBtn();
     });
-
     list.appendChild(item);
   });
 }
 
 // ── WIDGET ────────────────────────────────────────────────────────────────────
-
 function buildWidget(trainerName, level, donation) {
   injectCSS();
-  buildModal(); // Modal DOM bereit machen
-
+  buildModal();
   const old = document.getElementById('twWidget');
   if (old) old.remove();
 
-  const tier = getDonationTier(donation);
+  const tier   = getDonationTier(donation);
   const widget = document.createElement('div');
   widget.id = 'twWidget';
 
-  // Profil-Link
   const profileLink = document.createElement('a');
   profileLink.className = 'tw-profile';
   profileLink.href = `catcher_detail.html?name=${encodeURIComponent(trainerName)}`;
 
-  const avatar = document.createElement('span');
-  avatar.className = 'tw-avatar';
-  avatar.textContent = '👤';
-
-  const info = document.createElement('div');
-  info.className = 'tw-info';
-
-  const nameEl = document.createElement('div');
-  nameEl.className = 'tw-name';
+  const avatar  = document.createElement('span'); avatar.className = 'tw-avatar'; avatar.textContent = '👤';
+  const info    = document.createElement('div');  info.className   = 'tw-info';
+  const nameEl  = document.createElement('div');  nameEl.className = 'tw-name';
   if (tier !== 'normal') {
-    const span = document.createElement('span');
-    span.className = `cn-${tier}`;
-    span.textContent = capitalize(trainerName);
+    const span = document.createElement('span'); span.className = `cn-${tier}`; span.textContent = capitalize(trainerName);
     nameEl.appendChild(span);
-  } else {
-    nameEl.textContent = capitalize(trainerName);
-  }
-
-  const levelEl = document.createElement('div');
-  levelEl.className = 'tw-level';
-  levelEl.textContent = `Level ${level}`;
-
+  } else { nameEl.textContent = capitalize(trainerName); }
+  const levelEl = document.createElement('div'); levelEl.className = 'tw-level'; levelEl.textContent = `Level ${level}`;
   info.append(nameEl, levelEl);
   profileLink.append(avatar, info);
 
-  // Edit-Button → öffnet Modal direkt auf dieser Seite
   const editBtn = document.createElement('button');
-  editBtn.className = 'tw-edit';
-  editBtn.title = 'Change Trainer';
-  editBtn.textContent = '✎';
-  editBtn.addEventListener('click', e => {
-    e.preventDefault();
-    e.stopPropagation();
-    showModal();
-  });
+  editBtn.className = 'tw-edit'; editBtn.title = 'Change Trainer'; editBtn.textContent = '✎';
+  editBtn.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); showModal(); });
 
   widget.append(profileLink, editBtn);
   document.body.appendChild(widget);
 }
 
-// ── FIREBASE LADEN ────────────────────────────────────────────────────────────
+function buildGuestWidget() {
+  injectCSS();
+  buildModal();
+  const old = document.getElementById('twWidget');
+  if (old) old.remove();
 
+  const widget = document.createElement('div');
+  widget.id = 'twWidget'; widget.style.cursor = 'pointer';
+
+  const btn = document.createElement('div');
+  btn.className = 'tw-profile';
+  btn.style.cssText = 'display:flex;align-items:center;gap:9px;padding:9px 13px;cursor:pointer;';
+
+  const avatar  = document.createElement('span'); avatar.className = 'tw-avatar'; avatar.textContent = '👤';
+  const info    = document.createElement('div');  info.className   = 'tw-info';
+  const nameEl  = document.createElement('div');  nameEl.className = 'tw-name'; nameEl.style.cssText = '-webkit-text-fill-color:rgba(255,255,255,0.35);'; nameEl.textContent = 'Choose Trainer';
+  const levelEl = document.createElement('div');  levelEl.className = 'tw-level'; levelEl.textContent = 'Click to set up';
+  info.append(nameEl, levelEl);
+  btn.append(avatar, info);
+
+  widget.appendChild(btn);
+  widget.addEventListener('click', () => showModal());
+  document.body.appendChild(widget);
+}
+
+// ── FIREBASE ──────────────────────────────────────────────────────────────────
 async function loadAndBuildWidget(trainerName) {
-  // Sofort minimal anzeigen
   buildWidget(trainerName, '?', 0);
-
   try {
     const { db } = await import('./firebase.client.js');
     const { ref, get, onValue } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js');
 
-    // Alle Trainer für Modal laden
     onValue(ref(db, 'trainers'), snap => {
       twAllTrainers = snap.val() || {};
-      // Modal-Liste aktualisieren falls offen
       const overlay = document.getElementById('twModalOverlay');
       if (overlay?.classList.contains('visible')) {
-        const search = document.getElementById('twSearch');
-        renderModalList(twAllTrainers, search?.value || '');
+        renderModalList(twAllTrainers, document.getElementById('twSearch')?.value || '');
       }
     });
 
-    // Widget mit echten Daten updaten
     const snap = await get(ref(db, `trainers/${trainerName.toLowerCase()}`));
     const info = snap.val();
     if (info) {
-      const team     = Array.isArray(info.team) ? info.team : Object.values(info.team || {});
-      const pts      = calcTeamPts(team);
-      const level    = calcLevel(pts);
-      const donation = info.donation || 0;
-      buildWidget(trainerName, level, donation);
+      const team = Array.isArray(info.team) ? info.team : Object.values(info.team || {});
+      buildWidget(trainerName, calcLevel(calcTeamPts(team)), info.donation || 0);
     }
-  } catch (e) {
-    console.warn('trainer_widget: Firebase load failed', e);
-  }
+  } catch (e) { console.warn('trainer_widget: Firebase load failed', e); }
 }
 
 async function initTrainerWidget() {
   injectCSS();
   buildModal();
-
   const trainerName = getSavedTrainer();
   if (trainerName) {
     await loadAndBuildWidget(trainerName);
   } else {
-    // Kein Trainer → Guest-Widget sofort zeigen (klickbar), dann Modal öffnen
     buildGuestWidget();
     let modalOpened = false;
     try {
@@ -491,7 +495,5 @@ async function initTrainerWidget() {
   }
 }
 
-// Global exportieren damit index.js darauf zugreifen kann
 window.twShowModal = showModal;
-
 initTrainerWidget();
