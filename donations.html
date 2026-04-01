@@ -5,260 +5,168 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com https://www.google.com https://*.firebasedatabase.app; connect-src 'self' https://*.firebasedatabase.app https://*.firebaseio.com https://www.googleapis.com wss://*.firebasedatabase.app https://www.google.com https://content-firebaseappcheck.googleapis.com https://firebaseappcheck.googleapis.com; frame-src 'self' https://www.google.com https://*.firebasedatabase.app; img-src 'self' data: https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; base-uri 'self';">
   <title>💎 Power Up — Catchmon Arena</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; background: radial-gradient(ellipse at center, #1a1a2e 0%, #16213e 30%, #0f0f23 70%, #000000 100%); color: white; overflow-x: hidden; min-height: 100vh; }
-
-    /* Floating coins background */
-    .bg-coins { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; opacity: 0.25; }
-    .coin { position: absolute; bottom: -40px; font-size: 1.4rem; animation: floatUp linear infinite; }
-    @keyframes floatUp { 0%{transform:translateY(0) rotate(0deg);opacity:0} 10%{opacity:1} 90%{opacity:1} 100%{transform:translateY(-110vh) rotate(360deg);opacity:0} }
-
-    .container { max-width: 1100px; margin: auto; padding: 24px 20px; position: relative; z-index: 1; }
-
-    /* Header */
-    .top-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 32px; background: rgba(255,255,255,0.08); backdrop-filter: blur(12px); border-radius: 18px; padding: 14px 20px; border: 1px solid rgba(255,255,255,0.15); }
-    .back-button { font-size: 15px; text-decoration: none; color: white; font-weight: 700; padding: 10px 18px; border-radius: 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); transition: all 0.2s ease; }
-    .back-button:hover { background: rgba(255,255,255,0.18); transform: translateY(-2px); }
-
-    /* Hero */
-    .hero { text-align: center; padding: 52px 20px 44px; background: rgba(255,255,255,0.04); border-radius: 28px; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(20px); margin-bottom: 36px; position: relative; overflow: hidden; }
-    .hero::before { content:''; position:absolute; inset:0; background:linear-gradient(45deg,transparent,rgba(255,215,0,0.06),transparent,rgba(255,215,0,0.06),transparent); animation: heroSpin 6s linear infinite; }
-    @keyframes heroSpin { to { transform: rotate(360deg) scale(2); } }
-    .hero-content { position: relative; z-index: 2; }
-    h1 { font-size: clamp(2.4rem, 7vw, 4rem); font-weight: 900; margin-bottom: 14px; background: linear-gradient(45deg,#FFD700,#FF6B6B,#4ECDC4,#45B7D1,#FFD700); background-size: 300% 300%; background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: gradShift 3s ease-in-out infinite; }
-    @keyframes gradShift { 0%,100%{background-position:0% 50%} 50%{background-position:100% 50%} }
-    .hero-sub { font-size: clamp(1.05rem, 2.5vw, 1.5rem); opacity: 0.8; font-weight: 300; margin-bottom: 28px; }
-    .hero-pills { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
-    .hero-pill { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); padding: 10px 22px; border-radius: 24px; font-weight: 600; font-size: 0.95rem; backdrop-filter: blur(10px); transition: all 0.2s ease; }
-    .hero-pill:hover { background: rgba(255,215,0,0.18); border-color: rgba(255,215,0,0.35); transform: translateY(-3px); }
-
-    /* How it works */
-    .how-section { margin-bottom: 40px; }
-    .section-title { text-align: center; font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 800; margin-bottom: 28px; color: #FFD700; }
-    .how-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; }
-    .how-card { background: rgba(255,255,255,0.06); border-radius: 20px; padding: 26px 20px; text-align: center; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px); }
-    .how-step { font-size: 2.2rem; margin-bottom: 12px; }
-    .how-title { font-size: 1rem; font-weight: 800; margin-bottom: 8px; color: #FFD700; }
-    .how-desc { font-size: 0.9rem; opacity: 0.7; line-height: 1.55; }
-
-    /* Tier Cards */
-    .tiers-section { margin-bottom: 40px; }
-    .tiers-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 22px; }
-
-    .tier-card { border-radius: 22px; padding: 28px 22px; text-align: center; border: 2px solid rgba(255,255,255,0.1); backdrop-filter: blur(12px); position: relative; overflow: hidden; background: rgba(255,255,255,0.05); transition: transform 0.3s ease, box-shadow 0.3s ease; }
-    .tier-card:hover { transform: translateY(-8px); }
-    .tier-card::before { content:''; position:absolute; top:0; left:-100%; width:100%; height:100%; background:linear-gradient(90deg,transparent,rgba(255,255,255,0.07),transparent); transition:left 0.6s; }
-    .tier-card:hover::before { left:100%; }
-
-    .tier-card.shine   { border-color:rgba(50,205,50,0.4);  box-shadow:0 0 25px rgba(50,205,50,0.15); }
-    .tier-card.diamond { border-color:rgba(0,191,255,0.4);  box-shadow:0 0 25px rgba(0,191,255,0.15); }
-    .tier-card.flame   { border-color:rgba(255,69,0,0.4);   box-shadow:0 0 25px rgba(255,69,0,0.15); }
-    .tier-card.king    { border-color:rgba(255,215,0,0.5);  box-shadow:0 0 30px rgba(255,215,0,0.2); }
-    .tier-card.king::after { content:'👑'; position:absolute; top:-12px; right:-10px; font-size:1.8rem; animation:crownFloat 3s ease-in-out infinite alternate; }
-    @keyframes crownFloat { 0%{transform:translateY(0) rotate(-5deg)} 100%{transform:translateY(-6px) rotate(8deg)} }
-
-    .tier-card.shine:hover   { box-shadow:0 18px 50px rgba(50,205,50,0.35); }
-    .tier-card.diamond:hover { box-shadow:0 18px 50px rgba(0,191,255,0.35); }
-    .tier-card.flame:hover   { box-shadow:0 18px 50px rgba(255,69,0,0.35); }
-    .tier-card.king:hover    { box-shadow:0 18px 50px rgba(255,215,0,0.4); }
-
-    .tier-icon { font-size: 2.6rem; margin-bottom: 14px; }
-    .tier-name { font-size: 1.5rem; font-weight: 800; margin-bottom: 6px; background-size: 200% auto; background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: nameShine 3s linear infinite; }
-    .shine   .tier-name { background-image: linear-gradient(90deg,#32CD32,#90EE90,#32CD32); }
-    .diamond .tier-name { background-image: linear-gradient(90deg,#00BFFF,#87CEEB,#00BFFF); }
-    .flame   .tier-name { background-image: linear-gradient(90deg,#FF4500,#FF8C00,#FF4500); }
-    .king    .tier-name { background-image: linear-gradient(90deg,#FFD700,#FFF700,#FFD700); }
-    @keyframes nameShine { to { background-position: -200% center; } }
-
-    .tier-threshold { font-size: 1.1rem; font-weight: 700; color: #FFD700; margin-bottom: 14px; opacity: 0.9; }
-    .tier-multiplier { font-size: 2.2rem; font-weight: 900; margin-bottom: 16px; }
-    .shine   .tier-multiplier { color: #32CD32; text-shadow: 0 0 15px rgba(50,205,50,0.5); }
-    .diamond .tier-multiplier { color: #00BFFF; text-shadow: 0 0 15px rgba(0,191,255,0.5); }
-    .flame   .tier-multiplier { color: #FF6B35; text-shadow: 0 0 15px rgba(255,100,0,0.5); }
-    .king    .tier-multiplier { color: #FFD700; text-shadow: 0 0 20px rgba(255,215,0,0.7); }
-
-    .tier-benefits { list-style: none; text-align: left; margin-bottom: 0; }
-    .tier-benefits li { padding: 7px 0 7px 22px; position: relative; font-size: 0.9rem; opacity: 0.85; line-height: 1.4; }
-    .tier-benefits li::before { content:'✓'; position:absolute; left:0; font-weight:900; opacity:0.7; }
-
-    /* Live Stats */
-    .stats-section { background: rgba(255,255,255,0.05); border-radius: 22px; padding: 32px 24px; margin-bottom: 36px; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(12px); }
-    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 18px; margin-top: 24px; }
-    .stat-item { padding: 18px; background: rgba(255,255,255,0.08); border-radius: 16px; text-align: center; }
-    .stat-number { font-size: 2.2rem; font-weight: 900; color: #FFD700; margin-bottom: 6px; }
-    .stat-label { font-size: 12px; opacity: 0.6; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-
-    /* Top Donors */
-    .donors-section { background: rgba(255,255,255,0.05); border-radius: 22px; padding: 32px 24px; margin-bottom: 36px; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(12px); }
-    .donors-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-top: 24px; }
-    .donor-card { background: rgba(255,255,255,0.08); border-radius: 16px; padding: 18px 16px; border: 1px solid rgba(255,255,255,0.1); position: relative; transition: transform 0.2s ease; text-align: center; cursor: pointer; }
-    .donor-card:hover { transform: translateY(-4px); }
-    .donor-card.king    { border-color:rgba(255,215,0,0.45);  box-shadow:0 0 18px rgba(255,215,0,0.2); }
-    .donor-card.flame   { border-color:rgba(255,69,0,0.45);   box-shadow:0 0 18px rgba(255,69,0,0.2); }
-    .donor-card.diamond { border-color:rgba(0,191,255,0.45);  box-shadow:0 0 18px rgba(0,191,255,0.2); }
-    .donor-card.shine   { border-color:rgba(50,205,50,0.45);  box-shadow:0 0 18px rgba(50,205,50,0.2); }
-    .donor-rank { position:absolute; top:-10px; left:-10px; width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:1rem; color:#000; border:2px solid rgba(255,255,255,0.2); }
-    .rank-1 .donor-rank { background:linear-gradient(45deg,#FFD700,#FFA500); }
-    .rank-2 .donor-rank { background:linear-gradient(45deg,#C0C0C0,#E8E8E8); }
-    .rank-3 .donor-rank { background:linear-gradient(45deg,#CD7F32,#DAA520); }
-    .donor-card:not(.rank-1):not(.rank-2):not(.rank-3) .donor-rank { background:rgba(108,117,125,0.8); }
-    .donor-name-el { font-size: 1.05rem; font-weight: 800; margin-bottom: 6px; }
-    .donor-amount-el { font-size: 1.4rem; font-weight: 900; color: #FFD700; margin-bottom: 4px; }
-    .donor-tier-el { font-size: 11px; font-weight: 700; opacity: 0.7; text-transform: uppercase; letter-spacing: 0.5px; }
-
-    /* Catcher name tiers */
-    .catcher-name { display:inline-block; font-weight:800; background-size:200% auto; background-clip:text; -webkit-background-clip:text; -webkit-text-fill-color:transparent; animation:nameShine 3s linear infinite; }
-    .cn-god,.cn-king { background-image:linear-gradient(90deg,#ffd700,#fff,#ffd700); }
-    .cn-flame        { background-image:linear-gradient(90deg,#ff4444,#fff,#ff4444); }
-    .cn-diamond      { background-image:linear-gradient(90deg,#00bfff,#fff,#00bfff); }
-    .cn-shine        { background-image:linear-gradient(90deg,#32cd32,#fff,#32cd32); }
-
-    .loading-donors { text-align:center; padding:32px; opacity:0.5; font-size:14px; }
-    .loading-spinner { width:24px; height:24px; border:3px solid rgba(255,255,255,0.2); border-top-color:#FFD700; border-radius:50%; animation:spin 0.8s linear infinite; margin:0 auto 10px; }
-    @keyframes spin { to { transform:rotate(360deg); } }
-
-    @media (max-width: 768px) {
-      .tiers-grid { grid-template-columns: 1fr; }
-      .how-grid   { grid-template-columns: 1fr 1fr; }
-      .donors-grid{ grid-template-columns: 1fr; }
-      .stats-grid { grid-template-columns: 1fr 1fr; }
-    }
-    @media (max-width: 480px) {
-      .how-grid { grid-template-columns: 1fr; }
-      .hero-pills { gap: 8px; }
-    }
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); }
-    ::-webkit-scrollbar-thumb { background: linear-gradient(45deg,#FFD700,#FFA500); border-radius: 4px; }
-  </style>
+  <link rel="stylesheet" href="assets/css/donations.css">
 </head>
 <body>
-
-  <!-- Floating coins -->
-  <div class="bg-coins" id="bgCoins"></div>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+  <div class="particles" id="particles"></div>
 
   <div class="container">
 
-    <!-- Header -->
-    <div class="top-bar">
-      <a class="back-button" href="index.html">← Back</a>
+    <!-- Back -->
+    <div class="top-bar reveal">
+      <a class="back-btn" href="index.html">← Arena</a>
     </div>
 
     <!-- Hero -->
-    <div class="hero">
+    <div class="hero reveal">
       <div class="hero-content">
-        <h1>💎 Power Up Your Catches</h1>
-        <p class="hero-sub">Send Gifts in the TikTok Live stream — boost your catch chances and unlock exclusive status</p>
+        <div class="eyebrow">TikTok Gifts · Catchmon Arena</div>
+        <h1>
+          <span class="line-white">Power</span>
+          <span class="line-grad">Up.</span>
+        </h1>
+        <p class="hero-sub">Send Gifts in the TikTok Live — boost your catch multiplier and unlock exclusive status permanently.</p>
         <div class="hero-pills">
-          <div class="hero-pill">🎯 Higher Catch Rate</div>
-          <div class="hero-pill">✨ Animated Name</div>
-          <div class="hero-pill">👑 Leaderboard Status</div>
-          <div class="hero-pill">🔥 Catch Multiplier</div>
+          <span class="pill">🎯 Higher Catch Rate</span>
+          <span class="pill">✨ Animated Name</span>
+          <span class="pill">👑 Leaderboard Status</span>
+          <span class="pill">🔥 Permanent Boost</span>
         </div>
       </div>
     </div>
 
-    <!-- How it works -->
-    <div class="how-section">
-      <h2 class="section-title">⚡ How it Works</h2>
-      <div class="how-grid">
-        <div class="how-card">
-          <div class="how-step">📱</div>
-          <div class="how-title">Join the Live</div>
-          <div class="how-desc">Watch the TikTok Live stream and wait for a Catchmon to spawn</div>
+    <!-- How it works — horizontal timeline -->
+    <div class="how-section reveal">
+      <div class="how-label">How it works</div>
+      <div class="how-flow">
+        <div class="how-step">
+          <div class="how-icon">📱</div>
+          <div class="how-num">01</div>
+          <div class="how-title">Join Live</div>
+          <div class="how-desc">Open TikTok Live and watch for Catchmon spawns</div>
         </div>
-        <div class="how-card">
-          <div class="how-step">❤️</div>
+        <div class="how-connector"></div>
+        <div class="how-step">
+          <div class="how-icon">❤️</div>
+          <div class="how-num">02</div>
           <div class="how-title">Like to Catch</div>
-          <div class="how-desc">Send likes — every like increases your chance to catch the spawned Catchmon</div>
+          <div class="how-desc">Send likes to raise your catch chance</div>
         </div>
-        <div class="how-card">
-          <div class="how-step">🎁</div>
-          <div class="how-title">Gift for Multiplier</div>
-          <div class="how-desc">Send TikTok Gifts in the stream to permanently unlock a catch multiplier for your account</div>
+        <div class="how-connector"></div>
+        <div class="how-step">
+          <div class="how-icon">🎁</div>
+          <div class="how-num">03</div>
+          <div class="how-title">Gift = Multiplier</div>
+          <div class="how-desc">TikTok Gifts permanently unlock your multiplier</div>
         </div>
-        <div class="how-card">
-          <div class="how-step">🏆</div>
-          <div class="how-title">Build your Team</div>
-          <div class="how-desc">Catch Catchmon, level them up through Fusions, and climb the leaderboard</div>
+        <div class="how-connector"></div>
+        <div class="how-step">
+          <div class="how-icon">🏆</div>
+          <div class="how-num">04</div>
+          <div class="how-title">Dominate</div>
+          <div class="how-desc">Fuse, evolve and climb the leaderboard</div>
         </div>
       </div>
     </div>
 
-    <!-- Tiers -->
-    <div class="tiers-section">
-      <h2 class="section-title">🚀 Donation Tiers</h2>
-      <div class="tiers-grid">
+    <!-- Tiers — big showcase -->
+    <div class="tiers-section reveal">
+      <div class="tiers-label">Choose your tier</div>
 
-        <div class="tier-card shine">
-          <div class="tier-icon">✨</div>
-          <div class="tier-name">Shine</div>
-          <div class="tier-threshold">50+ Coins donated</div>
-          <div class="tier-multiplier">2×</div>
-          <ul class="tier-benefits">
-            <li>2× catch multiplier on every spawn</li>
-            <li>Green animated name in all rankings</li>
-            <li>Permanent — no expiry</li>
-          </ul>
+      <!-- Shine -->
+      <div class="tier-row tier-shine">
+        <div class="tier-left">
+          <div class="tier-badge shine-badge">✨ SHINE</div>
+          <div class="tier-mult shine-mult">2×</div>
+          <div class="tier-coins">50+ Coins</div>
         </div>
-
-        <div class="tier-card diamond">
-          <div class="tier-icon">💎</div>
-          <div class="tier-name">Diamond</div>
-          <div class="tier-threshold">100+ Coins donated</div>
-          <div class="tier-multiplier">3×</div>
-          <ul class="tier-benefits">
-            <li>3× catch multiplier on every spawn</li>
-            <li>Blue crystal animated name</li>
-            <li>Permanent — no expiry</li>
-          </ul>
+        <div class="tier-divider"></div>
+        <div class="tier-right">
+          <div class="tier-perk">2× catch multiplier on every spawn</div>
+          <div class="tier-perk">Green animated name across all pages</div>
+          <div class="tier-perk">Permanent — no expiry</div>
         </div>
+      </div>
 
-        <div class="tier-card flame">
-          <div class="tier-icon">🔥</div>
-          <div class="tier-name">Flame</div>
-          <div class="tier-threshold">500+ Coins donated</div>
-          <div class="tier-multiplier">4×</div>
-          <ul class="tier-benefits">
-            <li>4× catch multiplier on every spawn</li>
-            <li>Red flame animated name</li>
-            <li>Extended animation on OBS overlay</li>
-          </ul>
+      <!-- Diamond -->
+      <div class="tier-row tier-diamond">
+        <div class="tier-left">
+          <div class="tier-badge diamond-badge">💎 DIAMOND</div>
+          <div class="tier-mult diamond-mult">3×</div>
+          <div class="tier-coins">100+ Coins</div>
         </div>
-
-        <div class="tier-card king">
-          <div class="tier-icon">👑</div>
-          <div class="tier-name">King</div>
-          <div class="tier-threshold">2500+ Coins donated</div>
-          <div class="tier-multiplier">5×</div>
-          <ul class="tier-benefits">
-            <li>Maximum 5× catch multiplier</li>
-            <li>Gold animated name — stands out everywhere</li>
-            <li>Longest catch animation on stream</li>
-            <li>Top placement in donor leaderboard</li>
-          </ul>
+        <div class="tier-divider"></div>
+        <div class="tier-right">
+          <div class="tier-perk">3× catch multiplier on every spawn</div>
+          <div class="tier-perk">Blue crystal animated name</div>
+          <div class="tier-perk">Permanent — no expiry</div>
         </div>
+      </div>
 
+      <!-- Flame -->
+      <div class="tier-row tier-flame">
+        <div class="tier-left">
+          <div class="tier-badge flame-badge">🔥 FLAME</div>
+          <div class="tier-mult flame-mult">4×</div>
+          <div class="tier-coins">500+ Coins</div>
+        </div>
+        <div class="tier-divider"></div>
+        <div class="tier-right">
+          <div class="tier-perk">4× catch multiplier on every spawn</div>
+          <div class="tier-perk">Red flame animated name</div>
+          <div class="tier-perk">Extended catch animation on stream overlay</div>
+        </div>
+      </div>
+
+      <!-- King -->
+      <div class="tier-row tier-king">
+        <div class="crown-float">👑</div>
+        <div class="tier-left">
+          <div class="tier-badge king-badge">👑 KING</div>
+          <div class="tier-mult king-mult">5×</div>
+          <div class="tier-coins">2500+ Coins</div>
+        </div>
+        <div class="tier-divider"></div>
+        <div class="tier-right">
+          <div class="tier-perk">Maximum 5× catch multiplier</div>
+          <div class="tier-perk">Gold animated name — stands out everywhere</div>
+          <div class="tier-perk">Longest catch animation on stream</div>
+          <div class="tier-perk">Top donor leaderboard placement</div>
+        </div>
       </div>
     </div>
 
     <!-- Live Stats -->
-    <div class="stats-section">
-      <h2 class="section-title">📊 Live Stats</h2>
-      <div class="stats-grid">
-        <div class="stat-item"><div class="stat-number" id="statTotalDonations">—</div><div class="stat-label">Total Donated</div></div>
-        <div class="stat-item"><div class="stat-number" id="statActiveDonors">—</div><div class="stat-label">Active Donors</div></div>
-        <div class="stat-item"><div class="stat-number" id="statTotalCatches">—</div><div class="stat-label">Total Catches</div></div>
-        <div class="stat-item"><div class="stat-number" id="statTopMultiplier">5×</div><div class="stat-label">Max Multiplier</div></div>
+    <div class="stats-section reveal">
+      <div class="stats-label">📊 Live Stats</div>
+      <div class="stats-row">
+        <div class="stat-item">
+          <div class="stat-num" id="statTotalDonations">—</div>
+          <div class="stat-lbl">Total Donated</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num" id="statActiveDonors">—</div>
+          <div class="stat-lbl">Active Donors</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num" id="statTotalCatches">—</div>
+          <div class="stat-lbl">Total Catches</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num gold">5×</div>
+          <div class="stat-lbl">Max Multiplier</div>
+        </div>
       </div>
     </div>
 
-    <!-- Top Donors -->
-    <div class="donors-section">
-      <h2 class="section-title">🏅 Top Supporters</h2>
-      <div class="donors-grid" id="donorsGrid">
-        <div class="loading-donors"><div class="loading-spinner"></div><div>Loading supporters...</div></div>
+    <!-- Top Supporters -->
+    <div class="supporters-section reveal">
+      <div class="supporters-label">🏅 Top Supporters</div>
+      <div class="supporters-grid" id="donorsGrid">
+        <div class="loading-state"><div class="spinner"></div><div>Loading supporters...</div></div>
       </div>
     </div>
 
@@ -268,70 +176,63 @@
     import { db } from './assets/js/firebase.client.js';
     import { ref, onValue } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 
-    // Floating coins
-    const coinsContainer = document.getElementById('bgCoins');
-    const coinEmojis = ['💰','💎','✨','👑','🔥','⭐'];
-    for (let i = 0; i < 18; i++) {
-      const coin = document.createElement('div');
-      coin.className = 'coin';
-      coin.textContent = coinEmojis[Math.floor(Math.random() * coinEmojis.length)];
-      coin.style.left  = Math.random() * 100 + '%';
-      coin.style.animationDuration = (6 + Math.random() * 8) + 's';
-      coin.style.animationDelay    = (Math.random() * 8) + 's';
-      coin.style.fontSize = (1 + Math.random() * 1.2) + 'rem';
-      coinsContainer.appendChild(coin);
+    // Particles
+    const emojis = ['💰','💎','✨','👑','🔥','⭐','🎁'];
+    const pc = document.getElementById('particles');
+    for (let i = 0; i < 20; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      p.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      p.style.left   = Math.random() * 100 + '%';
+      p.style.animationDuration = (7 + Math.random() * 9) + 's';
+      p.style.animationDelay    = (Math.random() * 10) + 's';
+      p.style.fontSize = (0.9 + Math.random() * 1.1) + 'rem';
+      pc.appendChild(p);
     }
+
+    // Reveal
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) {
+          setTimeout(() => e.target.classList.add('in'), i * 80);
+          obs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.06 });
+    document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
 
     function getDonationTier(d) {
       if (d >= 2500) return 'king';
       if (d >= 500)  return 'flame';
-      if (d >= 250)  return 'diamond'; // keeping original thresholds
       if (d >= 100)  return 'diamond';
       if (d >= 50)   return 'shine';
       return 'normal';
     }
-
     function fmt(n) {
       if (n >= 1000000) return (n/1000000).toFixed(1)+'M';
       if (n >= 1000)    return (n/1000).toFixed(1)+'K';
       return String(n);
     }
-
     function capitalize(s) { return String(s??'').charAt(0).toUpperCase()+String(s??'').slice(1); }
 
-    function buildDonorName(name, donation) {
-      const tier = getDonationTier(donation);
-      if (tier === 'normal') return capitalize(name);
-      const span = document.createElement('span');
-      span.className = `catcher-name cn-${tier}`;
-      span.textContent = capitalize(name);
-      return span;
-    }
-
-    // Stats
     onValue(ref(db, 'global'), snap => {
       const d = snap.val() || {};
       document.getElementById('statTotalCatches').textContent = fmt(d.total_catches || 0);
     });
 
-    // Trainers → donors + stats
     onValue(ref(db, 'trainers'), snap => {
-      const data = snap.val() || {};
-
+      const data   = snap.val() || {};
       const donors = Object.entries(data)
         .map(([name, info]) => ({ name, donation: info.donation || 0 }))
         .filter(d => d.donation > 0)
         .sort((a, b) => b.donation - a.donation);
 
-      // Stats
-      const totalDonated = donors.reduce((s, d) => s + d.donation, 0);
-      document.getElementById('statTotalDonations').textContent = fmt(totalDonated);
+      document.getElementById('statTotalDonations').textContent = fmt(donors.reduce((s, d) => s + d.donation, 0));
       document.getElementById('statActiveDonors').textContent   = fmt(donors.length);
 
-      // Render top donors
       const grid = document.getElementById('donorsGrid');
       if (donors.length === 0) {
-        grid.innerHTML = '<div style="text-align:center;padding:32px;opacity:0.5;grid-column:1/-1">No supporters yet — be the first! 🎉</div>';
+        grid.innerHTML = '<div class="no-donors">No supporters yet — be the first! 🎉</div>';
         return;
       }
 
@@ -339,36 +240,34 @@
       donors.slice(0, 12).forEach((d, i) => {
         const tier = getDonationTier(d.donation);
         const card = document.createElement('div');
-        const rankClass = i === 0 ? 'rank-1' : i === 1 ? 'rank-2' : i === 2 ? 'rank-3' : '';
-        card.className = `donor-card ${tier} ${rankClass}`;
-        card.style.cursor = 'pointer';
+        card.className = `supporter-card sc-${tier} ${i < 3 ? 'rank-'+(i+1) : ''}`;
         card.addEventListener('click', () => {
           window.location.href = `catcher_detail.html?name=${encodeURIComponent(d.name)}`;
         });
 
         const rankEl = document.createElement('div');
-        rankEl.className = 'donor-rank';
+        rankEl.className = 'sc-rank';
         rankEl.textContent = i + 1;
 
         const nameEl = document.createElement('div');
-        nameEl.className = 'donor-name-el';
-        const nameContent = buildDonorName(d.name, d.donation);
-        if (typeof nameContent === 'string') {
-          nameEl.textContent = nameContent;
-        } else {
-          nameEl.appendChild(nameContent);
-        }
+        nameEl.className = 'sc-name';
+        if (tier !== 'normal') {
+          const span = document.createElement('span');
+          span.className = `cn-name cn-${tier}`;
+          span.textContent = capitalize(d.name);
+          nameEl.appendChild(span);
+        } else { nameEl.textContent = capitalize(d.name); }
 
-        const amountEl = document.createElement('div');
-        amountEl.className = 'donor-amount-el';
-        amountEl.textContent = fmt(d.donation) + ' Coins';
+        const amtEl = document.createElement('div');
+        amtEl.className = 'sc-amount';
+        amtEl.textContent = fmt(d.donation) + ' Coins';
 
         const tierEl = document.createElement('div');
-        tierEl.className = 'donor-tier-el';
-        const tierLabels = { king:'👑 King', flame:'🔥 Flame', diamond:'💎 Diamond', shine:'✨ Shine', normal:'— Standard' };
-        tierEl.textContent = tierLabels[tier] || '—';
+        tierEl.className = 'sc-tier';
+        const labels = { king:'👑 King', flame:'🔥 Flame', diamond:'💎 Diamond', shine:'✨ Shine', normal:'Standard' };
+        tierEl.textContent = labels[tier] || '—';
 
-        card.append(rankEl, nameEl, amountEl, tierEl);
+        card.append(rankEl, nameEl, amtEl, tierEl);
         grid.appendChild(card);
       });
     });
