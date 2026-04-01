@@ -7,24 +7,32 @@ let catcherDonations = {};
 let activeRarityFilter = 'all';
 let hasScrolled = false;
 
+// ── Reveal ────────────────────────────────────────────────────────────────────
+const revealObs = new IntersectionObserver(entries => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('in'), i * 80);
+      revealObs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.06 });
+document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
 function getSavedTrainer() {
-  try { return localStorage.getItem('catchmon_trainer_name') || null; }
-  catch { return null; }
+  try { return localStorage.getItem('catchmon_trainer_name') || null; } catch { return null; }
 }
-
 function sumStats(stats) { return Object.values(stats || {}).reduce((a, b) => a + (b || 0), 0); }
-
 function calcPoints(catchmon) {
   if (!catchmon) return 0;
   const level = catchmon.level || 1;
   const statSum = sumStats(catchmon.stats);
   let points = level * 10 + statSum;
-  const rarityMultipliers = { "Common": 1, "Uncommon": 1.2, "Rare": 1.5, "Epic": 2, "Legendary": 3, "Mythical": 5 };
+  const rarityMultipliers = { "Common":1, "Uncommon":1.2, "Rare":1.5, "Epic":2, "Legendary":3, "Mythical":5 };
   points *= rarityMultipliers[catchmon.rarity] || 1;
   if (catchmon.shiny) points *= 2;
   return Math.round(points);
 }
-
 function getDonationTier(donation) {
   if (donation >= 1000) return "king";
   if (donation >= 500)  return "flame";
@@ -32,37 +40,32 @@ function getDonationTier(donation) {
   if (donation >= 100)  return "shine";
   return "normal";
 }
-
 function buildCatcherCell(catcherName, donation, isMe) {
-  const tier = getDonationTier(donation);
   const wrap = document.createElement('span');
-
   const span = document.createElement('span');
-  span.className = `catcher-name ${tier}`;
+  span.className = `catcher-name ${getDonationTier(donation)}`;
   span.textContent = catcherName;
-  span.style.cursor = 'pointer';
   span.addEventListener('click', (e) => {
     e.stopPropagation();
     window.location.href = `catcher_detail.html?name=${encodeURIComponent(catcherName)}`;
   });
   wrap.appendChild(span);
-
   if (isMe) {
     const you = document.createElement('span');
-    you.className = 'you-tag';
-    you.textContent = 'YOU';
+    you.className = 'you-tag'; you.textContent = 'YOU';
     wrap.appendChild(you);
   }
-
   return wrap;
 }
 
+// ── Rarity buttons ────────────────────────────────────────────────────────────
 function updateRarityButtons() {
   document.querySelectorAll('.rarity-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.rarity === activeRarityFilter);
   });
 }
 
+// ── Scroll ────────────────────────────────────────────────────────────────────
 function scrollToMyRow() {
   if (hasScrolled) return;
   const myRow = document.querySelector('tr.my-row');
@@ -71,8 +74,9 @@ function scrollToMyRow() {
   setTimeout(() => { myRow.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 400);
 }
 
+// ── Render ────────────────────────────────────────────────────────────────────
 function renderTable() {
-  const tbody        = document.getElementById("rankingBody");
+  const tbody          = document.getElementById("rankingBody");
   const showCaughtOnly = document.getElementById("caughtOnly").checked;
   const savedTrainer   = getSavedTrainer();
 
@@ -82,20 +86,19 @@ function renderTable() {
     .sort((a, b) => b.points - a.points);
 
   if (visible.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="8" class="loading"><div class="loading-spinner"></div><div>No Catchmon found</div></td></tr>';
+    tbody.innerHTML = '<tr><td colspan="8" class="loading"><div class="spinner"></div><div>No Catchmon found</div></td></tr>';
     return;
   }
 
-  const rankClasses = ['rank-1', 'rank-2', 'rank-3'];
-  const rowClasses  = ['gold-row', 'silver-row', 'bronze-row'];
+  const rankClasses = ['rank-1','rank-2','rank-3'];
+  const rowClasses  = ['gold-row','silver-row','bronze-row'];
   const fragment    = document.createDocumentFragment();
 
   visible.forEach((p, index) => {
-    const tr    = document.createElement("tr");
-    const isMe  = savedTrainer && p.catcher?.toLowerCase() === savedTrainer.toLowerCase();
+    const tr   = document.createElement("tr");
+    const isMe = savedTrainer && p.catcher?.toLowerCase() === savedTrainer.toLowerCase();
     if (rowClasses[index]) tr.classList.add(rowClasses[index]);
     if (isMe) tr.classList.add('my-row');
-
     tr.addEventListener('click', () => {
       window.location.href = `dex_detail.html?name=${encodeURIComponent(p.name)}`;
     });
@@ -158,30 +161,27 @@ function renderTable() {
 
 function forceRefresh() {
   document.getElementById("rankingBody").innerHTML =
-    '<tr><td colspan="8" class="loading"><div class="loading-spinner"></div><div>Refreshing...</div></td></tr>';
+    '<tr><td colspan="8" class="loading"><div class="spinner"></div><div>Refreshing...</div></td></tr>';
   hasScrolled = false;
   renderTable();
 }
 
-// Firebase
-onValue(ref(db, '.info/connected'), (snapshot) => {
+// ── Firebase ──────────────────────────────────────────────────────────────────
+onValue(ref(db, '.info/connected'), snap => {
   const el = document.getElementById('connectionStatus');
-  if (snapshot.val()) {
-    el.textContent = '🟢 Live'; el.className = 'connection-status connected';
-  } else {
-    el.textContent = '🔴 Offline'; el.className = 'connection-status disconnected';
-  }
+  if (snap.val()) { el.textContent = '🟢 Live'; el.className = 'connection-status connected'; }
+  else            { el.textContent = '🔴 Offline'; el.className = 'connection-status disconnected'; }
 });
 
-onValue(ref(db, 'trainers'), (snapshot) => {
-  const trainersData = snapshot.val() || {};
+onValue(ref(db, 'trainers'), snap => {
+  const data = snap.val() || {};
   allCatchmon = [];
   catcherDonations = {};
-  for (const [catcher, info] of Object.entries(trainersData)) {
+  for (const [catcher, info] of Object.entries(data)) {
     catcherDonations[catcher] = info.donation || 0;
     const team = Array.isArray(info.team) ? info.team : Object.values(info.team || {});
     for (const c of team) {
-      if (c && c.name) {
+      if (c?.name) {
         allCatchmon.push({
           catcher, name: c.name, level: c.level || 1, shiny: c.shiny || false,
           stats: c.stats || {}, rarity: c.rarity || "Common", sprite: c.sprite || "",
@@ -193,6 +193,7 @@ onValue(ref(db, 'trainers'), (snapshot) => {
   renderTable();
 });
 
+// ── Events ────────────────────────────────────────────────────────────────────
 document.querySelectorAll('.rarity-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     activeRarityFilter = btn.dataset.rarity;
@@ -201,8 +202,7 @@ document.querySelectorAll('.rarity-btn').forEach(btn => {
     renderTable();
   });
 });
-
 document.getElementById('caughtOnly').addEventListener('change', () => { hasScrolled = false; renderTable(); });
 document.getElementById('refreshFab').addEventListener('click', forceRefresh);
 
-console.log('🔥 Catchmon Ranking loaded — my-row highlight, auto-scroll, trainer widget');
+console.log('🐲 Catchmon Ranking loaded');

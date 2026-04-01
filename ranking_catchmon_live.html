@@ -5,126 +5,54 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com https://www.google.com https://*.firebasedatabase.app; connect-src 'self' https://*.firebasedatabase.app https://*.firebaseio.com https://www.googleapis.com wss://*.firebasedatabase.app https://www.google.com https://content-firebaseappcheck.googleapis.com https://firebaseappcheck.googleapis.com; frame-src 'self' https://www.google.com https://*.firebasedatabase.app; img-src 'self' data: https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; base-uri 'self';">
   <title>🐲 Legendary Catchmon Arena</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%); min-height: 100vh; color: white; overflow-x: hidden; }
-    .container { max-width: 1400px; margin: auto; padding: 20px; }
-    .connection-status { position: fixed; top: 12px; left: 12px; background: rgba(0,0,0,0.7); color: white; padding: 6px 13px; border-radius: 16px; font-size: 12px; font-weight: 600; z-index: 900; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.15); }
-    .connection-status.connected { background: rgba(76,175,80,0.85); }
-    .connection-status.disconnected { background: rgba(244,67,54,0.85); }
-    .header-section { display: flex; align-items: center; justify-content: space-between; margin-bottom: 30px; background: rgba(255,255,255,0.1); backdrop-filter: blur(15px); border-radius: 20px; padding: 20px 30px; border: 1px solid rgba(255,255,255,0.2); }
-    .header-content { display: flex; align-items: center; justify-content: space-between; width: 100%; }
-    .back-button { font-size: 16px; text-decoration: none; color: white; font-weight: 700; padding: 12px 20px; border-radius: 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); transition: all 0.2s ease; }
-    .back-button:hover { background: rgba(255,255,255,0.2); transform: translateY(-2px); }
-    h1 { text-align: center; flex: 1; font-size: clamp(1.8rem, 5vw, 3rem); background: linear-gradient(45deg, #FFD700, #FF6B6B, #4ECDC4, #45B7D1); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; letter-spacing: -1px; }
-    .controls-section { background: rgba(255,255,255,0.1); backdrop-filter: blur(15px); border-radius: 15px; padding: 20px; margin-bottom: 25px; border: 1px solid rgba(255,255,255,0.2); }
-    .controls-row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px; }
-    .rarity-filters { display: flex; gap: 8px; flex-wrap: wrap; }
-    .rarity-btn { padding: 8px 14px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2); font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.2s ease; background: rgba(255,255,255,0.08); color: white; }
-    .rarity-btn:hover { background: rgba(255,255,255,0.15); transform: translateY(-1px); }
-    .rarity-btn.active { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
-    .rarity-btn[data-rarity="all"].active      { background: rgba(255,255,255,0.25); border-color: rgba(255,255,255,0.5); }
-    .rarity-btn[data-rarity="Common"].active   { background: rgba(158,158,158,0.4); border-color: #bdbdbd; }
-    .rarity-btn[data-rarity="Starter"].active  { background: rgba(76,175,80,0.4);   border-color: #81c784; }
-    .rarity-btn[data-rarity="Rare"].active     { background: rgba(33,150,243,0.4);  border-color: #64b5f6; }
-    .rarity-btn[data-rarity="Legendary"].active{ background: rgba(255,152,0,0.4);   border-color: #ffb74d; }
-    .rarity-btn[data-rarity="Mythical"].active { background: rgba(156,39,176,0.4);  border-color: #ce93d8; }
-    .rarity-btn[data-rarity="God"].active      { background: rgba(128,0,128,0.4);   border-color: #ba68c8; }
-    .checkbox-label { display: inline-flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 600; color: white; cursor: pointer; padding: 8px 16px; background: rgba(255,255,255,0.08); border-radius: 20px; border: 1px solid rgba(255,255,255,0.2); transition: all 0.2s ease; }
-    .checkbox-label:hover { background: rgba(255,255,255,0.15); }
-    .checkbox-label input[type="checkbox"] { width: 17px; height: 17px; accent-color: #FFD700; cursor: pointer; }
-    .rarity-pill { display: inline-block; font-size: 10px; font-weight: 700; padding: 1px 7px; border-radius: 8px; margin-left: 5px; vertical-align: middle; }
-    .rarity-common   { background: rgba(158,158,158,0.25); color: #e0e0e0; }
-    .rarity-starter  { background: rgba(76,175,80,0.25);  color: #81c784; }
-    .rarity-rare     { background: rgba(33,150,243,0.25); color: #64b5f6; }
-    .rarity-legendary{ background: rgba(255,152,0,0.25);  color: #ffb74d; }
-    .rarity-mythical { background: rgba(156,39,176,0.25); color: #ce93d8; }
-    .rarity-god      { background: rgba(128,0,128,0.25);  color: #ba68c8; }
-    .table-section { background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); border-radius: 20px; overflow: hidden; border: 1px solid rgba(255,255,255,0.2); }
-    table { width: 100%; border-collapse: collapse; font-size: 15px; }
-    th { background: rgba(255,215,0,0.2); color: white; padding: 15px 12px; text-align: center; font-weight: 700; font-size: 14px; border: none; position: sticky; top: 0; z-index: 10; }
-    td { padding: 12px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); color: white; }
-    tbody tr { cursor: pointer; transition: background-color 0.15s ease; }
-    tbody tr:hover td { background: rgba(255,215,0,0.1); }
-
-    /* ── MY ROW HIGHLIGHT ── */
-    tbody tr.my-row td { background: rgba(78,205,196,0.13) !important; border-bottom: 1px solid rgba(78,205,196,0.25) !important; }
-    tbody tr.my-row:hover td { background: rgba(78,205,196,0.22) !important; }
-    tbody tr.my-row td:first-child { border-left: 3px solid #4ECDC4; }
-    .you-tag { display: inline-block; font-size: 9px; font-weight: 800; padding: 1px 5px; border-radius: 5px; margin-left: 6px; background: rgba(78,205,196,0.25); color: #4ECDC4; border: 1px solid rgba(78,205,196,0.4); vertical-align: middle; }
-
-    .rank-badge { display: inline-flex; align-items: center; justify-content: center; width: 35px; height: 35px; border-radius: 50%; font-weight: 800; font-size: 1rem; color: white; }
-    .rank-1 { background: linear-gradient(45deg, #FFD700, #FFA500); box-shadow: 0 0 15px rgba(255,215,0,0.5); }
-    .rank-2 { background: linear-gradient(45deg, #C0C0C0, #E8E8E8); color: #333; }
-    .rank-3 { background: linear-gradient(45deg, #CD7F32, #DAA520); }
-    .rank-other { background: rgba(108,117,125,0.8); }
-    .gold-row td   { background: rgba(255,215,0,0.15);   border-bottom: 1px solid rgba(255,215,0,0.3); }
-    .silver-row td { background: rgba(192,192,192,0.15); border-bottom: 1px solid rgba(192,192,192,0.3); }
-    .bronze-row td { background: rgba(205,127,50,0.15);  border-bottom: 1px solid rgba(205,127,50,0.3); }
-    img.catchmon-sprite { width: 60px; height: 60px; object-fit: contain; border-radius: 8px; transition: transform 0.2s ease; border: 1px solid rgba(255,255,255,0.2); }
-    img.catchmon-sprite:hover { transform: scale(1.1); }
-    .name-cell   { font-weight: 700; font-size: 1rem; color: white; }
-    .points-cell { font-weight: 700; color: #FFD700; font-size: 1.1rem; }
-    .level-cell  { font-weight: 600; color: #4ECDC4; }
-    .stats-cell  { font-weight: 600; color: #FF6B6B; }
-    .shiny-badge { font-size: 20px; }
-    .catcher-cell { font-weight: 600; }
-    .catcher-name { font-weight: 700; padding: 4px 8px; border-radius: 8px; }
-    .king    { background: linear-gradient(90deg, #FFD700, #FFA500); color: #000; }
-    .flame   { background: linear-gradient(90deg, #FF4444, #FF6B6B); color: white; }
-    .diamond { background: linear-gradient(90deg, #4ECDC4, #45B7D1); color: white; }
-    .shine   { background: linear-gradient(90deg, #4CAF50, #66BB6A); color: white; }
-    .normal  { color: white; background: rgba(255,255,255,0.1); }
-    .loading { text-align: center; padding: 40px; color: rgba(255,255,255,0.8); font-size: 16px; display: flex; flex-direction: column; align-items: center; gap: 15px; }
-    .loading-spinner { width: 30px; height: 30px; border: 3px solid rgba(255,255,255,0.3); border-top: 3px solid #FFD700; border-radius: 50%; animation: spin 1s linear infinite; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .refresh-fab { position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; background: linear-gradient(45deg, #4ECDC4, #44A08D); border: none; border-radius: 50%; color: white; font-size: 1.2rem; cursor: pointer; transition: transform 0.2s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 1000; }
-    .refresh-fab:hover { transform: scale(1.1); }
-    @media (max-width: 1024px) { th:nth-child(6), td:nth-child(6) { display: none; } }
-    @media (max-width: 768px) { .container { padding: 15px; } .header-section { flex-direction: column; gap: 15px; padding: 20px; } .header-content { flex-direction: column; gap: 15px; } .controls-row { flex-direction: column; align-items: flex-start; } .rarity-filters { gap: 6px; } .rarity-btn { padding: 6px 11px; font-size: 12px; } table { font-size: 13px; } th, td { padding: 10px 6px; } img.catchmon-sprite { width: 45px; height: 45px; } .rank-badge { width: 28px; height: 28px; font-size: 0.8rem; } th:nth-child(7), td:nth-child(7) { display: none; } }
-    @media (max-width: 600px) { .table-section { overflow-x: auto; } table { min-width: 400px; } }
-    @media (max-width: 480px) { .container { padding: 10px; } table { font-size: 12px; } th, td { padding: 8px 4px; } img.catchmon-sprite { width: 35px; height: 35px; } .rank-badge { width: 24px; height: 24px; font-size: 0.7rem; } th:nth-child(4), td:nth-child(4) { display: none; } }
-    @media (prefers-reduced-motion: reduce) { * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; } }
-  </style>
+  <link rel="stylesheet" href="assets/css/ranking_catchmon.css">
 </head>
 <body>
-  <div class="connection-status" id="connectionStatus">🔄 Verbinde...</div>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="connection-status" id="connectionStatus">🔄 Connecting...</div>
+
   <div class="container">
-    <div class="header-section">
-      <div class="header-content">
-        <a class="back-button" href="index.html">← Back</a>
-        <h1>🐲 Legendary Catchmon Arena</h1>
-        <div></div>
-      </div>
+
+    <div class="top-bar reveal">
+      <a class="back-btn" href="index.html">← Arena</a>
     </div>
-    <div class="controls-section">
-      <div class="controls-row">
-        <div class="rarity-filters">
-          <button class="rarity-btn active" data-rarity="all">⚡ All</button>
-          <button class="rarity-btn" data-rarity="Common">⚪ Common</button>
-          <button class="rarity-btn" data-rarity="Starter">🌱 Starter</button>
-          <button class="rarity-btn" data-rarity="Rare">🔵 Rare</button>
-          <button class="rarity-btn" data-rarity="Legendary">🟡 Legendary</button>
-          <button class="rarity-btn" data-rarity="Mythical">🟣 Mythical</button>
-          <button class="rarity-btn" data-rarity="God">⚫ God</button>
-        </div>
-        <label class="checkbox-label">
-          <input type="checkbox" id="caughtOnly">Caught only
-        </label>
-      </div>
+
+    <div class="page-header reveal">
+      <div class="eyebrow">Catchmon Arena · Rankings</div>
+      <h1><span class="line-white">Legendary</span><span class="line-grad">Catchmon Arena</span></h1>
     </div>
-    <div class="table-section">
+
+    <div class="controls reveal">
+      <div class="rarity-filters">
+        <button class="rarity-btn active" data-rarity="all">⚡ All</button>
+        <button class="rarity-btn" data-rarity="Common">⚪ Common</button>
+        <button class="rarity-btn" data-rarity="Starter">🌱 Starter</button>
+        <button class="rarity-btn" data-rarity="Rare">🔵 Rare</button>
+        <button class="rarity-btn" data-rarity="Legendary">🟡 Legendary</button>
+        <button class="rarity-btn" data-rarity="Mythical">🟣 Mythical</button>
+        <button class="rarity-btn" data-rarity="God">⚫ God</button>
+      </div>
+      <label class="checkbox-label">
+        <input type="checkbox" id="caughtOnly">Caught only
+      </label>
+    </div>
+
+    <div class="table-wrap reveal">
       <table>
         <thead>
-          <tr><th>#</th><th>Image</th><th>Name</th><th>Catcher</th><th>Points</th><th>Level</th><th>Stats</th><th>✨</th></tr>
+          <tr><th>#</th><th>Sprite</th><th>Name</th><th>Catcher</th><th>Points</th><th>Level</th><th>Stats</th><th>✨</th></tr>
         </thead>
         <tbody id="rankingBody">
-          <tr><td colspan="8" class="loading"><div class="loading-spinner"></div><div>Connecting to Firebase...</div></td></tr>
+          <tr><td colspan="8" class="loading"><div class="spinner"></div><div>Loading...</div></td></tr>
         </tbody>
       </table>
     </div>
+
   </div>
+
   <button class="refresh-fab" id="refreshFab" title="Refresh">🔄</button>
+
   <script type="module" src="assets/js/pages/ranking_catchmon.js"></script>
   <script type="module" src="assets/js/trainer_widget.js"></script>
 </body>
