@@ -2,38 +2,38 @@
 import { db } from '../firebase.client.js';
 import { ref, onValue } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 
-const statsOrder = ["ATK", "DEF", "SPD", "WIS", "CHA", "LUK"];
+const statsOrder = ["ATK","DEF","SPD","WIS","CHA","LUK"];
 let allEntries = [];
 let catcherDonations = {};
 let dexList = [];
 let isGodMode = false;
 let pendingTrainers = null;
 
-function getSavedTrainer() {
-  try { return localStorage.getItem('catchmon_trainer_name') || null; }
-  catch { return null; }
-}
+// ── Reveal ────────────────────────────────────────────────────────────────────
+const revealObs = new IntersectionObserver(entries => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('in'), i * 80);
+      revealObs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.06 });
+document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
 
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function getSavedTrainer() {
+  try { return localStorage.getItem('catchmon_trainer_name') || null; } catch { return null; }
+}
 function escapeHtml(input) {
   const s = String(input ?? "");
   return s.replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#39;");
 }
-
 function validateCatchmonName(name) {
   if (!name) return null;
   const cleaned = name.trim().slice(0, 60);
   if (!/^[\w\s\-]+$/.test(cleaned)) return null;
   return cleaned;
 }
-
-const rawName = new URLSearchParams(window.location.search).get("name");
-const catchmonName = validateCatchmonName(rawName);
-
-if (!catchmonName) {
-  document.getElementById("catchTitle").textContent = "Invalid Catchmon name.";
-  document.getElementById("summary").textContent = "";
-}
-
 function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
 function sumStats(stats) { return Object.values(stats || {}).reduce((a, b) => a + (b || 0), 0); }
 
@@ -43,12 +43,11 @@ function calcPoints(catchmon) {
   const stats = catchmon.stats || {};
   const statSum = Object.values(stats).reduce((sum, val) => sum + (val || 0), 0);
   let points = level * 10 + statSum;
-  const rarityMultipliers = { "Common": 1, "Uncommon": 1.2, "Rare": 1.5, "Epic": 2, "Legendary": 3, "Mythical": 5 };
+  const rarityMultipliers = { "Common":1, "Uncommon":1.2, "Rare":1.5, "Epic":2, "Legendary":3, "Mythical":5 };
   points *= rarityMultipliers[catchmon.rarity] || 1;
   if (catchmon.shiny) points *= 2;
   return Math.round(points);
 }
-
 function getDonationTier(donation) {
   if (donation >= 2500) return "king";
   if (donation >= 500)  return "flame";
@@ -56,9 +55,7 @@ function getDonationTier(donation) {
   if (donation >= 100)  return "shine";
   return "normal";
 }
-
 function isGodCatchmon(sprite) { return sprite && sprite.includes('/God/'); }
-
 function relativeTime(tsMs) {
   if (!tsMs) return null;
   const diff = Date.now() - tsMs;
@@ -72,86 +69,79 @@ function relativeTime(tsMs) {
   return `vor ${Math.floor(d / 30)} Monat${Math.floor(d / 30) === 1 ? '' : 'en'}`;
 }
 
+// ── URL Param ─────────────────────────────────────────────────────────────────
+const rawName     = new URLSearchParams(window.location.search).get("name");
+const catchmonName = validateCatchmonName(rawName);
+if (!catchmonName) {
+  document.getElementById("catchTitle").textContent = "Invalid Catchmon name.";
+  document.getElementById("summary").textContent    = "";
+}
+
+// ── Render Table ──────────────────────────────────────────────────────────────
 function renderTable() {
-  const tbody       = document.querySelector("#dataTable tbody");
+  const tbody          = document.querySelector("#dataTable tbody");
   const showCaughtOnly = document.getElementById("caughtOnly").checked;
   const savedTrainer   = getSavedTrainer();
 
   const visible = allEntries.filter(e => !showCaughtOnly || e.catcher);
-
   if (visible.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="12" class="loading"><div class="loading-spinner"></div><div>No data available</div></td></tr>';
+    tbody.innerHTML = '<tr><td colspan="12" class="loading"><div class="spinner"></div><div>No data available</div></td></tr>';
     return;
   }
 
   const caught   = visible.filter(e => e.catcher).sort((a, b) => calcPoints(b) - calcPoints(a));
   const uncaught = visible.filter(e => !e.catcher);
-  const sorted   = [...caught, ...uncaught];
-
   const fragment = document.createDocumentFragment();
 
-  sorted.forEach(e => {
-    const tr = document.createElement("tr");
-    if (!e.catcher) tr.classList.add('uncaught-row');
-
-    // Highlight eigener Eintrag
+  [...caught, ...uncaught].forEach(e => {
+    const tr   = document.createElement("tr");
     const isMe = savedTrainer && e.catcher && e.catcher.toLowerCase() === savedTrainer.toLowerCase();
-    if (isMe) tr.classList.add('my-row');
+    if (!e.catcher) tr.classList.add('uncaught-row');
+    if (isMe)       tr.classList.add('my-row');
 
     // Catcher cell
     const tdCatcher = document.createElement('td');
     if (!e.catcher) {
-      tdCatcher.innerHTML = '<span style="opacity:0.4">—</span>';
+      tdCatcher.innerHTML = '<span style="opacity:0.35">—</span>';
     } else if (isGodMode) {
-      const span = document.createElement('span');
-      span.style.color = '#9370DB';
-      span.textContent = '█████';
+      const span = document.createElement('span'); span.style.color = '#9370DB'; span.textContent = '█████';
       tdCatcher.appendChild(span);
     } else {
       const tier = getDonationTier(catcherDonations[e.catcher] || 0);
-      const el = document.createElement('span');
+      const el   = document.createElement('span');
       el.className = `catcher-name ${tier}`;
       el.textContent = capitalize(e.catcher);
       el.addEventListener('click', () => {
         window.location.href = `catcher_detail.html?name=${encodeURIComponent(e.catcher)}`;
       });
       tdCatcher.appendChild(el);
-
-      // YOU badge
       if (isMe) {
         const you = document.createElement('span');
-        you.className = 'you-tag';
-        you.textContent = 'YOU';
+        you.className = 'you-tag'; you.textContent = 'YOU';
         tdCatcher.appendChild(you);
       }
     }
 
     const tdPoints = document.createElement('td');
     tdPoints.textContent = e.catcher ? calcPoints(e).toLocaleString('de-DE') : '—';
-
     const tdLevel = document.createElement('td');
     tdLevel.textContent = e.catcher ? (e.level || 1) : '—';
-
     const tdShiny = document.createElement('td');
     tdShiny.textContent = e.shiny ? "✨" : "";
-
     const tdSum = document.createElement('td');
     tdSum.textContent = e.catcher ? sumStats(e.stats).toLocaleString('de-DE') : '—';
-
     const tdTime = document.createElement('td');
     tdTime.className = 'time-cell';
     const rel = relativeTime(e.caught_at);
     tdTime.textContent = rel || '—';
-    if (rel) tdTime.title = e.caught_at ? new Date(e.caught_at).toLocaleString('de-DE') : '';
+    if (rel && e.caught_at) tdTime.title = new Date(e.caught_at).toLocaleString('de-DE');
 
     tr.append(tdCatcher, tdPoints, tdLevel, tdShiny, tdSum, tdTime);
-
     statsOrder.forEach(s => {
       const td = document.createElement('td');
       td.textContent = e.catcher ? (e.stats?.[s] ?? 0) : '—';
       tr.appendChild(td);
     });
-
     fragment.appendChild(tr);
   });
 
@@ -159,6 +149,7 @@ function renderTable() {
   tbody.appendChild(fragment);
 }
 
+// ── Process Data ──────────────────────────────────────────────────────────────
 function processData(trainersData) {
   const lowerName = catchmonName.toLowerCase();
   const caughtEntries = [];
@@ -168,9 +159,7 @@ function processData(trainersData) {
     catcherDonations[catcher] = info.donation || 0;
     const team = Array.isArray(info.team) ? info.team : Object.values(info.team || {});
     team.forEach(p => {
-      if (p.name && p.name.toLowerCase() === lowerName) {
-        caughtEntries.push({ ...p, catcher });
-      }
+      if (p.name && p.name.toLowerCase() === lowerName) caughtEntries.push({ ...p, catcher });
     });
   });
 
@@ -181,10 +170,10 @@ function processData(trainersData) {
     isGodMode = true;
     document.body.classList.add('god-mode');
     document.getElementById("catchTitle").textContent = "#??? ??? ??? ???";
-    document.getElementById("summary").textContent = "█ CLASSIFIED / █ CLASSIFIED";
+    document.getElementById("summary").textContent    = "█ CLASSIFIED / █ CLASSIFIED";
   } else {
     document.getElementById("catchTitle").textContent =
-      `#${String(dexEntry?.id || "").padStart(3, "0")} ${capitalize(catchmonName)}`;
+      `#${String(dexEntry?.id || "").padStart(3,"0")} ${capitalize(catchmonName)}`;
     const trainerCount = new Set(caughtEntries.map(e => e.catcher)).size;
     document.getElementById("summary").textContent =
       `${caughtEntries.length} gefangen · ${trainerCount} Trainer`;
@@ -198,10 +187,11 @@ function processData(trainersData) {
   renderTable();
 }
 
-onValue(ref(db, 'trainers'), (snapshot) => {
-  const trainersData = snapshot.val() || {};
-  if (catchmonName && dexList.length > 0) processData(trainersData);
-  else if (catchmonName) pendingTrainers = trainersData;
+// ── Firebase ──────────────────────────────────────────────────────────────────
+onValue(ref(db, 'trainers'), snap => {
+  const data = snap.val() || {};
+  if (catchmonName && dexList.length > 0) processData(data);
+  else if (catchmonName) pendingTrainers = data;
 });
 
 async function init() {
@@ -209,10 +199,7 @@ async function init() {
   try {
     const res = await fetch("dex_list.json?" + Date.now());
     dexList = await res.json();
-    if (pendingTrainers) {
-      processData(pendingTrainers);
-      pendingTrainers = null;
-    }
+    if (pendingTrainers) { processData(pendingTrainers); pendingTrainers = null; }
   } catch (err) {
     console.error("Error loading dex list:", err);
     document.getElementById("catchTitle").textContent = "Error loading data";
@@ -221,4 +208,4 @@ async function init() {
 
 init();
 document.getElementById('caughtOnly').addEventListener('change', renderTable);
-console.log('🔥 Dex Detail loaded — my-row highlight, trainer widget');
+console.log('🔥 Dex Detail loaded');

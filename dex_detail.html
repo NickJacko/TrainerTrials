@@ -5,116 +5,54 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com https://www.google.com https://*.firebasedatabase.app; connect-src 'self' https://*.firebasedatabase.app https://*.firebaseio.com https://www.googleapis.com wss://*.firebasedatabase.app https://www.google.com https://content-firebaseappcheck.googleapis.com https://firebaseappcheck.googleapis.com; frame-src 'self' https://www.google.com https://*.firebasedatabase.app; img-src 'self' data: https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; base-uri 'self';">
   <title>Catchmon Detail</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%); min-height: 100vh; color: white; overflow-x: hidden; }
-    body.god-mode { background: linear-gradient(135deg, #0a0a0a 0%, #1a001a 30%, #000000 70%, #2d002d 100%); }
-    .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
-
-    .top-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 30px; background: rgba(255,255,255,0.1); backdrop-filter: blur(15px); border-radius: 20px; padding: 20px 30px; border: 1px solid rgba(255,255,255,0.2); }
-    .back-button { font-size: 16px; text-decoration: none; color: white; font-weight: 700; padding: 12px 20px; border-radius: 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); transition: all 0.2s ease; }
-    .back-button:hover { background: rgba(255,255,255,0.2); transform: translateY(-2px); }
-    body.god-mode .back-button { background: rgba(128,0,128,0.3); border-color: rgba(147,112,219,0.4); color: #DDA0DD; }
-
-    .hero-section { display: grid; grid-template-columns: 1fr 2fr; gap: 30px; margin-bottom: 30px; align-items: start; }
-    .image-container { background: rgba(255,255,255,0.1); backdrop-filter: blur(15px); border-radius: 20px; padding: 25px; text-align: center; border: 1px solid rgba(255,255,255,0.2); position: relative; }
-    .catchmon-image { width: 220px; height: 220px; object-fit: contain; border-radius: 15px; transition: transform 0.3s ease; filter: drop-shadow(0 8px 20px rgba(0,0,0,0.3)); }
-    .catchmon-image:hover { transform: scale(1.05); }
-    body.god-mode .catchmon-image { filter: brightness(0.2) saturate(0) contrast(2); border: 2px solid rgba(128,0,128,0.6); }
-    .god-image-overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); color: #9370DB; font-weight: 900; font-size: 14px; text-align: center; background: rgba(0,0,0,0.8); padding: 10px 15px; border-radius: 12px; border: 1px solid rgba(147,112,219,0.5); opacity: 0; white-space: nowrap; z-index: 3; }
-    body.god-mode .god-image-overlay { opacity: 1; }
-    .info-section { display: flex; flex-direction: column; gap: 16px; }
-    .catchmon-title { font-size: clamp(2rem, 5vw, 3rem); font-weight: 800; background: linear-gradient(45deg, #FFD700, #FF6B6B, #4ECDC4, #45B7D1); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -1px; }
-    body.god-mode .catchmon-title { color: #9370DB; background: none; -webkit-text-fill-color: #9370DB; }
-    .stats-summary { background: rgba(255,255,255,0.1); backdrop-filter: blur(15px); border-radius: 15px; padding: 18px; border: 1px solid rgba(255,255,255,0.2); }
-    .summary-text { font-size: 1.1rem; color: rgba(255,255,255,0.9); font-weight: 600; }
-    body.god-mode .summary-text { color: #DDA0DD; }
-
-    .filter-section { background: rgba(255,255,255,0.08); border-radius: 14px; padding: 16px 20px; text-align: center; border: 1px solid rgba(255,255,255,0.12); margin-bottom: 24px; }
-    .filter-section label { color: white; font-weight: 600; font-size: 0.95rem; background: rgba(255,255,255,0.1); padding: 9px 18px; border-radius: 18px; border: 1px solid rgba(255,255,255,0.2); cursor: pointer; transition: all 0.2s ease; display: inline-flex; align-items: center; gap: 9px; }
-    .filter-section label:hover { background: rgba(255,255,255,0.18); }
-    body.god-mode .filter-section label { background: rgba(75,0,130,0.2); border-color: rgba(128,0,128,0.3); color: #DDA0DD; }
-    #caughtOnly { width: 17px; height: 17px; accent-color: #9370DB; cursor: pointer; }
-
-    .table-section { background: rgba(255,255,255,0.08); backdrop-filter: blur(15px); border-radius: 20px; overflow: hidden; border: 1px solid rgba(255,255,255,0.15); }
-    body.god-mode .table-section { background: rgba(25,0,25,0.8); border-color: rgba(75,0,130,0.4); }
-    table { width: 100%; border-collapse: collapse; font-size: 13px; }
-    th { background: rgba(255,215,0,0.18); color: white; padding: 13px 10px; text-align: center; font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 0.4px; border: none; position: sticky; top: 0; z-index: 10; }
-    body.god-mode th { background: rgba(75,0,130,0.4); color: #DDA0DD; }
-    td { padding: 11px 10px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.08); color: white; }
-    body.god-mode td { color: #DDA0DD; border-bottom-color: rgba(75,0,130,0.2); }
-    tbody tr { transition: background-color 0.15s ease; }
-    tbody tr:hover td { background: rgba(255,215,0,0.08); }
-    body.god-mode tbody tr:hover td { background: rgba(75,0,130,0.2); }
-    tr.uncaught-row td { opacity: 0.45; }
-    tr.uncaught-row:hover td { opacity: 0.65; background: rgba(255,255,255,0.04) !important; }
-
-    /* ── MY ROW HIGHLIGHT ── */
-    tbody tr.my-row td {
-      background: rgba(78,205,196,0.13) !important;
-      border-bottom: 1px solid rgba(78,205,196,0.25) !important;
-    }
-    tbody tr.my-row:hover td { background: rgba(78,205,196,0.22) !important; }
-    tbody tr.my-row td:first-child { border-left: 3px solid #4ECDC4; }
-    .you-tag {
-      display: inline-block; font-size: 9px; font-weight: 800;
-      padding: 1px 5px; border-radius: 5px; margin-left: 6px;
-      background: rgba(78,205,196,0.25); color: #4ECDC4;
-      border: 1px solid rgba(78,205,196,0.4); vertical-align: middle;
-    }
-
-    .time-cell { font-size: 11px; color: rgba(255,255,255,0.5); font-style: italic; }
-    .catcher-name { font-weight: 700; padding: 3px 8px; border-radius: 8px; cursor: pointer; }
-    .catcher-name:hover { opacity: 0.8; }
-    .king    { background: linear-gradient(90deg, #FFD700, #FFA500); color: #000; }
-    .flame   { background: linear-gradient(90deg, #FF4444, #FF6B6B); color: white; }
-    .diamond { background: linear-gradient(90deg, #4ECDC4, #45B7D1); color: white; }
-    .shine   { background: linear-gradient(90deg, #4CAF50, #66BB6A); color: white; }
-    .normal  { color: white; background: rgba(255,255,255,0.1); }
-    body.god-mode .normal { color: #DDA0DD; background: rgba(75,0,130,0.2); }
-    .loading { text-align: center; padding: 40px; color: rgba(255,255,255,0.8); font-size: 16px; display: flex; flex-direction: column; align-items: center; gap: 15px; }
-    .loading-spinner { width: 28px; height: 28px; border: 3px solid rgba(255,255,255,0.3); border-top: 3px solid #FFD700; border-radius: 50%; animation: spin 1s linear infinite; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    @media (max-width: 1024px) { .hero-section { grid-template-columns: 1fr; text-align: center; } .catchmon-image { width: 180px; height: 180px; } }
-    @media (max-width: 768px) { .container { padding: 12px; } .top-bar { flex-direction: column; gap: 12px; padding: 16px; } table { font-size: 11px; } th, td { padding: 8px 5px; } }
-    @media (max-width: 600px) { .table-section { overflow-x: auto; } table { min-width: 600px; } }
-    @media (prefers-reduced-motion: reduce) { * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
-  </style>
+  <link rel="stylesheet" href="assets/css/dex_detail.css">
 </head>
 <body>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+
   <div class="container">
-    <div class="top-bar">
-      <a class="back-button" href="catchdex_live.html">← Catchdex</a>
-      <div></div>
+
+    <div class="top-bar reveal">
+      <a class="back-btn" href="catchdex_live.html">← Catchdex</a>
     </div>
-    <div class="hero-section">
-      <div class="image-section">
-        <div class="image-container">
-          <img id="catchImg" class="catchmon-image" src="" alt="Catchmon" loading="lazy">
-          <div class="god-image-overlay">CLASSIFIED ENTITY<br>ACCESS RESTRICTED</div>
-        </div>
+
+    <div class="hero reveal">
+      <div class="hero-img-wrap">
+        <img id="catchImg" class="hero-img" src="" alt="Catchmon" loading="lazy">
+        <div class="god-overlay">CLASSIFIED ENTITY<br>ACCESS RESTRICTED</div>
       </div>
-      <div class="info-section">
-        <h1 id="catchTitle" class="catchmon-title">Loading...</h1>
-        <div class="stats-summary">
-          <p id="summary" class="summary-text">Loading statistics...</p>
-        </div>
+      <div class="hero-info">
+        <div class="hero-eyebrow">Catchmon Detail</div>
+        <h1 id="catchTitle" class="catch-title">Loading...</h1>
+        <div class="catch-summary" id="summary">Loading statistics...</div>
       </div>
     </div>
-    <div class="filter-section">
-      <label><input type="checkbox" id="caughtOnly"><span>Show caught only</span></label>
+
+    <div class="filter-bar reveal">
+      <label class="filter-label">
+        <input type="checkbox" id="caughtOnly">
+        <span>Show caught only</span>
+      </label>
     </div>
-    <div class="table-section">
+
+    <div class="table-wrap reveal">
       <table id="dataTable">
         <thead>
-          <tr><th>Catcher</th><th>Points</th><th>Lvl</th><th>✨</th><th>Stats</th><th>Wann</th><th>ATK</th><th>DEF</th><th>SPD</th><th>WIS</th><th>CHA</th><th>LUK</th></tr>
+          <tr>
+            <th>Catcher</th><th>Points</th><th>Lvl</th><th>✨</th>
+            <th>Stats</th><th>Wann</th>
+            <th>ATK</th><th>DEF</th><th>SPD</th><th>WIS</th><th>CHA</th><th>LUK</th>
+          </tr>
         </thead>
         <tbody>
-          <tr><td colspan="12" class="loading"><div class="loading-spinner"></div><div>Loading...</div></td></tr>
+          <tr><td colspan="12" class="loading"><div class="spinner"></div><div>Loading...</div></td></tr>
         </tbody>
       </table>
     </div>
+
   </div>
+
   <script type="module" src="assets/js/pages/dex_detail.js"></script>
   <script type="module" src="assets/js/trainer_widget.js"></script>
 </body>
