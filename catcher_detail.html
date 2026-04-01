@@ -3,149 +3,89 @@
 <head>
   <meta charset="UTF-8" />
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com https://www.google.com https://*.firebasedatabase.app; connect-src 'self' https://*.firebasedatabase.app https://*.firebaseio.com https://www.googleapis.com wss://*.firebasedatabase.app https://www.google.com https://content-firebaseappcheck.googleapis.com https://firebaseappcheck.googleapis.com; frame-src 'self' https://www.google.com https://*.firebasedatabase.app; img-src 'self' data: https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; base-uri 'self';">
-  <title>🎮 Elite Catcher Profile</title>
+  <title>🎮 Catcher Profile</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-  <meta name="theme-color" content="#1a1a2e">
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%); min-height: 100vh; color: white; overflow-x: hidden; }
-    .container { max-width: 1400px; margin: auto; padding: 20px; }
-
-    .header-section { display: flex; align-items: center; justify-content: space-between; margin-bottom: 30px; background: rgba(255,255,255,0.08); backdrop-filter: blur(15px); border-radius: 20px; padding: 20px 30px; border: 1px solid rgba(255,255,255,0.15); }
-    .header-content { display: flex; align-items: center; justify-content: space-between; width: 100%; }
-    .back-button { font-size: 16px; text-decoration: none; color: white; font-weight: 600; padding: 12px 20px; border-radius: 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); transition: all 0.3s ease; }
-    .back-button:hover { background: rgba(255,255,255,0.15); transform: translateY(-2px); }
-    .title-section { text-align: center; flex: 1; }
-    h1 { margin: 0 0 8px 0; font-size: clamp(1.8rem, 5vw, 3rem); background: linear-gradient(45deg, #FFD700, #FF6B6B, #4ECDC4, #45B7D1); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; letter-spacing: -1px; }
-    .subtitle { font-size: clamp(0.9rem, 3vw, 1.2rem); color: rgba(255,255,255,0.75); font-weight: 600; }
-
-    .stats-section { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; margin-bottom: 24px; }
-    .stat-card { background: rgba(255,255,255,0.08); backdrop-filter: blur(15px); border-radius: 15px; padding: 18px; border: 1px solid rgba(255,255,255,0.12); transition: all 0.3s ease; }
-    .stat-card:hover { transform: translateY(-3px); background: rgba(255,255,255,0.12); }
-    .stat-title { font-size: 0.9rem; font-weight: 700; color: #FFD700; margin-bottom: 8px; }
-    .stat-value { font-size: 2rem; font-weight: 800; color: white; margin-bottom: 5px; }
-    .stat-desc { color: rgba(255,255,255,0.6); font-size: 0.8rem; }
-
-    .level-section { background: rgba(255,255,255,0.08); border-radius: 15px; padding: 20px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.12); }
-    .level-title { text-align: center; font-size: 1.1rem; font-weight: 700; color: #FFD700; margin-bottom: 14px; }
-    .level-bar-container { background: rgba(255,255,255,0.1); border-radius: 20px; height: 28px; overflow: hidden; border: 1px solid rgba(255,255,255,0.15); }
-    .level-bar { height: 100%; width: 0%; transition: width 1.5s ease; border-radius: 20px; display: flex; align-items: center; justify-content: center; font-weight: 700; color: white; font-size: 0.85rem; }
-    .level-rainbow  { background: linear-gradient(90deg, #ff0000, #ff8000, #ffff00, #00ff00, #00ffff, #0000ff, #8000ff); }
-    .level-deepred  { background: linear-gradient(90deg, #B71C1C, #D32F2F); }
-    .level-red      { background: linear-gradient(90deg, #C62828, #F44336); }
-    .level-orange   { background: linear-gradient(90deg, #E65100, #FF9800); }
-    .level-yellow   { background: linear-gradient(90deg, #F57F17, #FFEB3B); }
-    .level-blue     { background: linear-gradient(90deg, #1976D2, #42A5F5); }
-    .level-cyan     { background: linear-gradient(90deg, #00838F, #26C6DA); }
-    .level-green    { background: linear-gradient(90deg, #2E7D32, #4CAF50); }
-    .level-lightgreen{ background: linear-gradient(90deg, #4CAF50, #66BB6A); }
-    .level-gray     { background: linear-gradient(90deg, #6C757D, #9E9E9E); }
-    .level-text { text-align: center; margin-top: 10px; font-size: 0.9rem; font-weight: 600; color: rgba(255,255,255,0.8); }
-
-    .dex-completion { background: rgba(255,255,255,0.06); border-radius: 15px; padding: 18px 20px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; gap: 18px; }
-    .dex-completion-info { flex: 1; }
-    .dex-label { font-size: 0.85rem; font-weight: 700; color: rgba(255,255,255,0.55); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; }
-    .dex-numbers { font-size: 1.5rem; font-weight: 900; color: white; margin-bottom: 8px; }
-    .dex-numbers span { color: #4ECDC4; }
-    .dex-bar-wrap { background: rgba(255,255,255,0.1); border-radius: 10px; height: 8px; overflow: hidden; }
-    .dex-bar { height: 100%; width: 0%; border-radius: 10px; background: linear-gradient(90deg, #4ECDC4, #45b7d1); transition: width 1.2s ease; }
-    .dex-pct { font-size: 1.6rem; font-weight: 900; color: #4ECDC4; min-width: 56px; text-align: right; }
-    .catchdex-btn { display: inline-block; padding: 13px 26px; background: linear-gradient(135deg, #4CAF50, #45a049); color: white; font-weight: 700; border-radius: 14px; text-decoration: none; box-shadow: 0 5px 18px rgba(76,175,80,0.35); transition: all 0.3s ease; font-size: 1rem; border: 2px solid rgba(76,175,80,0.3); }
-    .catchdex-btn:hover { transform: translateY(-3px) scale(1.02); }
-
-    .team-section { background: rgba(255,255,255,0.07); backdrop-filter: blur(15px); border-radius: 20px; overflow: hidden; border: 1px solid rgba(255,255,255,0.12); }
-    .team-title { text-align: center; font-size: 1.4rem; font-weight: 800; color: #FFD700; padding: 18px; background: rgba(255,255,255,0.07); }
-    table { width: 100%; border-collapse: collapse; font-size: 14px; }
-    th { background: rgba(255,215,0,0.15); color: white; padding: 13px 12px; text-align: center; font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; border: none; position: sticky; top: 0; z-index: 10; }
-    td { padding: 11px 12px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.07); color: white; }
-    tr.rarity-group-header td { cursor: default !important; }
-    tbody tr:not(.rarity-group-header) { cursor: pointer; transition: background-color 0.15s ease; }
-    tbody tr:not(.rarity-group-header):hover td { background: rgba(255,215,0,0.08); }
-    .catchmon-image { width: 52px; height: 52px; object-fit: contain; border-radius: 8px; transition: transform 0.2s ease; border: 1px solid rgba(255,255,255,0.15); }
-    tbody tr:not(.rarity-group-header):hover .catchmon-image { transform: scale(1.1); }
-    .catchmon-name { font-weight: 700; font-size: 0.95rem; }
-    .points-cell { font-weight: 700; color: #FFD700; }
-    .level-cell  { font-weight: 600; color: #4ECDC4; }
-    .stats-cell  { font-weight: 600; color: #FF6B6B; }
-    .catcher-name { font-weight: 700; padding: 3px 8px; border-radius: 8px; }
-    .king    { background: linear-gradient(90deg, #FFD700, #FFA500); color: #000; }
-    .flame   { background: linear-gradient(90deg, #FF4444, #FF6B6B); color: white; }
-    .diamond { background: linear-gradient(90deg, #4ECDC4, #45B7D1); color: white; }
-    .shine   { background: linear-gradient(90deg, #4CAF50, #66BB6A); color: white; }
-    .normal  { color: white; background: rgba(255,255,255,0.1); }
-    .loading { display: flex; justify-content: center; align-items: center; height: 120px; color: rgba(255,255,255,0.7); gap: 12px; }
-    .loading-spinner { width: 26px; height: 26px; border: 3px solid rgba(255,255,255,0.2); border-top: 3px solid #FFD700; border-radius: 50%; animation: spin 0.8s linear infinite; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .error-message { text-align: center; padding: 40px; color: rgba(255,255,255,0.7); font-size: 15px; }
-
-    @media (max-width: 768px) {
-      .container { padding: 12px; }
-      .header-section { flex-direction: column; gap: 14px; padding: 18px; }
-      .header-content { flex-direction: column; gap: 14px; }
-      .stats-section { grid-template-columns: 1fr 1fr; gap: 12px; }
-      .dex-completion { flex-direction: column; gap: 12px; }
-      .dex-pct { text-align: left; }
-      table { font-size: 12px; }
-      th, td { padding: 9px 6px; }
-      .catchmon-image { width: 40px; height: 40px; }
-    }
-    @media (max-width: 480px) {
-      .stats-section { grid-template-columns: 1fr; }
-      table { font-size: 11px; }
-      .catchmon-image { width: 34px; height: 34px; }
-    }
-    @media (prefers-reduced-motion: reduce) { * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
-  </style>
+  <link rel="stylesheet" href="assets/css/catcher_detail.css">
 </head>
 <body>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+
   <div class="container">
 
-    <div class="header-section">
-      <div class="header-content">
-        <a class="back-button" href="catcher_ranking_live.html">← Rankings</a>
-        <div class="title-section">
-          <h1 id="catcherTitle">🎮 Elite Catcher Profile</h1>
-          <div class="subtitle" id="totalPoints">Loading...</div>
-        </div>
-        <div></div>
+    <!-- Top bar -->
+    <div class="top-bar reveal">
+      <a class="back-btn" href="catcher_ranking_live.html">← Rankings</a>
+    </div>
+
+    <!-- Hero -->
+    <div class="hero reveal">
+      <div class="hero-eyebrow">Catcher Profile</div>
+      <h1 id="catcherTitle">Loading...</h1>
+      <div class="hero-sub" id="totalPoints">—</div>
+    </div>
+
+    <!-- Stats row -->
+    <div class="stats-row reveal">
+      <div class="stat-brick">
+        <div class="stat-num" id="statPoints">0</div>
+        <div class="stat-lbl">Total Points</div>
+      </div>
+      <div class="stat-brick">
+        <div class="stat-num teal" id="statTeam">0</div>
+        <div class="stat-lbl">Catchmon</div>
+      </div>
+      <div class="stat-brick">
+        <div class="stat-num red" id="statLevel">1</div>
+        <div class="stat-lbl">Player Level</div>
       </div>
     </div>
 
-    <div class="stats-section">
-      <div class="stat-card"><div class="stat-title">🏆 Total Points</div><div class="stat-value" id="statPoints">0</div><div class="stat-desc">Combined team power</div></div>
-      <div class="stat-card"><div class="stat-title">🐲 Team Size</div><div class="stat-value" id="statTeam">0</div><div class="stat-desc">Catchmon collected</div></div>
-      <div class="stat-card"><div class="stat-title">⚡ Player Level</div><div class="stat-value" id="statLevel">1</div><div class="stat-desc">Based on total points</div></div>
-    </div>
-
-    <div class="level-section">
-      <div class="level-title">Experience Progress</div>
-      <div class="level-bar-container">
-        <div class="level-bar" id="levelFill"><span id="levelPercentText">0%</span></div>
+    <!-- XP bar -->
+    <div class="xp-section reveal">
+      <div class="xp-top">
+        <span class="xp-title">Experience Progress</span>
+        <span class="xp-pct" id="levelPercentText">0%</span>
       </div>
-      <div class="level-text" id="levelLabel">Level 1 – 0 / 100 XP</div>
-    </div>
-
-    <div class="dex-completion">
-      <div class="dex-completion-info">
-        <div class="dex-label">📘 Catchdex Completion</div>
-        <div class="dex-numbers"><span id="dexCaughtCount">—</span> / <span id="dexTotalCount">—</span> Catchmon</div>
-        <div class="dex-bar-wrap"><div class="dex-bar" id="dexBar"></div></div>
+      <div class="xp-track">
+        <div class="xp-fill" id="levelFill"><span></span></div>
       </div>
-      <div class="dex-pct" id="dexPct">—</div>
-      <a id="catchdexLink" href="#" class="catchdex-btn">📘 View Catchdex</a>
+      <div class="xp-label" id="levelLabel">Level 1 – 0 / 100 XP</div>
     </div>
 
-    <div class="team-section">
-      <h2 class="team-title">🌟 Elite Team Roster</h2>
-      <table>
-        <thead><tr><th>Sprite</th><th>Name</th><th>Lvl</th><th>Stats</th><th>Points</th></tr></thead>
-        <tbody id="teamTable">
-          <tr><td colspan="5" class="loading"><div class="loading-spinner"></div><div>Loading Team...</div></td></tr>
-        </tbody>
-      </table>
+    <!-- Dex completion -->
+    <div class="dex-row reveal">
+      <div class="dex-info">
+        <div class="dex-eyebrow">📘 Catchdex Completion</div>
+        <div class="dex-nums"><span id="dexCaughtCount">—</span> / <span id="dexTotalCount">—</span></div>
+        <div class="dex-track"><div class="dex-fill" id="dexBar"></div></div>
+      </div>
+      <div class="dex-right">
+        <div class="dex-pct" id="dexPct">—</div>
+        <a id="catchdexLink" href="#" class="dex-btn">📘 Catchdex</a>
+      </div>
+    </div>
+
+    <!-- Team table -->
+    <div class="team-section reveal">
+      <div class="team-header">
+        <span class="team-title">🌟 Elite Team Roster</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Sprite</th><th>Name</th><th>Lvl</th><th>Stats</th><th>Points</th></tr>
+          </thead>
+          <tbody id="teamTable">
+            <tr><td colspan="5" class="loading"><div class="spinner"></div><div>Loading Team...</div></td></tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
   </div>
+
   <script type="module" src="assets/js/pages/catcher_detail.js"></script>
   <script type="module" src="assets/js/trainer_widget.js"></script>
 </body>
