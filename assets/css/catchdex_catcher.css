@@ -1,0 +1,156 @@
+/* assets/css/catchdex_catcher.css */
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: #080818;
+  color: white;
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image:
+    linear-gradient(rgba(78,205,196,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(78,205,196,0.04) 1px, transparent 1px);
+  background-size: 56px 56px;
+  pointer-events: none; z-index: 0;
+}
+
+.orb { position: fixed; border-radius: 50%; filter: blur(90px); pointer-events: none; z-index: 0; }
+.orb-1 { width: 500px; height: 500px; background: rgba(78,205,196,0.09); top: -150px; left: -150px; }
+.orb-2 { width: 350px; height: 350px; background: rgba(156,39,176,0.07); bottom: 0; right: -80px; }
+
+.container { max-width: 1400px; margin: auto; padding: 28px 20px 60px; position: relative; z-index: 1; }
+
+/* Back */
+.top-bar { margin-bottom: 32px; }
+.back-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  text-decoration: none; color: rgba(255,255,255,0.45); font-size: 13px; font-weight: 500;
+  padding: 9px 16px; border-radius: 30px;
+  border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.04);
+  transition: all 0.2s;
+}
+.back-btn:hover { color: white; border-color: rgba(255,255,255,0.22); }
+
+/* Header */
+.page-header { margin-bottom: 40px; }
+.eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: #4ECDC4; opacity: 0.7; margin-bottom: 10px; }
+h1 {
+  font-size: clamp(2rem, 6vw, 3.5rem); font-weight: 900; letter-spacing: -1px;
+}
+
+/* Catcher name tiers */
+.catcher-name { display: inline-block; font-weight: 900; background-size: 200% auto; background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shine 3s linear infinite; }
+.king,.god { background-image: linear-gradient(90deg,#ffd700,#fff,#ffd700); }
+.flame      { background-image: linear-gradient(90deg,#ff4444,#fff,#ff4444); }
+.diamond    { background-image: linear-gradient(90deg,#00bfff,#fff,#00bfff); }
+.shine      { background-image: linear-gradient(90deg,#32cd32,#fff,#32cd32); }
+.normal     { color: white; background: none; -webkit-text-fill-color: white; animation: none; }
+@keyframes shine { to { background-position: -200% center; } }
+
+/* ── RARITY SECTIONS ── */
+.rarity-section { margin-bottom: 32px; }
+
+.rarity-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 16px; padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+.rarity-title { font-size: clamp(1.2rem, 3vw, 1.8rem); font-weight: 800; }
+.rarity-count {
+  font-size: 11px; font-weight: 700; padding: 4px 12px; border-radius: 20px;
+  background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1);
+  opacity: 0.7;
+}
+
+/* Rarity title colours */
+.starter   .rarity-title { background: linear-gradient(45deg,#4CAF50,#81C784); background-clip:text; -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+.common    .rarity-title { background: linear-gradient(45deg,#9E9E9E,#BDBDBD); background-clip:text; -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+.rare      .rarity-title { background: linear-gradient(45deg,#2196F3,#64B5F6); background-clip:text; -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+.legendary .rarity-title { background: linear-gradient(45deg,#FF9800,#FFB74D); background-clip:text; -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+.mythical  .rarity-title { background: linear-gradient(45deg,#9C27B0,#BA68C8); background-clip:text; -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+.god       .rarity-title { background: linear-gradient(45deg,#424242,#616161,#424242); background-size:200% auto; background-clip:text; -webkit-background-clip:text; -webkit-text-fill-color:transparent; animation: godShift 4s linear infinite; }
+@keyframes godShift { to { background-position: 200% center; } }
+
+/* ── DEX GRID ── */
+.dex-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 10px;
+}
+
+.catchmon-card {
+  background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 16px; padding: 16px 12px; text-align: center;
+  transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  position: relative; overflow: hidden;
+}
+.catchmon-card:hover { transform: translateY(-5px); border-color: rgba(255,255,255,0.18); background: rgba(255,255,255,0.08); }
+.catchmon-card a { text-decoration: none; color: white; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+
+.catchmon-card img {
+  width: 90px; height: 90px; object-fit: contain; border-radius: 10px;
+  transition: transform 0.25s ease;
+}
+.catchmon-card:hover img { transform: scale(1.08); }
+
+.id-name { font-size: 12px; font-weight: 700; color: white; line-height: 1.3; }
+
+/* Uncaught */
+.uncaught { opacity: 0.35; }
+.uncaught img { filter: grayscale(100%) brightness(0.3); }
+.uncaught:hover { opacity: 0.55; }
+
+/* Star badge */
+.star {
+  position: absolute; top: 6px; right: 7px; font-size: 14px; color: #FFD700;
+  filter: drop-shadow(0 0 5px rgba(255,215,0,0.7));
+  animation: starTwinkle 2s ease-in-out infinite alternate;
+}
+@keyframes starTwinkle { 0%{transform:scale(1)} 100%{transform:scale(1.15)} }
+
+/* God tier cards */
+.god .catchmon-card { background: rgba(30,0,40,0.6); border-color: rgba(128,0,128,0.25); }
+.god .catchmon-card:hover { border-color: rgba(128,0,128,0.5); }
+.god .catchmon-card img { filter: brightness(0.5) contrast(1.4) saturate(0.5); }
+.god .catchmon-card a { color: #9370DB; }
+.god .id-name { color: #9370DB; }
+.god .catchmon-card::before {
+  content: 'DIVINE'; position: absolute; top: 40%; left: 50%; transform: translate(-50%,-50%);
+  color: #DAA520; font-weight: 900; font-size: 8px; z-index: 3;
+  background: rgba(0,0,0,0.85); padding: 2px 6px; border-radius: 6px;
+  border: 1px solid rgba(218,165,32,0.4); white-space: nowrap;
+}
+
+/* Loading / Error */
+.loading { display: flex; justify-content: center; align-items: center; height: 160px; color: rgba(255,255,255,0.4); flex-direction: column; gap: 12px; font-size: 13px; }
+.spinner { width: 22px; height: 22px; border: 2px solid rgba(255,255,255,0.15); border-top-color: #FFD700; border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.error-message { text-align: center; padding: 48px; color: rgba(255,255,255,0.5); font-size: 15px; background: rgba(255,255,255,0.04); border-radius: 16px; border: 1px solid rgba(255,255,255,0.07); }
+
+/* Reveal */
+.reveal { opacity: 0; transform: translateY(22px); transition: opacity 0.6s ease, transform 0.6s ease; }
+.reveal.in { opacity: 1; transform: translateY(0); }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .dex-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 8px; }
+  .catchmon-card img { width: 74px; height: 74px; }
+  .catchmon-card { padding: 12px 8px; }
+  .catchmon-card:hover { transform: none; }
+  .catchmon-card:hover img { transform: none; }
+}
+@media (max-width: 480px) {
+  .dex-grid { grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 6px; }
+  .catchmon-card img { width: 60px; height: 60px; }
+  .id-name { font-size: 10px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,*::before,*::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
