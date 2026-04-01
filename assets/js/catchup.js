@@ -71,126 +71,151 @@ function injectCSS() {
   style.textContent = `
     #catchupOverlay {
       position: fixed; inset: 0; z-index: 9500;
-      background: rgba(0,0,0,0.92);
+      background: rgba(4,2,14,0.96);
       display: flex; flex-direction: column;
       align-items: center; justify-content: center;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       cursor: pointer;
+      overflow: hidden;
+    }
+
+    /* Grid texture same as site */
+    #catchupOverlay::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(78,205,196,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(78,205,196,0.04) 1px, transparent 1px);
+      background-size: 56px 56px;
+      pointer-events: none;
+    }
+
+    /* Glow orb behind sprite */
+    #catchupOrb {
+      position: absolute; border-radius: 50%;
+      width: 340px; height: 340px;
+      filter: blur(80px);
+      pointer-events: none; z-index: 0;
+      transition: background 0.5s ease;
     }
 
     /* Counter */
     #catchupCounter {
-      position: absolute; top: 20px; left: 50%; transform: translateX(-50%);
-      font-size: 13px; font-weight: 700; opacity: 0.4; letter-spacing: 1px;
-      color: white;
+      position: absolute; top: 24px; left: 50%; transform: translateX(-50%);
+      font-size: 11px; font-weight: 700; opacity: 0.3; letter-spacing: 2px;
+      color: white; text-transform: uppercase; z-index: 2;
     }
 
     /* Main card */
     #catchupCard {
       display: flex; flex-direction: column; align-items: center;
-      gap: 20px; text-align: center;
-      animation: cuFadeIn 0.5s ease forwards;
+      gap: 18px; text-align: center; position: relative; z-index: 2;
+      animation: cuFadeIn 0.55s cubic-bezier(0.22,1,0.36,1) forwards;
     }
-    @keyframes cuFadeIn { from { opacity:0; transform:translateY(40px) scale(0.92); } to { opacity:1; transform:translateY(0) scale(1); } }
+    @keyframes cuFadeIn {
+      from { opacity:0; transform:translateY(50px) scale(0.88); }
+      to   { opacity:1; transform:translateY(0)    scale(1); }
+    }
 
-    /* Fusion: two cards side by side */
+    /* Fusion row */
     #catchupFusionRow {
-      display: flex; align-items: center; gap: 24px;
-      animation: cuFadeIn 0.5s ease forwards;
+      display: flex; align-items: center; gap: 20px;
+      position: relative; z-index: 2;
+      animation: cuFadeIn 0.55s cubic-bezier(0.22,1,0.36,1) forwards;
     }
-    .cu-fusion-src {
-      display: flex; flex-direction: column; align-items: center; gap: 10px;
-      opacity: 0.6;
-    }
-    .cu-fusion-src img { width: 90px; height: 90px; object-fit: contain; border-radius: 14px; filter: drop-shadow(0 4px 12px rgba(255,255,255,0.15)); }
-    .cu-fusion-src .cu-name { font-size: 13px; font-weight: 700; opacity: 0.8; color: white; }
-    .cu-plus { font-size: 2rem; opacity: 0.5; color: white; }
-    .cu-arrow { font-size: 2rem; opacity: 0.7; animation: cuArrow 1s ease-in-out infinite alternate; color: #FFD700; }
-    @keyframes cuArrow { from{transform:translateX(-4px)} to{transform:translateX(4px)} }
+    .cu-fusion-src { display: flex; flex-direction: column; align-items: center; gap: 8px; opacity: 0.55; }
+    .cu-fusion-src img { width: 80px; height: 80px; object-fit: contain; border-radius: 14px; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.6)); }
+    .cu-fusion-src .cu-name { font-size: 12px; font-weight: 700; opacity: 0.7; color: white; }
+    .cu-plus  { font-size: 1.8rem; opacity: 0.3; color: white; }
+    .cu-arrow { font-size: 1.8rem; color: #FFD700; animation: cuArrow 1s ease-in-out infinite alternate; }
+    @keyframes cuArrow { from{transform:translateX(-5px)} to{transform:translateX(5px)} }
 
     /* Sprite */
     #catchupSprite {
-      width: 180px; height: 180px; object-fit: contain;
-      border-radius: 20px;
-      filter: drop-shadow(0 0 30px rgba(255,215,0,0.4));
-      animation: cuFloat 3s ease-in-out infinite;
+      width: 200px; height: 200px; object-fit: contain;
+      border-radius: 24px;
+      animation: cuFloat 3.5s ease-in-out infinite;
     }
-    @keyframes cuFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+    @keyframes cuFloat { 0%,100%{transform:translateY(0) scale(1)} 50%{transform:translateY(-12px) scale(1.02)} }
 
-    /* Shiny sparkle */
     #catchupSprite.shiny {
-      filter: drop-shadow(0 0 30px rgba(255,215,0,0.8)) drop-shadow(0 0 60px rgba(255,150,0,0.5));
-      animation: cuFloat 3s ease-in-out infinite, cuShinyPulse 1.5s ease-in-out infinite;
+      filter: drop-shadow(0 0 28px rgba(255,215,0,0.9)) drop-shadow(0 0 56px rgba(255,200,0,0.5));
+      animation: cuFloat 3.5s ease-in-out infinite, cuShinyPulse 1.8s ease-in-out infinite;
     }
-    @keyframes cuShinyPulse { 0%,100%{filter:drop-shadow(0 0 30px rgba(255,215,0,0.8))} 50%{filter:drop-shadow(0 0 60px rgba(255,215,0,1)) drop-shadow(0 0 80px rgba(255,150,0,0.8))} }
+    @keyframes cuShinyPulse {
+      0%,100%{ filter: drop-shadow(0 0 28px rgba(255,215,0,0.8)); }
+      50%    { filter: drop-shadow(0 0 60px rgba(255,215,0,1)) drop-shadow(0 0 90px rgba(255,150,0,0.9)); }
+    }
 
-    /* Flash for fusion */
+    /* Flash */
     #catchupFlash {
       position: fixed; inset: 0; z-index: 9600;
       background: white; opacity: 0; pointer-events: none;
-      animation: cuFlash 0.6s ease forwards;
+      animation: cuFlash 0.7s ease forwards;
     }
-    @keyframes cuFlash { 0%{opacity:0} 30%{opacity:0.9} 100%{opacity:0} }
+    @keyframes cuFlash { 0%{opacity:0} 25%{opacity:0.85} 100%{opacity:0} }
 
-    /* Labels */
-    #catchupLabel {
-      font-size: clamp(1.6rem, 5vw, 2.8rem); font-weight: 900;
-      color: white; letter-spacing: -1px; line-height: 1.1;
-    }
-    #catchupSub {
-      font-size: 1rem; font-weight: 600; opacity: 0.6; color: white;
-    }
-    #catchupLevel {
-      display: inline-block;
-      font-size: 1rem; font-weight: 800;
-      padding: 6px 18px; border-radius: 20px;
-      background: rgba(255,215,0,0.2); border: 1.5px solid rgba(255,215,0,0.5);
-      color: #FFD700;
-    }
-    #catchupRarity {
-      display: inline-block; font-size: 12px; font-weight: 700;
-      padding: 3px 12px; border-radius: 10px; margin-left: 8px;
-    }
-    .cu-rarity-common   { background:rgba(158,158,158,0.25); color:#e0e0e0; }
-    .cu-rarity-starter  { background:rgba(76,175,80,0.25);   color:#81c784; }
-    .cu-rarity-rare     { background:rgba(33,150,243,0.25);   color:#64b5f6; }
-    .cu-rarity-legendary{ background:rgba(255,152,0,0.25);    color:#ffb74d; }
-    .cu-rarity-mythical { background:rgba(156,39,176,0.25);   color:#ce93d8; }
-    .cu-rarity-god      { background:rgba(128,0,128,0.25);    color:#ba68c8; }
-
-    /* Type badge: NEW / FUSION */
+    /* Type badge */
     #catchupTypeBadge {
-      font-size: 11px; font-weight: 800; letter-spacing: 2px;
-      padding: 4px 14px; border-radius: 20px; text-transform: uppercase;
+      font-size: 10px; font-weight: 800; letter-spacing: 2.5px;
+      padding: 5px 16px; border-radius: 24px; text-transform: uppercase;
     }
-    .cu-badge-new    { background: rgba(78,205,196,0.25); color: #4ECDC4; border: 1px solid rgba(78,205,196,0.4); }
-    .cu-badge-fusion { background: rgba(255,152,0,0.25);  color: #ffb74d; border: 1px solid rgba(255,152,0,0.4); }
+    .cu-badge-new    { background: rgba(78,205,196,0.15); color: #4ECDC4; border: 1px solid rgba(78,205,196,0.35); }
+    .cu-badge-fusion { background: rgba(255,152,0,0.15);  color: #ffb74d; border: 1px solid rgba(255,152,0,0.35); }
+
+    /* Name label */
+    #catchupLabel {
+      font-size: clamp(1.8rem, 6vw, 3.2rem); font-weight: 900;
+      color: white; letter-spacing: -1.5px; line-height: 1;
+    }
+
+    /* Rarity badge */
+    #catchupRarity {
+      display: inline-block; font-size: 11px; font-weight: 700;
+      padding: 3px 10px; border-radius: 10px; margin-left: 10px;
+      vertical-align: middle;
+    }
+    .cu-rarity-common   { background:rgba(158,158,158,0.2); color:#bdbdbd; }
+    .cu-rarity-starter  { background:rgba(76,175,80,0.2);   color:#a5d6a7; }
+    .cu-rarity-rare     { background:rgba(33,150,243,0.2);  color:#90caf9; }
+    .cu-rarity-legendary{ background:rgba(255,152,0,0.2);   color:#ffcc80; }
+    .cu-rarity-mythical { background:rgba(156,39,176,0.2);  color:#e1bee7; }
+    .cu-rarity-god      { background:rgba(128,0,128,0.2);   color:#ce93d8; }
+
+    /* Level pill */
+    #catchupLevel {
+      font-size: 0.95rem; font-weight: 800;
+      padding: 6px 20px; border-radius: 24px;
+      background: rgba(255,215,0,0.12); border: 1px solid rgba(255,215,0,0.3);
+      color: #FFD700; letter-spacing: 0.5px;
+    }
 
     /* Hint */
     #catchupHint {
-      position: absolute; bottom: 70px; left: 50%; transform: translateX(-50%);
-      font-size: 13px; opacity: 0.3; color: white; font-weight: 500;
-      animation: cuHintPulse 2s ease-in-out infinite;
+      position: absolute; bottom: 72px; left: 50%; transform: translateX(-50%);
+      font-size: 12px; opacity: 0.25; color: white; font-weight: 500; letter-spacing: 1px;
+      animation: cuHintPulse 2.5s ease-in-out infinite; white-space: nowrap; z-index: 2;
     }
-    @keyframes cuHintPulse { 0%,100%{opacity:0.3} 50%{opacity:0.55} }
+    @keyframes cuHintPulse { 0%,100%{opacity:0.2} 50%{opacity:0.45} }
 
-    /* Skip button */
+    /* Skip */
     #catchupSkip {
-      position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
-      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
-      color: rgba(255,255,255,0.4); padding: 9px 28px; border-radius: 20px;
-      font-size: 13px; font-weight: 700; cursor: pointer; letter-spacing: 0.5px;
-      transition: all 0.2s ease; backdrop-filter: blur(5px);
+      position: absolute; bottom: 22px; left: 50%; transform: translateX(-50%);
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.35); padding: 8px 28px; border-radius: 24px;
+      font-size: 12px; font-weight: 700; cursor: pointer; letter-spacing: 1px;
+      text-transform: uppercase;
+      transition: all 0.2s ease; z-index: 2;
     }
-    #catchupSkip:hover { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.7); border-color: rgba(255,255,255,0.25); }
+    #catchupSkip:hover { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.65); border-color: rgba(255,255,255,0.22); }
 
-    /* Progress dots */
+    /* Dots */
     #catchupDots {
-      position: absolute; bottom: 100px; left: 50%; transform: translateX(-50%);
-      display: flex; gap: 6px;
+      position: absolute; bottom: 104px; left: 50%; transform: translateX(-50%);
+      display: flex; gap: 7px; z-index: 2;
     }
-    .cu-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.2); transition: all 0.3s ease; }
-    .cu-dot.active { background: white; transform: scale(1.3); }
+    .cu-dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(255,255,255,0.18); transition: all 0.3s ease; }
+    .cu-dot.active { background: white; transform: scale(1.5); }
   `;
   document.head.appendChild(style);
 }
@@ -201,6 +226,7 @@ function buildOverlay() {
   const el = document.createElement('div');
   el.id = 'catchupOverlay';
   el.innerHTML = `
+    <div id="catchupOrb"></div>
     <div id="catchupCounter"></div>
     <div id="catchupCard" style="display:none"></div>
     <div id="catchupFusionRow" style="display:none"></div>
@@ -253,6 +279,19 @@ async function showSequence(items) {
 
   skipBtn.addEventListener('click', e => { e.stopPropagation(); close(); });
 
+
+  const RARITY_ORBS = {
+    Common:    'rgba(158,158,158,0.18)',
+    Starter:   'rgba(76,175,80,0.22)',
+    Rare:      'rgba(33,150,243,0.22)',
+    Legendary: 'rgba(255,152,0,0.24)',
+    Mythical:  'rgba(156,39,176,0.24)',
+    God:       'rgba(128,0,128,0.28)',
+  };
+  function setOrb(rarity) {
+    const orb = document.getElementById('catchupOrb');
+    if (orb) orb.style.background = RARITY_ORBS[rarity] || RARITY_ORBS.Common;
+  }
   function renderItem(i) {
     if (i >= items.length) { close(); return; }
     const item = items[i];
@@ -293,6 +332,7 @@ async function showSequence(items) {
       rarityBadge.textContent = item.rarity || 'Common';
       label.appendChild(rarityBadge);
 
+      setOrb(item.rarity);
       const levelEl = document.createElement('div');
       levelEl.id = 'catchupLevel';
       levelEl.textContent = `Level ${item.level}`;
@@ -356,6 +396,7 @@ async function showSequence(items) {
       resultCard.append(badge, imgR, labelR, lvlR);
       fusRow.append(srcA, plus, srcB, arrow, resultCard);
 
+      setOrb(item.result?.rarity);
       // Flash effect for fusions
       setTimeout(showFlash, 200);
     }
