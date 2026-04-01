@@ -37,25 +37,31 @@ function calcTeamPts(team) {
 }
 function rarityClass(rarity) { return 'r-' + (rarity || 'common').toLowerCase(); }
 function capitalize(s) { return String(s ?? "").charAt(0).toUpperCase() + String(s ?? "").slice(1); }
+function getSavedTrainer() { try { return localStorage.getItem('catchmon_trainer_name') || null; } catch { return null; } }
 
-// ── Connection ─────────────────────────────────────────────────────────────────
-// Connection-Status geht jetzt in die live-pill im Hero
+// ── Reveal on scroll ──────────────────────────────────────────────────────────
+const revealEls = document.querySelectorAll('.reveal');
+const observer  = new IntersectionObserver(entries => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('in'), i * 80);
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.06 });
+revealEls.forEach(el => observer.observe(el));
 
+// ── Connection ────────────────────────────────────────────────────────────────
 onValue(ref(db, '.info/connected'), snap => {
   const live = document.getElementById('liveStatusText');
-  if (snap.val()) {
-    live.textContent = 'LIVE — Like to catch!';
-  } else {
-    live.textContent = 'Reconnecting...';
-  }
+  if (live) live.textContent = snap.val() ? 'LIVE — Like to catch!' : 'Reconnecting...';
 });
 
 // ── Global Stats ──────────────────────────────────────────────────────────────
-
 onValue(ref(db, 'global'), snap => {
   const d       = snap.val() || {};
-  const spawns  = d.total_spawns    || 0;
-  const catches = d.total_catches   || 0;
+  const spawns  = d.total_spawns     || 0;
+  const catches = d.total_catches    || 0;
   const likes   = d.total_likes_ever || 0;
   document.getElementById('totalSpawns').textContent    = fmt(spawns);
   document.getElementById('totalLikesEver').textContent = fmt(likes);
@@ -65,7 +71,6 @@ onValue(ref(db, 'global'), snap => {
 });
 
 // ── Live Spawn Widget ─────────────────────────────────────────────────────────
-
 let spawnTimer = null;
 
 onValue(ref(db, 'spawn/current'), snap => {
@@ -82,7 +87,7 @@ onValue(ref(db, 'spawn/current'), snap => {
     nameEl.textContent  = 'Waiting for spawn...';
     metaEl.textContent  = '—';
     timerEl.textContent = '—';
-    imgWrap.innerHTML   = '<span style="font-size:2rem;">🥚</span>';
+    imgWrap.innerHTML   = '<span class="spawn-egg">🥚</span>';
     widget.classList.remove('active');
     return;
   }
@@ -92,10 +97,10 @@ onValue(ref(db, 'spawn/current'), snap => {
   if (data.sprite) {
     const img = document.createElement('img');
     img.src = data.sprite; img.alt = escapeHtml(data.name);
-    img.onerror = () => { imgWrap.innerHTML = '<span style="font-size:2rem;">❓</span>'; };
+    img.onerror = () => { imgWrap.innerHTML = '<span class="spawn-egg">❓</span>'; };
     imgWrap.appendChild(img);
   } else {
-    imgWrap.innerHTML = '<span style="font-size:2rem;">❓</span>';
+    imgWrap.innerHTML = '<span class="spawn-egg">❓</span>';
   }
 
   nameEl.innerHTML = '';
@@ -119,7 +124,6 @@ onValue(ref(db, 'spawn/current'), snap => {
 });
 
 // ── Trainers ──────────────────────────────────────────────────────────────────
-
 onValue(ref(db, 'trainers'), snap => {
   const data = snap.val() || {};
   const active = Object.values(data).filter(t => {
@@ -132,7 +136,6 @@ onValue(ref(db, 'trainers'), snap => {
 });
 
 // ── Top Catchers ──────────────────────────────────────────────────────────────
-
 function renderTopCatchers(data) {
   const container = document.getElementById('catcherRow');
   const list = Object.entries(data).map(([name, info]) => {
@@ -143,26 +146,26 @@ function renderTopCatchers(data) {
 
   if (list.length === 0) { container.innerHTML = '<div class="loading"><div>No trainers yet</div></div>'; return; }
   container.innerHTML = '';
+
   list.forEach((t, i) => {
-    const medal = ['medal-1','medal-2','medal-3'][i] || '';
-    const card  = document.createElement('div');
+    const medal  = ['medal-1','medal-2','medal-3'][i] || '';
+    const card   = document.createElement('div');
     card.className = `card ${medal}`;
-    const badge = document.createElement('div'); badge.className = 'badge'; badge.textContent = i + 1;
-    const content = document.createElement('div');
+
+    const badge = document.createElement('div'); badge.className = 'card-badge'; badge.textContent = i + 1;
     const title = document.createElement('div'); title.className = 'card-title';
     title.appendChild(buildNameEl(capitalize(t.name), t.donation));
-    const s1 = document.createElement('div'); s1.className = 'card-stat'; s1.textContent = `🐲 ${t.teamSize} Catchmon`;
-    const s2 = document.createElement('div'); s2.className = 'card-stat'; s2.textContent = `✅ ${fmt(t.catches)} Catches`;
-    const pts = document.createElement('div'); pts.className = 'pts'; pts.textContent = `${fmt(t.totalPoints)} pts`;
-    content.append(title, s1, s2, pts);
-    card.append(badge, content);
+    const s1  = document.createElement('div'); s1.className = 'card-stat';  s1.textContent = `🐲 ${t.teamSize} Catchmon`;
+    const s2  = document.createElement('div'); s2.className = 'card-stat';  s2.textContent = `✅ ${fmt(t.catches)} Catches`;
+    const pts = document.createElement('div'); pts.className = 'pts';        pts.textContent = `${fmt(t.totalPoints)} pts`;
+
+    card.append(badge, title, s1, s2, pts);
     card.addEventListener('click', () => { window.location.href = `catcher_detail.html?name=${encodeURIComponent(t.name)}`; });
     container.appendChild(card);
   });
 }
 
 // ── Top Catchmon ──────────────────────────────────────────────────────────────
-
 function renderTopCatchmon(data) {
   const container = document.getElementById('catchmonRow');
   const all = [];
@@ -170,40 +173,43 @@ function renderTopCatchmon(data) {
     const team = Array.isArray(info.team) ? info.team : Object.values(info.team || {});
     team.forEach(c => { if (c?.name) all.push({ ...c, caughtBy: trainer, trainerDonation: info.donation || 0 }); });
   }
-  if (all.length === 0) { container.innerHTML = '<div class="loading"><div>No Catchmon caught yet</div></div>'; return; }
+  if (all.length === 0) { container.innerHTML = '<div class="loading"><div>No Catchmon yet</div></div>'; return; }
+
   const top3 = all.sort((a,b) => calcPts(b) - calcPts(a)).slice(0, 3);
   container.innerHTML = '';
+
   top3.forEach((c, i) => {
     const medal = ['medal-1','medal-2','medal-3'][i] || '';
     const card  = document.createElement('div'); card.className = `card ${medal}`;
-    const badge = document.createElement('div'); badge.className = 'badge'; badge.textContent = i + 1;
-    const content = document.createElement('div');
+
+    const badge = document.createElement('div'); badge.className = 'card-badge'; badge.textContent = i + 1;
+
     const img = document.createElement('img');
     img.src = c.sprite || ''; img.alt = escapeHtml(c.name);
-    img.style.cssText = 'width:72px;height:72px;object-fit:contain;margin-bottom:10px;filter:drop-shadow(0 0 8px rgba(255,255,255,0.2));';
+    img.style.cssText = 'width:68px;height:68px;object-fit:contain;margin-bottom:10px;filter:drop-shadow(0 0 10px rgba(255,255,255,0.15));';
     img.onerror = () => { img.style.display = 'none'; };
+
     const title = document.createElement('div'); title.className = 'card-title';
     title.textContent = c.name + (c.shiny ? ' ✨' : '');
     const rb = document.createElement('span');
     rb.className = `rarity-badge ${rarityClass(c.rarity)}`; rb.textContent = c.rarity || 'Common';
     title.appendChild(document.createTextNode(' ')); title.appendChild(rb);
+
     const lvl = document.createElement('div'); lvl.className = 'card-stat'; lvl.textContent = `Level ${c.level || 1}`;
-    const catcherDiv = document.createElement('div'); catcherDiv.className = 'card-stat';
-    catcherDiv.appendChild(document.createTextNode('by '));
-    catcherDiv.appendChild(buildNameEl(capitalize(c.caughtBy), c.trainerDonation));
+    const cDiv = document.createElement('div'); cDiv.className = 'card-stat';
+    cDiv.appendChild(document.createTextNode('by '));
+    cDiv.appendChild(buildNameEl(capitalize(c.caughtBy), c.trainerDonation));
+
     const pts = document.createElement('div'); pts.className = 'pts'; pts.textContent = `${fmt(calcPts(c))} pts`;
-    content.append(img, title, lvl, catcherDiv, pts);
-    card.append(badge, content);
+
+    card.append(badge, img, title, lvl, cDiv, pts);
     card.addEventListener('click', () => { window.location.href = `catcher_detail.html?name=${encodeURIComponent(c.caughtBy)}`; });
     container.appendChild(card);
   });
 }
 
-// ── Live Catch Chances Leaderboard ────────────────────────────────────────────
-
-onValue(ref(db, 'spawn/chances'), snap => {
-  renderChancesLeaderboard(snap.val());
-});
+// ── Live Catch Chances ────────────────────────────────────────────────────────
+onValue(ref(db, 'spawn/chances'), snap => { renderChancesLeaderboard(snap.val()); });
 
 function renderChancesLeaderboard(data) {
   const section   = document.getElementById('chancesSection');
@@ -211,9 +217,7 @@ function renderChancesLeaderboard(data) {
   const myRank    = document.getElementById('chancesMyRank');
   const myRankRow = document.getElementById('myRankRow');
   const info      = document.getElementById('chancesSpawnInfo');
-
-  // Trainer aus localStorage (via trainer_widget.js)
-  const savedTrainer = (() => { try { return localStorage.getItem('catchmon_trainer_name') || null; } catch { return null; } })();
+  const savedTrainer = getSavedTrainer();
 
   if (!data || Object.keys(data).length === 0) { section.style.display = 'none'; return; }
   section.style.display = 'block';
@@ -221,13 +225,12 @@ function renderChancesLeaderboard(data) {
   const sorted    = Object.values(data).sort((a, b) => b.chance - a.chance);
   const maxChance = sorted[0]?.chance || 1;
 
-  const spawnNameEl = document.getElementById('spawnName');
-  const spawnText   = spawnNameEl?.textContent?.replace(/\s*(Common|Rare|Starter|Legendary|Mythical|God)\s*$/, '').trim();
-  info.textContent  = spawnText && spawnText !== 'Waiting for spawn...' ? `for ${spawnText}` : '';
+  const spawnText = document.getElementById('spawnName')?.textContent
+    ?.replace(/\s*(Common|Rare|Starter|Legendary|Mythical|God)\s*$/, '').trim();
+  info.textContent = spawnText && spawnText !== 'Waiting for spawn...' ? `for ${spawnText}` : '';
 
-  const top5 = sorted.slice(0, 5);
   list.innerHTML = '';
-  top5.forEach((entry, i) => {
+  sorted.slice(0, 5).forEach((entry, i) => {
     const isMe = savedTrainer && entry.name?.toLowerCase() === savedTrainer.toLowerCase();
     list.appendChild(buildChanceRow(entry, i, maxChance, isMe));
   });
@@ -263,18 +266,18 @@ function buildChanceRow(entry, index, maxChance, isMe) {
     <div class="chance-pct">${chanceDisplay}</div>
   `;
 
-  const nameEl   = row.querySelector('.chance-name');
-  const nameSpan = document.createElement('span');
-  nameSpan.className = `catcher-name ${tier}`;
-  nameSpan.textContent = capitalize(entry.name || '');
-  nameEl.appendChild(nameSpan);
+  const nameEl = row.querySelector('.chance-name');
+  const span   = document.createElement('span');
+  span.className   = `catcher-name ${tier}`;
+  span.textContent = capitalize(entry.name || '');
+  nameEl.appendChild(span);
   if (isMe) {
-    const tag = document.createElement('span');
-    tag.style.cssText = 'font-size:10px;opacity:0.6;font-weight:600;margin-left:5px;-webkit-text-fill-color:rgba(255,255,255,0.6);background:none;animation:none;';
-    tag.textContent = '(you)';
-    nameEl.appendChild(tag);
+    const you = document.createElement('span');
+    you.style.cssText = 'font-size:10px;opacity:0.5;font-weight:600;margin-left:5px;-webkit-text-fill-color:rgba(255,255,255,0.5);background:none;animation:none;';
+    you.textContent = '(you)';
+    nameEl.appendChild(you);
   }
   return row;
 }
 
-console.log('🎮 Catchmon Arena Hub loaded');
+console.log('🎮 Catchmon Arena loaded');

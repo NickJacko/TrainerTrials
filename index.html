@@ -6,171 +6,24 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>">
   <title>🎮 Catchmon Arena</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; background: radial-gradient(ellipse at center, #1a1a2e 0%, #16213e 30%, #0f0f23 70%, #000000 100%); min-height: 100vh; color: white; overflow-x: hidden; }
-    .container { max-width: 1100px; margin: auto; padding: 24px 20px; }
-
-    .modal-loading { text-align: center; padding: 40px; opacity: 0.6; }
-    .modal-loading-spinner { width: 28px; height: 28px; border: 3px solid rgba(255,255,255,0.2); border-top-color: #FFD700; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px; }
-    .trainer-widget.hidden { display: none; }
-
-    /* ── HERO ── */
-    .hero { text-align: center; padding: 60px 20px 50px; background: rgba(255,255,255,0.04); border-radius: 28px; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(20px); margin-bottom: 32px; position: relative; overflow: hidden; }
-    .hero::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(255,107,107,0.05), rgba(78,205,196,0.05), rgba(150,206,180,0.05)); background-size: 300% 300%; animation: heroShift 8s ease-in-out infinite; }
-    @keyframes heroShift { 0%,100%{background-position:0% 50%} 50%{background-position:100% 50%} }
-    .hero-content { position: relative; z-index: 2; }
-    h1 { font-size: clamp(2.8rem, 8vw, 5.5rem); font-weight: 900; letter-spacing: -2px; background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #ffeaa7, #ff6b6b); background-size: 300% 300%; background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: gradientShift 5s ease-in-out infinite; margin-bottom: 12px; }
-    @keyframes gradientShift { 0%,100%{background-position:0% 50%} 50%{background-position:100% 50%} }
-    .hero-sub { font-size: clamp(1rem, 2.5vw, 1.4rem); opacity: 0.75; margin-bottom: 28px; font-weight: 300; }
-
-    .live-pill { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,0,0,0.15); border: 1.5px solid rgba(255,0,0,0.35); padding: 10px 22px; border-radius: 30px; font-weight: 700; font-size: 1rem; animation: livePulse 2s ease-in-out infinite; }
-    .live-dot { width: 10px; height: 10px; background: #ff3333; border-radius: 50%; animation: dotPulse 1.5s ease-in-out infinite; box-shadow: 0 0 8px #ff3333; }
-    @keyframes livePulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.03)} }
-    @keyframes dotPulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.6;transform:scale(1.3)} }
-
-    /* ── SPAWN WIDGET ── */
-    .spawn-widget { display: flex; align-items: center; gap: 20px; background: rgba(255,255,255,0.06); border-radius: 20px; padding: 20px 24px; margin-bottom: 32px; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(15px); transition: border-color 0.4s ease; }
-    .spawn-widget.active { border-color: rgba(76,175,80,0.4); }
-    .spawn-img-wrap { width: 72px; height: 72px; flex-shrink: 0; border-radius: 14px; overflow: hidden; background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; }
-    .spawn-img-wrap img { width: 64px; height: 64px; object-fit: contain; }
-    .spawn-info { flex: 1; }
-    .spawn-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; opacity: 0.5; margin-bottom: 4px; }
-    .spawn-name { font-size: 1.3rem; font-weight: 800; margin-bottom: 4px; }
-    .spawn-meta { font-size: 13px; opacity: 0.65; }
-    .spawn-timer { font-size: 2rem; font-weight: 900; font-variant-numeric: tabular-nums; background: linear-gradient(45deg, #4ecdc4, #45b7d1); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; min-width: 60px; text-align: right; }
-    .rarity-badge { display: inline-block; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 8px; margin-left: 6px; }
-    .r-common   { background: rgba(158,158,158,0.25); color: #e0e0e0; }
-    .r-starter  { background: rgba(76,175,80,0.25);  color: #81c784; }
-    .r-rare     { background: rgba(33,150,243,0.25); color: #64b5f6; }
-    .r-legendary{ background: rgba(255,152,0,0.25);  color: #ffb74d; }
-    .r-mythical { background: rgba(156,39,176,0.25); color: #ce93d8; }
-    .r-god      { background: rgba(128,0,128,0.25);  color: #ba68c8; }
-
-    /* ── STATS ── */
-    .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; margin-bottom: 32px; }
-    .stat-card { background: rgba(255,255,255,0.06); border-radius: 16px; padding: 18px; text-align: center; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px); transition: transform 0.2s ease; }
-    .stat-card:hover { transform: translateY(-3px); }
-    .stat-number { font-size: 2rem; font-weight: 900; color: #FFD700; margin-bottom: 4px; }
-    .stat-label  { font-size: 12px; opacity: 0.6; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-    .stat-sub    { font-size: 11px; opacity: 0.45; margin-top: 3px; }
-
-    /* ── SECTIONS ── */
-    .section { background: rgba(255,255,255,0.03); border-radius: 24px; padding: 32px 24px; margin-bottom: 28px; border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(12px); }
-    .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; }
-    .section-title { font-size: clamp(1.4rem, 3vw, 2rem); font-weight: 800; }
-    .view-all-btn { font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.6); text-decoration: none; padding: 7px 16px; border: 1px solid rgba(255,255,255,0.15); border-radius: 20px; transition: all 0.2s ease; white-space: nowrap; }
-    .view-all-btn:hover { color: white; border-color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.08); }
-
-    /* ── CARDS ── */
-    .card-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; align-items: end; }
-    .card { background: linear-gradient(145deg, rgba(255,255,255,0.1), rgba(255,255,255,0.04)); border-radius: 20px; padding: 28px 22px; text-align: center; position: relative; cursor: pointer; border: 1.5px solid rgba(255,255,255,0.1); box-shadow: 0 8px 24px rgba(0,0,0,0.2); backdrop-filter: blur(12px); transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease; }
-    .card:hover { transform: translateY(-10px) scale(1.02); box-shadow: 0 20px 45px rgba(0,0,0,0.35); border-color: rgba(255,255,255,0.25); }
-    .card.medal-1 { transform: translateY(-12px) scale(1.05); background: linear-gradient(145deg, rgba(255,215,0,0.18), rgba(255,215,0,0.06)); border: 2px solid rgba(255,215,0,0.45); box-shadow: 0 18px 50px rgba(255,215,0,0.3); }
-    .card.medal-1::after { content: '👑'; position: absolute; top: -12px; right: -10px; font-size: 2rem; animation: crownFloat 3s ease-in-out infinite alternate; }
-    @keyframes crownFloat { 0%{transform:translateY(0) rotate(-5deg)} 100%{transform:translateY(-6px) rotate(5deg)} }
-    .badge { position: absolute; top: -12px; left: -12px; width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 800; z-index: 4; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
-    .medal-1 .badge { background: linear-gradient(45deg, #ffd700, #ffed4e); color: #333; }
-    .medal-2 .badge { background: linear-gradient(45deg, #c0c0c0, #e8e8e8); color: #333; }
-    .medal-3 .badge { background: linear-gradient(45deg, #cd7f32, #daa520); color: white; }
-    .card-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 12px; }
-    .card-stat  { font-size: 0.95rem; opacity: 0.75; margin-bottom: 7px; }
-    .pts { font-size: 1.6rem; font-weight: 900; color: #FFD700; margin-top: 10px; text-shadow: 0 0 12px rgba(255,215,0,0.4); }
-
-    /* ── NAV CARDS ── */
-    .nav-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-bottom: 28px; }
-    .nav-card { padding: 20px 16px; border-radius: 18px; text-align: center; text-decoration: none; color: white; font-weight: 700; font-size: 1rem; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px); transition: all 0.3s ease; }
-    .nav-card:hover { transform: translateY(-5px); background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.25); }
-    .nav-card .nav-icon { font-size: 2rem; display: block; margin-bottom: 8px; }
-    .nav-card.highlight { background: linear-gradient(145deg, rgba(255,215,0,0.2), rgba(255,193,7,0.1)); border-color: rgba(255,215,0,0.3); }
-    .nav-card.highlight:hover { box-shadow: 0 10px 30px rgba(255,215,0,0.3); }
-
-    /* ── FOOTER ── */
-    .footer { text-align: center; padding: 24px 0 8px; border-top: 1px solid rgba(255,255,255,0.08); }
-    .footer a { color: rgba(255,255,255,0.4); text-decoration: none; font-size: 13px; margin: 0 14px; transition: color 0.2s; }
-    .footer a:hover { color: rgba(255,255,255,0.8); }
-
-    /* ── NAME TIERS ── */
-    .catcher-name { display: inline-block; font-weight: 800; background-size: 200% auto; background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shine 3s linear infinite; }
-    .king, .god { background-image: linear-gradient(90deg, #ffd700, #fff, #ffd700); }
-    .flame   { background-image: linear-gradient(90deg, #ff4444, #fff, #ff4444); }
-    .diamond { background-image: linear-gradient(90deg, #00bfff, #fff, #00bfff); }
-    .shine   { background-image: linear-gradient(90deg, #32cd32, #fff, #32cd32); }
-    .normal  { color: white; background: none; -webkit-text-fill-color: white; animation: none; }
-    @keyframes shine { to { background-position: -200% center; } }
-
-    .loading { display: flex; justify-content: center; align-items: center; height: 120px; color: rgba(255,255,255,0.6); flex-direction: column; gap: 12px; }
-    .loading-spinner { width: 22px; height: 22px; border: 3px solid rgba(255,255,255,0.2); border-top-color: #FFD700; border-radius: 50%; animation: spin 0.8s linear infinite; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-
-    /* ── CATCH CHANCES LEADERBOARD ── */
-    .chances-section {
-      background: rgba(255,255,255,0.04); border-radius: 22px;
-      padding: 22px 20px; margin-bottom: 28px;
-      border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(12px);
-    }
-    .chances-header {
-      display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 16px;
-    }
-    .chances-title { font-size: 1.1rem; font-weight: 800; }
-    .chances-spawn-info { font-size: 12px; opacity: 0.5; }
-
-    .chances-list { display: flex; flex-direction: column; gap: 6px; }
-
-    .chance-row {
-      display: flex; align-items: center; gap: 12px;
-      padding: 10px 14px; border-radius: 14px;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.07);
-      transition: background 0.15s ease;
-    }
-    .chance-row.top1 { background: rgba(255,215,0,0.12); border-color: rgba(255,215,0,0.3); }
-    .chance-row.top2 { background: rgba(192,192,192,0.1); border-color: rgba(192,192,192,0.25); }
-    .chance-row.top3 { background: rgba(205,127,50,0.1); border-color: rgba(205,127,50,0.25); }
-    .chance-row.is-me { background: rgba(78,205,196,0.12); border-color: rgba(78,205,196,0.35); }
-
-    .chance-rank { width: 26px; font-size: 13px; font-weight: 800; text-align: center; opacity: 0.7; flex-shrink: 0; }
-    .chance-name { flex: 1; font-size: 14px; font-weight: 700; min-width: 0; }
-    .chance-likes { font-size: 12px; opacity: 0.5; flex-shrink: 0; }
-    .chance-bar-wrap {
-      flex-shrink: 0; width: 90px; height: 6px;
-      background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden;
-    }
-    .chance-bar {
-      height: 100%; border-radius: 3px;
-      background: linear-gradient(90deg, #4ecdc4, #45b7d1);
-      transition: width 0.5s ease;
-    }
-    .chance-row.top1 .chance-bar { background: linear-gradient(90deg, #FFD700, #FFA500); }
-    .chance-pct { font-size: 13px; font-weight: 800; color: #4ECDC4; min-width: 42px; text-align: right; flex-shrink: 0; }
-    .chance-row.top1 .chance-pct { color: #FFD700; }
-
-    .my-rank-divider { text-align: center; font-size: 12px; opacity: 0.3; margin: 8px 0; letter-spacing: 3px; }
-
-    .chances-empty {
-      text-align: center; padding: 28px; opacity: 0.4; font-size: 14px;
-    }
-
-    @media (max-width: 600px) {
-      .spawn-widget { flex-wrap: wrap; }
-      .spawn-timer { width: 100%; text-align: center; font-size: 1.6rem; }
-      .card.medal-1 { transform: none; }
-      .section-header { flex-direction: column; align-items: flex-start; gap: 10px; }
-      .trainer-widget { max-width: 160px; }
-    }
-  </style>
+  <link rel="stylesheet" href="assets/css/index.css">
 </head>
 <body>
-
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
 
   <div class="container">
 
     <!-- HERO -->
-    <div class="hero">
+    <div class="hero reveal">
       <div class="hero-content">
-        <h1>🎮 Catchmon Arena</h1>
+        <div class="eyebrow">TikTok Live · Catchmon Arena</div>
+        <h1>
+          <span class="line-white">Catch.</span>
+          <span class="line-grad">Evolve.</span>
+          <span class="line-white">Dominate.</span>
+        </h1>
         <p class="hero-sub">Like the stream — catch legendary creatures — build your team</p>
         <div class="live-pill">
           <div class="live-dot"></div>
@@ -179,62 +32,104 @@
       </div>
     </div>
 
-    <!-- LIVE SPAWN WIDGET -->
-    <div class="spawn-widget" id="spawnWidget">
-      <div class="spawn-img-wrap" id="spawnImgWrap"><span style="font-size:2rem;">🥚</span></div>
-      <div class="spawn-info">
-        <div class="spawn-label">Currently Spawning</div>
-        <div class="spawn-name" id="spawnName">Waiting for spawn...</div>
-        <div class="spawn-meta" id="spawnMeta">—</div>
-      </div>
-      <div class="spawn-timer" id="spawnTimer">—</div>
-    </div>
+    <!-- SPAWN + CHANCES row -->
+    <div class="spawn-row reveal">
 
+      <!-- Spawn Widget -->
+      <div class="spawn-widget" id="spawnWidget">
+        <div class="spawn-top">
+          <div class="spawn-label-txt">Currently Spawning</div>
+          <div class="spawn-timer" id="spawnTimer">—</div>
+        </div>
+        <div class="spawn-body">
+          <div class="spawn-img-wrap" id="spawnImgWrap"><span class="spawn-egg">🥚</span></div>
+          <div class="spawn-info">
+            <div class="spawn-name" id="spawnName">Waiting for spawn...</div>
+            <div class="spawn-meta" id="spawnMeta">—</div>
+          </div>
+        </div>
+      </div>
 
-    <!-- CATCH CHANCES LEADERBOARD -->
-    <div class="chances-section" id="chancesSection" style="display:none">
-      <div class="chances-header">
-        <div class="chances-title">⚡ Live Catch Chances</div>
-        <div class="chances-spawn-info" id="chancesSpawnInfo"></div>
+      <!-- Catch Chances -->
+      <div class="chances-section" id="chancesSection" style="display:none">
+        <div class="chances-header">
+          <div class="chances-title">⚡ Live Catch Chances</div>
+          <div class="chances-spawn-info" id="chancesSpawnInfo"></div>
+        </div>
+        <div class="chances-list" id="chancesList"></div>
+        <div class="chances-my-rank" id="chancesMyRank" style="display:none">
+          <div class="my-rank-divider">· · ·</div>
+          <div class="my-rank-row" id="myRankRow"></div>
+        </div>
       </div>
-      <div class="chances-list" id="chancesList"></div>
-      <div class="chances-my-rank" id="chancesMyRank" style="display:none">
-        <div class="my-rank-divider">· · ·</div>
-        <div class="my-rank-row" id="myRankRow"></div>
-      </div>
+
     </div>
 
     <!-- STATS -->
-    <div class="stats-row">
-      <div class="stat-card"><div class="stat-number" id="totalSpawns">0</div><div class="stat-label">Total Spawns</div></div>
-      <div class="stat-card"><div class="stat-number" id="catchRate">0%</div><div class="stat-label">Catch Rate</div><div class="stat-sub" id="catchRateSub">0 caught / 0 spawns</div></div>
-      <div class="stat-card"><div class="stat-number" id="totalLikesEver">0</div><div class="stat-label">Total Likes</div></div>
-      <div class="stat-card"><div class="stat-number" id="totalCatchers">0</div><div class="stat-label">Active Trainers</div></div>
+    <div class="stats-row reveal">
+      <div class="stat-card">
+        <div class="stat-number" id="totalSpawns">—</div>
+        <div class="stat-label">Total Spawns</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="catchRate">—</div>
+        <div class="stat-label">Catch Rate</div>
+        <div class="stat-sub" id="catchRateSub"></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="totalLikesEver">—</div>
+        <div class="stat-label">Total Likes</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="totalCatchers">—</div>
+        <div class="stat-label">Active Trainers</div>
+      </div>
     </div>
 
     <!-- ELITE CATCHERS -->
-    <div class="section">
+    <div class="section reveal">
       <div class="section-header">
-        <div class="section-title">🏆 Elite Catchers</div>
-        <a href="catcher_ranking_live.html" class="view-all-btn">View Full Ranking →</a>
+        <div class="section-label">🏆 Elite Catchers</div>
+        <a href="catcher_ranking_live.html" class="view-all">Full Ranking →</a>
       </div>
-      <div id="catcherRow" class="card-row"><div class="loading"><div class="loading-spinner"></div><div>Loading Champions...</div></div></div>
+      <div id="catcherRow" class="card-row">
+        <div class="loading"><div class="spinner"></div><div>Loading...</div></div>
+      </div>
     </div>
 
-    <!-- LEGENDARY CATCHMON -->
-    <div class="section">
+    <!-- STRONGEST CATCHMON -->
+    <div class="section reveal">
       <div class="section-header">
-        <div class="section-title">🐲 Strongest Catchmon</div>
-        <a href="ranking_catchmon_live.html" class="view-all-btn">View All Catchmon →</a>
+        <div class="section-label">🐲 Strongest Catchmon</div>
+        <a href="ranking_catchmon_live.html" class="view-all">View All →</a>
       </div>
-      <div id="catchmonRow" class="card-row"><div class="loading"><div class="loading-spinner"></div><div>Loading Legends...</div></div></div>
+      <div id="catchmonRow" class="card-row">
+        <div class="loading"><div class="spinner"></div><div>Loading...</div></div>
+      </div>
     </div>
 
-    <!-- NAV CARDS -->
-    <div class="nav-cards">
-      <a href="catchdex_live.html" class="nav-card"><span class="nav-icon">📘</span>Catchdex</a>
-      <a href="howto.html" class="nav-card"><span class="nav-icon">🧠</span>How to Play</a>
-      <a href="donations.html" class="nav-card highlight"><span class="nav-icon">💎</span>Power Up</a>
+    <!-- NAV -->
+    <div class="nav-grid reveal">
+      <a href="catchdex_live.html" class="nav-card">
+        <span class="nav-icon">📘</span>
+        <span class="nav-title">Catchdex</span>
+        <span class="nav-sub">Browse all Catchmon</span>
+      </a>
+      <a href="howto.html" class="nav-card">
+        <span class="nav-icon">🧠</span>
+        <span class="nav-title">How to Play</span>
+        <span class="nav-sub">Learn the mechanics</span>
+      </a>
+      <a href="catcher_ranking_live.html" class="nav-card">
+        <span class="nav-icon">🏆</span>
+        <span class="nav-title">Rankings</span>
+        <span class="nav-sub">Top trainers</span>
+      </a>
+      <a href="donations.html" class="nav-card nav-gold">
+        <span class="nav-icon">💎</span>
+        <span class="nav-title">Power Up</span>
+        <span class="nav-sub">Get a multiplier</span>
+      </a>
     </div>
 
     <!-- FOOTER -->
@@ -242,6 +137,7 @@
       <a href="imprint.html">Imprint</a>
       <a href="privacy.html">Privacy</a>
     </div>
+
   </div>
 
   <script type="module" src="assets/js/pages/index.js"></script>
