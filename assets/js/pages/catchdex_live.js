@@ -5,23 +5,33 @@ import { ref, onValue } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase
 const rarityOrder  = ["Starter", "Common", "Rare", "Legendary", "Mythical", "God"];
 const rarityEmojis = { "Starter":"🌱", "Common":"⚪", "Rare":"🔵", "Legendary":"🟡", "Mythical":"🟣", "God":"⚫" };
 
-let dexList    = [];
+let dexList     = [];
 let enabledGens = new Set();
-let seenData   = {};
-let myTeamNames = new Set(); // Namen des eigenen Teams
+let seenData    = {};
+let myTeamNames = new Set();
 
+// ── Reveal ────────────────────────────────────────────────────────────────────
+const revealObs = new IntersectionObserver(entries => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('in'), i * 60);
+      revealObs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.05 });
+document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
 function getSavedTrainer() {
-  try { return localStorage.getItem('catchmon_trainer_name') || null; }
-  catch { return null; }
+  try { return localStorage.getItem('catchmon_trainer_name') || null; } catch { return null; }
 }
-
 function escapeHtml(input) {
   const s = String(input ?? "");
   return s.replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#39;");
 }
-
 function capitalize(str) { return str.charAt(0).toUpperCase() + str.slice(1); }
 
+// ── Search ────────────────────────────────────────────────────────────────────
 function filterDex() {
   const input = document.getElementById("searchInput").value.toLowerCase();
   document.querySelectorAll(".rarity-section").forEach(section => {
@@ -36,17 +46,22 @@ function filterDex() {
   });
 }
 
+// ── Build Section ─────────────────────────────────────────────────────────────
 function buildRaritySection(rarity, pokemons) {
-  if (pokemons.length === 0) return '';
-  const rarityClass = rarity.toLowerCase();
-  const emoji = rarityEmojis[rarity] || "❓";
+  if (pokemons.length === 0) return null;
 
   const section = document.createElement('div');
-  section.className = `rarity-section ${rarityClass}`;
+  section.className = `rarity-section ${rarity.toLowerCase()}`;
 
   const header = document.createElement('div');
   header.className = 'rarity-header';
-  header.innerHTML = `<h2 class="rarity-title">${emoji} ${rarity}</h2><div class="rarity-count">${pokemons.length} Catchmon</div>`;
+  const title = document.createElement('h2');
+  title.className = 'rarity-title';
+  title.textContent = `${rarityEmojis[rarity] || '❓'} ${rarity}`;
+  const count = document.createElement('div');
+  count.className = 'rarity-count';
+  count.textContent = `${pokemons.length} Catchmon`;
+  header.append(title, count);
   section.appendChild(header);
 
   const grid = document.createElement('div');
@@ -63,7 +78,6 @@ function buildRaritySection(rarity, pokemons) {
     const card = document.createElement('div');
     card.className = 'card' + (isMe ? ' my-card' : '');
 
-    // YOU badge
     if (isMe) {
       const badge = document.createElement('span');
       badge.className = 'you-card-badge';
@@ -75,9 +89,9 @@ function buildRaritySection(rarity, pokemons) {
     link.href = `dex_detail.html?name=${encodeURIComponent(capitalize(p.name).replace(/ /g,"_"))}`;
 
     const img = document.createElement('img');
-    img.src    = escapeHtml(p.sprite);
-    img.alt    = isGod ? "???" : escapeHtml(capitalize(p.name));
-    img.width  = 115; img.height = 115;
+    img.src     = escapeHtml(p.sprite);
+    img.alt     = isGod ? "???" : escapeHtml(capitalize(p.name));
+    img.width   = 110; img.height = 110;
     img.loading = 'lazy';
     img.onerror = function() { this.style.display = 'none'; };
 
@@ -98,20 +112,20 @@ function buildRaritySection(rarity, pokemons) {
   return section;
 }
 
+// ── Render ────────────────────────────────────────────────────────────────────
 function renderDex() {
   const container = document.getElementById("dexContainer");
   const filtered  = dexList.filter(p => enabledGens.has(p.gen)).sort((a, b) => a.id - b.id);
 
   if (filtered.length === 0) {
-    container.innerHTML = '<div class="loading"><div class="loading-spinner"></div><div>No Catchmon found</div></div>';
+    container.innerHTML = '<div class="loading"><div class="spinner"></div><div>No Catchmon found</div></div>';
     return;
   }
 
   const byRarity = {};
   rarityOrder.forEach(r => byRarity[r] = []);
   filtered.forEach(p => {
-    const parts  = p.sprite.split("/");
-    const rarity = parts.length > 1 ? parts[1] : "Common";
+    const rarity = p.sprite.split("/")[1] || "Common";
     (byRarity[rarity] || byRarity["Common"]).push(p);
   });
   rarityOrder.forEach(r => { if (byRarity[r]) byRarity[r].sort((a,b) => a.id - b.id); });
@@ -119,11 +133,16 @@ function renderDex() {
   container.innerHTML = '';
   rarityOrder.forEach(r => {
     if (byRarity[r]?.length > 0) {
-      container.appendChild(buildRaritySection(r, byRarity[r]));
+      const section = buildRaritySection(r, byRarity[r]);
+      if (section) {
+        container.appendChild(section);
+        revealObs.observe(section);
+      }
     }
   });
 }
 
+// ── Load ──────────────────────────────────────────────────────────────────────
 async function loadStaticData() {
   try {
     const [dexRes, genRes] = await Promise.all([
@@ -131,44 +150,38 @@ async function loadStaticData() {
       fetch("gen_config.json?" + Date.now())
     ]);
     dexList     = await dexRes.json();
-    const genConfig = await genRes.json();
-    enabledGens = new Set(genConfig.enabled_gens || []);
+    const cfg   = await genRes.json();
+    enabledGens = new Set(cfg.enabled_gens || []);
   } catch (err) {
     console.error("Error loading static data:", err);
     document.getElementById("dexContainer").innerHTML =
-      '<div class="loading"><div class="loading-spinner"></div><div>Error loading data</div></div>';
+      '<div class="loading"><div class="spinner"></div><div>Error loading data</div></div>';
   }
 }
 
 async function init() {
   await loadStaticData();
 
-  // Eigenes Team laden für Highlighting
   const savedTrainer = getSavedTrainer();
   if (savedTrainer) {
     onValue(ref(db, `trainers/${savedTrainer.toLowerCase()}`), snap => {
       const info = snap.val();
-      if (info) {
-        const team = Array.isArray(info.team) ? info.team : Object.values(info.team || {});
-        myTeamNames = new Set(team.map(c => c.name?.toLowerCase()).filter(Boolean));
-      } else {
-        myTeamNames = new Set();
-      }
-      // Nach Laden neu rendern
+      myTeamNames = info
+        ? new Set((Array.isArray(info.team) ? info.team : Object.values(info.team || {})).map(c => c.name?.toLowerCase()).filter(Boolean))
+        : new Set();
       renderDex();
     });
   }
 
-  // Dex-Statistiken (seen/caught)
-  onValue(ref(db, 'dex/seen_caught'), (snapshot) => {
-    seenData = snapshot.val() || {};
+  onValue(ref(db, 'dex/seen_caught'), snap => {
+    seenData = snap.val() || {};
     renderDex();
-  }, (error) => {
-    console.error('Firebase error:', error);
+  }, err => {
+    console.error('Firebase error:', err);
     renderDex();
   });
 }
 
 init();
 document.getElementById('searchInput').addEventListener('keyup', filterDex);
-console.log("📘 Catchdex loaded — my-card highlight, trainer widget");
+console.log("📘 Catchdex Live loaded");

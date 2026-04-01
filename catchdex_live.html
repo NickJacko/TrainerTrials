@@ -3,89 +3,38 @@
 <head>
   <meta charset="UTF-8" />
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com https://www.google.com https://*.firebasedatabase.app; connect-src 'self' https://*.firebasedatabase.app https://*.firebaseio.com https://www.googleapis.com wss://*.firebasedatabase.app https://www.google.com https://content-firebaseappcheck.googleapis.com https://firebaseappcheck.googleapis.com; frame-src 'self' https://www.google.com https://*.firebasedatabase.app; img-src 'self' data: https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; base-uri 'self';">
-  <title>📘 Epic Catchdex Arena</title>
+  <title>📘 Catchdex — Catchmon Arena</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; background: radial-gradient(ellipse at center, #1a1a2e 0%, #16213e 30%, #0f0f23 70%, #000000 100%); min-height: 100vh; color: white; overflow-x: hidden; }
-    .container { max-width: 1400px; margin: auto; padding: 20px; }
-    .header-section { display: flex; align-items: center; justify-content: space-between; margin-bottom: 40px; background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); border-radius: 25px; padding: 25px 35px; border: 2px solid rgba(255,255,255,0.1); }
-    .back-button { font-size: 16px; text-decoration: none; color: white; font-weight: 700; padding: 14px 24px; border-radius: 15px; background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.2); transition: all 0.3s ease; }
-    .back-button:hover { transform: translateY(-2px); border-color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.15); }
-    h1 { text-align: center; flex: 1; font-size: clamp(2.2rem, 6vw, 3.8rem); background: linear-gradient(45deg, #FFD700, #FF6B6B, #4ECDC4, #45B7D1, #96CEB4, #FFD700); background-size: 400% 400%; background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 900; letter-spacing: -1px; animation: titleShift 6s ease-in-out infinite; }
-    @keyframes titleShift { 0%,100%{background-position:0% 50%} 50%{background-position:100% 50%} }
-    .spacer { width: 150px; }
-    .search-section { background: rgba(255,255,255,0.05); backdrop-filter: blur(15px); border-radius: 20px; padding: 25px; margin-bottom: 40px; border: 1px solid rgba(255,255,255,0.1); }
-    .search-container { position: relative; max-width: 600px; margin: 0 auto; }
-    .search-input { width: 100%; padding: 16px 24px 16px 56px; font-size: 17px; border: 2px solid rgba(255,255,255,0.2); border-radius: 28px; background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); color: white; transition: all 0.3s ease; font-weight: 500; }
-    .search-input::placeholder { color: rgba(255,255,255,0.5); }
-    .search-input:focus { outline: none; border-color: rgba(255,215,0,0.5); background: rgba(255,255,255,0.15); }
-    .search-icon { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); font-size: 1.4rem; opacity: 0.6; }
-    .rarity-section { margin-bottom: 55px; }
-    .rarity-header { background: rgba(255,255,255,0.08); backdrop-filter: blur(20px); border-radius: 25px; padding: 28px; margin-bottom: 28px; text-align: center; border: 2px solid rgba(255,255,255,0.15); }
-    .rarity-title { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 800; margin: 0 0 14px 0; }
-    .rarity-count { background: rgba(255,255,255,0.15); padding: 8px 18px; border-radius: 20px; font-size: 15px; font-weight: 600; color: rgba(255,255,255,0.9); display: inline-block; }
-    .starter   .rarity-title { background: linear-gradient(45deg,#4CAF50,#81C784,#A5D6A7); background-clip:text; -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
-    .common    .rarity-title { background: linear-gradient(45deg,#9E9E9E,#BDBDBD,#E0E0E0); background-clip:text; -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
-    .rare      .rarity-title { background: linear-gradient(45deg,#2196F3,#64B5F6,#90CAF9); background-clip:text; -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
-    .legendary .rarity-title { background: linear-gradient(45deg,#FF9800,#FFB74D,#FFCC02); background-clip:text; -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
-    .mythical  .rarity-title { background: linear-gradient(45deg,#9C27B0,#BA68C8,#CE93D8); background-clip:text; -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
-    .god       .rarity-title { background: linear-gradient(45deg,#000,#424242,#616161,#000); background-size:200% auto; background-clip:text; -webkit-background-clip:text; -webkit-text-fill-color:transparent; filter:drop-shadow(0 0 10px rgba(0,0,0,0.8)); }
-    .god .rarity-header { background: linear-gradient(135deg,rgba(0,0,0,0.4),rgba(64,0,64,0.3),rgba(0,0,0,0.5),rgba(64,0,64,0.3),rgba(0,0,0,0.4)); border: 2px solid rgba(0,0,0,0.6); }
-    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(175px, 1fr)); gap: 22px; justify-items: center; }
-    .card { background: linear-gradient(145deg,rgba(255,255,255,0.12),rgba(255,255,255,0.06)); border-radius: 20px; width: 175px; min-height: 255px; padding: 18px; text-align: center; transition: all 0.3s ease; display: flex; flex-direction: column; justify-content: space-between; align-items: center; border: 2px solid rgba(255,255,255,0.1); backdrop-filter: blur(15px); position: relative; }
-    .card:hover { transform: translateY(-8px); box-shadow: 0 25px 55px rgba(0,0,0,0.3); border-color: rgba(255,255,255,0.3); }
-    .god .card { background: linear-gradient(145deg,#1a1a1a,#2d2d2d); border: 2px solid rgba(128,0,128,0.4); }
-    .god .card:hover { border-color: rgba(128,0,128,0.7); }
-    .card img { width: 115px; height: 115px; object-fit: contain; margin-bottom: 12px; transition: transform 0.3s ease; border-radius: 10px; }
-    .card:hover img { transform: scale(1.1); }
-    .god .card img { filter: brightness(0.4) contrast(1.8) saturate(0.6); border: 2px solid rgba(128,0,128,0.4); }
-    .god .card::before { content: '⚡ DIVINE POWER ⚡'; position: absolute; top: 45%; left: 50%; transform: translate(-50%,-50%); color: #DAA520; font-weight: 900; font-size: 10px; z-index: 3; background: rgba(0,0,0,0.8); padding: 4px 8px; border-radius: 8px; border: 1px solid rgba(218,165,32,0.6); white-space: nowrap; }
-    .card a { text-decoration: none; color: white; font-weight: bold; display: block; }
-    .god .card a { color: #9370DB; }
-    .card .id-name { font-size: 15px; font-weight: 700; margin-bottom: 8px; color: white; line-height: 1.2; }
-    .god .card .id-name { color: #9370DB; }
-    .card .stats { font-size: 12px; color: rgba(255,255,255,0.7); font-weight: 500; }
-
-    /* ── MY CARD HIGHLIGHT ── */
-    .card.my-card {
-      border-color: rgba(78,205,196,0.5) !important;
-      background: linear-gradient(145deg, rgba(78,205,196,0.15), rgba(69,183,209,0.08)) !important;
-      box-shadow: 0 0 20px rgba(78,205,196,0.2);
-    }
-    .card.my-card:hover { border-color: rgba(78,205,196,0.8) !important; box-shadow: 0 20px 50px rgba(78,205,196,0.25); }
-    .you-card-badge {
-      position: absolute; top: 8px; right: 8px;
-      font-size: 9px; font-weight: 800; padding: 2px 6px; border-radius: 6px;
-      background: rgba(78,205,196,0.3); color: #4ECDC4;
-      border: 1px solid rgba(78,205,196,0.5);
-    }
-
-    .loading { display: flex; justify-content: center; align-items: center; height: 200px; color: rgba(255,255,255,0.8); font-size: 18px; flex-direction: column; gap: 20px; }
-    .loading-spinner { width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.2); border-top: 4px solid #FFD700; border-radius: 50%; animation: spin 1s linear infinite; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    @media (max-width: 768px) { .container { padding: 15px; } .header-section { flex-direction: column; gap: 16px; text-align: center; padding: 20px; } .spacer { display: none; } .grid { grid-template-columns: repeat(auto-fill, minmax(140px,1fr)); gap: 14px; } .card { width: 140px; min-height: 210px; padding: 14px; } .card img { width: 90px; height: 90px; } }
-    @media (max-width: 480px) { .grid { grid-template-columns: repeat(auto-fill, minmax(120px,1fr)); gap: 10px; } .card { width: 120px; min-height: 185px; padding: 11px; } .card img { width: 75px; height: 75px; } .card .id-name { font-size: 13px; } .card .stats { font-size: 11px; } }
-    @media (prefers-reduced-motion: reduce) { * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
-  </style>
+  <link rel="stylesheet" href="assets/css/catchdex_live.css">
 </head>
 <body>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+
   <div class="container">
-    <div class="header-section">
-      <a class="back-button" href="index.html">← Back</a>
-      <h1>📘 Epic Catchdex</h1>
-      <div class="spacer"></div>
+
+    <div class="top-bar">
+      <a class="back-btn" href="index.html">← Arena</a>
     </div>
-    <div class="search-section">
-      <div class="search-container">
-        <div class="search-icon">🔍</div>
+
+    <div class="page-header reveal">
+      <div class="eyebrow">Catchmon Arena · Dex</div>
+      <h1><span class="line-white">📘 Epic</span><span class="line-grad">Catchdex</span></h1>
+    </div>
+
+    <div class="search-wrap reveal">
+      <div class="search-inner">
+        <span class="search-icon">🔍</span>
         <input type="text" id="searchInput" class="search-input" placeholder="Search Catchmon...">
       </div>
     </div>
-    <div id="dexContainer">
-      <div class="loading"><div class="loading-spinner"></div><div>Loading Catchdex...</div></div>
+
+    <div id="dexContainer" class="reveal">
+      <div class="loading"><div class="spinner"></div><div>Loading Catchdex...</div></div>
     </div>
+
   </div>
+
   <script type="module" src="assets/js/pages/catchdex_live.js"></script>
   <script type="module" src="assets/js/trainer_widget.js"></script>
 </body>
