@@ -1,286 +1,224 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com https://www.google.com https://*.firebasedatabase.app; connect-src 'self' https://*.firebasedatabase.app https://*.firebaseio.com https://www.googleapis.com wss://*.firebasedatabase.app https://www.google.com https://content-firebaseappcheck.googleapis.com https://firebaseappcheck.googleapis.com; frame-src 'self' https://www.google.com https://*.firebasedatabase.app; img-src 'self' data: https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; base-uri 'self';">
-  <title>🌟 Global Level</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com https://www.google.com https://*.firebasedatabase.app; connect-src 'self' https://*.firebasedatabase.app https://*.firebaseio.com https://www.googleapis.com wss://*.firebasedatabase.app https://www.google.com https://content-firebaseappcheck.googleapis.com https://firebaseappcheck.googleapis.com; frame-src 'self' https://www.google.com https://*.firebasedatabase.app; img-src 'self' data: https:; style-src 'self' 'unsafe-inline'; base-uri 'self';">
+  <title>Global Level</title>
   <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
-      margin: 0; padding: 8px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       background: transparent;
       color: white;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
-      height: 100vh;
-      display: flex; align-items: center; justify-content: center;
-    }
-
-    .level-container {
-      background: rgba(0,0,0,0.7);
-      backdrop-filter: blur(10px);
-      border-radius: 20px;
-      padding: 12px 20px;
-      border: 2px solid rgba(255,255,255,0.2);
-      box-shadow: 0 8px 25px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.2);
-      position: relative;
       overflow: hidden;
-      min-width: 400px;
-      max-width: 500px;
+      display: flex; align-items: center; justify-content: center;
+      padding: 8px;
     }
 
-    .level-container::before {
+    .widget {
+      background: rgba(4,2,14,0.88);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 18px;
+      padding: 16px 20px;
+      position: relative; overflow: hidden;
+      min-width: 380px; max-width: 480px;
+    }
+    .widget::before {
       content: '';
-      position: absolute;
-      top: 0; left: -100%;
-      width: 100%; height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-      animation: containerShine 4s ease-in-out infinite;
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(78,205,196,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(78,205,196,0.04) 1px, transparent 1px);
+      background-size: 28px 28px;
+      pointer-events: none;
     }
 
-    @keyframes containerShine { 0% { left: -100%; } 50% { left: 100%; } 100% { left: 100%; } }
-
-    .level-header {
-      display: flex; justify-content: space-between; align-items: center;
-      margin-bottom: 10px; position: relative; z-index: 2;
-    }
-
-    .level-title {
-      font-size: 1.1rem; font-weight: 800;
-      background: linear-gradient(45deg, #FFD700, #FFA500, #FFD700);
-      background-size: 200% auto;
-      background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      animation: titleShine 3s linear infinite;
-    }
-
-    @keyframes titleShine { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
-
-    .level-number {
-      font-size: 1.3rem; font-weight: 900; color: #FFD700;
-      text-shadow: 0 0 15px rgba(255,215,0,0.8), 0 2px 4px rgba(0,0,0,0.5);
-      animation: levelPulse 3s ease-in-out infinite alternate;
-    }
-
-    @keyframes levelPulse {
-      0% { transform: scale(1); filter: brightness(1); }
-      100% { transform: scale(1.05); filter: brightness(1.3); }
-    }
-
-    .progress-container {
-      background: rgba(255,255,255,0.1);
-      border-radius: 10px; height: 20px; overflow: hidden;
-      position: relative;
-      box-shadow: inset 0 2px 4px rgba(0,0,0,0.3), 0 1px 0 rgba(255,255,255,0.1);
-      border: 1px solid rgba(255,255,255,0.2);
-    }
-
-    .progress-fill {
-      height: 100%; width: 0%;
-      background: linear-gradient(90deg, #4CAF50 0%, #66BB6A 50%, #81C784 100%);
-      transition: width 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-      position: relative; overflow: hidden; border-radius: 10px;
-      box-shadow: 0 0 15px rgba(76,175,80,0.4);
-    }
-
-    .progress-fill::before {
+    /* Animated top glow line */
+    .widget::after {
       content: '';
-      position: absolute; top: 0; left: -100%;
-      width: 100%; height: 100%;
-      background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 30%, rgba(255,255,255,0.6) 50%, rgba(255,255,255,0.4) 70%, rgba(255,255,255,0) 100%);
-      animation: progressShine 2s linear infinite;
+      position: absolute; top: 0; left: -100%; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, #4ECDC4 40%, #FFD700 60%, transparent);
+      animation: topGlow 3s ease-in-out infinite;
+    }
+    @keyframes topGlow { 0%{left:-100%} 100%{left:100%} }
+
+    /* Header row */
+    .header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 14px; position: relative; z-index: 1;
+    }
+    .header-left { display: flex; align-items: center; gap: 8px; }
+    .live-dot { width: 7px; height: 7px; border-radius: 50%; background: #4ECDC4; box-shadow: 0 0 8px #4ECDC4; animation: dp 2s ease-in-out infinite; }
+    @keyframes dp { 0%,100%{opacity:1} 50%{opacity:0.3} }
+    .header-label { font-size: 10px; font-weight: 800; letter-spacing: 2.5px; text-transform: uppercase; opacity: 0.45; }
+
+    .level-badge {
+      font-size: 1.6rem; font-weight: 900; letter-spacing: -1px;
+      color: #FFD700; text-shadow: 0 0 20px rgba(255,215,0,0.5);
+      animation: lvlPulse 3s ease-in-out infinite alternate;
+    }
+    @keyframes lvlPulse { 0%{filter:brightness(1)} 100%{filter:brightness(1.3)} }
+
+    /* XP numbers */
+    .xp-row {
+      display: flex; align-items: baseline; justify-content: space-between;
+      margin-bottom: 8px; position: relative; z-index: 1;
+    }
+    .xp-current { font-size: 13px; font-weight: 700; color: #4ECDC4; }
+    .xp-next    { font-size: 11px; opacity: 0.35; font-weight: 600; }
+
+    /* Progress track */
+    .track {
+      height: 14px; background: rgba(255,255,255,0.07);
+      border-radius: 7px; overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.07);
+      position: relative; z-index: 1;
+      margin-bottom: 8px;
+    }
+    .fill {
+      height: 100%; width: 0%; border-radius: 7px;
+      position: relative; overflow: hidden;
+      transition: width 1.5s cubic-bezier(0.25,0.46,0.45,0.94);
     }
 
-    @keyframes progressShine { 0% { left: -100%; } 100% { left: 100%; } }
+    /* Level-based fill colours */
+    .fill.lvl-0  { background: linear-gradient(90deg,#6C757D,#9E9E9E); }
+    .fill.lvl-5  { background: linear-gradient(90deg,#4CAF50,#66BB6A); box-shadow:0 0 10px rgba(76,175,80,0.4); }
+    .fill.lvl-10 { background: linear-gradient(90deg,#00838F,#26C6DA); box-shadow:0 0 12px rgba(0,131,143,0.4); }
+    .fill.lvl-15 { background: linear-gradient(90deg,#1976D2,#42A5F5); box-shadow:0 0 12px rgba(25,118,210,0.4); }
+    .fill.lvl-20 { background: linear-gradient(90deg,#F57F17,#FFEB3B); box-shadow:0 0 14px rgba(245,127,23,0.5); }
+    .fill.lvl-25 { background: linear-gradient(90deg,#E65100,#FF9800); box-shadow:0 0 16px rgba(230,81,0,0.5); }
+    .fill.lvl-30 { background: linear-gradient(90deg,#C62828,#F44336); box-shadow:0 0 16px rgba(198,40,40,0.5); }
+    .fill.lvl-40 { background: linear-gradient(90deg,#B71C1C,#D32F2F); box-shadow:0 0 18px rgba(183,28,28,0.6); }
+    .fill.lvl-50 { background: linear-gradient(90deg,#ff0000,#ff8000,#ffff00,#00ff00,#00ffff,#0000ff,#8000ff); background-size:200% auto; animation:rainbow 3s linear infinite; box-shadow:0 0 24px rgba(255,200,0,0.6); }
+    @keyframes rainbow { to{background-position:-200% center;} }
 
-    .progress-info {
-      display: flex; justify-content: space-between; align-items: center;
-      margin-top: 8px; font-size: 0.75rem; opacity: 0.9; position: relative; z-index: 2;
+    /* Shimmer overlay on fill */
+    .fill::after {
+      content:'';
+      position:absolute; inset:0;
+      background:linear-gradient(90deg,transparent 30%,rgba(255,255,255,0.25) 50%,transparent 70%);
+      animation:shimmer 2s linear infinite;
     }
+    @keyframes shimmer { 0%{transform:translateX(-100%)} 100%{transform:translateX(100%)} }
 
-    .xp-text { color: #4ECDC4; font-weight: 600; }
-    .next-level { color: rgba(255,255,255,0.8); font-weight: 600; }
-
-    .level-up-flash {
-      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(255,215,0,0.3); border-radius: 20px;
-      opacity: 0; animation: levelUpFlash 0.5s ease-out;
-      pointer-events: none; z-index: 3;
+    /* Floating +XP */
+    .xp-float {
+      position: absolute; font-size: 13px; font-weight: 900;
+      color: #4CAF50; pointer-events: none; z-index: 10;
+      text-shadow: 0 0 10px rgba(76,175,80,0.7);
+      animation: xpFloat 1.5s ease-out forwards;
     }
+    @keyframes xpFloat { 0%{opacity:1;transform:translateY(0) scale(1)} 100%{opacity:0;transform:translateY(-36px) scale(0.6)} }
 
-    @keyframes levelUpFlash { 0% { opacity: 0; } 50% { opacity: 1; } 100% { opacity: 0; } }
-
-    .progress-fill.high-level {
-      background: linear-gradient(90deg, #FF9800 0%, #FFB74D 50%, #FFCC02 100%);
-      box-shadow: 0 0 20px rgba(255,152,0,0.5);
+    /* Level up flash */
+    .lvl-flash {
+      position: absolute; inset: 0; border-radius: 18px;
+      background: rgba(255,215,0,0.25);
+      animation: lvlFlash 0.6s ease-out forwards;
+      pointer-events: none; z-index: 5;
     }
+    @keyframes lvlFlash { 0%{opacity:0} 30%{opacity:1} 100%{opacity:0} }
 
-    .progress-fill.max-level {
-      background: linear-gradient(90deg, #FFD700, #FFF700, #FFFF00, #FFD700);
-      background-size: 200% 100%;
-      animation: maxLevelFlow 3s linear infinite, progressShine 2s linear infinite;
-      box-shadow: 0 0 30px rgba(255,215,0,0.8), 0 0 60px rgba(255,215,0,0.4);
-    }
-
-    @keyframes maxLevelFlow { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
-
-    .floating-xp {
-      position: absolute; color: #4CAF50; font-weight: 900; font-size: 0.9rem;
-      pointer-events: none; z-index: 15;
-      text-shadow: 0 0 10px rgba(76,175,80,0.8);
-      animation: floatUp 1.5s ease-out forwards;
-    }
-
-    @keyframes floatUp {
-      0% { opacity: 1; transform: translateY(0) scale(1); }
-      100% { opacity: 0; transform: translateY(-40px) scale(0.5); }
-    }
-
-    @media (max-width: 768px) {
-      .level-container { min-width: 300px; max-width: 400px; padding: 10px 15px; }
-      .level-title { font-size: 1rem; }
-      .level-number { font-size: 1.1rem; }
-      .progress-container { height: 18px; }
-      .progress-info { font-size: 0.7rem; }
-    }
-
-    @media (max-width: 480px) {
-      .level-container { min-width: 250px; max-width: 350px; padding: 8px 12px; }
-      .progress-container { height: 16px; }
-    }
+    .next-label { font-size: 10px; opacity: 0.3; font-weight: 600; position: relative; z-index: 1; text-align: right; }
   </style>
 </head>
 <body>
-  <div class="level-container">
-    <div class="level-header">
-      <span class="level-title">🌟 Global Level</span>
-      <span class="level-number" id="levelNumber">1</span>
+<div class="widget" id="widget">
+  <div class="header">
+    <div class="header-left">
+      <div class="live-dot"></div>
+      <div class="header-label">🌟 Global Level</div>
     </div>
-    <div class="progress-container">
-      <div class="progress-fill" id="progressFill"></div>
-    </div>
-    <div class="progress-info">
-      <span class="xp-text" id="xpText">0 / 100 XP</span>
-      <span class="next-level" id="nextLevel">Next: Level 2</span>
-    </div>
+    <div class="level-badge" id="levelBadge">Lvl 1</div>
   </div>
+  <div class="xp-row">
+    <div class="xp-current" id="xpCurrent">0 XP</div>
+    <div class="xp-next" id="xpNext">Next: Level 2</div>
+  </div>
+  <div class="track">
+    <div class="fill lvl-0" id="fill"></div>
+  </div>
+  <div class="next-label" id="nextLabel">0 / 100 XP to next level</div>
+</div>
 
-  <script type="module">
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-    import { getDatabase, ref, onValue } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+<script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+  import { getDatabase, ref, onValue } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+  const db = getDatabase(initializeApp({
+    apiKey:"AIzaSyDdStpC5rVtgaZ4XvtKLwQttnyIDXL2z7Q",
+    authDomain:"trainertrials.firebaseapp.com",
+    databaseURL:"https://trainertrials-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId:"trainertrials", storageBucket:"trainertrials.firebasestorage.app",
+    messagingSenderId:"22071275267", appId:"1:22071275267:web:92e82d6bfaee169aff8336"
+  }));
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyDdStpC5rVtgaZ4XvtKLwQttnyIDXL2z7Q",
-      authDomain: "trainertrials.firebaseapp.com",
-      databaseURL: "https://trainertrials-default-rtdb.europe-west1.firebasedatabase.app",
-      projectId: "trainertrials",
-      storageBucket: "trainertrials.firebasestorage.app",
-      messagingSenderId: "22071275267",
-      appId: "1:22071275267:web:92e82d6bfaee169aff8336"
-    };
+  function xpForLevel(l){ return Math.floor(100*Math.pow(1.5,l-1)); }
+  function levelFromXP(total){
+    let l=1,used=0;
+    while(true){ const n=xpForLevel(l); if(used+n>total) return l; used+=n; l++; }
+  }
+  function xpInLevel(total){
+    let l=1,used=0;
+    while(true){ const n=xpForLevel(l); if(used+n>total) return total-used; used+=n; l++; }
+  }
+  function fillClass(l){
+    if(l>=50)return'lvl-50';if(l>=40)return'lvl-40';if(l>=30)return'lvl-30';
+    if(l>=25)return'lvl-25';if(l>=20)return'lvl-20';if(l>=15)return'lvl-15';
+    if(l>=10)return'lvl-10';if(l>=5)return'lvl-5';return'lvl-0';
+  }
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
+  let displayXP=0, targetXP=0, prevLevel=1, lastTotal=0;
 
-    let currentLevel = 1;
-    let currentXP = 0;
-    let displayedXP = 0;
-    let lastTotalLikes = 0;
+  function spawnXP(amount){
+    const widget=document.getElementById('widget');
+    const el=document.createElement('div');
+    el.className='xp-float';
+    el.textContent=`+${amount} XP`;
+    el.style.left=Math.random()*200+80+'px';
+    el.style.top='40px';
+    widget.appendChild(el);
+    setTimeout(()=>el.remove(),1500);
+  }
+  function levelFlash(){
+    const widget=document.getElementById('widget');
+    const f=document.createElement('div'); f.className='lvl-flash';
+    widget.appendChild(f); setTimeout(()=>f.remove(),650);
+  }
 
-    function getXPForLevel(level) {
-      return Math.floor(100 * Math.pow(1.5, level - 1));
-    }
+  function tick(){
+    if(Math.abs(targetXP-displayXP)>0.5){
+      displayXP+=(targetXP-displayXP)*0.06;
+    } else { displayXP=targetXP; }
 
-    function getLevelFromXP(totalXP) {
-      let level = 1;
-      let xpNeeded = 0;
-      while (xpNeeded <= totalXP) {
-        xpNeeded += getXPForLevel(level);
-        if (xpNeeded <= totalXP) level++;
-      }
-      return level;
-    }
+    const level = levelFromXP(Math.floor(displayXP));
+    const inLvl = xpInLevel(Math.floor(displayXP));
+    const need  = xpForLevel(level);
+    const pct   = Math.min(100,(inLvl/need)*100);
 
-    function getCurrentLevelXP(totalXP) {
-      let level = 1;
-      let xpUsed = 0;
-      while (true) {
-        const xpForThisLevel = getXPForLevel(level);
-        if (xpUsed + xpForThisLevel > totalXP) return totalXP - xpUsed;
-        xpUsed += xpForThisLevel;
-        level++;
-      }
-    }
+    if(level>prevLevel){ levelFlash(); prevLevel=level; }
 
-    function createFloatingXP(amount) {
-      const container = document.querySelector('.level-container');
-      const el = document.createElement('div');
-      el.className = 'floating-xp';
-      el.textContent = `+${amount} XP`;
-      el.style.left = Math.random() * 200 + 100 + 'px';
-      el.style.top = '30px';
-      container.appendChild(el);
-      setTimeout(() => { if (el.parentNode) el.parentNode.removeChild(el); }, 1500);
-    }
+    document.getElementById('levelBadge').textContent = `Lvl ${level}`;
+    document.getElementById('xpCurrent').textContent  = `${Math.floor(displayXP).toLocaleString('de-DE')} XP`;
+    document.getElementById('xpNext').textContent     = `Next: Level ${level+1}`;
+    document.getElementById('nextLabel').textContent   = `${Math.floor(inLvl).toLocaleString('de-DE')} / ${need.toLocaleString('de-DE')} XP to next level`;
 
-    function createLevelUpFlash() {
-      const container = document.querySelector('.level-container');
-      const flash = document.createElement('div');
-      flash.className = 'level-up-flash';
-      container.appendChild(flash);
-      setTimeout(() => { if (flash.parentNode) flash.parentNode.removeChild(flash); }, 500);
-    }
+    const fill=document.getElementById('fill');
+    fill.style.width=pct.toFixed(2)+'%';
+    fill.className=`fill ${fillClass(level)}`;
 
-    function updateDisplay() {
-      const levelNumber = document.getElementById("levelNumber");
-      const progressFill = document.getElementById("progressFill");
-      const xpText = document.getElementById("xpText");
-      const nextLevel = document.getElementById("nextLevel");
+    requestAnimationFrame(tick);
+  }
 
-      const xpDiff = Math.abs(currentXP - displayedXP);
-      if (xpDiff > 0.1) {
-        const speed = Math.max(0.1, xpDiff * 0.1);
-        displayedXP += Math.min(speed, xpDiff);
-      }
+  onValue(ref(db,'global/total_likes_ever'),snap=>{
+    const total=snap.val()||0;
+    if(total>lastTotal) spawnXP(total-lastTotal);
+    lastTotal=total;
+    targetXP=total;
+  });
 
-      const newLevel = getLevelFromXP(displayedXP);
-      const currentLevelXP = getCurrentLevelXP(displayedXP);
-      const xpNeededForCurrentLevel = getXPForLevel(newLevel);
-      const progress = (currentLevelXP / xpNeededForCurrentLevel) * 100;
-
-      if (newLevel > currentLevel) {
-        createLevelUpFlash();
-        currentLevel = newLevel;
-      }
-
-      levelNumber.textContent = Math.floor(currentLevel);
-      progressFill.style.width = Math.min(100, progress).toFixed(1) + "%";
-      xpText.textContent = `${Math.floor(currentLevelXP).toLocaleString()} / ${xpNeededForCurrentLevel.toLocaleString()} XP`;
-      nextLevel.textContent = `Next: Level ${currentLevel + 1}`;
-
-      if (currentLevel >= 50) progressFill.className = "progress-fill max-level";
-      else if (currentLevel >= 25) progressFill.className = "progress-fill high-level";
-      else progressFill.className = "progress-fill";
-    }
-
-    // Firebase realtime listener
-    onValue(ref(db, 'global/total_likes_ever'), (snapshot) => {
-      const totalLikes = snapshot.val() || 0;
-      if (totalLikes > lastTotalLikes) createFloatingXP(totalLikes - lastTotalLikes);
-      currentXP = totalLikes;
-      lastTotalLikes = totalLikes;
-    }, (error) => {
-      console.error('Firebase error:', error);
-    });
-
-    // 60fps display updates
-    setInterval(updateDisplay, 16);
-
-    document.addEventListener('visibilitychange', () => {
-      const els = document.querySelectorAll('*');
-      const state = document.hidden ? 'paused' : 'running';
-      els.forEach(el => { if (el.style) el.style.animationPlayState = state; });
-    });
-
-    console.log('🌟 Global Level Bar loaded — Firebase realtime active');
-  </script>
+  tick();
+</script>
 </body>
 </html>

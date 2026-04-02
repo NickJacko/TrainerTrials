@@ -1,328 +1,152 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Cool Scrolling Banner</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
+  <title>Stream Banner</title>
   <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
-      margin: 0;
-      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       background: transparent;
       overflow: hidden;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      height: 100vh;
-      display: flex;
-      align-items: flex-end;
+      width: 100vw; height: 60px;
+      display: flex; align-items: center;
     }
 
-    .banner-container {
-      position: fixed;
-      bottom: 0;
-      width: 100%;
-      height: 50px;
-      background: rgba(255, 255, 255, 0.12);
-      backdrop-filter: blur(12px);
-      border-top: 2px solid rgba(255, 255, 255, 0.2);
-      box-shadow: 
-        0 -4px 20px rgba(0, 0, 0, 0.15),
-        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    .banner {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      height: 52px;
+      background: rgba(4,2,14,0.88);
+      border-top: 1px solid rgba(255,255,255,0.08);
       overflow: hidden;
-      z-index: 1000;
-      position: relative;
+      display: flex; align-items: center;
     }
 
-    .banner-container::before {
+    /* Grid texture */
+    .banner::before {
       content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: linear-gradient(
-        90deg,
-        rgba(102, 126, 234, 0.1) 0%,
-        rgba(118, 75, 162, 0.15) 25%,
-        rgba(64, 224, 208, 0.1) 50%,
-        rgba(255, 182, 193, 0.1) 75%,
-        rgba(102, 126, 234, 0.1) 100%
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(78,205,196,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(78,205,196,0.05) 1px, transparent 1px);
+      background-size: 28px 28px;
+      pointer-events: none; z-index: 0;
+    }
+
+    /* Animated top border gradient */
+    .banner::after {
+      content: '';
+      position: absolute; top: 0; left: -100%; right: 0; height: 1px;
+      background: linear-gradient(90deg,
+        transparent,
+        #4ECDC4 20%,
+        #FFD700 50%,
+        #FF6B6B 80%,
+        transparent
       );
-      background-size: 400% 100%;
-      animation: gradientFlow 8s ease-in-out infinite;
-      opacity: 0.6;
+      animation: borderSlide 4s linear infinite;
     }
+    @keyframes borderSlide { 0%{left:-100%} 100%{left:100%} }
 
-    @keyframes gradientFlow {
-      0%, 100% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-    }
-
-    .marquee-text {
-      display: inline-block;
+    /* Left badge */
+    .banner-badge {
+      flex-shrink: 0;
+      padding: 0 14px 0 16px;
+      font-size: 10px; font-weight: 800; letter-spacing: 2px;
+      text-transform: uppercase; color: #4ECDC4; opacity: 0.7;
+      border-right: 1px solid rgba(255,255,255,0.07);
+      height: 100%; display: flex; align-items: center;
+      position: relative; z-index: 1;
       white-space: nowrap;
-      font-size: 22px;
-      font-weight: 700;
-      line-height: 50px;
-      position: relative;
-      z-index: 2;
-      animation: scrollLeft 30s linear infinite;
-      padding-left: 100%;
     }
 
-    @keyframes scrollLeft {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(-100%); }
+    /* Live dot */
+    .live-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #FF6B6B; box-shadow: 0 0 6px #FF6B6B;
+      margin-right: 8px;
+      animation: livePulse 1.5s ease-in-out infinite;
+    }
+    @keyframes livePulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+    /* Scrolling text area */
+    .marquee-clip {
+      flex: 1; overflow: hidden; height: 100%;
+      display: flex; align-items: center;
+      position: relative; z-index: 1;
+      mask-image: linear-gradient(90deg, transparent, black 4%, black 96%, transparent);
+      -webkit-mask-image: linear-gradient(90deg, transparent, black 4%, black 96%, transparent);
     }
 
-    .message-segment {
-      display: inline-block;
-      padding: 0 80px;
-      position: relative;
+    .marquee-inner {
+      display: flex; align-items: center;
+      white-space: nowrap;
+      animation: scroll 32s linear infinite;
     }
+    @keyframes scroll { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
 
-    .message-segment::before {
-      content: '✨';
-      position: absolute;
-      left: 40px;
-      font-size: 18px;
-      animation: sparkle 2s ease-in-out infinite alternate;
+    .msg-block {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 0 60px;
+      font-size: 15px; font-weight: 700;
     }
-
-    @keyframes sparkle {
-      0% { 
-        transform: scale(1) rotate(0deg);
-        opacity: 0.7;
-      }
-      100% { 
-        transform: scale(1.2) rotate(15deg);
-        opacity: 1;
-      }
+    .msg-block .sep {
+      width: 4px; height: 4px; border-radius: 50%;
+      background: rgba(255,255,255,0.25); flex-shrink: 0;
     }
-
-    /* Message Styles */
-    .message-glow {
-      text-shadow: 
-        0 0 10px currentColor,
-        0 0 20px currentColor,
-        0 0 30px rgba(255, 255, 255, 0.5),
-        0 2px 4px rgba(0, 0, 0, 0.3);
-      animation: textGlow 3s ease-in-out infinite alternate;
+    .msg-text {
+      background-size: 200% auto;
+      background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      animation: msgShine 4s linear infinite;
     }
-
-    @keyframes textGlow {
-      0% { 
-        filter: brightness(1);
-        text-shadow: 
-          0 0 10px currentColor,
-          0 0 20px currentColor,
-          0 0 30px rgba(255, 255, 255, 0.5),
-          0 2px 4px rgba(0, 0, 0, 0.3);
-      }
-      100% { 
-        filter: brightness(1.3);
-        text-shadow: 
-          0 0 15px currentColor,
-          0 0 30px currentColor,
-          0 0 45px rgba(255, 255, 255, 0.7),
-          0 2px 4px rgba(0, 0, 0, 0.3);
-      }
-    }
-
-    .blue-glow {
-      color: #4FC3F7;
-    }
-
-    .purple-glow {
-      color: #AB47BC;
-    }
-
-    .green-glow {
-      color: #66BB6A;
-    }
-
-    .orange-glow {
-      color: #FF7043;
-    }
-
-    .pink-glow {
-      color: #EC407A;
-    }
-
-    .cyan-glow {
-      color: #26C6DA;
-    }
-
-    /* Floating particles in banner */
-    .banner-particle {
-      position: absolute;
-      width: 3px;
-      height: 3px;
-      background: rgba(255, 255, 255, 0.6);
-      border-radius: 50%;
-      animation: floatParticle 4s ease-in-out infinite;
-      z-index: 1;
-    }
-
-    @keyframes floatParticle {
-      0%, 100% {
-        transform: translateY(0) scale(0.8);
-        opacity: 0.4;
-      }
-      50% {
-        transform: translateY(-15px) scale(1.2);
-        opacity: 0.8;
-      }
-    }
-
-    .banner-particle:nth-child(1) { left: 10%; animation-delay: 0s; }
-    .banner-particle:nth-child(2) { left: 25%; animation-delay: 1s; }
-    .banner-particle:nth-child(3) { left: 40%; animation-delay: 2s; }
-    .banner-particle:nth-child(4) { left: 55%; animation-delay: 0.5s; }
-    .banner-particle:nth-child(5) { left: 70%; animation-delay: 1.5s; }
-    .banner-particle:nth-child(6) { left: 85%; animation-delay: 2.5s; }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-      .banner-container {
-        height: 45px;
-      }
-
-      .marquee-text {
-        font-size: 20px;
-        line-height: 45px;
-        animation-duration: 25s;
-      }
-
-      .message-segment {
-        padding: 0 60px;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .banner-container {
-        height: 40px;
-      }
-
-      .marquee-text {
-        font-size: 18px;
-        line-height: 40px;
-        animation-duration: 20s;
-      }
-
-      .message-segment {
-        padding: 0 50px;
-      }
-    }
+    .c-teal   { background-image: linear-gradient(90deg,#4ECDC4,#fff8,#4ECDC4); }
+    .c-gold   { background-image: linear-gradient(90deg,#FFD700,#fff8,#FFD700); }
+    .c-red    { background-image: linear-gradient(90deg,#FF6B6B,#fff8,#FF6B6B); }
+    .c-blue   { background-image: linear-gradient(90deg,#64B5F6,#fff8,#64B5F6); }
+    .c-purple { background-image: linear-gradient(90deg,#CE93D8,#fff8,#CE93D8); }
+    .c-green  { background-image: linear-gradient(90deg,#A5D6A7,#fff8,#A5D6A7); }
+    @keyframes msgShine { to { background-position:-200% center; } }
   </style>
 </head>
 <body>
-  <div class="banner-container">
-    <!-- Floating particles -->
-    <div class="banner-particle"></div>
-    <div class="banner-particle"></div>
-    <div class="banner-particle"></div>
-    <div class="banner-particle"></div>
-    <div class="banner-particle"></div>
-    <div class="banner-particle"></div>
-
-    <div id="marqueeSlot" class="marquee-text"></div>
+<div class="banner">
+  <div class="banner-badge">
+    <div class="live-dot"></div>
+    Catchmon Arena
   </div>
+  <div class="marquee-clip">
+    <div class="marquee-inner" id="marqueeInner"></div>
+  </div>
+</div>
 
-  <script>
-    const messages = [
-      { 
-        text: "🎮 Welcome to the Catchmon Arena! Like the stream to catch 'em all!", 
-        class: "blue-glow" 
-      },
-      { 
-        text: "⚡ More likes = higher catch chance! Team up with fellow trainers!", 
-        class: "purple-glow" 
-      },
-      { 
-        text: "🌟 Donate for special effects and multipliers! Check out the donation tiers!", 
-        class: "green-glow" 
-      },
-      { 
-        text: "🔥 Evolve your Catchmon by collecting duplicates! Build the ultimate team!", 
-        class: "orange-glow" 
-      },
-      { 
-        text: "💎 Climb the leaderboards and become the ultimate Catchmon Master!", 
-        class: "pink-glow" 
-      },
-      { 
-        text: "🏆 Check your stats and collection in the Catchdex! Link in bio!", 
-        class: "cyan-glow" 
-      }
-    ];
+<script>
+  const messages = [
+    { text: "🎮 Like the stream to catch Catchmon — more likes = higher chance!", color: "c-teal" },
+    { text: "⚡ Send TikTok Gifts to unlock a permanent catch multiplier up to 5×!", color: "c-gold" },
+    { text: "🔥 Evolve your team by fusing duplicate Catchmon — power up!", color: "c-red" },
+    { text: "💎 Check the leaderboard and your Catchdex at trainertrials.org", color: "c-blue" },
+    { text: "🏆 Climb the Elite Catcher Arena and dominate the rankings!", color: "c-purple" },
+    { text: "✨ Shiny Catchmon are ultra rare — keep watching to catch one!", color: "c-green" },
+  ];
 
-    let currentIndex = 0;
-    const slot = document.getElementById("marqueeSlot");
+  const inner = document.getElementById('marqueeInner');
 
-    function showNextMessage() {
-      const msg = messages[currentIndex];
-      slot.innerHTML = `<span class="message-segment message-glow ${msg.class}">${msg.text}</span>`;
-      
-      // Reset animation
-      slot.style.animation = "none";
-      void slot.offsetWidth; // Force reflow
-      slot.style.animation = "scrollLeft 30s linear infinite";
-
-      currentIndex = (currentIndex + 1) % messages.length;
-    }
-
-    // Show first message immediately
-    showNextMessage();
-    
-    // Change message every 30 seconds (matching animation duration)
-    setInterval(showNextMessage, 30000);
-
-    // Add some interactive sparkles on mouse movement (optional)
-    let lastSparkleTime = 0;
-    document.addEventListener('mousemove', (e) => {
-      const now = Date.now();
-      if (now - lastSparkleTime > 200) { // Throttle to avoid too many sparkles
-        createMouseSparkle(e.clientX, e.clientY);
-        lastSparkleTime = now;
-      }
+  // Build double set for seamless loop
+  function buildMarquee(){
+    inner.innerHTML='';
+    const doubled=[...messages,...messages];
+    doubled.forEach(m=>{
+      const block=document.createElement('div');
+      block.className='msg-block';
+      block.innerHTML=`
+        <div class="sep"></div>
+        <span class="msg-text ${m.color}">${m.text}</span>
+      `;
+      inner.appendChild(block);
     });
-
-    function createMouseSparkle(x, y) {
-      const sparkle = document.createElement('div');
-      sparkle.style.position = 'fixed';
-      sparkle.style.left = x + 'px';
-      sparkle.style.top = y + 'px';
-      sparkle.style.width = '4px';
-      sparkle.style.height = '4px';
-      sparkle.style.background = 'rgba(255, 255, 255, 0.8)';
-      sparkle.style.borderRadius = '50%';
-      sparkle.style.pointerEvents = 'none';
-      sparkle.style.zIndex = '1001';
-      sparkle.style.boxShadow = '0 0 6px rgba(255, 255, 255, 0.6)';
-      sparkle.style.animation = 'sparkle 1s ease-out forwards';
-      
-      document.body.appendChild(sparkle);
-      
-      setTimeout(() => {
-        sparkle.remove();
-      }, 1000);
-    }
-
-    // Add sparkle animation
-    const style = document.createElement('style');
-    style.textContent = `
-      @keyframes sparkle {
-        0% { 
-          opacity: 1; 
-          transform: scale(1); 
-        }
-        100% { 
-          opacity: 0; 
-          transform: scale(0.3); 
-        }
-      }
-    `;
-    document.head.appendChild(style);
-  </script>
+  }
+  buildMarquee();
+</script>
 </body>
 </html>
