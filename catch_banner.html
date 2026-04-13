@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Live Catch Banner</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: transparent;
+      overflow: hidden;
+      width: 100vw; height: 44px;
+    }
+
+    .banner {
+      position: fixed; top: 0; left: 0; right: 0; height: 44px;
+      background: rgba(4,2,14,0.86);
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      overflow: hidden;
+      display: flex; align-items: center;
+    }
+
+    /* Grid texture */
+    .banner::before {
+      content: ''; position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(78,205,196,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(78,205,196,0.05) 1px, transparent 1px);
+      background-size: 24px 24px;
+      pointer-events: none; z-index: 0;
+    }
+    /* Animated bottom border */
+    .banner::after {
+      content: ''; position: absolute; bottom: 0; left: -100%; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, #4ECDC4 30%, #FFD700 60%, transparent);
+      animation: borderSlide 4s linear infinite;
+    }
+    @keyframes borderSlide { 0%{left:-100%} 100%{left:100%} }
+
+    /* Left label */
+    .label {
+      flex-shrink: 0; height: 100%;
+      padding: 0 12px 0 14px;
+      display: flex; align-items: center; gap: 7px;
+      border-right: 1px solid rgba(255,255,255,0.07);
+      position: relative; z-index: 1; white-space: nowrap;
+    }
+    .live-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #FF6B6B; box-shadow: 0 0 6px #FF6B6B;
+      animation: dotBlink 1.5s ease-in-out infinite;
+    }
+    @keyframes dotBlink { 0%,100%{opacity:1} 50%{opacity:0.25} }
+    .label-txt { font-size: 10px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: #4ECDC4; opacity: 0.7; }
+
+    /* Carousel area */
+    .carousel-area {
+      flex: 1; overflow: hidden; height: 100%;
+      display: flex; align-items: center;
+      position: relative; z-index: 1;
+      mask-image: linear-gradient(90deg, transparent, black 3%, black 97%, transparent);
+      -webkit-mask-image: linear-gradient(90deg, transparent, black 3%, black 97%, transparent);
+    }
+
+    .carousel-track { position: relative; width: 100%; height: 100%; }
+
+    .catch-item {
+      position: absolute; inset: 0;
+      display: flex; align-items: center;
+      padding: 0 16px; gap: 10px;
+      opacity: 0;
+      transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.22,1,0.36,1);
+      transform: translateY(10px);
+    }
+    .catch-item.active { opacity: 1; transform: translateY(0); }
+    .catch-item.exit   { opacity: 0; transform: translateY(-10px); }
+
+    /* Website promo item */
+    .catch-item.promo .catch-text { color: rgba(255,255,255,0.45); font-style: italic; }
+
+    .catch-sprite {
+      width: 28px; height: 28px; object-fit: contain; border-radius: 6px;
+      flex-shrink: 0;
+      filter: drop-shadow(0 0 6px rgba(78,205,196,0.4));
+    }
+    .catch-text { font-size: 13px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
+
+    /* Rarity colors on catchmon name */
+    .r-common    { color: #e0e0e0; }
+    .r-starter   { color: #a5d6a7; }
+    .r-rare      { color: #90caf9; }
+    .r-legendary { color: #ffcc80; }
+    .r-mythical  { color: #e1bee7; }
+    .r-god       { color: #ce93d8; }
+
+    /* Catcher tier names */
+    .cn-king,.cn-god { background-image:linear-gradient(90deg,#ffd700,#fff8,#ffd700); background-size:200% auto; background-clip:text; -webkit-background-clip:text; -webkit-text-fill-color:transparent; animation:cnS 3s linear infinite; }
+    .cn-flame        { background-image:linear-gradient(90deg,#ff4444,#fff8,#ff4444); background-size:200% auto; background-clip:text; -webkit-background-clip:text; -webkit-text-fill-color:transparent; animation:cnS 3s linear infinite; }
+    .cn-diamond      { background-image:linear-gradient(90deg,#00bfff,#fff8,#00bfff); background-size:200% auto; background-clip:text; -webkit-background-clip:text; -webkit-text-fill-color:transparent; animation:cnS 3s linear infinite; }
+    .cn-shine        { background-image:linear-gradient(90deg,#32cd32,#fff8,#32cd32); background-size:200% auto; background-clip:text; -webkit-background-clip:text; -webkit-text-fill-color:transparent; animation:cnS 3s linear infinite; }
+    @keyframes cnS { to { background-position: -200% center; } }
+
+    .shiny-badge { color: #FFD700; font-size: 11px; }
+    .sep { opacity: 0.25; flex-shrink: 0; }
+
+    /* URL promo */
+    .url-text { font-size: 12px; font-weight: 700; color: #4ECDC4; opacity: 0.7; letter-spacing: 0.5px; }
+  </style>
+</head>
+<body>
+<div class="banner">
+  <div class="label">
+    <div class="live-dot"></div>
+    <div class="label-txt">Catches</div>
+  </div>
+  <div class="carousel-area">
+    <div class="carousel-track" id="track"></div>
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+  import { getDatabase, ref, onValue } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+
+  const db = getDatabase(initializeApp({
+    apiKey: "AIzaSyDdStpC5rVtgaZ4XvtKLwQttnyIDXL2z7Q",
+    authDomain: "trainertrials.firebaseapp.com",
+    databaseURL: "https://trainertrials-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "trainertrials",
+    storageBucket: "trainertrials.firebasestorage.app",
+    messagingSenderId: "22071275267",
+    appId: "1:22071275267:web:92e82d6bfaee169aff8336"
+  }));
+
+  const SITE_URL   = 'trainertrials.github.io/TrainerTrials';
+  const INTERVAL   = 4000;   // ms pro Slide
+  const PROMO_EVERY = 6;     // alle N Catches → Website-URL einblenden
+
+  let catches  = [];   // { catcher, catchmon, rarity, sprite, shiny, level, donation }
+  let idx      = 0;
+  let current  = null;
+  let promoCounter = 0;
+
+  function capitalize(s) { return String(s??'').charAt(0).toUpperCase()+String(s??'').slice(1); }
+
+  function tierClass(donation) {
+    if (donation >= 2500) return 'cn-king';
+    if (donation >= 500)  return 'cn-flame';
+    if (donation >= 250)  return 'cn-diamond';
+    if (donation >= 50)   return 'cn-shine';
+    return '';
+  }
+  function rarityClass(r) { return 'r-' + (r||'common').toLowerCase(); }
+
+  function buildCatchItem(entry) {
+    const item = document.createElement('div');
+    item.className = 'catch-item';
+
+    // Sprite
+    if (entry.sprite) {
+      const img = document.createElement('img');
+      img.className = 'catch-sprite';
+      img.src = entry.sprite; img.alt = entry.catchmon;
+      img.onerror = () => img.style.display = 'none';
+      item.appendChild(img);
+    }
+
+    // Text: "Nick fing Mindferno Lvl 23"
+    const text = document.createElement('div');
+    text.className = 'catch-text';
+
+    const tc = tierClass(entry.donation || 0);
+    const catcherSpan = document.createElement('span');
+    if (tc) { catcherSpan.className = tc; }
+    catcherSpan.textContent = capitalize(entry.catcher);
+
+    const verbSpan = document.createElement('span');
+    verbSpan.style.opacity = '0.45';
+    verbSpan.textContent = ' caught ';
+
+    const nameSpan = document.createElement('span');
+    nameSpan.className = rarityClass(entry.rarity);
+    nameSpan.style.fontWeight = '900';
+    nameSpan.textContent = capitalize(entry.catchmon);
+
+    const lvlSpan = document.createElement('span');
+    lvlSpan.style.opacity = '0.45';
+    lvlSpan.textContent = ` Lvl ${entry.level || 1}`;
+
+    text.append(catcherSpan, verbSpan, nameSpan, lvlSpan);
+
+    if (entry.shiny) {
+      const s = document.createElement('span');
+      s.className = 'shiny-badge'; s.textContent = ' ✨';
+      text.appendChild(s);
+    }
+
+    item.appendChild(text);
+    return item;
+  }
+
+  function buildPromoItem() {
+    const item = document.createElement('div');
+    item.className = 'catch-item promo';
+    const text = document.createElement('div');
+    text.className = 'catch-text';
+    text.innerHTML = `<span style="opacity:0.4">Check your Catchdex 👉 </span><span class="url-text">${SITE_URL}</span>`;
+    item.appendChild(text);
+    return item;
+  }
+
+  function advance() {
+    const track = document.getElementById('track');
+    if (!track) return;
+
+    // Exit current
+    if (current) {
+      current.classList.remove('active');
+      current.classList.add('exit');
+      const old = current;
+      setTimeout(() => old.remove(), 500);
+    }
+
+    let item;
+    if (catches.length === 0) {
+      // No data yet — show promo
+      item = buildPromoItem();
+    } else {
+      promoCounter++;
+      // Show promo every PROMO_EVERY slides, or when we've looped through everyone
+      if (promoCounter % PROMO_EVERY === 0 || idx >= catches.length) {
+        item = buildPromoItem();
+        if (idx >= catches.length) idx = 0;
+      } else {
+        item = buildCatchItem(catches[idx % catches.length]);
+        idx++;
+      }
+    }
+
+    track.appendChild(item);
+    // Double rAF for enter animation
+    requestAnimationFrame(() => requestAnimationFrame(() => item.classList.add('active')));
+    current = item;
+  }
+
+  // Firebase: lese alle trainers und baue eine flache Liste aller catches
+  onValue(ref(db, 'trainers'), snap => {
+    const data = snap.val() || {};
+    const newCatches = [];
+
+    for (const [catcher, info] of Object.entries(data)) {
+      const team = Array.isArray(info.team) ? info.team : Object.values(info.team || {});
+      for (const c of team) {
+        if (!c?.name) continue;
+        newCatches.push({
+          catcher,
+          catchmon:  c.name,
+          rarity:    c.rarity || 'Common',
+          sprite:    c.sprite || '',
+          shiny:     c.shiny  || false,
+          level:     c.level  || 1,
+          donation:  info.donation || 0,
+          caught_at: c.caught_at  || 0,
+        });
+      }
+    }
+
+    // Sortiere nach caught_at (neueste zuerst), nimm die letzten 30
+    newCatches.sort((a, b) => b.caught_at - a.caught_at);
+    catches = newCatches.slice(0, 30);
+    // Reset index wenn catches sich stark geändert hat
+    idx = Math.min(idx, catches.length > 0 ? catches.length - 1 : 0);
+  });
+
+  // Start carousel
+  advance();
+  setInterval(advance, INTERVAL);
+
+  // Cleanup
+  window.addEventListener('beforeunload', () => {});
+</script>
+</body>
+</html>

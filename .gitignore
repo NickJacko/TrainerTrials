@@ -11,7 +11,7 @@ __pycache__/
 *.pyc
 *.pyo
 *.log
-
+*.py
 # ---- Generated runtime state (MUST NOT be committed) ----
 catcher.json
 spawn_data.json
@@ -23,7 +23,7 @@ global_level.json
 donation_trigger.json
 fusion_trigger.json
 backup_json_*/
-
+serviceAccountKey.json
 # ---- OS ----
 .DS_Store
 Thumbs.db

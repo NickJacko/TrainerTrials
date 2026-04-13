@@ -34,6 +34,10 @@
     "connection_test": {
       ".read": false,
       ".write": false
+    },
+    "catches": {
+    ".read": true,
+    ".write": false
     }
   }
 }
