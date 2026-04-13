@@ -23,13 +23,17 @@
       ".read": true,
       ".write": false
     },
+    "dex": {
+      ".read": true,
+      ".write": false
+    },
+    "donations": {
+      ".read": true,
+      ".write": false
+    },
     "connection_test": {
       ".read": false,
       ".write": false
-    },
-    "dex": {
-    ".read": true,
-    ".write": false
     }
   }
 }

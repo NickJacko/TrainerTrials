@@ -13,10 +13,8 @@
       width: 100vw; height: 100vh;
     }
 
-    /* Canvas für Partikel */
     #canvas { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
 
-    /* Hauptcontainer */
     .dono-wrap {
       position: fixed;
       top: 50%; left: 50%;
@@ -27,12 +25,8 @@
       text-align: center;
       width: 340px;
     }
-    .dono-wrap.enter {
-      animation: donoIn 0.7s cubic-bezier(0.22,1,0.36,1) forwards;
-    }
-    .dono-wrap.exit {
-      animation: donoOut 0.6s cubic-bezier(0.55,0,1,0.45) forwards;
-    }
+    .dono-wrap.enter { animation: donoIn 0.7s cubic-bezier(0.22,1,0.36,1) forwards; }
+    .dono-wrap.exit  { animation: donoOut 0.6s cubic-bezier(0.55,0,1,0.45) forwards; }
     @keyframes donoIn {
       0%  { opacity:0; transform:translate(-50%,-50%) scale(0.3) rotate(-8deg); }
       60% { opacity:1; transform:translate(-50%,-50%) scale(1.05) rotate(2deg); }
@@ -43,23 +37,16 @@
       100%{ opacity:0; transform:translate(-50%,-50%) scale(0.2) rotate(12deg); }
     }
 
-    /* Icon area */
     .dono-icon {
-      font-size: 72px; line-height: 1;
-      margin-bottom: 16px;
-      display: block;
+      font-size: 72px; line-height: 1; margin-bottom: 16px; display: block;
       filter: drop-shadow(0 0 20px rgba(255,51,102,0.8));
       animation: iconPulse 0.7s ease-in-out infinite alternate;
     }
     @keyframes iconPulse { 0%{transform:scale(1)} 100%{transform:scale(1.15)} }
 
-    /* Card */
     .dono-card {
-      background: rgba(4,2,14,0.92);
-      border-radius: 20px;
-      padding: 20px 24px;
-      border: 1px solid rgba(255,255,255,0.12);
-      position: relative; overflow: hidden;
+      background: rgba(4,2,14,0.92); border-radius: 20px; padding: 20px 24px;
+      border: 1px solid rgba(255,255,255,0.12); position: relative; overflow: hidden;
     }
     .dono-card::before {
       content: '';
@@ -71,11 +58,9 @@
       pointer-events: none;
     }
 
-    /* Tier glow line top */
-    .dono-card .tier-line {
+    .tier-line {
       position: absolute; top: 0; left: 0; right: 0; height: 2px;
-      border-radius: 20px 20px 0 0;
-      transition: background 0.3s;
+      border-radius: 20px 20px 0 0; transition: background 0.3s;
     }
     .tier-normal  .tier-line { background: rgba(255,255,255,0.2); }
     .tier-shine   .tier-line { background: linear-gradient(90deg,transparent,#32CD32,transparent); }
@@ -83,18 +68,8 @@
     .tier-flame   .tier-line { background: linear-gradient(90deg,transparent,#FF4444,transparent); }
     .tier-king    .tier-line { background: linear-gradient(90deg,transparent,#FFD700,transparent); box-shadow: 0 0 20px rgba(255,215,0,0.6); }
 
-    .dono-label {
-      font-size: 10px; font-weight: 700; letter-spacing: 2px;
-      text-transform: uppercase; opacity: 0.35; margin-bottom: 10px;
-      position: relative; z-index: 1;
-    }
-
-    /* Donor name */
-    .dono-name {
-      font-size: 28px; font-weight: 900; letter-spacing: -1px;
-      margin-bottom: 8px; line-height: 1;
-      position: relative; z-index: 1;
-    }
+    .dono-label { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; opacity: 0.35; margin-bottom: 10px; position: relative; z-index: 1; color: white; }
+    .dono-name  { font-size: 28px; font-weight: 900; letter-spacing: -1px; margin-bottom: 8px; line-height: 1; position: relative; z-index: 1; }
     .dono-name.normal  { color: white; }
     .dono-name.shine   { background-image:linear-gradient(90deg,#32cd32,#fff,#32cd32); background-size:200% auto; background-clip:text; -webkit-background-clip:text; -webkit-text-fill-color:transparent; animation:nameShine 2s linear infinite; }
     .dono-name.diamond { background-image:linear-gradient(90deg,#00bfff,#fff,#00bfff); background-size:200% auto; background-clip:text; -webkit-background-clip:text; -webkit-text-fill-color:transparent; animation:nameShine 2s linear infinite; }
@@ -102,21 +77,11 @@
     .dono-name.king    { background-image:linear-gradient(90deg,#ffd700,#fff8,#ffd700); background-size:200% auto; background-clip:text; -webkit-background-clip:text; -webkit-text-fill-color:transparent; animation:nameShine 2s linear infinite; }
     @keyframes nameShine { to { background-position:-200% center; } }
 
-    /* Amount */
-    .dono-amount {
-      font-size: 22px; font-weight: 900; color: #FFD700;
-      text-shadow: 0 0 20px rgba(255,215,0,0.6);
-      margin-bottom: 6px;
-      position: relative; z-index: 1;
-    }
-    .dono-thanks {
-      font-size: 13px; opacity: 0.45; font-weight: 600;
-      position: relative; z-index: 1;
-    }
+    .dono-amount { font-size: 22px; font-weight: 900; color: #FFD700; text-shadow: 0 0 20px rgba(255,215,0,0.6); margin-bottom: 6px; position: relative; z-index: 1; }
+    .dono-thanks { font-size: 13px; opacity: 0.45; font-weight: 600; position: relative; z-index: 1; color: white; }
 
-    /* Premium glow box for king/flame */
-    .tier-king   .dono-card { box-shadow: 0 0 40px rgba(255,215,0,0.2), 0 0 80px rgba(255,215,0,0.08); border-color: rgba(255,215,0,0.3); }
-    .tier-flame  .dono-card { box-shadow: 0 0 40px rgba(255,68,68,0.2); border-color: rgba(255,68,68,0.3); }
+    .tier-king    .dono-card { box-shadow: 0 0 40px rgba(255,215,0,0.2), 0 0 80px rgba(255,215,0,0.08); border-color: rgba(255,215,0,0.3); }
+    .tier-flame   .dono-card { box-shadow: 0 0 40px rgba(255,68,68,0.2); border-color: rgba(255,68,68,0.3); }
     .tier-diamond .dono-card { box-shadow: 0 0 30px rgba(0,191,255,0.15); border-color: rgba(0,191,255,0.25); }
   </style>
 </head>
@@ -136,87 +101,98 @@
 
 <audio id="donoSound" src="sounds/dono.mp3" preload="auto"></audio>
 
-<script>
-  // ── Canvas particle system ─────────────────────────────────────────────────
+<script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+  import { getDatabase, ref, onValue } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+
+  const db = getDatabase(initializeApp({
+    apiKey: "AIzaSyDdStpC5rVtgaZ4XvtKLwQttnyIDXL2z7Q",
+    authDomain: "trainertrials.firebaseapp.com",
+    databaseURL: "https://trainertrials-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "trainertrials",
+    storageBucket: "trainertrials.firebasestorage.app",
+    messagingSenderId: "22071275267",
+    appId: "1:22071275267:web:92e82d6bfaee169aff8336"
+  }));
+
+  // ── Canvas particle system ──────────────────────────────────────────────────
   const canvas = document.getElementById('canvas');
   const ctx    = canvas.getContext('2d');
   canvas.width  = window.innerWidth;
   canvas.height = window.innerHeight;
+  window.addEventListener('resize', () => {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+  });
 
   let particles = [];
   let particleColor = '#FFD700';
 
   class Particle {
-    constructor(){
-      this.x = canvas.width  / 2 + (Math.random()-0.5)*60;
-      this.y = canvas.height / 2 + (Math.random()-0.5)*40;
-      this.vx = (Math.random()-0.5)*6;
-      this.vy = -(Math.random()*8+3);
+    constructor() {
+      this.x     = canvas.width  / 2 + (Math.random() - 0.5) * 60;
+      this.y     = canvas.height / 2 + (Math.random() - 0.5) * 40;
+      this.vx    = (Math.random() - 0.5) * 6;
+      this.vy    = -(Math.random() * 8 + 3);
       this.alpha = 1;
-      this.size  = Math.random()*6+3;
+      this.size  = Math.random() * 6 + 3;
       this.color = particleColor;
-      this.emoji = Math.random()<0.3 ? ['💖','⭐','✨','💎','👑'][Math.floor(Math.random()*5)] : null;
+      this.emoji = Math.random() < 0.3
+        ? ['💖','⭐','✨','💎','👑'][Math.floor(Math.random() * 5)]
+        : null;
     }
-    update(){
-      this.x  += this.vx;
-      this.y  += this.vy;
-      this.vy += 0.15;
-      this.alpha -= 0.018;
-    }
-    draw(){
-      if(this.alpha<=0)return;
+    update() { this.x += this.vx; this.y += this.vy; this.vy += 0.15; this.alpha -= 0.018; }
+    draw() {
+      if (this.alpha <= 0) return;
       ctx.save();
-      ctx.globalAlpha=this.alpha;
-      if(this.emoji){
-        ctx.font=`${this.size*3}px serif`;
-        ctx.fillText(this.emoji,this.x,this.y);
+      ctx.globalAlpha = this.alpha;
+      if (this.emoji) {
+        ctx.font = `${this.size * 3}px serif`;
+        ctx.fillText(this.emoji, this.x, this.y);
       } else {
         ctx.beginPath();
-        ctx.arc(this.x,this.y,this.size,0,Math.PI*2);
-        ctx.fillStyle=this.color;
-        ctx.shadowBlur=12;
-        ctx.shadowColor=this.color;
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
+        ctx.shadowBlur = 12; ctx.shadowColor = this.color;
         ctx.fill();
       }
       ctx.restore();
     }
   }
 
-  function spawnBurst(count){
-    for(let i=0;i<count;i++) particles.push(new Particle());
+  function spawnBurst(count) {
+    for (let i = 0; i < count; i++) particles.push(new Particle());
   }
-
-  function animLoop(){
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    particles=particles.filter(p=>p.alpha>0);
-    particles.forEach(p=>{p.update();p.draw();});
+  function animLoop() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles = particles.filter(p => p.alpha > 0);
+    particles.forEach(p => { p.update(); p.draw(); });
     requestAnimationFrame(animLoop);
   }
   animLoop();
 
-  // ── Donation logic ─────────────────────────────────────────────────────────
-  let currentAnim=null;
-  let lastCheck=0;
+  // ── Donation display ────────────────────────────────────────────────────────
+  let currentAnim = null;
 
-  const TIER_ICONS={king:'👑',flame:'🔥',diamond:'💎',shine:'✨',normal:'💖'};
-  const TIER_COLORS={king:'#FFD700',flame:'#FF4444',diamond:'#00BFFF',shine:'#32CD32',normal:'#FF3366'};
-  const TIER_COUNTS={king:80,flame:50,diamond:30,shine:20,normal:12};
+  const TIER_ICONS   = { king:'👑', flame:'🔥', diamond:'💎', shine:'✨', normal:'💖' };
+  const TIER_COLORS  = { king:'#FFD700', flame:'#FF4444', diamond:'#00BFFF', shine:'#32CD32', normal:'#FF3366' };
+  const TIER_COUNTS  = { king:80, flame:50, diamond:30, shine:20, normal:12 };
 
-  function getTier(d){
-    if(d>=2500)return'king';
-    if(d>=500)return'flame';
-    if(d>=250)return'diamond';
-    if(d>=100)return'shine';
-    return'normal';
+  function getTier(d) {
+    if (d >= 2500) return 'king';
+    if (d >= 500)  return 'flame';
+    if (d >= 250)  return 'diamond';
+    if (d >= 100)  return 'shine';
+    return 'normal';
   }
-  function capitalize(s){return String(s??'').charAt(0).toUpperCase()+String(s??'').slice(1);}
+  function capitalize(s) { return String(s ?? '').charAt(0).toUpperCase() + String(s ?? '').slice(1); }
 
-  function showDono(name,amount,totalDonation=0){
-    const snd=document.getElementById('donoSound');
-    if(snd){snd.currentTime=0;snd.volume=0.5;snd.play().catch(()=>{});}
+  function showDono(name, amount, totalDonation = 0) {
+    const snd = document.getElementById('donoSound');
+    if (snd) { snd.currentTime = 0; snd.volume = 0.5; snd.play().catch(() => {}); }
 
-    const tier=getTier(totalDonation);
-    particleColor=TIER_COLORS[tier];
+    const tier = getTier(totalDonation);
+    particleColor = TIER_COLORS[tier];
 
     const wrap   = document.getElementById('donoWrap');
     const card   = document.getElementById('donoCard');
@@ -224,7 +200,7 @@
     const nameEl = document.getElementById('donoName');
     const amtEl  = document.getElementById('donoAmount');
 
-    if(currentAnim){clearTimeout(currentAnim);wrap.className='dono-wrap';}
+    if (currentAnim) { clearTimeout(currentAnim); wrap.className = 'dono-wrap'; }
 
     icon.textContent   = TIER_ICONS[tier];
     nameEl.textContent = capitalize(name);
@@ -232,31 +208,33 @@
     amtEl.textContent  = `${amount} Coins`;
     card.className     = `dono-card tier-${tier}`;
 
-    // Particle burst
     spawnBurst(TIER_COUNTS[tier]);
-    if(tier==='king') setTimeout(()=>spawnBurst(40),400);
+    if (tier === 'king') setTimeout(() => spawnBurst(40), 400);
 
-    // Animate in
     void wrap.offsetWidth;
-    wrap.className='dono-wrap enter';
+    wrap.className = 'dono-wrap enter';
 
-    currentAnim=setTimeout(()=>{
-      wrap.className='dono-wrap exit';
-      currentAnim=setTimeout(()=>{wrap.className='dono-wrap';},650);
-    },4500);
+    currentAnim = setTimeout(() => {
+      wrap.className = 'dono-wrap exit';
+      currentAnim = setTimeout(() => { wrap.className = 'dono-wrap'; }, 650);
+    }, 4500);
   }
 
-  async function poll(){
-    try{
-      const r=await fetch('donation_trigger.json?'+Date.now());
-      const d=await r.json();
-      if(d.timestamp>lastCheck&&d.donor&&d.amount){
-        lastCheck=d.timestamp;
-        showDono(d.donor,d.amount,d.total_donation||0);
-      }
-    }catch{}
-  }
-  setInterval(poll,500);
+  // ── Firebase listener (ersetzt donation_trigger.json polling) ───────────────
+  let lastTimestamp = 0;
+
+  onValue(ref(db, 'donations/latest'), snap => {
+    const d = snap.val();
+    if (!d || !d.donor || !d.amount) return;
+    if (d.timestamp <= lastTimestamp) return;   // schon gesehen
+    lastTimestamp = d.timestamp;
+    showDono(d.donor, d.amount, d.total_donation || 0);
+  });
+
+  // Cleanup
+  window.addEventListener('beforeunload', () => {
+    particles = [];
+  });
 </script>
 </body>
 </html>
