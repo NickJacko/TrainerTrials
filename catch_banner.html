@@ -1,284 +1,181 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Live Catch Banner</title>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+<meta charset="UTF-8">
+<title>Catch Banner</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  background:transparent;overflow:hidden;
+  width:100vw;height:44px;
+  display:flex;align-items:center;
+}
 
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: transparent;
-      overflow: hidden;
-      width: 100vw; height: 44px;
-    }
+.wrap{
+  width:100%;height:44px;
+  display:flex;align-items:center;
+  padding:0 8px;
+  position:relative;
+}
 
-    .banner {
-      position: fixed; top: 0; left: 0; right: 0; height: 44px;
-      background: rgba(4,2,14,0.86);
-      border-bottom: 1px solid rgba(255,255,255,0.07);
-      overflow: hidden;
-      display: flex; align-items: center;
-    }
+/* Fades out on both sides — no box, just a floating strip */
+.wrap::before{
+  content:'';
+  position:absolute;inset:0;
+  background:linear-gradient(90deg,
+    rgba(10,6,30,0.9) 0%,
+    rgba(10,6,30,0.7) 8%,
+    rgba(10,6,30,0.5) 15%,
+    rgba(10,6,30,0.3) 30%,
+    rgba(10,6,30,0.15) 60%,
+    transparent 100%);
+  pointer-events:none;
+}
 
-    /* Grid texture */
-    .banner::before {
-      content: ''; position: absolute; inset: 0;
-      background-image:
-        linear-gradient(rgba(78,205,196,0.05) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(78,205,196,0.05) 1px, transparent 1px);
-      background-size: 24px 24px;
-      pointer-events: none; z-index: 0;
-    }
-    /* Animated bottom border */
-    .banner::after {
-      content: ''; position: absolute; bottom: 0; left: -100%; right: 0; height: 1px;
-      background: linear-gradient(90deg, transparent, #4ECDC4 30%, #FFD700 60%, transparent);
-      animation: borderSlide 4s linear infinite;
-    }
-    @keyframes borderSlide { 0%{left:-100%} 100%{left:100%} }
+/* Bottom line glow — the only visual 'edge' */
+.wrap::after{
+  content:'';
+  position:absolute;bottom:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,
+    rgba(102,126,234,0.8) 0%,
+    rgba(78,205,196,0.6) 30%,
+    rgba(255,215,0,0.3) 60%,
+    transparent 100%);
+  animation:lineAnim 6s ease-in-out infinite alternate;
+}
+@keyframes lineAnim{
+  0%{opacity:0.6;transform:scaleX(0.7);transform-origin:left}
+  100%{opacity:1;transform:scaleX(1);transform-origin:left}
+}
 
-    /* Left label */
-    .label {
-      flex-shrink: 0; height: 100%;
-      padding: 0 12px 0 14px;
-      display: flex; align-items: center; gap: 7px;
-      border-right: 1px solid rgba(255,255,255,0.07);
-      position: relative; z-index: 1; white-space: nowrap;
-    }
-    .live-dot {
-      width: 6px; height: 6px; border-radius: 50%;
-      background: #FF6B6B; box-shadow: 0 0 6px #FF6B6B;
-      animation: dotBlink 1.5s ease-in-out infinite;
-    }
-    @keyframes dotBlink { 0%,100%{opacity:1} 50%{opacity:0.25} }
-    .label-txt { font-size: 10px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: #4ECDC4; opacity: 0.7; }
+.badge{
+  flex-shrink:0;
+  display:flex;align-items:center;gap:6px;
+  margin-right:12px;
+  position:relative;z-index:1;
+}
+.dot{
+  width:5px;height:5px;border-radius:50%;
+  background:#ff6b6b;
+  box-shadow:0 0 8px rgba(255,107,107,1),0 0 20px rgba(255,107,107,0.5);
+  animation:dp 1.3s ease-in-out infinite;
+}
+@keyframes dp{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.2;transform:scale(0.6)}}
+.badge-txt{
+  font-size:9px;font-weight:900;letter-spacing:2.5px;text-transform:uppercase;
+  color:rgba(255,255,255,0.35);
+}
 
-    /* Carousel area */
-    .carousel-area {
-      flex: 1; overflow: hidden; height: 100%;
-      display: flex; align-items: center;
-      position: relative; z-index: 1;
-      mask-image: linear-gradient(90deg, transparent, black 3%, black 97%, transparent);
-      -webkit-mask-image: linear-gradient(90deg, transparent, black 3%, black 97%, transparent);
-    }
+/* Carousel */
+.car{
+  flex:1;overflow:hidden;height:100%;
+  display:flex;align-items:center;
+  position:relative;z-index:1;
+  mask-image:linear-gradient(90deg,transparent,black 2%,black 88%,transparent);
+  -webkit-mask-image:linear-gradient(90deg,transparent,black 2%,black 88%,transparent);
+}
+.track{position:relative;width:100%;height:100%;}
 
-    .carousel-track { position: relative; width: 100%; height: 100%; }
+.item{
+  position:absolute;inset:0;
+  display:flex;align-items:center;gap:10px;
+  padding:0 4px;
+  opacity:0;
+  transition:opacity 0.55s ease,transform 0.55s cubic-bezier(0.22,1,0.36,1);
+  transform:translateY(10px);
+}
+.item.on{opacity:1;transform:translateY(0)}
+.item.off{opacity:0;transform:translateY(-10px)}
 
-    .catch-item {
-      position: absolute; inset: 0;
-      display: flex; align-items: center;
-      padding: 0 16px; gap: 10px;
-      opacity: 0;
-      transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.22,1,0.36,1);
-      transform: translateY(10px);
-    }
-    .catch-item.active { opacity: 1; transform: translateY(0); }
-    .catch-item.exit   { opacity: 0; transform: translateY(-10px); }
+.spr{
+  width:28px;height:28px;object-fit:contain;flex-shrink:0;
+  filter:drop-shadow(0 0 6px rgba(255,255,255,0.25));
+  animation:sprIn 0.5s cubic-bezier(0.22,1,0.36,1);
+}
+@keyframes sprIn{from{transform:scale(0.4) rotate(-10deg);opacity:0}to{transform:scale(1);opacity:1}}
 
-    /* Website promo item */
-    .catch-item.promo .catch-text { color: rgba(255,255,255,0.45); font-style: italic; }
+.txt{
+  font-size:13px;font-weight:600;letter-spacing:-0.1px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;
+  color:rgba(255,255,255,0.85);
+}
+.cn{font-weight:900} /* catcher name gets extra weight */
 
-    .catch-sprite {
-      width: 28px; height: 28px; object-fit: contain; border-radius: 6px;
-      flex-shrink: 0;
-      filter: drop-shadow(0 0 6px rgba(78,205,196,0.4));
-    }
-    .catch-text { font-size: 13px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
+/* Name tier glows — no background, just color+glow */
+.nk{color:#FFD700;text-shadow:0 0 12px rgba(255,215,0,0.7)}
+.nf{color:#ff8c7a;text-shadow:0 0 10px rgba(255,140,122,0.6)}
+.nd{color:#7ec8ff;text-shadow:0 0 10px rgba(126,200,255,0.5)}
+.ns{color:#7ddb88;text-shadow:0 0 8px rgba(125,219,136,0.5)}
 
-    /* Rarity colors on catchmon name */
-    .r-common    { color: #e0e0e0; }
-    .r-starter   { color: #a5d6a7; }
-    .r-rare      { color: #90caf9; }
-    .r-legendary { color: #ffcc80; }
-    .r-mythical  { color: #e1bee7; }
-    .r-god       { color: #ce93d8; }
+/* Rarity colors */
+.rc{color:rgba(255,255,255,0.9)}
+.rr{color:#90caf9;text-shadow:0 0 8px rgba(144,202,249,0.4)}
+.rs{color:#a5d6a7;text-shadow:0 0 8px rgba(165,214,167,0.4)}
+.rl{color:#ffcc80;text-shadow:0 0 10px rgba(255,204,128,0.5)}
+.rm{color:#ce93d8;text-shadow:0 0 12px rgba(206,147,216,0.6)}
+.rg{color:#ff80ab;text-shadow:0 0 14px rgba(255,128,171,0.7)}
 
-    /* Catcher tier names */
-    .cn-king,.cn-god { background-image:linear-gradient(90deg,#ffd700,#fff8,#ffd700); background-size:200% auto; background-clip:text; -webkit-background-clip:text; -webkit-text-fill-color:transparent; animation:cnS 3s linear infinite; }
-    .cn-flame        { background-image:linear-gradient(90deg,#ff4444,#fff8,#ff4444); background-size:200% auto; background-clip:text; -webkit-background-clip:text; -webkit-text-fill-color:transparent; animation:cnS 3s linear infinite; }
-    .cn-diamond      { background-image:linear-gradient(90deg,#00bfff,#fff8,#00bfff); background-size:200% auto; background-clip:text; -webkit-background-clip:text; -webkit-text-fill-color:transparent; animation:cnS 3s linear infinite; }
-    .cn-shine        { background-image:linear-gradient(90deg,#32cd32,#fff8,#32cd32); background-size:200% auto; background-clip:text; -webkit-background-clip:text; -webkit-text-fill-color:transparent; animation:cnS 3s linear infinite; }
-    @keyframes cnS { to { background-position: -200% center; } }
+.verb{color:rgba(255,255,255,0.35);font-weight:400}
+.shiny{color:#FFD700;text-shadow:0 0 10px rgba(255,215,0,0.8);animation:st 1.5s ease-in-out infinite}
+@keyframes st{0%,100%{opacity:1}50%{opacity:0.4}}
 
-    .shiny-badge { color: #FFD700; font-size: 11px; }
-    .sep { opacity: 0.25; flex-shrink: 0; }
+.ago{font-size:9px;color:rgba(255,255,255,0.2);font-weight:700;flex-shrink:0;letter-spacing:0.5px}
 
-    /* URL promo */
-    .url-text { font-size: 12px; font-weight: 700; color: #4ECDC4; opacity: 0.7; letter-spacing: 0.5px; }
-  </style>
+/* Promo */
+.url{color:#4ecdc4;font-weight:800;text-shadow:0 0 10px rgba(78,205,196,0.6)}
+</style>
 </head>
 <body>
-<div class="banner">
-  <div class="label">
-    <div class="live-dot"></div>
-    <div class="label-txt">Catches</div>
-  </div>
-  <div class="carousel-area">
-    <div class="carousel-track" id="track"></div>
-  </div>
+<div class="wrap">
+  <div class="badge"><div class="dot"></div><div class="badge-txt">Live</div></div>
+  <div class="car"><div class="track" id="T"></div></div>
 </div>
-
 <script type="module">
-  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-  import { getDatabase, ref, onValue } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+import{initializeApp}from'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+import{getDatabase,ref,onValue,query,orderByChild,limitToLast}from'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+const db=getDatabase(initializeApp({apiKey:"AIzaSyDdStpC5rVtgaZ4XvtKLwQttnyIDXL2z7Q",authDomain:"trainertrials.firebaseapp.com",databaseURL:"https://trainertrials-default-rtdb.europe-west1.firebasedatabase.app",projectId:"trainertrials",storageBucket:"trainertrials.firebasestorage.app",messagingSenderId:"22071275267",appId:"1:22071275267:web:92e82d6bfaee169aff8336"}));
 
-  const db = getDatabase(initializeApp({
-    apiKey: "AIzaSyDdStpC5rVtgaZ4XvtKLwQttnyIDXL2z7Q",
-    authDomain: "trainertrials.firebaseapp.com",
-    databaseURL: "https://trainertrials-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId: "trainertrials",
-    storageBucket: "trainertrials.firebasestorage.app",
-    messagingSenderId: "22071275267",
-    appId: "1:22071275267:web:92e82d6bfaee169aff8336"
-  }));
+const SITE='trainertrials.github.io/TrainerTrials',IV=4200,PE=6;
+let cs=[],idx=0,cur=null,pc=0;
+const cap=s=>String(s??'').charAt(0).toUpperCase()+String(s??'').slice(1);
+const nc=d=>d>=2500?'nk':d>=500?'nf':d>=250?'nd':d>=50?'ns':'';
+const rc=r=>({common:'rc',rare:'rr',starter:'rs',legendary:'rl',mythical:'rm',god:'rg'}[(r||'common').toLowerCase()]||'rc');
+const ta=t=>{const s=(Date.now()-t)/1000;return s<60?'now':s<3600?Math.floor(s/60)+'m':Math.floor(s/3600)+'h';};
 
-  const SITE_URL   = 'trainertrials.github.io/TrainerTrials';
-  const INTERVAL   = 4000;   // ms pro Slide
-  const PROMO_EVERY = 6;     // alle N Catches → Website-URL einblenden
-
-  let catches  = [];   // { catcher, catchmon, rarity, sprite, shiny, level, donation }
-  let idx      = 0;
-  let current  = null;
-  let promoCounter = 0;
-
-  function capitalize(s) { return String(s??'').charAt(0).toUpperCase()+String(s??'').slice(1); }
-
-  function tierClass(donation) {
-    if (donation >= 2500) return 'cn-king';
-    if (donation >= 500)  return 'cn-flame';
-    if (donation >= 250)  return 'cn-diamond';
-    if (donation >= 50)   return 'cn-shine';
-    return '';
-  }
-  function rarityClass(r) { return 'r-' + (r||'common').toLowerCase(); }
-
-  function buildCatchItem(entry) {
-    const item = document.createElement('div');
-    item.className = 'catch-item';
-
-    // Sprite
-    if (entry.sprite) {
-      const img = document.createElement('img');
-      img.className = 'catch-sprite';
-      img.src = entry.sprite; img.alt = entry.catchmon;
-      img.onerror = () => img.style.display = 'none';
-      item.appendChild(img);
-    }
-
-    // Text: "Nick fing Mindferno Lvl 23"
-    const text = document.createElement('div');
-    text.className = 'catch-text';
-
-    const tc = tierClass(entry.donation || 0);
-    const catcherSpan = document.createElement('span');
-    if (tc) { catcherSpan.className = tc; }
-    catcherSpan.textContent = capitalize(entry.catcher);
-
-    const verbSpan = document.createElement('span');
-    verbSpan.style.opacity = '0.45';
-    verbSpan.textContent = ' caught ';
-
-    const nameSpan = document.createElement('span');
-    nameSpan.className = rarityClass(entry.rarity);
-    nameSpan.style.fontWeight = '900';
-    nameSpan.textContent = capitalize(entry.catchmon);
-
-    const lvlSpan = document.createElement('span');
-    lvlSpan.style.opacity = '0.45';
-    lvlSpan.textContent = ` Lvl ${entry.level || 1}`;
-
-    text.append(catcherSpan, verbSpan, nameSpan, lvlSpan);
-
-    if (entry.shiny) {
-      const s = document.createElement('span');
-      s.className = 'shiny-badge'; s.textContent = ' ✨';
-      text.appendChild(s);
-    }
-
-    item.appendChild(text);
-    return item;
-  }
-
-  function buildPromoItem() {
-    const item = document.createElement('div');
-    item.className = 'catch-item promo';
-    const text = document.createElement('div');
-    text.className = 'catch-text';
-    text.innerHTML = `<span style="opacity:0.4">Check your Catchdex 👉 </span><span class="url-text">${SITE_URL}</span>`;
-    item.appendChild(text);
-    return item;
-  }
-
-  function advance() {
-    const track = document.getElementById('track');
-    if (!track) return;
-
-    // Exit current
-    if (current) {
-      current.classList.remove('active');
-      current.classList.add('exit');
-      const old = current;
-      setTimeout(() => old.remove(), 500);
-    }
-
-    let item;
-    if (catches.length === 0) {
-      // No data yet — show promo
-      item = buildPromoItem();
-    } else {
-      promoCounter++;
-      // Show promo every PROMO_EVERY slides, or when we've looped through everyone
-      if (promoCounter % PROMO_EVERY === 0 || idx >= catches.length) {
-        item = buildPromoItem();
-        if (idx >= catches.length) idx = 0;
-      } else {
-        item = buildCatchItem(catches[idx % catches.length]);
-        idx++;
-      }
-    }
-
-    track.appendChild(item);
-    // Double rAF for enter animation
-    requestAnimationFrame(() => requestAnimationFrame(() => item.classList.add('active')));
-    current = item;
-  }
-
-  // Firebase: lese alle trainers und baue eine flache Liste aller catches
-  onValue(ref(db, 'trainers'), snap => {
-    const data = snap.val() || {};
-    const newCatches = [];
-
-    for (const [catcher, info] of Object.entries(data)) {
-      const team = Array.isArray(info.team) ? info.team : Object.values(info.team || {});
-      for (const c of team) {
-        if (!c?.name) continue;
-        newCatches.push({
-          catcher,
-          catchmon:  c.name,
-          rarity:    c.rarity || 'Common',
-          sprite:    c.sprite || '',
-          shiny:     c.shiny  || false,
-          level:     c.level  || 1,
-          donation:  info.donation || 0,
-          caught_at: c.caught_at  || 0,
-        });
-      }
-    }
-
-    // Sortiere nach caught_at (neueste zuerst), nimm die letzten 30
-    newCatches.sort((a, b) => b.caught_at - a.caught_at);
-    catches = newCatches.slice(0, 30);
-    // Reset index wenn catches sich stark geändert hat
-    idx = Math.min(idx, catches.length > 0 ? catches.length - 1 : 0);
-  });
-
-  // Start carousel
-  advance();
-  setInterval(advance, INTERVAL);
-
-  // Cleanup
-  window.addEventListener('beforeunload', () => {});
+function mkItem(e){
+  const d=document.createElement('div');
+  d.className=`item r-${(e.rarity||'common').toLowerCase()}`;
+  if(e.sprite){const i=document.createElement('img');i.className='spr';i.src=e.sprite;i.onerror=()=>i.remove();d.appendChild(i);}
+  const t=document.createElement('div');t.className='txt';
+  const n=nc(e.donation||0);
+  t.innerHTML=`<span class="cn ${n}">${cap(e.catcher)}</span><span class="verb"> caught </span><span class="${rc(e.rarity)} cn">${cap(e.catchmon)}</span><span class="verb"> · Lv${e.level||1}</span>${e.shiny?'<span class="shiny"> ✦</span>':''}`;
+  d.appendChild(t);
+  if(e.caught_at){const a=document.createElement('div');a.className='ago';a.textContent=ta(e.caught_at);d.appendChild(a);}
+  return d;
+}
+function mkPromo(){
+  const d=document.createElement('div');d.className='item';
+  d.innerHTML=`<div class="txt"><span class="verb">Check your team → </span><span class="url">${SITE}</span></div>`;
+  return d;
+}
+function next(){
+  const T=document.getElementById('T');
+  if(cur){cur.classList.remove('on');cur.classList.add('off');const o=cur;setTimeout(()=>o.remove(),600);}
+  let el;
+  pc++;
+  if(!cs.length||pc%PE===0){el=mkPromo();}
+  else{el=mkItem(cs[idx]);idx=(idx+1)%cs.length;}
+  T.appendChild(el);
+  requestAnimationFrame(()=>requestAnimationFrame(()=>el.classList.add('on')));
+  cur=el;
+}
+onValue(query(ref(db,'catches/recent'),orderByChild('caught_at'),limitToLast(30)),s=>{
+  const d=s.val();
+  cs=d?Object.values(d).sort((a,b)=>b.caught_at-a.caught_at):[];
+  idx=Math.min(idx,Math.max(0,cs.length-1));
+});
+next();setInterval(next,IV);
 </script>
 </body>
 </html>

@@ -1,357 +1,186 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Top 3 Catchrates</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+<meta charset="UTF-8">
+<title>Top 3 Catchrates</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  background:transparent;color:white;overflow:hidden;
+  padding:6px;width:100vw;height:100vh;
+}
 
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: transparent;
-      color: white;
-      padding: 0;
-      overflow: hidden;
-      width: 340px;
-    }
+.wrap{
+  width:100%;height:100%;
+  position:relative;
+  /* Subtle ambient glow from top-left matching background palette */
+  background:radial-gradient(ellipse at top left,rgba(102,126,234,0.08) 0%,transparent 60%),
+             radial-gradient(ellipse at bottom right,rgba(118,75,162,0.06) 0%,transparent 50%);
+  border-radius:14px;
+  overflow:hidden;
+}
 
-    .widget {
-      background: rgba(6,4,18,0.82);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 18px;
-      overflow: hidden;
-      backdrop-filter: blur(16px);
-      width: 340px;
-    }
+/* Very faint structural hint — almost invisible */
+.wrap::before{
+  content:'';position:absolute;inset:0;border-radius:14px;
+  border:1px solid rgba(255,255,255,0.04);
+  pointer-events:none;
+}
 
-    /* Grid texture */
-    .widget::before {
-      content: '';
-      position: absolute; inset: 0; border-radius: 18px;
-      background-image:
-        linear-gradient(rgba(78,205,196,0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(78,205,196,0.04) 1px, transparent 1px);
-      background-size: 28px 28px;
-      pointer-events: none; z-index: 0;
-    }
+.hdr{
+  padding:6px 12px 5px;
+  display:flex;align-items:center;gap:6px;
+  border-bottom:1px solid rgba(255,255,255,0.04);
+}
+.hdot{width:5px;height:5px;border-radius:50%;background:#ff6b6b;box-shadow:0 0 7px rgba(255,107,107,0.9);animation:hdb 1.4s ease-in-out infinite;}
+@keyframes hdb{0%,100%{opacity:1}50%{opacity:0.2}}
+.htxt{font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.35);}
+.hsub{margin-left:auto;font-size:9px;color:rgba(255,255,255,0.2);font-weight:700;letter-spacing:1px;}
 
-    .widget { position: relative; }
+/* Grid — 3 columns */
+.grid{
+  padding:8px 10px;
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;
+}
 
-    /* Header */
-    .header {
-      padding: 12px 16px 10px;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-      position: relative; z-index: 1;
-      display: flex; align-items: center; gap: 8px;
-    }
-    .header-dot {
-      width: 7px; height: 7px; border-radius: 50%;
-      background: #FF6B6B; box-shadow: 0 0 6px #FF6B6B;
-      animation: dotBlink 1.5s ease-in-out infinite;
-    }
-    @keyframes dotBlink { 0%,100%{opacity:1} 50%{opacity:0.3} }
-    .header-title {
-      font-size: 11px; font-weight: 800; letter-spacing: 2px;
-      text-transform: uppercase; opacity: 0.55;
-    }
-    .header-sub {
-      margin-left: auto; font-size: 10px; opacity: 0.3; font-weight: 600; letter-spacing: 1px;
-    }
+.slot{
+  border-radius:10px;padding:9px 9px 10px;
+  display:flex;flex-direction:column;gap:6px;
+  position:relative;overflow:hidden;
+  /* Each slot is nearly invisible until data comes — feels part of background */
+  background:rgba(255,255,255,0.03);
+  border:1px solid rgba(255,255,255,0.05);
+  transition:all 0.4s;
+}
+.slot.gold{
+  background:rgba(255,215,0,0.05);
+  border-color:rgba(255,215,0,0.15);
+  box-shadow:0 0 20px rgba(255,215,0,0.06),inset 0 1px 0 rgba(255,215,0,0.08);
+}
+.slot.silver{background:rgba(180,180,200,0.04);border-color:rgba(180,180,200,0.1);}
+.slot.bronze{background:rgba(180,100,40,0.04);border-color:rgba(180,100,40,0.1);}
+.slot.empty{opacity:0.25;}
 
-    /* Top 3 */
-    .top3 { padding: 10px 12px; display: flex; flex-direction: column; gap: 6px; position: relative; z-index: 1; }
+/* Gold slot: very slow sweeping highlight */
+.slot.gold::after{
+  content:'';
+  position:absolute;top:0;left:-100%;width:50%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,215,0,0.08),transparent);
+  animation:gswp 6s ease-in-out infinite;
+}
+@keyframes gswp{0%{left:-50%}100%{left:150%}}
 
-    .row {
-      display: flex; align-items: center; gap: 10px;
-      padding: 8px 10px; border-radius: 12px;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.07);
-      transition: opacity 0.3s;
-    }
-    .row.gold   { background: rgba(255,215,0,0.08);   border-color: rgba(255,215,0,0.2); }
-    .row.silver { background: rgba(192,192,192,0.07); border-color: rgba(192,192,192,0.18); }
-    .row.bronze { background: rgba(205,127,50,0.07);  border-color: rgba(205,127,50,0.18); }
-    .row.empty  { opacity: 0.25; }
+.stop{display:flex;align-items:center;gap:7px;}
 
-    .rank-badge {
-      width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 11px; font-weight: 900;
-    }
-    .rank-badge.gold   { background: linear-gradient(45deg,#FFD700,#FFA500); color: #1a1a00; }
-    .rank-badge.silver { background: linear-gradient(45deg,#C0C0C0,#E8E8E8); color: #333; }
-    .rank-badge.bronze { background: linear-gradient(45deg,#CD7F32,#DAA520); color: white; }
-    .rank-badge.empty  { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.3); }
+/* Rank indicator: minimal circle, color only */
+.rk{
+  width:18px;height:18px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:9px;font-weight:900;
+}
+.slot.gold .rk  {background:rgba(255,215,0,0.18);color:#FFD700;box-shadow:0 0 10px rgba(255,215,0,0.4);}
+.slot.silver .rk{background:rgba(192,192,192,0.12);color:rgba(220,220,220,0.8);}
+.slot.bronze .rk{background:rgba(180,100,40,0.15);color:#CD9060;}
+.slot.empty .rk {background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.2);}
 
-    .row-info { flex: 1; min-width: 0; }
-    .row-name { font-size: 13px; font-weight: 800; line-height: 1; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .row-meta { font-size: 10px; opacity: 0.35; font-weight: 600; }
+.nm{font-size:11px;font-weight:800;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:rgba(255,255,255,0.85);}
+.slot.gold .nm{font-size:12px;}
 
-    .row-bar-wrap { flex: 1.2; }
-    .bar-track { height: 16px; background: rgba(255,255,255,0.07); border-radius: 8px; overflow: hidden; border: 1px solid rgba(255,255,255,0.07); }
-    .bar-fill {
-      height: 100%; border-radius: 8px; width: 0%;
-      transition: width 1s ease-out;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 10px; font-weight: 800; color: white;
-      position: relative; overflow: hidden;
-    }
-    .bar-fill::after {
-      content: ''; position: absolute; inset: 0;
-      background: linear-gradient(90deg, transparent 30%, rgba(255,255,255,0.2) 50%, transparent 70%);
-      animation: barShimmer 3s ease-in-out infinite;
-    }
-    @keyframes barShimmer { 0%{transform:translateX(-100%)} 50%{transform:translateX(100%)} 100%{transform:translateX(100%)} }
+/* Bar — glowing line, no box around it */
+.bw{height:7px;background:rgba(255,255,255,0.06);border-radius:3.5px;overflow:hidden;}
+.bf{
+  height:100%;width:0%;border-radius:3.5px;
+  position:relative;overflow:hidden;
+  transition:width 1s cubic-bezier(0.22,1,0.36,1);
+}
+.bf::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent 30%,rgba(255,255,255,0.35) 50%,transparent 70%);animation:bsh 2.5s linear infinite;}
+@keyframes bsh{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
 
-    .bar-fill.c-high   { background: linear-gradient(90deg,#4CAF50,#66BB6A); }
-    .bar-fill.c-mid    { background: linear-gradient(90deg,#FF9800,#FFB74D); }
-    .bar-fill.c-low    { background: linear-gradient(90deg,#4ECDC4,#45B7D1); }
-    .bar-fill.c-vlow   { background: linear-gradient(90deg,#6C757D,#9E9E9E); }
+/* Bar fill colors — warm neons against the purple-blue bg */
+.ch {background:#4caf50;box-shadow:0 0 8px rgba(76,175,80,0.6);}
+.cm {background:#ff9800;box-shadow:0 0 8px rgba(255,152,0,0.5);}
+.cl {background:#667eea;box-shadow:0 0 6px rgba(102,126,234,0.5);}
+.cv {background:rgba(100,100,120,0.7);}
 
-    /* Divider */
-    .divider {
-      height: 1px; background: rgba(255,255,255,0.06);
-      margin: 0 12px; position: relative; z-index: 1;
-    }
+.bot{display:flex;align-items:center;justify-content:space-between;}
+.pc{font-size:11px;font-weight:900;}
+.slot.gold .pc  {color:#FFD700;text-shadow:0 0 10px rgba(255,215,0,0.6);}
+.slot.silver .pc{color:rgba(200,200,220,0.9);}
+.slot.bronze .pc{color:#CD9060;}
+.slot.empty .pc {color:rgba(255,255,255,0.2);}
+.lk{font-size:8px;color:rgba(255,255,255,0.25);font-weight:600;}
 
-    /* Carousel */
-    .carousel {
-      padding: 8px 12px 10px;
-      position: relative; z-index: 1; overflow: hidden; height: 48px;
-    }
-    .carousel-label {
-      font-size: 9px; font-weight: 700; letter-spacing: 2px;
-      text-transform: uppercase; opacity: 0.25; margin-bottom: 6px;
-    }
-    .carousel-track { position: relative; height: 28px; }
-    .carousel-item {
-      position: absolute; inset: 0;
-      display: flex; align-items: center; gap: 8px;
-      opacity: 0; transition: opacity 0.5s ease, transform 0.5s ease;
-      transform: translateY(8px);
-    }
-    .carousel-item.active { opacity: 1; transform: translateY(0); }
-    .carousel-item.exit   { opacity: 0; transform: translateY(-8px); }
+/* Tier name glows — no background, pure color+glow */
+.nk{color:#FFD700;text-shadow:0 0 10px rgba(255,215,0,0.7);}
+.nf{color:#ff8c7a;text-shadow:0 0 10px rgba(255,140,122,0.6);}
+.nd{color:#7ec8ff;text-shadow:0 0 10px rgba(126,200,255,0.5);}
+.ns{color:#7ddb88;text-shadow:0 0 8px rgba(125,219,136,0.5);}
 
-    .ci-rank { font-size: 11px; font-weight: 800; opacity: 0.4; min-width: 20px; text-align: right; }
-    .ci-name { font-size: 12px; font-weight: 700; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .ci-bar-wrap { flex: 1.5; }
-    .ci-track { height: 10px; background: rgba(255,255,255,0.07); border-radius: 5px; overflow: hidden; }
-    .ci-fill {
-      height: 100%; border-radius: 5px;
-      background: linear-gradient(90deg,#4ECDC4,#45B7D1);
-      transition: width 0.8s ease;
-    }
-    .ci-pct { font-size: 11px; font-weight: 800; color: #4ECDC4; min-width: 38px; text-align: right; }
+.div{height:1px;background:rgba(255,255,255,0.04);margin:0 10px;}
 
-    /* Catcher name tier animations */
-    .cn-god,.cn-king { background-image:linear-gradient(90deg,#ffd700,#fff,#ffd700); background-size:200% auto; background-clip:text; -webkit-background-clip:text; -webkit-text-fill-color:transparent; animation:cnShine 3s linear infinite; }
-    .cn-flame        { background-image:linear-gradient(90deg,#ff4444,#fff,#ff4444); background-size:200% auto; background-clip:text; -webkit-background-clip:text; -webkit-text-fill-color:transparent; animation:cnShine 3s linear infinite; }
-    .cn-diamond      { background-image:linear-gradient(90deg,#00bfff,#fff,#00bfff); background-size:200% auto; background-clip:text; -webkit-background-clip:text; -webkit-text-fill-color:transparent; animation:cnShine 3s linear infinite; }
-    .cn-shine        { background-image:linear-gradient(90deg,#32cd32,#fff,#32cd32); background-size:200% auto; background-clip:text; -webkit-background-clip:text; -webkit-text-fill-color:transparent; animation:cnShine 3s linear infinite; }
-    @keyframes cnShine { to { background-position: -200% center; } }
-  </style>
+/* Carousel */
+.car{padding:5px 12px 8px;overflow:hidden;height:30px;}
+.clbl{font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.18);margin-bottom:3px;}
+.ctr{position:relative;height:17px;}
+.ci{
+  position:absolute;inset:0;display:flex;align-items:center;gap:8px;
+  opacity:0;transition:opacity 0.5s,transform 0.5s cubic-bezier(0.22,1,0.36,1);transform:translateY(6px);
+}
+.ci.on{opacity:1;transform:translateY(0);}
+.ci.off{opacity:0;transform:translateY(-6px);}
+.cr{font-size:9px;color:rgba(255,255,255,0.25);font-weight:800;min-width:20px;text-align:right;}
+.cn{font-size:11px;font-weight:700;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:rgba(255,255,255,0.75);}
+.cp{font-size:11px;font-weight:900;color:#667eea;text-shadow:0 0 8px rgba(102,126,234,0.6);min-width:40px;text-align:right;}
+</style>
 </head>
 <body>
-<div class="widget">
-
-  <div class="header">
-    <div class="header-dot"></div>
-    <div class="header-title">Top 3 Catchrates</div>
-    <div class="header-sub">LIVE</div>
-  </div>
-
-  <div class="top3">
-    <div class="row gold"   id="row1">
-      <div class="rank-badge gold">1</div>
-      <div class="row-info"><div class="row-name" id="name1">—</div><div class="row-meta" id="meta1">waiting...</div></div>
-      <div class="row-bar-wrap"><div class="bar-track"><div class="bar-fill c-vlow" id="bar1" style="width:0%"><span id="pct1">—</span></div></div></div>
-    </div>
-    <div class="row silver" id="row2">
-      <div class="rank-badge silver">2</div>
-      <div class="row-info"><div class="row-name" id="name2">—</div><div class="row-meta" id="meta2">waiting...</div></div>
-      <div class="row-bar-wrap"><div class="bar-track"><div class="bar-fill c-vlow" id="bar2" style="width:0%"><span id="pct2">—</span></div></div></div>
-    </div>
-    <div class="row bronze" id="row3">
-      <div class="rank-badge bronze">3</div>
-      <div class="row-info"><div class="row-name" id="name3">—</div><div class="row-meta" id="meta3">waiting...</div></div>
-      <div class="row-bar-wrap"><div class="bar-track"><div class="bar-fill c-vlow" id="bar3" style="width:0%"><span id="pct3">—</span></div></div></div>
-    </div>
-  </div>
-
-  <div class="divider"></div>
-
-  <div class="carousel">
-    <div class="carousel-label">All Trainers</div>
-    <div class="carousel-track" id="carouselTrack"></div>
-  </div>
-
+<div class="wrap">
+  <div class="hdr"><div class="hdot"></div><div class="htxt">⚡ Catch Chances</div><div class="hsub">LIVE</div></div>
+  <div class="grid" id="G"></div>
+  <div class="div"></div>
+  <div class="car"><div class="clbl">All Trainers</div><div class="ctr" id="CT"></div></div>
 </div>
-
 <script type="module">
-  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-  import { getDatabase, ref, onValue } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+import{initializeApp}from'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+import{getDatabase,ref,onValue}from'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+const db=getDatabase(initializeApp({apiKey:"AIzaSyDdStpC5rVtgaZ4XvtKLwQttnyIDXL2z7Q",authDomain:"trainertrials.firebaseapp.com",databaseURL:"https://trainertrials-default-rtdb.europe-west1.firebasedatabase.app",projectId:"trainertrials",storageBucket:"trainertrials.firebasestorage.app",messagingSenderId:"22071275267",appId:"1:22071275267:web:92e82d6bfaee169aff8336"}));
 
-  const app = initializeApp({
-    apiKey: "AIzaSyDdStpC5rVtgaZ4XvtKLwQttnyIDXL2z7Q",
-    authDomain: "trainertrials.firebaseapp.com",
-    databaseURL: "https://trainertrials-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId: "trainertrials",
-    storageBucket: "trainertrials.firebasestorage.app",
-    messagingSenderId: "22071275267",
-    appId: "1:22071275267:web:92e82d6bfaee169aff8336"
-  });
-  const db = getDatabase(app);
+const cap=s=>String(s??'').charAt(0).toUpperCase()+String(s??'').slice(1);
+const nc=d=>d>=2500?'nk':d>=500?'nf':d>=250?'nd':d>=50?'ns':'';
+const bc=p=>p>=15?'ch':p>=8?'cm':p>=2?'cl':'cv';
+const fp=p=>p<0.1?'<0.1%':p.toFixed(1)+'%';
+const CLS=['gold','silver','bronze'];
+const G=document.getElementById('G');
 
-  function getTierClass(d) {
-    if (d >= 2500) return 'cn-king';
-    if (d >= 500)  return 'cn-flame'; // old king threshold kept
-    if (d >= 250)  return 'cn-diamond';
-    if (d >= 100)  return 'cn-flame';
-    if (d >= 50)   return 'cn-shine';
-    return '';
-  }
+function mkSlot(e,rank,cls){
+  const s=document.createElement('div');s.className=`slot ${cls}`+(!e?' empty':'');
+  const n=e?(nc(e.donation||0)?`<span class="${nc(e.donation||0)}">${cap(e.name)}</span>`:cap(e.name)):'—';
+  const p=e?e.chance:0;
+  s.innerHTML=`<div class="stop"><div class="rk">${rank}</div><div class="nm">${n}</div></div><div class="bw"><div class="bf ${bc(p)}" style="width:${Math.min(p,100)}%"></div></div><div class="bot"><div class="pc">${e?fp(p):'—'}</div><div class="lk">${e?`❤ ${(e.likes||0).toLocaleString()}`:'—'}</div></div>`;
+  return s;
+}
+function render(sorted){G.innerHTML='';CLS.forEach((c,i)=>G.appendChild(mkSlot(sorted[i],i+1,c)));}
 
-  function capitalize(s) { return String(s??'').charAt(0).toUpperCase()+String(s??'').slice(1); }
-
-  function barClass(pct) {
-    if (pct >= 15) return 'c-high';
-    if (pct >= 8)  return 'c-mid';
-    if (pct >= 3)  return 'c-low';
-    return 'c-vlow';
-  }
-
-  function setRow(i, name, donation, chance, likes) {
-    const pct = (chance * 100);
-    const pctStr = pct < 0.1 ? '<0.1%' : pct.toFixed(1) + '%';
-    const tier = getTierClass(donation);
-
-    const nameEl = document.getElementById('name' + i);
-    nameEl.innerHTML = '';
-    if (tier) {
-      const span = document.createElement('span');
-      span.className = tier;
-      span.textContent = capitalize(name);
-      nameEl.appendChild(span);
-    } else {
-      nameEl.textContent = capitalize(name);
-    }
-
-    document.getElementById('meta' + i).textContent = `❤️ ${likes.toLocaleString()} likes`;
-
-    const bar = document.getElementById('bar' + i);
-    bar.style.width = Math.min(pct, 100) + '%';
-    bar.className = 'bar-fill ' + barClass(pct);
-    document.getElementById('pct' + i).textContent = pctStr;
-
-    const row = document.getElementById('row' + i);
-    row.classList.remove('empty');
-  }
-
-  function clearRow(i) {
-    document.getElementById('name' + i).textContent = '—';
-    document.getElementById('meta' + i).textContent = 'no data';
-    document.getElementById('bar' + i).style.width = '0%';
-    document.getElementById('bar' + i).className = 'bar-fill c-vlow';
-    document.getElementById('pct' + i).textContent = '—';
-    document.getElementById('row' + i).classList.add('empty');
-  }
-
-  // Carousel
-  let carouselPlayers = [];
-  let carouselIndex   = 0;
-  let carouselCurrent = null;
-
-  function buildCarouselItem(player, rank, maxChance) {
-    const pct    = (player.chance * 100);
-    const pctStr = pct < 0.1 ? '<0.1%' : pct.toFixed(1) + '%';
-    const barW   = maxChance > 0 ? Math.min((player.chance / maxChance) * 100, 100) : 0;
-    const tier   = getTierClass(player.donation);
-
-    const item = document.createElement('div');
-    item.className = 'carousel-item';
-
-    const rankEl = document.createElement('div');
-    rankEl.className = 'ci-rank';
-    rankEl.textContent = '#' + rank;
-
-    const nameEl = document.createElement('div');
-    nameEl.className = 'ci-name';
-    if (tier) {
-      const span = document.createElement('span');
-      span.className = tier; span.textContent = capitalize(player.name);
-      nameEl.appendChild(span);
-    } else { nameEl.textContent = capitalize(player.name); }
-
-    const barWrap = document.createElement('div'); barWrap.className = 'ci-bar-wrap';
-    const track   = document.createElement('div'); track.className = 'ci-track';
-    const fill    = document.createElement('div'); fill.className  = 'ci-fill';
-    fill.style.width = barW + '%';
-    track.appendChild(fill); barWrap.appendChild(track);
-
-    const pctEl = document.createElement('div');
-    pctEl.className = 'ci-pct';
-    pctEl.textContent = pctStr;
-
-    item.append(rankEl, nameEl, barWrap, pctEl);
-    return item;
-  }
-
-  function advanceCarousel() {
-    if (carouselPlayers.length === 0) return;
-    const track   = document.getElementById('carouselTrack');
-    const maxChance = carouselPlayers[0]?.chance || 1;
-
-    // Exit current
-    if (carouselCurrent) {
-      carouselCurrent.classList.remove('active');
-      carouselCurrent.classList.add('exit');
-      setTimeout(() => carouselCurrent?.remove(), 500);
-    }
-
-    const player = carouselPlayers[carouselIndex];
-    const rank   = carouselIndex + 1;
-    const item   = buildCarouselItem(player, rank, maxChance);
-    track.appendChild(item);
-
-    // Trigger animation
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => { item.classList.add('active'); });
-    });
-
-    carouselCurrent = item;
-    carouselIndex   = (carouselIndex + 1) % carouselPlayers.length;
-  }
-
-  // Firebase
-  onValue(ref(db, 'spawn/chances'), snap => {
-    const data = snap.val();
-    if (!data) {
-      clearRow(1); clearRow(2); clearRow(3);
-      carouselPlayers = [];
-      return;
-    }
-
-    const sorted = Object.values(data)
-      .filter(e => e && e.chance > 0)
-      .sort((a, b) => b.chance - a.chance);
-
-    // Top 3
-    for (let i = 1; i <= 3; i++) {
-      const p = sorted[i - 1];
-      if (p) setRow(i, p.name, p.donation || 0, p.chance, p.likes || 0);
-      else   clearRow(i);
-    }
-
-    // Carousel = all players (starting from rank 1, cycling through all)
-    carouselPlayers = sorted;
-    carouselIndex   = Math.min(carouselIndex, Math.max(0, sorted.length - 1));
-  });
-
-  // Start carousel cycle
-  advanceCarousel();
-  setInterval(advanceCarousel, 3000);
+let ca=[],ci=0,cc=null;
+function adv(){
+  if(!ca.length)return;
+  const T=document.getElementById('CT');
+  if(cc){cc.classList.remove('on');cc.classList.add('off');const o=cc;setTimeout(()=>o.remove(),500);}
+  const e=ca[ci];const t=nc(e.donation||0);
+  const item=document.createElement('div');item.className='ci';
+  item.innerHTML=`<div class="cr">#${ci+1}</div><div class="cn">${t?`<span class="${t}">${cap(e.name)}</span>`:cap(e.name)}</div><div class="cp">${fp(e.chance)}</div>`;
+  T.appendChild(item);
+  requestAnimationFrame(()=>requestAnimationFrame(()=>item.classList.add('on')));
+  cc=item;ci=(ci+1)%ca.length;
+}
+onValue(ref(db,'spawn/chances'),s=>{
+  const d=s.val();
+  if(!d){render([]);ca=[];return;}
+  const sorted=Object.values(d).filter(e=>e&&e.chance>0).sort((a,b)=>b.chance-a.chance);
+  render(sorted);ca=sorted;ci=Math.min(ci,Math.max(0,sorted.length-1));
+});
+render([]);adv();setInterval(adv,3500);
 </script>
 </body>
 </html>
