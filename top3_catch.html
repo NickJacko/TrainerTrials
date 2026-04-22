@@ -14,173 +14,261 @@ body{
 .wrap{
   width:100%;height:100%;
   position:relative;
-  /* Subtle ambient glow from top-left matching background palette */
-  background:radial-gradient(ellipse at top left,rgba(102,126,234,0.08) 0%,transparent 60%),
-             radial-gradient(ellipse at bottom right,rgba(118,75,162,0.06) 0%,transparent 50%);
+  background:radial-gradient(ellipse at top left,rgba(102,126,234,0.07) 0%,transparent 60%),
+             radial-gradient(ellipse at bottom right,rgba(118,75,162,0.05) 0%,transparent 50%);
   border-radius:14px;
   overflow:hidden;
-}
-
-/* Very faint structural hint — almost invisible */
-.wrap::before{
-  content:'';position:absolute;inset:0;border-radius:14px;
   border:1px solid rgba(255,255,255,0.04);
-  pointer-events:none;
+}
+.wrap::before{
+  content:'';position:absolute;top:0;left:15%;right:15%;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(255,107,107,0.5),rgba(78,205,196,0.4),transparent);
 }
 
+/* Header */
 .hdr{
   padding:6px 12px 5px;
   display:flex;align-items:center;gap:6px;
   border-bottom:1px solid rgba(255,255,255,0.04);
+  flex-shrink:0;
 }
-.hdot{width:5px;height:5px;border-radius:50%;background:#ff6b6b;box-shadow:0 0 7px rgba(255,107,107,0.9);animation:hdb 1.4s ease-in-out infinite;}
+.hdot{width:5px;height:5px;border-radius:50%;background:#ff6b6b;box-shadow:0 0 6px rgba(255,107,107,0.9);animation:hdb 1.4s ease-in-out infinite;}
 @keyframes hdb{0%,100%{opacity:1}50%{opacity:0.2}}
 .htxt{font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.35);}
 .hsub{margin-left:auto;font-size:9px;color:rgba(255,255,255,0.2);font-weight:700;letter-spacing:1px;}
 
-/* Grid — 3 columns */
-.grid{
-  padding:8px 10px;
-  display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;
+/* ── TOP 3 FIXED ── */
+.top3{
+  flex-shrink:0;
+  display:flex;flex-direction:column;gap:5px;
+  padding:8px 10px 6px;
+  border-bottom:1px solid rgba(255,255,255,0.05);
 }
 
 .slot{
-  border-radius:10px;padding:9px 9px 10px;
-  display:flex;flex-direction:column;gap:6px;
+  border-radius:9px;padding:7px 10px;
+  display:flex;align-items:center;gap:8px;
   position:relative;overflow:hidden;
-  /* Each slot is nearly invisible until data comes — feels part of background */
   background:rgba(255,255,255,0.03);
   border:1px solid rgba(255,255,255,0.05);
-  transition:all 0.4s;
 }
 .slot.gold{
-  background:rgba(255,215,0,0.05);
-  border-color:rgba(255,215,0,0.15);
-  box-shadow:0 0 20px rgba(255,215,0,0.06),inset 0 1px 0 rgba(255,215,0,0.08);
+  background:rgba(255,215,0,0.06);
+  border-color:rgba(255,215,0,0.18);
 }
-.slot.silver{background:rgba(180,180,200,0.04);border-color:rgba(180,180,200,0.1);}
-.slot.bronze{background:rgba(180,100,40,0.04);border-color:rgba(180,100,40,0.1);}
-.slot.empty{opacity:0.25;}
-
-/* Gold slot: very slow sweeping highlight */
 .slot.gold::after{
-  content:'';
-  position:absolute;top:0;left:-100%;width:50%;height:100%;
-  background:linear-gradient(90deg,transparent,rgba(255,215,0,0.08),transparent);
-  animation:gswp 6s ease-in-out infinite;
+  content:'';position:absolute;top:0;left:-100%;width:50%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,215,0,0.1),transparent);
+  animation:gswp 5s ease-in-out infinite;
 }
 @keyframes gswp{0%{left:-50%}100%{left:150%}}
+.slot.silver{background:rgba(180,180,200,0.04);border-color:rgba(180,180,200,0.1);}
+.slot.bronze{background:rgba(180,100,40,0.04);border-color:rgba(180,100,40,0.1);}
 
-.stop{display:flex;align-items:center;gap:7px;}
-
-/* Rank indicator: minimal circle, color only */
 .rk{
   width:18px;height:18px;border-radius:50%;flex-shrink:0;
   display:flex;align-items:center;justify-content:center;
   font-size:9px;font-weight:900;
 }
-.slot.gold .rk  {background:rgba(255,215,0,0.18);color:#FFD700;box-shadow:0 0 10px rgba(255,215,0,0.4);}
+.slot.gold .rk  {background:rgba(255,215,0,0.2);color:#FFD700;box-shadow:0 0 8px rgba(255,215,0,0.4);}
 .slot.silver .rk{background:rgba(192,192,192,0.12);color:rgba(220,220,220,0.8);}
 .slot.bronze .rk{background:rgba(180,100,40,0.15);color:#CD9060;}
-.slot.empty .rk {background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.2);}
 
-.nm{font-size:11px;font-weight:800;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:rgba(255,255,255,0.85);}
-.slot.gold .nm{font-size:12px;}
+.nm{font-size:12px;font-weight:800;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:rgba(255,255,255,0.9);}
+.slot.gold .nm{font-size:13px;}
 
-/* Bar — glowing line, no box around it */
-.bw{height:7px;background:rgba(255,255,255,0.06);border-radius:3.5px;overflow:hidden;}
-.bf{
-  height:100%;width:0%;border-radius:3.5px;
-  position:relative;overflow:hidden;
-  transition:width 1s cubic-bezier(0.22,1,0.36,1);
-}
+/* Bar inline */
+.bw{width:60px;height:6px;background:rgba(255,255,255,0.07);border-radius:3px;overflow:hidden;flex-shrink:0;}
+.bf{height:100%;border-radius:3px;position:relative;overflow:hidden;transition:width 1s cubic-bezier(0.22,1,0.36,1);}
 .bf::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent 30%,rgba(255,255,255,0.35) 50%,transparent 70%);animation:bsh 2.5s linear infinite;}
 @keyframes bsh{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+.ch{background:#4caf50;box-shadow:0 0 6px rgba(76,175,80,0.6);}
+.cm{background:#ff9800;box-shadow:0 0 6px rgba(255,152,0,0.5);}
+.cl{background:#667eea;box-shadow:0 0 5px rgba(102,126,234,0.5);}
+.cv{background:rgba(100,100,120,0.7);}
 
-/* Bar fill colors — warm neons against the purple-blue bg */
-.ch {background:#4caf50;box-shadow:0 0 8px rgba(76,175,80,0.6);}
-.cm {background:#ff9800;box-shadow:0 0 8px rgba(255,152,0,0.5);}
-.cl {background:#667eea;box-shadow:0 0 6px rgba(102,126,234,0.5);}
-.cv {background:rgba(100,100,120,0.7);}
-
-.bot{display:flex;align-items:center;justify-content:space-between;}
-.pc{font-size:11px;font-weight:900;}
-.slot.gold .pc  {color:#FFD700;text-shadow:0 0 10px rgba(255,215,0,0.6);}
+.pc{font-size:12px;font-weight:900;min-width:38px;text-align:right;flex-shrink:0;}
+.slot.gold .pc  {color:#FFD700;text-shadow:0 0 8px rgba(255,215,0,0.5);}
 .slot.silver .pc{color:rgba(200,200,220,0.9);}
 .slot.bronze .pc{color:#CD9060;}
-.slot.empty .pc {color:rgba(255,255,255,0.2);}
-.lk{font-size:8px;color:rgba(255,255,255,0.25);font-weight:600;}
 
-/* Tier name glows — no background, pure color+glow */
+/* Tier name glows */
 .nk{color:#FFD700;text-shadow:0 0 10px rgba(255,215,0,0.7);}
 .nf{color:#ff8c7a;text-shadow:0 0 10px rgba(255,140,122,0.6);}
 .nd{color:#7ec8ff;text-shadow:0 0 10px rgba(126,200,255,0.5);}
 .ns{color:#7ddb88;text-shadow:0 0 8px rgba(125,219,136,0.5);}
 
-.div{height:1px;background:rgba(255,255,255,0.04);margin:0 10px;}
-
-/* Carousel */
-.car{padding:5px 12px 8px;overflow:hidden;height:30px;}
-.clbl{font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.18);margin-bottom:3px;}
-.ctr{position:relative;height:17px;}
-.ci{
-  position:absolute;inset:0;display:flex;align-items:center;gap:8px;
-  opacity:0;transition:opacity 0.5s,transform 0.5s cubic-bezier(0.22,1,0.36,1);transform:translateY(6px);
+/* ── TICKER — platz 4+ ── */
+.ticker-section{
+  flex:1;
+  overflow:hidden;
+  position:relative;
+  padding:4px 0;
 }
-.ci.on{opacity:1;transform:translateY(0);}
-.ci.off{opacity:0;transform:translateY(-6px);}
-.cr{font-size:9px;color:rgba(255,255,255,0.25);font-weight:800;min-width:20px;text-align:right;}
-.cn{font-size:11px;font-weight:700;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:rgba(255,255,255,0.75);}
-.cp{font-size:11px;font-weight:900;color:#667eea;text-shadow:0 0 8px rgba(102,126,234,0.6);min-width:40px;text-align:right;}
+
+/* Fade top and bottom edges */
+.ticker-section::before,
+.ticker-section::after{
+  content:'';position:absolute;left:0;right:0;height:20px;z-index:2;pointer-events:none;
+}
+.ticker-section::before{
+  top:0;
+  background:linear-gradient(to bottom,rgba(0,0,0,0.5),transparent);
+}
+.ticker-section::after{
+  bottom:0;
+  background:linear-gradient(to top,rgba(0,0,0,0.5),transparent);
+}
+
+.ticker-track{
+  position:absolute;
+  left:0;right:0;
+  /* animation set by JS */
+}
+
+.tick-row{
+  display:flex;align-items:center;gap:8px;
+  padding:5px 10px;
+  border-radius:8px;
+  margin:3px 10px;
+  background:rgba(255,255,255,0.02);
+  border:1px solid rgba(255,255,255,0.04);
+}
+.tick-rank{font-size:9px;color:rgba(255,255,255,0.25);font-weight:800;min-width:22px;text-align:right;flex-shrink:0;}
+.tick-name{font-size:11px;font-weight:700;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:rgba(255,255,255,0.75);}
+.tick-bw{width:50px;height:5px;background:rgba(255,255,255,0.06);border-radius:2.5px;overflow:hidden;flex-shrink:0;}
+.tick-bf{height:100%;border-radius:2.5px;transition:width 1s ease;}
+.tick-pc{font-size:11px;font-weight:900;color:#667eea;text-shadow:0 0 8px rgba(102,126,234,0.6);min-width:38px;text-align:right;flex-shrink:0;}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <div class="hdr"><div class="hdot"></div><div class="htxt">⚡ Catch Chances</div><div class="hsub">LIVE</div></div>
-  <div class="grid" id="G"></div>
-  <div class="div"></div>
-  <div class="car"><div class="clbl">All Trainers</div><div class="ctr" id="CT"></div></div>
+<div class="wrap" style="display:flex;flex-direction:column;">
+  <div class="hdr">
+    <div class="hdot"></div>
+    <div class="htxt">⚡ Catch Chances</div>
+    <div class="hsub">LIVE</div>
+  </div>
+  <div class="top3" id="top3"></div>
+  <div class="ticker-section" id="tickerSection">
+    <div class="ticker-track" id="tickerTrack"></div>
+  </div>
 </div>
+
 <script type="module">
 import{initializeApp}from'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
 import{getDatabase,ref,onValue}from'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
-const db=getDatabase(initializeApp({apiKey:"AIzaSyDdStpC5rVtgaZ4XvtKLwQttnyIDXL2z7Q",authDomain:"trainertrials.firebaseapp.com",databaseURL:"https://trainertrials-default-rtdb.europe-west1.firebasedatabase.app",projectId:"trainertrials",storageBucket:"trainertrials.firebasestorage.app",messagingSenderId:"22071275267",appId:"1:22071275267:web:92e82d6bfaee169aff8336"}));
+const db=getDatabase(initializeApp({
+  apiKey:"AIzaSyDdStpC5rVtgaZ4XvtKLwQttnyIDXL2z7Q",
+  authDomain:"trainertrials.firebaseapp.com",
+  databaseURL:"https://trainertrials-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId:"trainertrials",storageBucket:"trainertrials.firebasestorage.app",
+  messagingSenderId:"22071275267",appId:"1:22071275267:web:92e82d6bfaee169aff8336"
+}));
 
 const cap=s=>String(s??'').charAt(0).toUpperCase()+String(s??'').slice(1);
 const nc=d=>d>=2500?'nk':d>=500?'nf':d>=250?'nd':d>=50?'ns':'';
 const bc=p=>p>=15?'ch':p>=8?'cm':p>=2?'cl':'cv';
 const fp=p=>p<0.1?'<0.1%':p.toFixed(1)+'%';
-const CLS=['gold','silver','bronze'];
-const G=document.getElementById('G');
 
-function mkSlot(e,rank,cls){
-  const s=document.createElement('div');s.className=`slot ${cls}`+(!e?' empty':'');
-  const n=e?(nc(e.donation||0)?`<span class="${nc(e.donation||0)}">${cap(e.name)}</span>`:cap(e.name)):'—';
-  const p=e?e.chance:0;
-  s.innerHTML=`<div class="stop"><div class="rk">${rank}</div><div class="nm">${n}</div></div><div class="bw"><div class="bf ${bc(p)}" style="width:${Math.min(p,100)}%"></div></div><div class="bot"><div class="pc">${e?fp(p):'—'}</div><div class="lk">${e?`❤ ${(e.likes||0).toLocaleString()}`:'—'}</div></div>`;
-  return s;
+// ── TOP 3 ──────────────────────────────────────────────────────────────────
+function renderTop3(sorted){
+  const c=document.getElementById('top3');
+  c.innerHTML='';
+  const CLS=['gold','silver','bronze'];
+  sorted.slice(0,3).forEach((e,i)=>{
+    if(!e){return;}
+    const s=document.createElement('div');
+    s.className=`slot ${CLS[i]}`;
+    const t=nc(e.donation||0);
+    const nm=t?`<span class="${t}">${cap(e.name)}</span>`:cap(e.name);
+    const p=e.chance||0;
+    s.innerHTML=`
+      <div class="rk">${i+1}</div>
+      <div class="nm">${nm}</div>
+      <div class="bw"><div class="bf ${bc(p)}" style="width:${Math.min(p,100)}%"></div></div>
+      <div class="pc">${fp(p)}</div>
+    `;
+    c.appendChild(s);
+  });
 }
-function render(sorted){G.innerHTML='';CLS.forEach((c,i)=>G.appendChild(mkSlot(sorted[i],i+1,c)));}
 
-let ca=[],ci=0,cc=null;
-function adv(){
-  if(!ca.length)return;
-  const T=document.getElementById('CT');
-  if(cc){cc.classList.remove('on');cc.classList.add('off');const o=cc;setTimeout(()=>o.remove(),500);}
-  const e=ca[ci];const t=nc(e.donation||0);
-  const item=document.createElement('div');item.className='ci';
-  item.innerHTML=`<div class="cr">#${ci+1}</div><div class="cn">${t?`<span class="${t}">${cap(e.name)}</span>`:cap(e.name)}</div><div class="cp">${fp(e.chance)}</div>`;
-  T.appendChild(item);
-  requestAnimationFrame(()=>requestAnimationFrame(()=>item.classList.add('on')));
-  cc=item;ci=(ci+1)%ca.length;
+// ── TICKER ──────────────────────────────────────────────────────────────────
+let tickerData=[];
+let tickerAnim=null;
+
+function buildTickerRow(e,rank){
+  const row=document.createElement('div');
+  row.className='tick-row';
+  const t=nc(e.donation||0);
+  const nm=t?`<span class="${t}">${cap(e.name)}</span>`:cap(e.name);
+  const p=e.chance||0;
+  row.innerHTML=`
+    <div class="tick-rank">#${rank}</div>
+    <div class="tick-name">${nm}</div>
+    <div class="tick-bw"><div class="tick-bf ${bc(p)}" style="width:${Math.min(p,100)}%"></div></div>
+    <div class="tick-pc">${fp(p)}</div>
+  `;
+  return row;
 }
-onValue(ref(db,'spawn/chances'),s=>{
-  const d=s.val();
-  if(!d){render([]);ca=[];return;}
-  const sorted=Object.values(d).filter(e=>e&&e.chance>0).sort((a,b)=>b.chance-a.chance);
-  render(sorted);ca=sorted;ci=Math.min(ci,Math.max(0,sorted.length-1));
+
+function buildTicker(data){
+  const track=document.getElementById('tickerTrack');
+  const section=document.getElementById('tickerSection');
+  track.innerHTML='';
+
+  if(!data||!data.length){
+    track.style.animation='none';
+    track.style.transform='translateY(0)';
+    return;
+  }
+
+  // Build rows doubled for seamless loop
+  const ROW_HEIGHT=32; // px per row including margin
+  const rows=[...data,...data]; // double for seamless
+
+  rows.forEach((e,i)=>{
+    const rank=(i%data.length)+4; // starts at #4
+    track.appendChild(buildTickerRow(e,rank));
+  });
+
+  const singleHeight=data.length*ROW_HEIGHT;
+  // Speed: ~40px per second — slow and readable
+  const duration=singleHeight/30;
+
+  track.style.animation='none';
+  track.offsetHeight; // reflow
+
+  // Inject keyframes
+  const styleId='ticker-kf';
+  let styleEl=document.getElementById(styleId);
+  if(!styleEl){styleEl=document.createElement('style');styleEl.id=styleId;document.head.appendChild(styleEl);}
+  styleEl.textContent=`
+    @keyframes tickScroll {
+      0%   { transform: translateY(0); }
+      100% { transform: translateY(-${singleHeight}px); }
+    }
+  `;
+
+  track.style.animation=`tickScroll ${duration}s linear infinite`;
+}
+
+onValue(ref(db,'spawn/chances'),snap=>{
+  const d=snap.val();
+  if(!d){
+    renderTop3([]);
+    buildTicker([]);
+    return;
+  }
+  const sorted=Object.values(d)
+    .filter(e=>e&&e.chance>0)
+    .sort((a,b)=>b.chance-a.chance);
+
+  renderTop3(sorted);
+  buildTicker(sorted.slice(3)); // 4th place and beyond
 });
-render([]);adv();setInterval(adv,3500);
+
+renderTop3([]);
+buildTicker([]);
 </script>
 </body>
 </html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Water — Korallenriff</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#003d5c;}
+canvas{position:absolute;inset:0;width:1080px;height:1920px;display:block;}
+.bg{position:absolute;inset:0;background:
+  radial-gradient(ellipse 100% 40% at 50% 0%, #0ab2d8 0%, #0087c0 25%, transparent 50%),
+  radial-gradient(ellipse 80% 60% at 50% 60%, #00a0cc 0%, #005f8a 45%, transparent 70%),
+  linear-gradient(180deg, #006090 0%, #005078 30%, #003d5c 60%, #002a42 100%);}
+/* Corals at bottom */
+.coral{position:absolute;bottom:0;left:0;right:0;height:520px;}
+.c1{position:absolute;bottom:0;left:5%;width:160px;height:300px;background:radial-gradient(ellipse at 50% 100%, #ff6b9d 0%, #c0337a 50%, transparent 75%);clip-path:polygon(40% 100%, 20% 60%, 30% 20%, 50% 0%, 70% 25%, 80% 60%, 60% 100%);filter:blur(1px);}
+.c2{position:absolute;bottom:0;left:20%;width:220px;height:220px;background:radial-gradient(ellipse at 50% 100%, #ff9d3a 0%, #c55a1a 60%, transparent 80%);clip-path:polygon(0 100%, 15% 40%, 35% 50%, 40% 20%, 55% 35%, 70% 15%, 80% 45%, 95% 30%, 100% 100%);filter:blur(1px);}
+.c3{position:absolute;bottom:0;left:42%;width:260px;height:340px;background:radial-gradient(ellipse at 50% 100%, #1ae0c5 0%, #0a8a80 55%, transparent 80%);clip-path:polygon(10% 100%, 20% 55%, 30% 65%, 40% 30%, 50% 45%, 60% 15%, 70% 40%, 80% 55%, 90% 100%);filter:blur(1px);}
+.c4{position:absolute;bottom:0;left:65%;width:200px;height:280px;background:radial-gradient(ellipse at 50% 100%, #ff509a 0%, #8a1a55 60%, transparent 80%);clip-path:polygon(15% 100%, 25% 50%, 40% 60%, 50% 20%, 60% 55%, 75% 45%, 85% 100%);filter:blur(1px);}
+.c5{position:absolute;bottom:0;right:0;width:180px;height:260px;background:radial-gradient(ellipse at 50% 100%, #ffb84a 0%, #c06810 60%, transparent 80%);clip-path:polygon(0 100%, 15% 45%, 35% 55%, 50% 20%, 65% 50%, 85% 35%, 100% 100%);filter:blur(1px);}
+
+/* Volumetric god rays from top */
+.rays{position:absolute;top:-200px;left:0;right:0;height:1400px;
+  background:
+    linear-gradient(165deg, rgba(150,230,255,0.15) 0%, transparent 40%),
+    linear-gradient(175deg, rgba(180,240,255,0.18) 0%, transparent 45%),
+    linear-gradient(190deg, rgba(150,230,255,0.12) 0%, transparent 40%);
+  filter:blur(12px);mix-blend-mode:screen;animation:rayShift 9s ease-in-out infinite;}
+@keyframes rayShift{0%,100%{opacity:0.7;transform:translateX(0)}50%{opacity:1;transform:translateX(20px)}}
+
+.zone-top{position:absolute;top:0;left:0;right:0;height:120px;background:linear-gradient(180deg,rgba(0,15,30,0.55) 0%,transparent 100%);z-index:40;}
+.zone-bot{position:absolute;bottom:0;left:0;right:0;height:920px;background:linear-gradient(0deg,rgba(0,10,20,0.55) 0%,rgba(0,10,20,0.15) 40%,transparent 100%);z-index:40;}
+.center-darken{position:absolute;top:300px;left:50%;transform:translateX(-50%);width:780px;height:540px;background:radial-gradient(ellipse 50% 50% at 50% 50%,rgba(0,20,35,0.35) 0%,transparent 70%);z-index:38;}
+.vignette{position:absolute;inset:0;background:radial-gradient(ellipse 80% 70% at 50% 50%,transparent 40%,rgba(0,5,15,0.55) 100%);z-index:39;pointer-events:none;}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<div class="rays"></div>
+<canvas id="caustic"></canvas>
+<div class="coral"><div class="c1"></div><div class="c2"></div><div class="c3"></div><div class="c4"></div><div class="c5"></div></div>
+<canvas id="fish"></canvas>
+<canvas id="bub"></canvas>
+<div class="center-darken"></div>
+<div class="vignette"></div>
+<div class="zone-top"></div>
+<div class="zone-bot"></div>
+<script>
+const W=1080,H=1920;
+function setup(id){const c=document.getElementById(id);c.width=W;c.height=H;return c.getContext('2d');}
+
+// Caustics — moving wavy light patterns
+const cs=setup('caustic');
+let t=0;
+function drawCaustics(){
+  cs.clearRect(0,0,W,H);
+  cs.globalCompositeOperation='screen';
+  for(let i=0;i<14;i++){
+    const x=(Math.sin(t*0.3+i*1.7)*0.5+0.5)*W;
+    const y=(Math.cos(t*0.25+i*2.1)*0.4+0.3)*H;
+    const r=150+Math.sin(t*0.5+i)*50;
+    const g=cs.createRadialGradient(x,y,0,x,y,r);
+    g.addColorStop(0,'rgba(150,240,255,0.18)');
+    g.addColorStop(0.5,'rgba(100,200,230,0.08)');
+    g.addColorStop(1,'rgba(100,200,230,0)');
+    cs.fillStyle=g;cs.beginPath();cs.arc(x,y,r,0,Math.PI*2);cs.fill();
+  }
+  cs.globalCompositeOperation='source-over';
+}
+
+// Fish
+const fs=setup('fish');
+const fish=[];
+const fCol=['#ffd94a','#ff6b9d','#4ae6ff','#ff9d3a','#a4ff6b','#ff4a4a'];
+for(let i=0;i<10;i++){
+  fish.push({x:Math.random()*W,y:400+Math.random()*1000,
+    vx:(Math.random()<0.5?1:-1)*(1+Math.random()*1.5),
+    sz:8+Math.random()*10,col:fCol[Math.floor(Math.random()*fCol.length)],
+    wig:Math.random()*Math.PI*2,wigSp:0.2+Math.random()*0.1,bob:Math.random()*Math.PI*2});
+}
+function drawFish(c,f){
+  c.save();c.translate(f.x,f.y);c.scale(f.vx>0?1:-1,1);
+  c.fillStyle=f.col;c.globalAlpha=0.85;
+  c.beginPath();c.ellipse(0,0,f.sz,f.sz*0.5,0,0,Math.PI*2);c.fill();
+  // tail
+  const wig=Math.sin(f.wig)*0.4;
+  c.beginPath();
+  c.moveTo(-f.sz*0.8,0);c.lineTo(-f.sz*1.6,-f.sz*0.5+wig*f.sz);
+  c.lineTo(-f.sz*1.4,0);c.lineTo(-f.sz*1.6,f.sz*0.5+wig*f.sz);c.closePath();c.fill();
+  c.restore();
+}
+
+// Bubbles
+const bb=setup('bub');
+const bubs=[];
+for(let i=0;i<40;i++){
+  bubs.push({x:Math.random()*W,y:H+Math.random()*400,
+    r:2+Math.random()*6,vy:-0.8-Math.random()*1.2,
+    swPh:Math.random()*Math.PI*2,swSp:0.02+Math.random()*0.02,a:0.3+Math.random()*0.5});
+}
+
+function loop(){
+  t+=0.016;
+  drawCaustics();
+  fs.clearRect(0,0,W,H);
+  for(const f of fish){
+    f.wig+=f.wigSp;f.bob+=0.04;
+    f.x+=f.vx;f.y+=Math.sin(f.bob)*0.4;
+    if(f.x<-30)f.x=W+30;if(f.x>W+30)f.x=-30;
+    drawFish(fs,f);
+  }
+  bb.clearRect(0,0,W,H);
+  for(const b of bubs){
+    b.swPh+=b.swSp;
+    b.y+=b.vy;b.x+=Math.sin(b.swPh)*0.4;
+    if(b.y<-20){b.y=H+20;b.x=Math.random()*W;}
+    bb.strokeStyle=`rgba(200,240,255,${b.a})`;bb.lineWidth=1.2;
+    bb.beginPath();bb.arc(b.x,b.y,b.r,0,Math.PI*2);bb.stroke();
+    bb.fillStyle=`rgba(255,255,255,${b.a*0.3})`;
+    bb.beginPath();bb.arc(b.x-b.r*0.3,b.y-b.r*0.3,b.r*0.25,0,Math.PI*2);bb.fill();
+  }
+  requestAnimationFrame(loop);
+}
+loop();
+</script>
+</body>
+</html>

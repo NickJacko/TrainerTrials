@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Cosmic — Schwarzes Loch</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#000008;}
+canvas{position:absolute;inset:0;width:1080px;height:1920px;display:block;}
+.bg{position:absolute;inset:0;background:
+  radial-gradient(ellipse 50% 35% at 50% 50%, #000020 0%, #000010 50%, transparent 80%),
+  linear-gradient(180deg, #000008 0%, #000012 50%, #000008 100%);}
+/* Accretion disk — behind center */
+.disk{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-18deg);width:1400px;height:260px;
+  background:
+    radial-gradient(ellipse 50% 50% at 50% 50%, rgba(255,140,0,0.6) 0%, rgba(255,100,0,0.3) 30%, transparent 55%),
+    radial-gradient(ellipse 70% 30% at 50% 50%, rgba(255,200,60,0.8) 0%, rgba(255,140,0,0.4) 20%, transparent 50%);
+  filter:blur(8px);animation:diskSpin 40s linear infinite;mix-blend-mode:screen;}
+.disk2{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-18deg);width:1400px;height:120px;
+  background:radial-gradient(ellipse 50% 50% at 50% 50%, rgba(255,255,200,0.9) 0%, rgba(255,180,80,0.5) 25%, transparent 55%);
+  filter:blur(3px);animation:diskSpin 30s linear infinite;mix-blend-mode:screen;}
+@keyframes diskSpin{from{transform:translate(-50%,-50%) rotate(-18deg)}to{transform:translate(-50%,-50%) rotate(342deg)}}
+/* Black hole core */
+.hole{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:280px;height:280px;border-radius:50%;background:#000;box-shadow:inset 0 0 80px 40px #000,0 0 0 4px rgba(255,200,80,0.4),0 0 60px rgba(255,160,40,0.5);}
+/* Photon ring */
+.photon{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:320px;height:320px;border-radius:50%;border:2px solid rgba(255,240,180,0.6);box-shadow:0 0 40px rgba(255,200,80,0.8),inset 0 0 20px rgba(255,240,180,0.4);}
+
+/* Nebula patches */
+.neb-a{position:absolute;top:200px;left:10%;width:500px;height:400px;background:radial-gradient(ellipse at 50% 50%, rgba(68,0,255,0.25) 0%, transparent 65%);filter:blur(20px);}
+.neb-b{position:absolute;bottom:280px;right:5%;width:600px;height:500px;background:radial-gradient(ellipse at 50% 50%, rgba(255,140,0,0.2) 0%, transparent 65%);filter:blur(20px);}
+
+.zone-top{position:absolute;top:0;left:0;right:0;height:120px;background:linear-gradient(180deg,rgba(0,0,0,0.55) 0%,transparent 100%);z-index:40;}
+.zone-bot{position:absolute;bottom:0;left:0;right:0;height:920px;background:linear-gradient(0deg,rgba(0,0,5,0.55) 0%,rgba(0,0,5,0.12) 40%,transparent 100%);z-index:40;}
+.center-darken{position:absolute;top:300px;left:50%;transform:translateX(-50%);width:780px;height:540px;background:radial-gradient(ellipse 50% 50% at 50% 50%,rgba(0,0,5,0.3) 0%,transparent 70%);z-index:38;}
+.vignette{position:absolute;inset:0;background:radial-gradient(ellipse 80% 70% at 50% 50%,transparent 40%,rgba(0,0,0,0.65) 100%);z-index:39;pointer-events:none;}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<canvas id="stars"></canvas>
+<div class="neb-a"></div>
+<div class="neb-b"></div>
+<div class="disk"></div>
+<div class="disk2"></div>
+<div class="hole"></div>
+<div class="photon"></div>
+<canvas id="ship"></canvas>
+<canvas id="warp"></canvas>
+<div class="center-darken"></div>
+<div class="vignette"></div>
+<div class="zone-top"></div>
+<div class="zone-bot"></div>
+<script>
+const W=1080,H=1920;
+function setup(id){const c=document.getElementById(id);c.width=W;c.height=H;return c.getContext('2d');}
+
+const st=setup('stars');
+const stars=[];
+for(let i=0;i<400;i++){
+  const a=Math.random()*Math.PI*2;
+  const r=150+Math.random()*900;
+  stars.push({x:W/2+Math.cos(a)*r,y:H/2+Math.sin(a)*r,
+    r:Math.random()*1.5+0.3,tw:Math.random()*Math.PI*2,a0:a,dist:r,
+    hue:Math.random()<0.2?220:Math.random()<0.4?40:0});
+}
+
+const sp=setup('ship');
+const ship={x:-80,y:600,vx:0.6,ph:0};
+
+const wp=setup('warp');
+
+let t=0;
+function loop(){
+  t+=0.016;
+  st.clearRect(0,0,W,H);
+  for(const s of stars){
+    s.tw+=0.03;
+    // Gravitational lensing — warp slightly around center
+    const dx=s.x-W/2,dy=s.y-H/2;
+    const d=Math.hypot(dx,dy);
+    const warp=d<400?(400-d)/400*0.3:0;
+    const ang=Math.atan2(dy,dx)+warp*0.05;
+    const x=W/2+Math.cos(ang)*d;
+    const y=H/2+Math.sin(ang)*d;
+    const a=0.4+Math.sin(s.tw)*0.4;
+    if(s.hue===220)st.fillStyle=`rgba(180,200,255,${a})`;
+    else if(s.hue===40)st.fillStyle=`rgba(255,220,180,${a})`;
+    else st.fillStyle=`rgba(255,255,255,${a})`;
+    st.beginPath();st.arc(x,y,s.r,0,Math.PI*2);st.fill();
+  }
+
+  // Ship — tiny crossing
+  sp.clearRect(0,0,W,H);
+  ship.x+=ship.vx;ship.ph+=0.02;
+  if(ship.x>W+80){ship.x=-80;ship.y=300+Math.random()*1200;}
+  sp.fillStyle='rgba(200,220,255,0.9)';sp.shadowBlur=10;sp.shadowColor='#80c0ff';
+  sp.beginPath();sp.ellipse(ship.x,ship.y,4,1.5,0,0,Math.PI*2);sp.fill();
+  // Trail
+  sp.strokeStyle='rgba(100,160,255,0.5)';sp.lineWidth=1;sp.shadowBlur=5;
+  sp.beginPath();sp.moveTo(ship.x-3,ship.y);sp.lineTo(ship.x-80,ship.y);sp.stroke();
+  sp.shadowBlur=0;
+
+  // Warp distortion rings around hole
+  wp.clearRect(0,0,W,H);
+  for(let i=0;i<4;i++){
+    const r=180+((t*60+i*80)%320);
+    const a=Math.max(0,1-((t*60+i*80)%320)/320)*0.25;
+    wp.strokeStyle=`rgba(255,200,120,${a})`;wp.lineWidth=1.5;
+    wp.beginPath();wp.arc(W/2,H/2,r,0,Math.PI*2);wp.stroke();
+  }
+  requestAnimationFrame(loop);
+}
+loop();
+</script>
+</body>
+</html>
