@@ -33,7 +33,9 @@ const db=getDatabase(initializeApp({
 }));
 
 // Typ → Dateiname in backgrounds/
+// Exakt abgestimmt auf CATCHMON_TYPES Primärtypen aus catcher.py
 const TYPE_FILES = {
+  // Direkte Mappings — Datei existiert
   Fire:    'fire',
   Water:   'water',
   Electric:'electric',
@@ -44,7 +46,6 @@ const TYPE_FILES = {
   Ghost:   'ghost',
   Dragon:  'dragon',
   Cosmic:  'cosmic',
-  Rock:    'earth',
   Earth:   'earth',
   Steel:   'steel',
   Wind:    'wind',
@@ -52,7 +53,8 @@ const TYPE_FILES = {
   Poison:  'poison',
   Light:   'light',
   Normal:  'normal',
-  Bug:     'grass',   // Fallback auf ähnlichen Typ
+  Rock:    'earth',   // Rockoon, Rhinubi, Rhyrok → Kristallhöhle
+  Bug:     'grass',   // Armobug → Waldlichtung
 };
 
 const A = document.getElementById('iframeA');
