@@ -7,8 +7,11 @@ const rarityEmojis = { "Starter":"🌱", "Common":"⚪", "Rare":"🔵", "Legenda
 
 let dexList     = [];
 let enabledGens = new Set();
-let seenData    = {};
 let myTeamNames = new Set();
+
+// Direkt aus Firebase gezählt — kein dex/seen_caught mehr
+let escapedCounts = {}; // { "mindferno": 12, ... }
+let caughtCounts  = {}; // { "mindferno": 3, ... }
 
 // ── Reveal ────────────────────────────────────────────────────────────────────
 const revealObs = new IntersectionObserver(entries => {
@@ -55,7 +58,7 @@ function buildRaritySection(rarity, pokemons) {
 
   const header = document.createElement('div');
   header.className = 'rarity-header';
-  const title = document.createElement('h2');
+  const title = document.createElement('div');
   title.className = 'rarity-title';
   title.textContent = `${rarityEmojis[rarity] || '❓'} ${rarity}`;
   const count = document.createElement('div');
@@ -69,8 +72,8 @@ function buildRaritySection(rarity, pokemons) {
 
   pokemons.forEach(p => {
     const nameLower = p.name.toLowerCase();
-    const escaped   = seenData[nameLower]?.escaped || 0;
-    const caught    = seenData[nameLower]?.caught  || 0;
+    const escaped   = escapedCounts[nameLower] || 0;
+    const caught    = caughtCounts[nameLower]  || 0;
     const id        = String(p.id).padStart(3, "0");
     const isGod     = rarity === "God";
     const isMe      = myTeamNames.has(nameLower);
@@ -142,7 +145,37 @@ function renderDex() {
   });
 }
 
-// ── Load ──────────────────────────────────────────────────────────────────────
+// ── Zähle escaped aus escaped/ Liste ─────────────────────────────────────────
+function buildEscapedCounts(escapedData) {
+  const counts = {};
+  if (!escapedData) return counts;
+  const entries = typeof escapedData === 'object' ? Object.values(escapedData) : [];
+  entries.forEach(e => {
+    if (!e?.name) return;
+    const key = e.name.toLowerCase();
+    counts[key] = (counts[key] || 0) + 1;
+  });
+  return counts;
+}
+
+// ── Zähle caught aus trainers/ Teams ─────────────────────────────────────────
+function buildCaughtCounts(trainersData) {
+  const counts = {};
+  if (!trainersData) return counts;
+  Object.values(trainersData).forEach(trainer => {
+    const team = Array.isArray(trainer.team)
+      ? trainer.team
+      : Object.values(trainer.team || {});
+    team.forEach(catchmon => {
+      if (!catchmon?.name) return;
+      const key = catchmon.name.toLowerCase();
+      counts[key] = (counts[key] || 0) + 1;
+    });
+  });
+  return counts;
+}
+
+// ── Load Static ───────────────────────────────────────────────────────────────
 async function loadStaticData() {
   try {
     const [dexRes, genRes] = await Promise.all([
@@ -159,27 +192,35 @@ async function loadStaticData() {
   }
 }
 
+// ── Init ──────────────────────────────────────────────────────────────────────
 async function init() {
   await loadStaticData();
 
   const savedTrainer = getSavedTrainer();
+
+  // Trainer-Team für YOU-Badge
   if (savedTrainer) {
     onValue(ref(db, `trainers/${savedTrainer.toLowerCase()}`), snap => {
       const info = snap.val();
       myTeamNames = info
-        ? new Set((Array.isArray(info.team) ? info.team : Object.values(info.team || {})).map(c => c.name?.toLowerCase()).filter(Boolean))
+        ? new Set((Array.isArray(info.team) ? info.team : Object.values(info.team || {}))
+            .map(c => c.name?.toLowerCase()).filter(Boolean))
         : new Set();
       renderDex();
     });
   }
 
-  onValue(ref(db, 'dex/seen_caught'), snap => {
-    seenData = snap.val() || {};
+  // Escaped-Zählung direkt aus escaped/ Liste
+  onValue(ref(db, 'escaped'), snap => {
+    escapedCounts = buildEscapedCounts(snap.val());
     renderDex();
-  }, err => {
-    console.error('Firebase error:', err);
+  }, err => console.error('Firebase escaped error:', err));
+
+  // Caught-Zählung direkt aus trainers/ Teams
+  onValue(ref(db, 'trainers'), snap => {
+    caughtCounts = buildCaughtCounts(snap.val());
     renderDex();
-  });
+  }, err => console.error('Firebase trainers error:', err));
 }
 
 init();
