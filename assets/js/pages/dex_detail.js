@@ -3,11 +3,13 @@ import { db } from '../firebase.client.js';
 import { ref, onValue } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 
 const statsOrder = ["ATK","DEF","SPD","WIS","CHA","LUK"];
-let allEntries = [];
+let allEntries = [];      // caught entries aus trainers/
+let escapedEntries = [];  // escaped entries aus escaped/ für dieses Catchmon
 let catcherDonations = {};
 let dexList = [];
 let isGodMode = false;
 let pendingTrainers = null;
+let pendingEscaped  = null;
 
 // ── Reveal ────────────────────────────────────────────────────────────────────
 const revealObs = new IntersectionObserver(entries => {
@@ -70,7 +72,7 @@ function relativeTime(tsMs) {
 }
 
 // ── URL Param ─────────────────────────────────────────────────────────────────
-const rawName     = new URLSearchParams(window.location.search).get("name");
+const rawName      = new URLSearchParams(window.location.search).get("name");
 const catchmonName = validateCatchmonName(rawName);
 if (!catchmonName) {
   document.getElementById("catchTitle").textContent = "Invalid Catchmon name.";
@@ -83,33 +85,38 @@ function renderTable() {
   const showCaughtOnly = document.getElementById("caughtOnly").checked;
   const savedTrainer   = getSavedTrainer();
 
-  const visible = allEntries.filter(e => !showCaughtOnly || e.catcher);
-  if (visible.length === 0) {
+  // Caught entries — immer anzeigen
+  const caught = allEntries.sort((a, b) => calcPoints(b) - calcPoints(a));
+
+  // Escaped entries — nur wenn Checkbox NICHT aktiv
+  const escaped = showCaughtOnly ? [] : escapedEntries;
+
+  const totalVisible = caught.length + escaped.length;
+
+  if (totalVisible === 0) {
     tbody.innerHTML = '<tr><td colspan="12" class="loading"><div class="spinner"></div><div>No data available</div></td></tr>';
     return;
   }
 
-  const caught   = visible.filter(e => e.catcher).sort((a, b) => calcPoints(b) - calcPoints(a));
-  const uncaught = visible.filter(e => !e.catcher);
   const fragment = document.createDocumentFragment();
 
-  [...caught, ...uncaught].forEach(e => {
+  // ── Caught rows ────────────────────────────────────────────────────────────
+  caught.forEach(e => {
     const tr   = document.createElement("tr");
     const isMe = savedTrainer && e.catcher && e.catcher.toLowerCase() === savedTrainer.toLowerCase();
-    if (!e.catcher) tr.classList.add('uncaught-row');
-    if (isMe)       tr.classList.add('my-row');
+    if (isMe) tr.classList.add('my-row');
 
     // Catcher cell
     const tdCatcher = document.createElement('td');
-    if (!e.catcher) {
-      tdCatcher.innerHTML = '<span style="opacity:0.35">—</span>';
-    } else if (isGodMode) {
-      const span = document.createElement('span'); span.style.color = '#9370DB'; span.textContent = '█████';
+    if (isGodMode) {
+      const span = document.createElement('span');
+      span.style.color = '#9370DB';
+      span.textContent = '█████';
       tdCatcher.appendChild(span);
     } else {
       const tier = getDonationTier(catcherDonations[e.catcher] || 0);
       const el   = document.createElement('span');
-      el.className = `catcher-name ${tier}`;
+      el.className  = `catcher-name ${tier}`;
       el.textContent = capitalize(e.catcher);
       el.addEventListener('click', () => {
         window.location.href = `catcher_detail.html?name=${encodeURIComponent(e.catcher)}`;
@@ -123,13 +130,13 @@ function renderTable() {
     }
 
     const tdPoints = document.createElement('td');
-    tdPoints.textContent = e.catcher ? calcPoints(e).toLocaleString('de-DE') : '—';
+    tdPoints.textContent = calcPoints(e).toLocaleString('de-DE');
     const tdLevel = document.createElement('td');
-    tdLevel.textContent = e.catcher ? (e.level || 1) : '—';
+    tdLevel.textContent = e.level || 1;
     const tdShiny = document.createElement('td');
     tdShiny.textContent = e.shiny ? "✨" : "";
     const tdSum = document.createElement('td');
-    tdSum.textContent = e.catcher ? sumStats(e.stats).toLocaleString('de-DE') : '—';
+    tdSum.textContent = sumStats(e.stats).toLocaleString('de-DE');
     const tdTime = document.createElement('td');
     tdTime.className = 'time-cell';
     const rel = relativeTime(e.caught_at);
@@ -139,7 +146,42 @@ function renderTable() {
     tr.append(tdCatcher, tdPoints, tdLevel, tdShiny, tdSum, tdTime);
     statsOrder.forEach(s => {
       const td = document.createElement('td');
-      td.textContent = e.catcher ? (e.stats?.[s] ?? 0) : '—';
+      td.textContent = e.stats?.[s] ?? 0;
+      tr.appendChild(td);
+    });
+    fragment.appendChild(tr);
+  });
+
+  // ── Escaped rows — grau, kein Catcher ─────────────────────────────────────
+  escaped.forEach(e => {
+    const tr = document.createElement("tr");
+    tr.classList.add('uncaught-row');
+    tr.title = 'Escaped — not caught by anyone';
+
+    // Catcher cell — escaped indicator
+    const tdCatcher = document.createElement('td');
+    tdCatcher.innerHTML = '<span style="opacity:0.35;font-size:0.85em;">✗ escaped</span>';
+
+    const tdPoints = document.createElement('td');
+    tdPoints.innerHTML = '<span style="opacity:0.3">—</span>';
+    const tdLevel = document.createElement('td');
+    tdLevel.textContent = e.level || '—';
+    const tdShiny = document.createElement('td');
+    tdShiny.textContent = e.shiny ? "✨" : "";
+    const tdSum = document.createElement('td');
+    tdSum.textContent = e.stats ? sumStats(e.stats).toLocaleString('de-DE') : '—';
+    const tdTime = document.createElement('td');
+    tdTime.className = 'time-cell';
+    const rel = relativeTime(e.escaped_at);
+    tdTime.textContent = rel || '—';
+    if (rel && e.escaped_at) tdTime.title = new Date(e.escaped_at).toLocaleString('de-DE');
+
+    tr.append(tdCatcher, tdPoints, tdLevel, tdShiny, tdSum, tdTime);
+    statsOrder.forEach(s => {
+      const td = document.createElement('td');
+      td.innerHTML = e.stats?.[s] !== undefined
+        ? `<span style="opacity:0.4">${e.stats[s]}</span>`
+        : '<span style="opacity:0.25">—</span>';
       tr.appendChild(td);
     });
     fragment.appendChild(tr);
@@ -149,8 +191,8 @@ function renderTable() {
   tbody.appendChild(fragment);
 }
 
-// ── Process Data ──────────────────────────────────────────────────────────────
-function processData(trainersData) {
+// ── Process trainers data ─────────────────────────────────────────────────────
+function processTrainers(trainersData) {
   const lowerName = catchmonName.toLowerCase();
   const caughtEntries = [];
   catcherDonations = {};
@@ -159,12 +201,47 @@ function processData(trainersData) {
     catcherDonations[catcher] = info.donation || 0;
     const team = Array.isArray(info.team) ? info.team : Object.values(info.team || {});
     team.forEach(p => {
-      if (p.name && p.name.toLowerCase() === lowerName) caughtEntries.push({ ...p, catcher });
+      if (p.name && p.name.toLowerCase() === lowerName) {
+        caughtEntries.push({ ...p, catcher });
+      }
     });
   });
 
-  const dexEntry = dexList.find(p => p.name.toLowerCase() === lowerName);
-  const sprite   = dexEntry?.sprite || "";
+  allEntries = caughtEntries;
+  updateSummary();
+  renderTable();
+}
+
+// ── Process escaped data ──────────────────────────────────────────────────────
+function processEscaped(escapedData) {
+  const lowerName = catchmonName.toLowerCase();
+  escapedEntries = [];
+
+  if (!escapedData) { renderTable(); return; }
+
+  const entries = typeof escapedData === 'object' ? Object.values(escapedData) : [];
+  escapedEntries = entries
+    .filter(e => e?.name && e.name.toLowerCase() === lowerName)
+    .sort((a, b) => (b.escaped_at || 0) - (a.escaped_at || 0)); // neueste zuerst
+
+  updateSummary();
+  renderTable();
+}
+
+// ── Update Summary ────────────────────────────────────────────────────────────
+function updateSummary() {
+  if (isGodMode) return;
+  const trainerCount = new Set(allEntries.map(e => e.catcher)).size;
+  const summaryEl = document.getElementById("summary");
+  summaryEl.textContent =
+    `${allEntries.length} gefangen · ${trainerCount} Trainer · ${escapedEntries.length} entkommen`;
+}
+
+// ── Setup Header (once dexList loaded) ───────────────────────────────────────
+function setupHeader() {
+  const lowerName = catchmonName.toLowerCase();
+  const dexEntry  = dexList.find(p => p.name.toLowerCase() === lowerName);
+  const sprite    = dexEntry?.sprite || "";
 
   if (isGodCatchmon(sprite)) {
     isGodMode = true;
@@ -174,32 +251,35 @@ function processData(trainersData) {
   } else {
     document.getElementById("catchTitle").textContent =
       `#${String(dexEntry?.id || "").padStart(3,"0")} ${capitalize(catchmonName)}`;
-    const trainerCount = new Set(caughtEntries.map(e => e.catcher)).size;
-    document.getElementById("summary").textContent =
-      `${caughtEntries.length} gefangen · ${trainerCount} Trainer`;
   }
 
   const imgEl = document.getElementById("catchImg");
   imgEl.src = sprite;
   imgEl.alt = escapeHtml(catchmonName);
-
-  allEntries = caughtEntries;
-  renderTable();
 }
 
 // ── Firebase ──────────────────────────────────────────────────────────────────
 onValue(ref(db, 'trainers'), snap => {
   const data = snap.val() || {};
-  if (catchmonName && dexList.length > 0) processData(data);
+  if (catchmonName && dexList.length > 0) processTrainers(data);
   else if (catchmonName) pendingTrainers = data;
 });
 
+onValue(ref(db, 'escaped'), snap => {
+  const data = snap.val();
+  if (catchmonName && dexList.length > 0) processEscaped(data);
+  else if (catchmonName) pendingEscaped = data;
+}, err => console.error('Firebase escaped error:', err));
+
+// ── Init ──────────────────────────────────────────────────────────────────────
 async function init() {
   if (!catchmonName) return;
   try {
     const res = await fetch("dex_list.json?" + Date.now());
     dexList = await res.json();
-    if (pendingTrainers) { processData(pendingTrainers); pendingTrainers = null; }
+    setupHeader();
+    if (pendingTrainers) { processTrainers(pendingTrainers); pendingTrainers = null; }
+    if (pendingEscaped)  { processEscaped(pendingEscaped);  pendingEscaped  = null; }
   } catch (err) {
     console.error("Error loading dex list:", err);
     document.getElementById("catchTitle").textContent = "Error loading data";
