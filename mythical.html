@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8"/>
+<title>Mythical — Das Unbenannte</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{
+  width:1080px;height:1920px;
+  overflow:hidden;
+  background:#000;
+  position:relative;
+}
+canvas{
+  position:absolute;top:0;left:0;
+  width:1080px;height:1920px;
+  pointer-events:none;
+}
+#zone-top{
+  position:absolute;top:0;left:0;width:1080px;height:120px;
+  background:linear-gradient(to bottom,rgba(0,0,0,0.62) 0%,transparent 100%);
+  z-index:60;pointer-events:none;
+}
+#zone-bot{
+  position:absolute;bottom:0;left:0;width:1080px;height:920px;
+  background:linear-gradient(to top,rgba(0,0,0,0.55) 0%,transparent 100%);
+  z-index:60;pointer-events:none;
+}
+#vignette{
+  position:absolute;top:0;left:0;width:1080px;height:1920px;
+  background:radial-gradient(ellipse 88% 88% at 50% 50%,transparent 28%,rgba(0,0,0,0.75) 100%);
+  z-index:59;pointer-events:none;
+}
+#center-darken{
+  position:absolute;left:150px;top:300px;width:780px;height:540px;
+  background:radial-gradient(ellipse at center,rgba(0,0,0,0.32) 0%,transparent 70%);
+  z-index:58;pointer-events:none;
+}
+</style>
+</head>
+<body>
+
+<canvas id="cvVoid"     style="z-index:1"></canvas>
+<canvas id="cvTemple"   style="z-index:2"></canvas>
+<canvas id="cvGlyphs"   style="z-index:3"></canvas>
+<canvas id="cvEyes"     style="z-index:4"></canvas>
+<canvas id="cvVeil"     style="z-index:5"></canvas>
+<canvas id="cvTop"      style="z-index:6"></canvas>
+
+<div id="zone-top"></div>
+<div id="zone-bot"></div>
+<div id="vignette"></div>
+<div id="center-darken"></div>
+
+<script>
+'use strict';
+const W=1080,H=1920,CX=540,CY=590,RING_R=300;
+
+['cvVoid','cvTemple','cvGlyphs','cvEyes','cvVeil','cvTop'].forEach(id=>{
+  const c=document.getElementById(id);c.width=W;c.height=H;
+});
+const gc=id=>document.getElementById(id).getContext('2d');
+const ctxVoid  =gc('cvVoid');
+const ctxTemple=gc('cvTemple');
+const ctxGlyphs=gc('cvGlyphs');
+const ctxEyes  =gc('cvEyes');
+const ctxVeil  =gc('cvVeil');
+const ctxTop   =gc('cvTop');
+
+document.getElementById('cvTemple').style.mixBlendMode='screen';
+document.getElementById('cvGlyphs').style.mixBlendMode='screen';
+document.getElementById('cvEyes').style.mixBlendMode  ='screen';
+document.getElementById('cvVeil').style.mixBlendMode  ='screen';
+document.getElementById('cvTop').style.mixBlendMode   ='screen';
+
+let t=0,last=performance.now();
+const rng=(a,b)=>a+(b-a)*Math.random();
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const lerp=(a,b,x)=>a+(b-a)*x;
+const eio=(x)=>x<.5?2*x*x:1-(-2*x+2)**2/2;
+
+// ─────────────────────────────────────────────────────────────────────────────
+// LAYER 1 — VOID: the breathing dark
+// Tiefes Violett-Schwarz, atmet langsam, hat eine Tiefe
+// ─────────────────────────────────────────────────────────────────────────────
+const VOID_BREATHS=Array.from({length:7},(_,i)=>({
+  x:rng(100,980), y:rng(200,1700),
+  rx:rng(180,380), ry:rng(140,280),
+  phase:rng(0,Math.PI*2),
+  speed:rng(0.04,0.09),
+  hue:rng(255,295),
+  baseA:rng(0.025,0.055),
+}));
+
+// Fog wisps — tendrils of something almost visible
+const FOG_WISPS=Array.from({length:18},(_,i)=>({
+  x:rng(0,W), y:rng(0,H),
+  vx:rng(-0.12,0.12), vy:rng(-0.06,0.06),
+  len:rng(120,400),
+  angle:rng(0,Math.PI*2),
+  phase:rng(0,Math.PI*2),
+  alpha:rng(0.015,0.04),
+  hue:rng(260,300),
+  width:rng(0.8,2.5),
+}));
+
+function drawVoid(){
+  const c=ctxVoid;
+  c.clearRect(0,0,W,H);
+
+  // Base — near-black with deep violet undertone
+  const bg=c.createRadialGradient(CX,CY,0,CX,CY,1100);
+  bg.addColorStop(0,  '#07020f');
+  bg.addColorStop(0.4,'#050010');
+  bg.addColorStop(0.7,'#030008');
+  bg.addColorStop(1,  '#010004');
+  c.fillStyle=bg; c.fillRect(0,0,W,H);
+
+  // Breathing void pools — slow, organic, unsettling
+  VOID_BREATHS.forEach(vb=>{
+    const breath=0.5+0.5*Math.sin(t*vb.speed+vb.phase);
+    const a=vb.baseA*(0.6+0.8*breath);
+    c.save();
+    c.globalAlpha=a;
+    const g=c.createRadialGradient(vb.x,vb.y,0,vb.x,vb.y,Math.max(vb.rx,vb.ry));
+    g.addColorStop(0,  `hsl(${vb.hue},70%,18%)`);
+    g.addColorStop(0.5,`hsl(${vb.hue},60%,10%)`);
+    g.addColorStop(1,  'rgba(0,0,0,0)');
+    c.scale(1, vb.ry/vb.rx);
+    c.beginPath();
+    c.arc(vb.x, vb.y*vb.rx/vb.ry, vb.rx, 0, Math.PI*2);
+    c.fillStyle=g; c.fill();
+    c.restore();
+  });
+
+  // Fog wisps — barely visible tendrils
+  FOG_WISPS.forEach(fw=>{
+    fw.x+=fw.vx; fw.y+=fw.vy;
+    if(fw.x<-500) fw.x=W+100;
+    if(fw.x>W+500) fw.x=-100;
+    if(fw.y<-500) fw.y=H+100;
+    if(fw.y>H+500) fw.y=-100;
+
+    const alpha=fw.alpha*(0.5+0.5*Math.sin(t*0.3+fw.phase));
+    c.save();
+    c.globalAlpha=alpha;
+    c.strokeStyle=`hsl(${fw.hue},55%,45%)`;
+    c.lineWidth=fw.width;
+    c.beginPath();
+    for(let s=0;s<20;s++){
+      const f=s/20;
+      const px=fw.x+Math.cos(fw.angle+f*1.2)*fw.len*f
+               +Math.sin(f*Math.PI*3+t*0.4+fw.phase)*18;
+      const py=fw.y+Math.sin(fw.angle+f*1.2)*fw.len*f
+               +Math.cos(f*Math.PI*2+t*0.3)*12;
+      s===0?c.moveTo(px,py):c.lineTo(px,py);
+    }
+    c.stroke();
+    c.restore();
+  });
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// LAYER 2 — TEMPLE: ancient architecture fading in and out of existence
+// Säulen, Bögen, Ornamente — halb sichtbar, halb nicht da
+// ─────────────────────────────────────────────────────────────────────────────
+
+// Temple column positions
+const COLUMNS=[
+  {x:80,  visible:true,  phase:0.0},
+  {x:230, visible:true,  phase:1.1},
+  {x:850, visible:true,  phase:0.5},
+  {x:1000,visible:true,  phase:2.2},
+  // Phantom columns — partially real
+  {x:155, visible:false, phase:3.1},
+  {x:925, visible:false, phase:1.8},
+];
+
+function drawColumn(c, x, alpha){
+  const col_w=38;
+  const top=0, bot=H;
+
+  c.save();
+  c.globalAlpha=alpha;
+
+  // Column shaft
+  const cg=c.createLinearGradient(x-col_w/2,0,x+col_w/2,0);
+  cg.addColorStop(0,   'rgba(30,15,50,0)');
+  cg.addColorStop(0.2, 'rgba(55,25,90,0.7)');
+  cg.addColorStop(0.5, 'rgba(70,35,110,0.9)');
+  cg.addColorStop(0.8, 'rgba(55,25,90,0.7)');
+  cg.addColorStop(1,   'rgba(30,15,50,0)');
+  c.fillStyle=cg;
+  c.fillRect(x-col_w/2, top, col_w, bot);
+
+  // Edge lines — carved grooves
+  c.strokeStyle=`rgba(120,70,180,${alpha*0.35})`;
+  c.lineWidth=1;
+  [x-col_w*0.3, x, x+col_w*0.3].forEach(lx=>{
+    c.beginPath(); c.moveTo(lx,top); c.lineTo(lx,bot); c.stroke();
+  });
+
+  // Capital (top decoration)
+  c.fillStyle=`rgba(100,55,160,${alpha*0.5})`;
+  c.fillRect(x-col_w*0.7, top, col_w*1.4, 40);
+  c.fillRect(x-col_w*0.55,top+38, col_w*1.1, 25);
+
+  // Base
+  c.fillRect(x-col_w*0.7, bot-50, col_w*1.4, 50);
+
+  c.restore();
+}
+
+// Arch spanning between column pairs
+function drawArch(c, x1, x2, alpha){
+  const mid=(x1+x2)/2;
+  const archH=180;
+  const archY=60;
+
+  c.save();
+  c.globalAlpha=alpha*0.4;
+  c.strokeStyle=`rgba(110,60,170,0.8)`;
+  c.lineWidth=6;
+  c.shadowColor='rgba(140,80,200,0.3)';
+  c.shadowBlur=12;
+  c.beginPath();
+  c.moveTo(x1, archY+archH);
+  c.bezierCurveTo(x1, archY, mid-40, archY-20, mid, archY-30);
+  c.bezierCurveTo(mid+40, archY-20, x2, archY, x2, archY+archH);
+  c.stroke();
+
+  // Inner arch detail
+  c.globalAlpha=alpha*0.2;
+  c.lineWidth=2;
+  c.beginPath();
+  c.moveTo(x1+20, archY+archH);
+  c.bezierCurveTo(x1+20, archY+30, mid-20, archY+5, mid, archY+0);
+  c.bezierCurveTo(mid+20, archY+5, x2-20, archY+30, x2-20, archY+archH);
+  c.stroke();
+  c.shadowBlur=0;
+  c.restore();
+}
+
+// Stone floor perspective tiles — vanishing point toward center
+function drawFloor(c){
+  const fAlpha=0.08+0.03*Math.sin(t*0.15);
+  c.save();
+  c.globalAlpha=fAlpha;
+
+  // Perspective lines converging to horizon (CX, ~1380)
+  const horizY=1380;
+  const floorLines=[
+    [0,H],[120,H],[240,H],[360,H],[480,H],[600,H],[720,H],[840,H],[960,H],[1080,H]
+  ];
+  floorLines.forEach(([fx,fy])=>{
+    c.strokeStyle=`rgba(90,50,140,0.6)`;
+    c.lineWidth=0.8;
+    c.beginPath(); c.moveTo(fx,fy); c.lineTo(CX,horizY); c.stroke();
+  });
+
+  // Horizontal parallels
+  for(let hy=horizY;hy<=H;hy+=35){
+    const fade=1-(hy-horizY)/(H-horizY);
+    c.strokeStyle=`rgba(90,50,140,${0.4*fade})`;
+    c.lineWidth=0.6;
+    c.beginPath(); c.moveTo(0,hy); c.lineTo(W,hy); c.stroke();
+  }
+  c.restore();
+}
+
+// Ornamental border at ceiling — carved patterns
+function drawCeiling(c){
+  const ca=0.06+0.02*Math.sin(t*0.1);
+  c.save(); c.globalAlpha=ca;
+
+  // Main border line
+  c.strokeStyle='rgba(110,65,165,0.7)';
+  c.lineWidth=1.5;
+  c.beginPath(); c.moveTo(0,198); c.lineTo(W,198); c.stroke();
+
+  // Repeating chevron ornaments
+  for(let ox=0;ox<W;ox+=45){
+    c.strokeStyle='rgba(100,58,152,0.5)';
+    c.lineWidth=0.8;
+    c.beginPath();
+    c.moveTo(ox,198); c.lineTo(ox+22,218); c.lineTo(ox+44,198);
+    c.stroke();
+    // Dot at each chevron peak
+    c.fillStyle='rgba(140,80,200,0.4)';
+    c.beginPath(); c.arc(ox+22,222,2,0,Math.PI*2); c.fill();
+  }
+
+  // Second border further down
+  c.strokeStyle='rgba(80,45,130,0.4)';
+  c.lineWidth=0.8;
+  c.beginPath(); c.moveTo(0,226); c.lineTo(W,226); c.stroke();
+  c.restore();
+}
+
+function drawTemple(){
+  const c=ctxTemple;
+  c.clearRect(0,0,W,H);
+
+  drawFloor(c);
+  drawCeiling(c);
+
+  // Columns — fade in/out slowly
+  COLUMNS.forEach((col,ci)=>{
+    const vis=col.visible
+      ? 0.12+0.06*Math.sin(t*0.07+col.phase)    // solid columns breathe
+      : 0.04+0.04*Math.abs(Math.sin(t*0.05+col.phase)); // phantom barely there
+    drawColumn(c, col.x, vis);
+  });
+
+  // Arches between column pairs
+  drawArch(c, 80, 230, 0.12+0.04*Math.sin(t*0.06));
+  drawArch(c, 850, 1000, 0.12+0.04*Math.sin(t*0.08+1));
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// LAYER 3 — GLYPHS: symbols that appear, pulse, and vanish before you read them
+// ─────────────────────────────────────────────────────────────────────────────
+
+// Glyph shapes — abstract runic/geometric forms drawn with paths
+// Each glyph is defined as a series of drawing instructions
+const GLYPH_FORMS=[
+  // Form 0: Eye triangle
+  (c,x,y,s)=>{
+    c.beginPath();c.moveTo(x,y-s);c.lineTo(x+s*.8,y+s*.5);c.lineTo(x-s*.8,y+s*.5);c.closePath();c.stroke();
+    c.beginPath();c.arc(x,y+s*.1,s*.25,0,Math.PI*2);c.stroke();
+  },
+  // Form 1: Cross with circles
+  (c,x,y,s)=>{
+    c.beginPath();c.moveTo(x,y-s);c.lineTo(x,y+s);c.stroke();
+    c.beginPath();c.moveTo(x-s,y);c.lineTo(x+s,y);c.stroke();
+    [0,Math.PI/2,Math.PI,Math.PI*1.5].forEach(a=>{
+      c.beginPath();c.arc(x+Math.cos(a)*s*.6,y+Math.sin(a)*s*.6,s*.15,0,Math.PI*2);c.stroke();
+    });
+  },
+  // Form 2: Spiral rune
+  (c,x,y,s)=>{
+    c.beginPath();
+    for(let a=0;a<Math.PI*4;a+=0.15){
+      const r=s*a/(Math.PI*4);
+      const px=x+Math.cos(a)*r,py=y+Math.sin(a)*r;
+      a<0.15?c.moveTo(px,py):c.lineTo(px,py);
+    }
+    c.stroke();
+  },
+  // Form 3: Double diamond
+  (c,x,y,s)=>{
+    c.beginPath();c.moveTo(x,y-s);c.lineTo(x+s*.6,y);c.lineTo(x,y+s);c.lineTo(x-s*.6,y);c.closePath();c.stroke();
+    c.beginPath();c.moveTo(x,y-s*.55);c.lineTo(x+s*.35,y);c.lineTo(x,y+s*.55);c.lineTo(x-s*.35,y);c.closePath();c.stroke();
+  },
+  // Form 4: Radiating bars
+  (c,x,y,s)=>{
+    for(let i=0;i<6;i++){
+      const a=i/6*Math.PI*2;
+      c.beginPath();c.moveTo(x+Math.cos(a)*s*.3,y+Math.sin(a)*s*.3);
+      c.lineTo(x+Math.cos(a)*s,y+Math.sin(a)*s);c.stroke();
+    }
+    c.beginPath();c.arc(x,y,s*.3,0,Math.PI*2);c.stroke();
+  },
+  // Form 5: Crescent and bar
+  (c,x,y,s)=>{
+    c.beginPath();c.arc(x,y,s,Math.PI*.2,Math.PI*.8*2);c.stroke();
+    c.beginPath();c.arc(x+s*.3,y,s*.75,Math.PI*.15,Math.PI*1.85);c.stroke();
+    c.beginPath();c.moveTo(x-s*.1,y-s*1.2);c.lineTo(x-s*.1,y+s*1.2);c.stroke();
+  },
+  // Form 6: Nested arcs
+  (c,x,y,s)=>{
+    [1,.65,.35].forEach((r,i)=>{
+      c.beginPath();c.arc(x,y,s*r,Math.PI*1.1,Math.PI*1.9+i*.3,false);c.stroke();
+      c.beginPath();c.arc(x,y,s*r,-Math.PI*.1,Math.PI*.1+i*.2,false);c.stroke();
+    });
+  },
+  // Form 7: All-seeing geometry
+  (c,x,y,s)=>{
+    c.beginPath();
+    for(let i=0;i<8;i++){
+      const a=i/8*Math.PI*2;
+      i===0?c.moveTo(x+Math.cos(a)*s,y+Math.sin(a)*s)
+           :c.lineTo(x+Math.cos(a)*s,y+Math.sin(a)*s);
+    }
+    c.closePath();c.stroke();
+    c.beginPath();c.arc(x,y,s*.4,0,Math.PI*2);c.stroke();
+    c.beginPath();c.arc(x,y,s*.12,0,Math.PI*2);c.fill();
+  },
+];
+
+class Glyph {
+  constructor(zoneY0,zoneY1){
+    this.reset(zoneY0,zoneY1,true);
+    this.zoneY0=zoneY0; this.zoneY1=zoneY1;
+  }
+  reset(zy0,zy1,init=false){
+    this.x=rng(60,W-60);
+    this.y=rng(zy0||0,zy1||H);
+    this.size=rng(14,42);
+    this.form=Math.floor(Math.random()*GLYPH_FORMS.length);
+    this.life=init?Math.random():0;
+    this.state='fadein'; // fadein | hold | fadeout
+    this.holdTime=rng(4,14);
+    this.holdElapsed=0;
+    this.fadeInSpeed=rng(0.008,0.02);
+    this.fadeOutSpeed=rng(0.006,0.016);
+    this.maxAlpha=rng(0.08,0.22);
+    this.hue=rng(255,310);
+    this.rotation=rng(0,Math.PI*2);
+    this.rotSpeed=(Math.random()-0.5)*0.004;
+    if(init && Math.random()<0.5) this.state='hold'; // some start mid-life
+  }
+  update(dt){
+    this.rotation+=this.rotSpeed;
+    switch(this.state){
+      case 'fadein':
+        this.life+=this.fadeInSpeed*dt*60;
+        if(this.life>=this.maxAlpha){ this.life=this.maxAlpha; this.state='hold'; }
+        break;
+      case 'hold':
+        this.holdElapsed+=dt;
+        // Subtle pulse while holding
+        this.life=this.maxAlpha*(0.75+0.25*Math.sin(t*1.2+this.x*0.01));
+        if(this.holdElapsed>=this.holdTime) this.state='fadeout';
+        break;
+      case 'fadeout':
+        this.life-=this.fadeOutSpeed*dt*60;
+        if(this.life<=0){ this.reset(this.zoneY0,this.zoneY1); }
+        break;
+    }
+  }
+  draw(c){
+    if(this.life<=0.005) return;
+    c.save();
+    c.translate(this.x,this.y);
+    c.rotate(this.rotation);
+    c.globalAlpha=this.life;
+    c.strokeStyle=`hsl(${this.hue},70%,72%)`;
+    c.fillStyle=`hsl(${this.hue},70%,72%)`;
+    c.lineWidth=1.2;
+    c.shadowColor=`hsl(${this.hue},90%,78%)`;
+    c.shadowBlur=this.life*60;
+    GLYPH_FORMS[this.form](c,0,0,this.size);
+    c.shadowBlur=0;
+    c.restore();
+  }
+}
+
+// Glyphs distributed across visible zones
+const GLYPHS=[
+  // Free zones
+  ...Array.from({length:8}, ()=>new Glyph(198,330)),
+  ...Array.from({length:6}, ()=>new Glyph(890,960)),
+  ...Array.from({length:14},()=>new Glyph(1180,1920)),
+  // Spawn ring zone — fewer, ghostlier
+  ...Array.from({length:5}, ()=>new Glyph(330,890)),
+];
+
+// Glyph rivers — chains of symbols that travel in formation
+class GlyphRiver {
+  constructor(){
+    this.reset();
+  }
+  reset(){
+    this.y=rng(200,H-200);
+    this.x=-200;
+    this.speed=rng(0.3,0.8);
+    this.symbols=Array.from({length:Math.floor(rng(3,8))},(_,i)=>({
+      form:Math.floor(Math.random()*GLYPH_FORMS.length),
+      offset:i*rng(55,90),
+      size:rng(12,28),
+      hue:rng(255,310),
+      wobble:rng(0,Math.PI*2),
+    }));
+    this.alpha=rng(0.06,0.15);
+    this.life=1;
+  }
+  update(dt){
+    this.x+=this.speed*dt*60;
+    if(this.x>W+400) this.reset();
+  }
+  draw(c){
+    this.symbols.forEach(sym=>{
+      const sx=this.x+sym.offset;
+      if(sx<-60||sx>W+60) return;
+      const sy=this.y+Math.sin(t*0.5+sym.wobble)*20;
+      c.save();
+      c.translate(sx,sy);
+      c.globalAlpha=this.alpha*(0.7+0.3*Math.sin(t*1.5+sym.wobble));
+      c.strokeStyle=`hsl(${sym.hue},65%,68%)`;
+      c.fillStyle=`hsl(${sym.hue},65%,68%)`;
+      c.lineWidth=1;
+      c.shadowColor=`hsl(${sym.hue},90%,75%)`;
+      c.shadowBlur=this.alpha*80;
+      GLYPH_FORMS[sym.form](c,0,0,sym.size);
+      c.shadowBlur=0;
+      c.restore();
+    });
+  }
+}
+const RIVERS=Array.from({length:5},()=>new GlyphRiver());
+
+function drawGlyphs(dt){
+  const c=ctxGlyphs;
+  c.clearRect(0,0,W,H);
+  GLYPHS.forEach(g=>{g.update(dt);g.draw(c);});
+  RIVERS.forEach(r=>{r.update(dt);r.draw(c);});
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// LAYER 4 — EYES: watching presences that open in the darkness
+// Das Unbenannte beobachtet. Manchmal siehst du es. Meistens nicht.
+// ─────────────────────────────────────────────────────────────────────────────
+
+class Eye {
+  constructor(){
+    this.reset();
+  }
+  reset(){
+    // Eyes appear only in darker regions — avoid center spawn zone
+    const zone=Math.random();
+    if(zone<0.35){
+      this.x=rng(40,W-40); this.y=rng(1180,1880);
+    } else if(zone<0.6){
+      this.x=rng(40,160); this.y=rng(330,880);
+    } else if(zone<0.85){
+      this.x=rng(920,W-40); this.y=rng(330,880);
+    } else {
+      this.x=rng(40,W-40); this.y=rng(220,320);
+    }
+    this.w=rng(22,58);          // half-width of eye
+    this.phase=rng(0,Math.PI*2);
+    this.openState=0;           // 0=closed, 1=open
+    this.openProgress=0;
+    this.hue=rng(120,160);      // eerie green, occasionally teal
+    this.state='waiting';       // waiting | opening | open | closing | closed
+    this.waitTime=rng(3,20);
+    this.waitElapsed=0;
+    this.openTime=rng(4,12);
+    this.openElapsed=0;
+    this.blinkTimer=rng(2,7);
+    this.blinkElapsed=0;
+    this.pupilOffset={x:0,y:0};
+    this.pupilTarget={x:rng(-1,1),y:rng(-0.5,0.5)};
+    this.pupilLerp=0;
+  }
+  update(dt){
+    switch(this.state){
+      case 'waiting':
+        this.waitElapsed+=dt;
+        if(this.waitElapsed>=this.waitTime){
+          this.state='opening'; this.openProgress=0;
+        }
+        break;
+      case 'opening':
+        this.openProgress=Math.min(1,this.openProgress+dt*0.7);
+        if(this.openProgress>=1){
+          this.state='open'; this.openElapsed=0;
+          this.blinkElapsed=0; this.blinkTimer=rng(2,6);
+        }
+        break;
+      case 'open':
+        this.openElapsed+=dt;
+        this.blinkElapsed+=dt;
+        // Pupil wanders slowly
+        this.pupilLerp+=dt*0.4;
+        if(this.pupilLerp>=1){
+          this.pupilOffset={...this.pupilTarget};
+          this.pupilTarget={x:rng(-0.8,0.8),y:rng(-0.4,0.4)};
+          this.pupilLerp=0;
+        }
+        const pl=Math.min(1,this.pupilLerp);
+        this.pupilCurrent={
+          x:lerp(this.pupilOffset.x,this.pupilTarget.x,pl),
+          y:lerp(this.pupilOffset.y,this.pupilTarget.y,pl),
+        };
+        // Blink
+        if(this.blinkElapsed>=this.blinkTimer){
+          this.state='blinking'; this.blinkProgress=0;
+          this.blinkTimer=rng(2,7); this.blinkElapsed=0;
+        }
+        if(this.openElapsed>=this.openTime){
+          this.state='closing'; this.openProgress=1;
+        }
+        break;
+      case 'blinking':
+        this.blinkProgress=(this.blinkProgress||0)+dt*8;
+        if(this.blinkProgress>=1) this.state='open';
+        break;
+      case 'closing':
+        this.openProgress=Math.max(0,this.openProgress-dt*0.5);
+        if(this.openProgress<=0){
+          this.state='closed';
+        }
+        break;
+      case 'closed':
+        // Linger closed, then respawn elsewhere
+        setTimeout(()=>this.reset(), rng(2000,8000));
+        this.state='dead';
+        break;
+      case 'dead': break;
+    }
+  }
+  draw(c){
+    if(this.state==='waiting'||this.state==='dead') return;
+
+    let openAmt=this.openProgress;
+    if(this.state==='blinking'){
+      // Quick close+open blink
+      const bp=this.blinkProgress||0;
+      openAmt=bp<0.5 ? 1-bp*2 : (bp-0.5)*2;
+    }
+    if(openAmt<=0.01) return;
+
+    const ew=this.w;
+    const eh=ew*0.38*openAmt;  // vertical opening
+
+    c.save();
+    c.translate(this.x, this.y);
+
+    // Outer glow aura
+    const aura=c.createRadialGradient(0,0,ew*0.5,0,0,ew*2.2);
+    aura.addColorStop(0,`hsla(${this.hue},90%,45%,${openAmt*0.12})`);
+    aura.addColorStop(1,'rgba(0,0,0,0)');
+    c.fillStyle=aura; c.globalAlpha=1;
+    c.beginPath(); c.arc(0,0,ew*2.2,0,Math.PI*2); c.fill();
+
+    // Eye whites (very dim, it's watching from darkness)
+    c.globalAlpha=openAmt*0.35;
+    c.fillStyle=`hsl(${this.hue},40%,15%)`;
+    c.beginPath();
+    c.moveTo(-ew,0);
+    c.bezierCurveTo(-ew*0.5,-eh*2, ew*0.5,-eh*2, ew,0);
+    c.bezierCurveTo(ew*0.5,eh*2, -ew*0.5,eh*2, -ew,0);
+    c.fill();
+
+    // Iris glow
+    c.globalAlpha=openAmt*0.7;
+    const irisR=eh*0.85;
+    const pcx=(this.pupilCurrent||{x:0,y:0}).x*ew*0.28;
+    const pcy=(this.pupilCurrent||{x:0,y:0}).y*eh*0.5;
+    const ig=c.createRadialGradient(pcx,pcy,0,pcx,pcy,irisR);
+    ig.addColorStop(0,`hsl(${this.hue},100%,80%)`);
+    ig.addColorStop(0.3,`hsl(${this.hue},95%,55%)`);
+    ig.addColorStop(0.7,`hsl(${this.hue},80%,28%)`);
+    ig.addColorStop(1,`hsl(${this.hue},60%,10%)`);
+    c.fillStyle=ig;
+    c.beginPath(); c.arc(pcx,pcy,irisR,0,Math.PI*2); c.fill();
+
+    // Pupil
+    c.globalAlpha=openAmt*0.9;
+    c.fillStyle='rgba(0,0,0,0.95)';
+    c.shadowColor=`hsl(${this.hue},100%,70%)`;
+    c.shadowBlur=irisR*2;
+    c.beginPath(); c.arc(pcx,pcy,irisR*0.38,0,Math.PI*2); c.fill();
+    c.shadowBlur=0;
+
+    // Eyelid crease lines
+    c.globalAlpha=openAmt*0.25;
+    c.strokeStyle=`hsl(${this.hue},60%,50%)`;
+    c.lineWidth=0.8;
+    c.beginPath();
+    c.moveTo(-ew,0);
+    c.bezierCurveTo(-ew*0.5,-eh*2,ew*0.5,-eh*2,ew,0);
+    c.stroke();
+    c.beginPath();
+    c.moveTo(-ew,0);
+    c.bezierCurveTo(-ew*0.5,eh*2,ew*0.5,eh*2,ew,0);
+    c.stroke();
+
+    c.restore();
+  }
+}
+
+const EYES=Array.from({length:12},()=>new Eye());
+
+function drawEyes(dt){
+  const c=ctxEyes;
+  c.clearRect(0,0,W,H);
+  EYES.forEach(e=>{e.update(dt);e.draw(c);});
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// LAYER 5 — VEIL: mystical atmospheric effects
+// Geisterhafte Schleier, Orbs, Lichtfäden die nirgendwo anfangen und aufhören
+// ─────────────────────────────────────────────────────────────────────────────
+
+// Floating spirit orbs — soft, drifting, purposeful
+class Orb {
+  constructor(){this.reset(true)}
+  reset(init=false){
+    this.x=init?rng(0,W):rng(0,W);
+    this.y=init?rng(0,H):-30;
+    this.targetX=rng(100,W-100);
+    this.targetY=rng(200,H-200);
+    this.speed=rng(0.3,0.8);
+    this.r=rng(4,18);
+    this.alpha=rng(0.12,0.35);
+    this.life=init?Math.random():0;
+    this.lifeSpeed=rng(0.004,0.009);
+    this.hue=rng(255,305);
+    this.phase=rng(0,Math.PI*2);
+    this.trail=[];
+  }
+  update(dt){
+    // Drift toward target with gentle wavering
+    const dx=this.targetX-this.x, dy=this.targetY-this.y;
+    const dist=Math.sqrt(dx*dx+dy*dy)+1;
+    this.x+=dx/dist*this.speed*dt*60*0.012 + Math.sin(t*0.8+this.phase)*0.4;
+    this.y+=dy/dist*this.speed*dt*60*0.012 + Math.cos(t*0.6+this.phase)*0.3;
+
+    if(dist<20){
+      this.targetX=rng(100,W-100);
+      this.targetY=rng(200,H-200);
+    }
+
+    this.trail.push({x:this.x,y:this.y});
+    if(this.trail.length>12) this.trail.shift();
+
+    this.life+=this.lifeSpeed*dt*60;
+    if(this.life>1) this.life=1;
+    if(this.y<-100||this.y>H+100) this.reset(false);
+  }
+  draw(c){
+    // Trail
+    for(let i=1;i<this.trail.length;i++){
+      const tf=i/this.trail.length;
+      c.globalAlpha=this.alpha*tf*tf*0.35;
+      c.strokeStyle=`hsl(${this.hue},80%,70%)`;
+      c.lineWidth=this.r*tf*0.3;
+      c.beginPath();
+      c.moveTo(this.trail[i-1].x,this.trail[i-1].y);
+      c.lineTo(this.trail[i].x,this.trail[i].y);
+      c.stroke();
+    }
+    // Core
+    c.globalAlpha=this.alpha*(0.6+0.4*Math.sin(t*2.5+this.phase));
+    const g=c.createRadialGradient(this.x,this.y,0,this.x,this.y,this.r*2.5);
+    g.addColorStop(0,`hsl(${this.hue},100%,88%)`);
+    g.addColorStop(0.4,`hsl(${this.hue},85%,60%)`);
+    g.addColorStop(1,'rgba(0,0,0,0)');
+    c.fillStyle=g;
+    c.shadowColor=`hsl(${this.hue},100%,75%)`;
+    c.shadowBlur=this.r*4;
+    c.beginPath(); c.arc(this.x,this.y,this.r*2.5,0,Math.PI*2); c.fill();
+    c.shadowBlur=0;
+    c.globalAlpha=1;
+  }
+}
+const ORBS=Array.from({length:22},()=>new Orb());
+
+// Veil threads — long translucent curtains that billow from ceiling
+class VeilThread {
+  constructor(i){
+    this.x=i*(W/(14-1));
+    this.phase=rng(0,Math.PI*2);
+    this.speed=rng(0.04,0.1);
+    this.len=rng(300,900);
+    this.alpha=rng(0.025,0.065);
+    this.hue=rng(260,295);
+    this.offset=rng(0,Math.PI*2);
+  }
+  draw(c){
+    const alpha=this.alpha*(0.6+0.4*Math.sin(t*this.speed+this.phase));
+    c.save();
+    c.globalAlpha=alpha;
+    c.strokeStyle=`hsl(${this.hue},55%,55%)`;
+    c.lineWidth=1.2;
+    c.beginPath();
+    for(let s=0;s<30;s++){
+      const f=s/30;
+      const px=this.x+Math.sin(f*Math.PI*3+t*this.speed*0.7+this.offset)*22*(1-f*0.4);
+      const py=f*this.len;
+      s===0?c.moveTo(px,py):c.lineTo(px,py);
+    }
+    c.stroke();
+    c.restore();
+  }
+}
+const VEILS=Array.from({length:14},(_,i)=>new VeilThread(i));
+
+// Ethereal light shaft from above — occasionally sweeps
+class LightShaft {
+  constructor(){this.reset()}
+  reset(){
+    this.x=rng(100,W-100);
+    this.angle=rng(-0.3,0.3);
+    this.width=rng(30,90);
+    this.alpha=0;
+    this.targetAlpha=rng(0.04,0.1);
+    this.len=rng(400,900);
+    this.state='fadein';
+    this.hue=rng(265,295);
+    this.holdTime=rng(5,15);
+    this.elapsed=0;
+  }
+  update(dt){
+    this.elapsed+=dt;
+    switch(this.state){
+      case 'fadein':
+        this.alpha+=dt*0.03;
+        if(this.alpha>=this.targetAlpha){this.alpha=this.targetAlpha;this.state='hold';}
+        break;
+      case 'hold':
+        if(this.elapsed>=this.holdTime) this.state='fadeout';
+        break;
+      case 'fadeout':
+        this.alpha-=dt*0.015;
+        if(this.alpha<=0){this.alpha=0;this.reset();}
+        break;
+    }
+    // Drift slowly
+    this.x+=Math.sin(this.elapsed*0.2)*0.2;
+  }
+  draw(c){
+    if(this.alpha<=0.005) return;
+    c.save();
+    c.translate(this.x,0);
+    c.rotate(this.angle);
+    c.globalAlpha=this.alpha;
+    const lg=c.createLinearGradient(0,0,0,this.len);
+    lg.addColorStop(0,`hsla(${this.hue},70%,75%,0.9)`);
+    lg.addColorStop(0.4,`hsla(${this.hue},60%,60%,0.4)`);
+    lg.addColorStop(1,'rgba(0,0,0,0)');
+    const wg=c.createLinearGradient(-this.width/2,0,this.width/2,0);
+    wg.addColorStop(0,'rgba(0,0,0,0)');
+    wg.addColorStop(0.5,`hsla(${this.hue},70%,75%,1)`);
+    wg.addColorStop(1,'rgba(0,0,0,0)');
+    // Approximate shaft as tapered rect
+    c.fillStyle=lg;
+    c.globalAlpha=this.alpha;
+    c.beginPath();
+    c.moveTo(-this.width/2,0);
+    c.lineTo(this.width/2,0);
+    c.lineTo(this.width/4,this.len);
+    c.lineTo(-this.width/4,this.len);
+    c.closePath();
+    c.fill();
+    c.restore();
+  }
+}
+const SHAFTS=Array.from({length:4},()=>new LightShaft());
+
+function drawVeil(dt){
+  const c=ctxVeil;
+  c.clearRect(0,0,W,H);
+  VEILS.forEach(v=>v.draw(c));
+  SHAFTS.forEach(s=>{s.update(dt);s.draw(c);});
+  ORBS.forEach(o=>{o.update(dt);o.draw(c);});
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// LAYER 6 — TOP: spawn ring + ambient particles
+// ─────────────────────────────────────────────────────────────────────────────
+
+// Ring — pulsing with deep violet/indigo
+const RING_PARTICLES=Array.from({length:70},(_,i)=>({
+  angle:i/70*Math.PI*2,
+  speed:rng(-0.005,0.005),
+  offset:rng(-0.25,0.25),
+  r:rng(1,2.5),
+  life:Math.random(),
+  decay:rng(0.003,0.007),
+  phase:rng(0,Math.PI*2),
+}));
+
+function drawSpawnRing(c){
+  // Outer glow halos
+  [80,40,18,6].forEach((lw,pass)=>{
+    const la=[0.025,0.06,0.16,0.5][pass]*(0.7+0.3*Math.sin(t*0.9));
+    c.strokeStyle=`rgba(160,100,255,${la})`;
+    c.lineWidth=lw;
+    c.shadowColor='rgba(180,120,255,0.4)';
+    c.shadowBlur=lw*2;
+    c.beginPath(); c.arc(CX,CY,RING_R,0,Math.PI*2); c.stroke();
+    c.shadowBlur=0;
+  });
+
+  // Orbiting particles
+  RING_PARTICLES.forEach(rp=>{
+    rp.angle+=rp.speed;
+    rp.life-=rp.decay;
+    if(rp.life<=0){rp.life=1;rp.decay=rng(0.003,0.007);}
+    const rx=CX+Math.cos(rp.angle)*(RING_R+rp.offset*20);
+    const ry=CY+Math.sin(rp.angle)*(RING_R+rp.offset*20);
+    const ra=rp.life*(0.3+0.5*Math.sin(t*2.5+rp.phase));
+    c.globalAlpha=ra*0.55;
+    c.fillStyle='rgba(200,150,255,1)';
+    c.shadowColor='rgba(220,170,255,0.5)'; c.shadowBlur=rp.r*4;
+    c.beginPath(); c.arc(rx,ry,rp.r,0,Math.PI*2); c.fill();
+    c.shadowBlur=0;
+  });
+  c.globalAlpha=1;
+}
+
+// Ambient floating dust motes
+class DustMote {
+  constructor(){this.reset(true)}
+  reset(init=false){
+    this.x=init?rng(0,W):rng(0,W);
+    this.y=init?rng(0,H):H+5;
+    this.vy=rng(-0.3,-0.08);
+    this.vx=rng(-0.1,0.1);
+    this.r=rng(0.5,1.8);
+    this.alpha=rng(0.08,0.3);
+    this.life=init?Math.random():1;
+    this.decay=rng(0.0008,0.002);
+    this.hue=rng(255,310);
+    this.phase=rng(0,Math.PI*2);
+  }
+  update(dt){
+    this.x+=this.vx*dt*60+Math.sin(t*0.4+this.phase)*0.2;
+    this.y+=this.vy*dt*60;
+    this.life-=this.decay*dt*60;
+    if(this.life<=0||this.y<-20) this.reset(false);
+  }
+  draw(c){
+    c.globalAlpha=this.alpha*this.life*(0.5+0.5*Math.sin(t*1.8+this.phase));
+    c.fillStyle=`hsl(${this.hue},70%,75%)`;
+    c.shadowColor=`hsl(${this.hue},90%,80%)`; c.shadowBlur=this.r*3;
+    c.beginPath(); c.arc(this.x,this.y,this.r,0,Math.PI*2); c.fill();
+    c.shadowBlur=0; c.globalAlpha=1;
+  }
+}
+const DUST=Array.from({length:90},()=>new DustMote());
+
+function drawTop(dt){
+  const c=ctxTop;
+  c.clearRect(0,0,W,H);
+  DUST.forEach(d=>{d.update(dt);d.draw(c);});
+  drawSpawnRing(c);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MAIN LOOP
+// ─────────────────────────────────────────────────────────────────────────────
+function loop(now){
+  const dt=Math.min((now-last)/1000,0.05);
+  last=now; t+=dt;
+
+  drawVoid();
+  drawTemple();
+  drawGlyphs(dt);
+  drawEyes(dt);
+  drawVeil(dt);
+  drawTop(dt);
+
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>

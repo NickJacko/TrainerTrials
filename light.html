@@ -4,134 +4,721 @@
 <meta charset="UTF-8">
 <title>Light — Goldener Tempel</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-html,body{width:1080px;height:1920px;overflow:hidden;background:#1a1000;}
-canvas{position:absolute;inset:0;width:1080px;height:1920px;display:block;}
-.bg{position:absolute;inset:0;background:
-  radial-gradient(ellipse 60% 40% at 50% 35%, #ffd700 0%, #ffa500 25%, #8a5500 55%, transparent 80%),
-  radial-gradient(ellipse 100% 55% at 50% 10%, #ffe780 0%, transparent 40%),
-  linear-gradient(180deg, #2a1c00 0%, #1a1000 45%, #2a1c00 80%, #1a1000 100%);}
-/* Columns */
-.col{position:absolute;bottom:220px;width:70px;height:900px;background:linear-gradient(90deg,#4a3010 0%,#8a6020 30%,#d4a040 50%,#8a6020 70%,#4a3010 100%);box-shadow:0 0 40px rgba(255,180,60,0.35);}
-.cap{position:absolute;width:100px;height:24px;background:linear-gradient(90deg,#5a3810 0%,#c08030 50%,#5a3810 100%);left:-15px;top:-24px;}
-.base{position:absolute;width:100px;height:30px;background:linear-gradient(90deg,#4a2a10 0%,#a07030 50%,#4a2a10 100%);left:-15px;bottom:-30px;}
-.c1{left:6%;}.c2{left:22%;}.c3{right:22%;}.c4{right:6%;}
-/* Temple floor */
-.floor{position:absolute;bottom:0;left:0;right:0;height:220px;background:linear-gradient(180deg, #4a3010 0%, #2a1800 60%, #1a1000 100%);box-shadow:inset 0 20px 40px rgba(0,0,0,0.5);}
-/* Holy sun shaft */
-.shaft{position:absolute;top:-100px;left:50%;transform:translateX(-50%);width:900px;height:1800px;
-  background:conic-gradient(from 70deg at 50% 0%, transparent 0deg, rgba(255,230,140,0.35) 10deg, rgba(255,215,0,0.4) 14deg, rgba(255,230,140,0.35) 18deg, transparent 28deg, transparent 332deg, rgba(255,230,140,0.25) 342deg, rgba(255,215,0,0.3) 346deg, rgba(255,230,140,0.25) 350deg, transparent 360deg);
-  filter:blur(20px);mix-blend-mode:screen;animation:shaftP 8s ease-in-out infinite;}
-@keyframes shaftP{0%,100%{opacity:0.75}50%{opacity:1}}
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{
+    width:1080px;height:1920px;overflow:hidden;
+    background:radial-gradient(ellipse 100% 70% at 50% 25%, #2a1c00 0%, #1a1000 45%, #100a00 100%);
+  }
+  canvas{position:absolute;inset:0;width:1080px;height:1920px;display:block;}
 
-/* Sacred geometry (flower of life) */
-.geom{position:absolute;top:40%;left:50%;transform:translate(-50%,-50%);width:520px;height:520px;opacity:0.18;pointer-events:none;animation:rot 60s linear infinite;mix-blend-mode:screen;}
-@keyframes rot{to{transform:translate(-50%,-50%) rotate(360deg)}}
+  /* Temple interior warm glow */
+  .temple-bg{
+    position:absolute;inset:0;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 30%, rgba(80,55,0,0.22) 0%, transparent 60%),
+      radial-gradient(ellipse 55% 45% at 15% 50%, rgba(60,40,0,0.16) 0%, transparent 52%),
+      radial-gradient(ellipse 50% 42% at 88% 48%, rgba(65,42,0,0.15) 0%, transparent 50%),
+      radial-gradient(ellipse 70% 50% at 50% 85%, rgba(50,32,0,0.2) 0%, transparent 55%);
+  }
 
-.zone-top{position:absolute;top:0;left:0;right:0;height:120px;background:linear-gradient(180deg,rgba(40,20,0,0.45) 0%,transparent 100%);z-index:40;}
-.zone-bot{position:absolute;bottom:0;left:0;right:0;height:920px;background:linear-gradient(0deg,rgba(20,10,0,0.5) 0%,rgba(20,10,0,0.1) 40%,transparent 100%);z-index:40;}
-.center-darken{position:absolute;top:300px;left:50%;transform:translateX(-50%);width:780px;height:540px;background:radial-gradient(ellipse 50% 50% at 50% 50%,rgba(30,15,0,0.28) 0%,transparent 70%);z-index:38;}
-.vignette{position:absolute;inset:0;background:radial-gradient(ellipse 80% 70% at 50% 50%,transparent 40%,rgba(0,0,0,0.55) 100%);z-index:39;pointer-events:none;}
+  /* Temple dome — curved golden ceiling */
+  .dome{
+    position:absolute;top:-200px;left:50%;transform:translateX(-50%);
+    width:1600px;height:800px;border-radius:50%;
+    background:transparent;
+    border:2px solid rgba(200,160,40,0.12);
+    box-shadow:
+      0 0 80px rgba(200,150,30,0.08),
+      inset 0 -40px 80px rgba(180,130,20,0.1);
+  }
+  .dome2{
+    position:absolute;top:-80px;left:50%;transform:translateX(-50%);
+    width:1200px;height:600px;border-radius:50%;
+    background:transparent;
+    border:1px solid rgba(220,175,50,0.08);
+  }
+  /* Dome center glow */
+  .dome-center{
+    position:absolute;top:0;left:50%;transform:translateX(-50%);
+    width:600px;height:300px;border-radius:0 0 50% 50%;
+    background:radial-gradient(ellipse 80% 100% at 50% 0%,
+      rgba(255,210,80,0.18) 0%, rgba(220,170,50,0.08) 40%, transparent 70%);
+    filter:blur(12px);
+    animation:domePulse 8s ease-in-out infinite;
+  }
+  @keyframes domePulse{0%,100%{opacity:0.6}50%{opacity:1}}
+
+  /* Temple columns — left side */
+  .col{position:absolute;pointer-events:none;}
+  /* Column structure: base + shaft + capital */
+  .c1{left:28px; top:180px;width:60px;height:1200px;}
+  .c2{left:115px;top:240px;width:48px;height:1100px;}
+  .c3{left:190px;top:300px;width:38px;height:1000px;}
+  .c4{right:28px; top:180px;width:60px;height:1200px;}
+  .c5{right:115px;top:240px;width:48px;height:1100px;}
+  .c6{right:190px;top:300px;width:38px;height:1000px;}
+
+  .col-shaft{
+    position:absolute;top:40px;bottom:40px;left:0;right:0;
+    background:linear-gradient(90deg,rgba(140,100,15,0.5) 0%,rgba(200,155,35,0.4) 35%,rgba(220,175,50,0.45) 50%,rgba(200,155,35,0.4) 65%,rgba(140,100,15,0.5) 100%);
+    border-radius:3px;
+  }
+  .col-cap{
+    position:absolute;top:0;left:-8px;right:-8px;height:42px;
+    background:linear-gradient(180deg,rgba(220,175,50,0.45),rgba(180,135,30,0.35));
+    border-radius:4px 4px 0 0;
+  }
+  .col-cap::after{
+    content:'';position:absolute;top:0;left:4px;right:4px;height:14px;
+    background:rgba(240,200,60,0.3);border-radius:3px 3px 0 0;
+  }
+  .col-base{
+    position:absolute;bottom:0;left:-8px;right:-8px;height:38px;
+    background:linear-gradient(0deg,rgba(200,155,35,0.45),rgba(170,125,25,0.35));
+    border-radius:0 0 4px 4px;
+  }
+
+  /* Horizontal architrave */
+  .arch{
+    position:absolute;left:0;right:0;height:22px;
+    background:linear-gradient(180deg,rgba(200,155,30,0.3),rgba(170,125,20,0.2));
+    border-top:1px solid rgba(220,175,50,0.2);
+    border-bottom:1px solid rgba(180,135,25,0.15);
+  }
+  .arch1{top:178px;} .arch2{top:240px;opacity:0.7;} .arch3{top:300px;opacity:0.5;}
+
+  /* Floor tiles */
+  .floor{
+    position:absolute;bottom:0;left:0;right:0;height:620px;
+    background:
+      linear-gradient(0deg, #100a00 0%, #1a1200 30%, #1e1500 55%, transparent 100%),
+      repeating-linear-gradient(90deg, transparent 0px, transparent 88px, rgba(180,140,25,0.05) 88px, rgba(180,140,25,0.05) 90px),
+      repeating-linear-gradient(0deg, transparent 0px, transparent 88px, rgba(180,140,25,0.05) 88px, rgba(180,140,25,0.05) 90px);
+  }
+
+  /* Sacred pond */
+  .pond{
+    position:absolute;bottom:0;left:50%;transform:translateX(-50%);
+    width:900px;height:420px;border-radius:50% 50% 0 0;
+    background:
+      radial-gradient(ellipse 90% 60% at 50% 80%, rgba(180,135,20,0.25) 0%, rgba(120,90,10,0.15) 40%, rgba(60,45,5,0.1) 70%, transparent 90%);
+  }
+  .pond-surface{
+    position:absolute;bottom:260px;left:50%;transform:translateX(-50%);
+    width:860px;height:3px;
+    background:linear-gradient(90deg,transparent,rgba(200,160,30,0.35),rgba(220,180,45,0.5),rgba(200,160,30,0.35),transparent);
+    filter:blur(1px);
+  }
+  .pond-sheen{
+    position:absolute;bottom:80px;left:50%;transform:translateX(-50%);
+    width:780px;height:200px;
+    background:radial-gradient(ellipse 70% 60% at 50% 100%, rgba(160,125,18,0.15) 0%, transparent 65%);
+    mix-blend-mode:screen;
+    animation:pondShimmer 10s ease-in-out infinite alternate;
+  }
+  @keyframes pondShimmer{0%{transform:translateX(-50%)}100%{transform:translateX(calc(-50% + 12px))}}
+
+  /* Sun rays from ceiling windows */
+  .sray{position:absolute;top:0;left:50%;transform-origin:top center;mix-blend-mode:screen;filter:blur(20px);}
+  .sr1{width:120px;height:1400px;background:linear-gradient(180deg,rgba(255,220,100,0.22),transparent 62%);transform:translateX(-50%) rotate(-18deg);animation:rayPulse 10s ease-in-out infinite;}
+  .sr2{width:100px;height:1200px;background:linear-gradient(180deg,rgba(255,210,80,0.18),transparent 58%); transform:translateX(-50%) rotate(-7deg); animation:rayPulse 13s ease-in-out infinite reverse;animation-delay:-4s;}
+  .sr3{width:130px;height:1300px;background:linear-gradient(180deg,rgba(255,225,110,0.2),transparent 60%);  transform:translateX(-50%) rotate(5deg);  animation:rayPulse 9s ease-in-out infinite;animation-delay:-2s;}
+  .sr4{width:110px;height:1150px;background:linear-gradient(180deg,rgba(255,200,70,0.16),transparent 55%);  transform:translateX(-50%) rotate(16deg); animation:rayPulse 12s ease-in-out infinite reverse;}
+  .sr5{width:90px; height:1100px;background:linear-gradient(180deg,rgba(255,215,90,0.14),transparent 52%);  transform:translateX(-50%) rotate(-28deg);animation:rayPulse 11s ease-in-out infinite;animation-delay:-6s;}
+  @keyframes rayPulse{0%,100%{opacity:0.5}40%{opacity:1}70%{opacity:0.6}}
+
+  /* Ring — altar glow */
+  .ring-altar{
+    position:absolute;top:215px;left:50%;transform:translateX(-50%);
+    width:840px;height:840px;border-radius:50%;
+    background:radial-gradient(ellipse 100% 100% at 50% 50%,
+      rgba(255,210,80,0.14) 0%,rgba(220,170,50,0.06) 48%,transparent 68%);
+    mix-blend-mode:screen;filter:blur(20px);
+    animation:altarGlow 5s ease-in-out infinite;
+  }
+  @keyframes altarGlow{0%,100%{opacity:0.65;transform:translateX(-50%) scale(1)}50%{opacity:1;transform:translateX(-50%) scale(1.02)}}
+
+  /* Warm scene atmosphere */
+  .warm-fill{
+    position:absolute;inset:0;
+    background:radial-gradient(ellipse 65% 52% at 52% 42%, rgba(60,40,0,0.1) 0%, transparent 60%);
+    animation:warmPulse 7s ease-in-out infinite;pointer-events:none;
+  }
+  @keyframes warmPulse{0%,100%{opacity:0.5}40%{opacity:0.9}}
+
+  /* UI */
+  .center-darken{position:absolute;top:300px;left:50%;transform:translateX(-50%);width:780px;height:540px;background:radial-gradient(ellipse 50% 50% at 50% 50%,rgba(8,5,0,0.42) 0%,transparent 70%);z-index:38;}
+  .vignette{position:absolute;inset:0;background:radial-gradient(ellipse 82% 72% at 50% 50%,transparent 36%,rgba(4,2,0,0.78) 100%);z-index:39;pointer-events:none;}
+  .zone-top{position:absolute;top:0;left:0;right:0;height:120px;background:linear-gradient(180deg,rgba(0,0,0,0.55) 0%,transparent 100%);z-index:40;}
+  .zone-bot{position:absolute;bottom:0;left:0;right:0;height:920px;background:linear-gradient(0deg,rgba(4,2,0,0.65) 0%,rgba(4,2,0,0.15) 40%,transparent 100%);z-index:40;}
 </style>
 </head>
 <body>
-<div class="bg"></div>
-<div class="shaft"></div>
-<svg class="geom" viewBox="0 0 520 520">
-<g fill="none" stroke="#ffd700" stroke-width="1.2">
-  <circle cx="260" cy="260" r="60"/>
-  <circle cx="260" cy="200" r="60"/><circle cx="260" cy="320" r="60"/>
-  <circle cx="208" cy="230" r="60"/><circle cx="208" cy="290" r="60"/>
-  <circle cx="312" cy="230" r="60"/><circle cx="312" cy="290" r="60"/>
-  <circle cx="260" cy="140" r="60"/><circle cx="260" cy="380" r="60"/>
-  <circle cx="156" cy="260" r="60"/><circle cx="364" cy="260" r="60"/>
-  <circle cx="260" cy="260" r="180"/>
-</g>
-</svg>
-<div class="col c1"><div class="cap"></div><div class="base"></div></div>
-<div class="col c2"><div class="cap"></div><div class="base"></div></div>
-<div class="col c3"><div class="cap"></div><div class="base"></div></div>
-<div class="col c4"><div class="cap"></div><div class="base"></div></div>
-<canvas id="lotus"></canvas>
-<div class="floor"></div>
-<canvas id="particles"></canvas>
-<canvas id="doves"></canvas>
-<div class="center-darken"></div>
-<div class="vignette"></div>
-<div class="zone-top"></div>
-<div class="zone-bot"></div>
+  <div class="temple-bg"></div>
+  <div class="dome"></div><div class="dome2"></div><div class="dome-center"></div>
+
+  <!-- Architraves -->
+  <div class="arch arch1"></div><div class="arch arch2"></div><div class="arch arch3"></div>
+
+  <!-- Columns -->
+  <div class="col c1"><div class="col-cap"></div><div class="col-shaft"></div><div class="col-base"></div></div>
+  <div class="col c2"><div class="col-cap"></div><div class="col-shaft"></div><div class="col-base"></div></div>
+  <div class="col c3"><div class="col-cap"></div><div class="col-shaft"></div><div class="col-base"></div></div>
+  <div class="col c4"><div class="col-cap"></div><div class="col-shaft"></div><div class="col-base"></div></div>
+  <div class="col c5"><div class="col-cap"></div><div class="col-shaft"></div><div class="col-base"></div></div>
+  <div class="col c6"><div class="col-cap"></div><div class="col-shaft"></div><div class="col-base"></div></div>
+
+  <!-- Sun rays -->
+  <div class="sray sr1"></div><div class="sray sr2"></div><div class="sray sr3"></div>
+  <div class="sray sr4"></div><div class="sray sr5"></div>
+
+  <!-- Canvas stack: geometry → ring → doves → particles -->
+  <canvas id="cGeom"></canvas>
+  <canvas id="cRing"></canvas>
+  <canvas id="cDoves"></canvas>
+  <canvas id="cParticles"></canvas>
+
+  <div class="floor"></div>
+  <div class="pond"></div>
+  <div class="pond-surface"></div>
+  <div class="pond-sheen"></div>
+  <div class="ring-altar"></div>
+  <div class="warm-fill"></div>
+  <div class="center-darken"></div>
+  <div class="vignette"></div>
+  <div class="zone-top"></div>
+  <div class="zone-bot"></div>
+
 <script>
-const W=1080,H=1920;
-function setup(id){const c=document.getElementById(id);c.width=W;c.height=H;return c.getContext('2d');}
+const W=1080, H=1920;
+const RING_CX=540, RING_CY=590, RING_R=300;
 
-const lt=setup('lotus');
-// Water with lotus flowers at bottom area
-const lotuses=[{x:280,y:1660,r:50},{x:540,y:1700,r:60},{x:780,y:1680,r:55}];
+function mkCanvas(id){
+  const c=document.getElementById(id);
+  c.width=W; c.height=H;
+  return c.getContext('2d');
+}
+const geomCtx  = mkCanvas('cGeom');
+const ringCtx  = mkCanvas('cRing');
+const dovesCtx = mkCanvas('cDoves');
+const partCtx  = mkCanvas('cParticles');
 
-const pt=setup('particles');
-const parts=[];
-for(let i=0;i<100;i++)parts.push({x:Math.random()*W,y:Math.random()*H,r:1+Math.random()*2.5,vy:-0.3-Math.random()*0.6,vx:(Math.random()-0.5)*0.3,a:0.5+Math.random()*0.4,ph:Math.random()*Math.PI*2,hue:40+Math.random()*20});
+/* ═══════════════════════════════════════════════════════════════════════════
+   SACRED GEOMETRY — Flower of Life + Sri Yantra-inspired + metatron
+   ═══════════════════════════════════════════════════════════════════════════ */
 
-const dv=setup('doves');
-const doves=[];
-for(let i=0;i<3;i++)doves.push({x:Math.random()*W,y:400+Math.random()*500,vx:(Math.random()<0.5?1:-1)*(0.9+Math.random()*0.5),flap:Math.random()*Math.PI*2,flapSp:0.18+Math.random()*0.05,sz:10+Math.random()*6,bob:Math.random()*Math.PI*2});
+// Geometry layers: different shapes, rotations, speeds
+const geomLayers=[
+  {type:'hexgrid',   r:RING_R*0.7, rot:0,   rotSp:0.003,  alpha:0.28, hue:44},
+  {type:'triangle12',r:RING_R*0.85,rot:0.5, rotSp:-0.002, alpha:0.22, hue:48},
+  {type:'petals',    r:RING_R*0.95,rot:1.0, rotSp:0.0015, alpha:0.2,  hue:42},
+  {type:'hexgrid',   r:RING_R*1.15,rot:1.5, rotSp:-0.001, alpha:0.15, hue:46},
+  {type:'triangle12',r:RING_R*1.35,rot:2.0, rotSp:0.0008, alpha:0.12, hue:50},
+];
 
-function drawLotus(x,y,r,t){
-  lt.save();lt.translate(x,y);
-  // Water ripple
-  lt.fillStyle='rgba(255,220,120,0.15)';
-  lt.beginPath();lt.ellipse(0,0,r*2,r*0.5,0,0,Math.PI*2);lt.fill();
-  // Petals
-  for(let i=0;i<8;i++){
-    const ang=i/8*Math.PI*2;
-    lt.save();lt.rotate(ang);
-    const grad=lt.createRadialGradient(0,-r*0.4,0,0,-r*0.4,r*0.6);
-    grad.addColorStop(0,'rgba(255,255,220,0.9)');grad.addColorStop(0.6,'rgba(255,200,100,0.7)');grad.addColorStop(1,'rgba(255,150,50,0.2)');
-    lt.fillStyle=grad;lt.shadowBlur=12;lt.shadowColor='#ffd700';
-    lt.beginPath();lt.ellipse(0,-r*0.5,r*0.2,r*0.5,0,0,Math.PI*2);lt.fill();
-    lt.restore();
+function drawHexGrid(ctx, cx, cy, r, rot, alpha, hue){
+  // Flower of Life — 7 overlapping circles
+  const centers=[{x:0,y:0}];
+  for(let i=0;i<6;i++){
+    const a=rot+i*(Math.PI/3);
+    centers.push({x:Math.cos(a)*r*0.5, y:Math.sin(a)*r*0.5});
   }
-  lt.shadowBlur=0;
-  lt.fillStyle='#ffe780';lt.beginPath();lt.arc(0,0,r*0.15,0,Math.PI*2);lt.fill();
-  lt.restore();
+  for(const c of centers){
+    ctx.strokeStyle=`hsla(${hue},90%,65%,${alpha})`;
+    ctx.lineWidth=0.8;
+    ctx.beginPath();ctx.arc(cx+c.x,cy+c.y,r*0.5,0,Math.PI*2);ctx.stroke();
+  }
+  // Outer ring
+  ctx.strokeStyle=`hsla(${hue},85%,60%,${alpha*0.7})`;
+  ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.stroke();
 }
 
+function drawTriangle12(ctx, cx, cy, r, rot, alpha, hue){
+  // Two overlapping triangles (Star of David) × 2 sizes
+  for(let s=0;s<2;s++){
+    const scale=s===0?1.0:0.65;
+    for(let tri=0;tri<2;tri++){
+      const tRot=rot+tri*Math.PI/3+s*Math.PI/6;
+      ctx.strokeStyle=`hsla(${hue+tri*8},88%,65%,${alpha*(s===0?1:0.7)})`;
+      ctx.lineWidth=s===0?0.9:0.7;
+      ctx.beginPath();
+      for(let i=0;i<3;i++){
+        const a=tRot+i*(Math.PI*2/3)-Math.PI/2;
+        const px=cx+Math.cos(a)*r*scale;
+        const py=cy+Math.sin(a)*r*scale;
+        i===0?ctx.moveTo(px,py):ctx.lineTo(px,py);
+      }
+      ctx.closePath();ctx.stroke();
+    }
+  }
+  // Center dot
+  ctx.fillStyle=`hsla(${hue+20},100%,80%,${alpha*0.8})`;
+  ctx.beginPath();ctx.arc(cx,cy,2.5,0,Math.PI*2);ctx.fill();
+}
+
+function drawPetals(ctx, cx, cy, r, rot, alpha, hue){
+  // Vesica piscis petals around center
+  const petalCount=12;
+  for(let i=0;i<petalCount;i++){
+    const a=rot+i*(Math.PI*2/petalCount);
+    const px=cx+Math.cos(a)*r*0.4;
+    const py=cy+Math.sin(a)*r*0.4;
+    ctx.strokeStyle=`hsla(${hue+i*3},85%,62%,${alpha})`;
+    ctx.lineWidth=0.7;
+    ctx.beginPath();ctx.arc(px,py,r*0.4,0,Math.PI*2);ctx.stroke();
+  }
+  // Outer polygon
+  ctx.strokeStyle=`hsla(${hue},80%,60%,${alpha*0.6})`;
+  ctx.lineWidth=0.8;
+  ctx.beginPath();
+  for(let i=0;i<petalCount;i++){
+    const a=rot+i*(Math.PI*2/petalCount);
+    const px=cx+Math.cos(a)*r;
+    const py=cy+Math.sin(a)*r;
+    i===0?ctx.moveTo(px,py):ctx.lineTo(px,py);
+  }
+  ctx.closePath();ctx.stroke();
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   RING AREA: Sacred altar + light columns + lotus fire
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+// Light pillars pointing at ring from outside
+const LIGHT_PILLAR_COUNT=8;
+const lightPillars=[];
+for(let i=0;i<LIGHT_PILLAR_COUNT;i++){
+  lightPillars.push({
+    ang:(i/LIGHT_PILLAR_COUNT)*Math.PI*2,
+    startR:RING_R+180+Math.random()*80,
+    phase:Math.random()*Math.PI*2,
+    sp:0.015+Math.random()*0.012,
+    width:3+Math.random()*4,
+    hue:44+Math.random()*12,
+  });
+}
+
+// Sacred fire around ring — elegant slow flame wisps
+const FLAME_COUNT=14;
+const sacredFlames=[];
+for(let i=0;i<FLAME_COUNT;i++){
+  const ang=(i/FLAME_COUNT)*Math.PI*2;
+  sacredFlames.push({
+    ang,
+    phase:Math.random()*Math.PI*2,
+    sp:0.025+Math.random()*0.02,
+    h:18+Math.random()*22,
+    w:6+Math.random()*6,
+    orbitR:RING_R+22+Math.random()*20,
+    hue:42+Math.random()*16,
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   DOVES — white elegant birds circling the dome
+   ═══════════════════════════════════════════════════════════════════════════ */
+const doves=[];
+for(let i=0;i<5;i++){
+  doves.push({
+    orbitAng:(i/5)*Math.PI*2,
+    orbitSp:(0.005+Math.random()*0.003)*(Math.random()<0.5?1:-1),
+    orbitCX:460+Math.random()*160,
+    orbitCY:280+Math.random()*150,
+    orbitRx:160+Math.random()*120,
+    orbitRy:55+Math.random()*45,
+    scale:0.5+Math.random()*0.45,
+    flapPhase:Math.random()*Math.PI*2,
+    flapSp:0.06+Math.random()*0.04,
+    bobPhase:Math.random()*Math.PI*2,
+  });
+}
+
+function drawDove(ctx, x, y, scale, flapAngle, dir){
+  ctx.save();
+  ctx.translate(x,y);
+  ctx.scale(dir*scale,scale);
+
+  const s=18;
+  const wingOpen=(flapAngle+1)*0.5;
+
+  ctx.fillStyle=`rgba(240,235,220,${0.7+scale*0.2})`;
+  ctx.shadowBlur=10*scale;ctx.shadowColor='rgba(255,230,150,0.5)';
+
+  // Body
+  ctx.beginPath();ctx.ellipse(0,0,s*0.55,s*0.22,0.1,0,Math.PI*2);ctx.fill();
+  // Head
+  ctx.beginPath();ctx.ellipse(s*0.48,-s*0.08,s*0.2,s*0.16,-0.2,0,Math.PI*2);ctx.fill();
+  // Beak
+  ctx.fillStyle='rgba(200,165,80,0.8)';
+  ctx.beginPath();ctx.moveTo(s*0.66,-s*0.08);ctx.lineTo(s*0.85,-s*0.12);ctx.lineTo(s*0.66,-s*0.18);ctx.fill();
+
+  ctx.fillStyle=`rgba(240,235,220,${0.7+scale*0.15})`;
+  // Left wing
+  ctx.beginPath();
+  ctx.moveTo(-s*0.1,-s*0.05);
+  ctx.bezierCurveTo(-s*0.25,-(s*0.55*wingOpen),-s*0.75,-(s*0.6*wingOpen),-s*0.92,-(s*0.2*wingOpen));
+  ctx.bezierCurveTo(-s*0.75,s*0.1*wingOpen,-s*0.35,s*0.1*wingOpen,-s*0.1,s*0.05);
+  ctx.fill();
+  // Right wing
+  ctx.beginPath();
+  ctx.moveTo(s*0.1,-s*0.05);
+  ctx.bezierCurveTo(s*0.25,-(s*0.5*wingOpen),s*0.72,-(s*0.55*wingOpen),s*0.88,-(s*0.18*wingOpen));
+  ctx.bezierCurveTo(s*0.72,s*0.1*wingOpen,s*0.3,s*0.1*wingOpen,s*0.1,s*0.05);
+  ctx.fill();
+  // Tail
+  ctx.beginPath();
+  ctx.moveTo(-s*0.48,s*0.08);
+  ctx.lineTo(-s*0.8,-s*0.12+wingOpen*s*0.06);
+  ctx.lineTo(-s*0.68,s*0.04);
+  ctx.lineTo(-s*0.8,s*0.18+wingOpen*s*0.04);
+  ctx.fill();
+  ctx.shadowBlur=0;
+  ctx.restore();
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   LOTUS FLOWERS — on the sacred pond
+   ═══════════════════════════════════════════════════════════════════════════ */
+const lotuses=[];
+const LOTUS_POSITIONS=[180,295,405,540,660,785,900];
+for(const lx of LOTUS_POSITIONS){
+  lotuses.push({
+    x:lx,
+    y:H-200-Math.random()*120,
+    phase:Math.random()*Math.PI*2,
+    sp:0.008+Math.random()*0.008,
+    size:18+Math.random()*14,
+    petalCount:8+Math.floor(Math.random()*4),
+    hue:38+Math.random()*16,
+    openness:0.4+Math.random()*0.5,
+  });
+}
+
+function drawLotus(ctx, lotus, t2){
+  const {x,y,size,petalCount,hue,phase} = lotus;
+  const open=lotus.openness*(0.75+Math.sin(phase)*0.25);
+
+  ctx.save();
+  ctx.translate(x,y);
+
+  // Water reflection shimmer
+  ctx.shadowBlur=12; ctx.shadowColor=`hsla(${hue},80%,65%,0.5)`;
+
+  // Outer petals
+  for(let li=0;li<2;li++){
+    const petalSize=size*(1-li*0.25);
+    const petalOpen=open*(1-li*0.15);
+    for(let i=0;i<petalCount;i++){
+      const a=(i/petalCount)*Math.PI*2+li*(Math.PI/petalCount);
+      const px=Math.cos(a)*petalSize*0.45*petalOpen;
+      const py=Math.sin(a)*petalSize*0.4*petalOpen;
+      const al=0.6+li*0.2;
+      const lightness=52+li*10;
+      ctx.fillStyle=`hsla(${hue+li*8},80%,${lightness}%,${al})`;
+      ctx.beginPath();
+      ctx.moveTo(0,0);
+      ctx.bezierCurveTo(
+        px*0.5-py*0.45*petalOpen, py*0.5+px*0.45*petalOpen,
+        px*0.5+py*0.45*petalOpen, py*0.5-px*0.45*petalOpen,
+        px*2, py*2
+      );
+      ctx.bezierCurveTo(
+        px*1.5+py*0.35*petalOpen, py*1.5-px*0.35*petalOpen,
+        px*0.6+py*0.4*petalOpen, py*0.6-px*0.4*petalOpen,
+        0,0
+      );
+      ctx.fill();
+    }
+  }
+  // Center
+  ctx.shadowBlur=8;ctx.shadowColor=`hsla(${hue+20},100%,75%,0.7)`;
+  const cg=ctx.createRadialGradient(0,0,0,0,0,size*0.22);
+  cg.addColorStop(0,`hsla(${hue+25},95%,80%,0.9)`);
+  cg.addColorStop(0.5,`hsla(${hue+15},90%,68%,0.7)`);
+  cg.addColorStop(1,`hsla(${hue},85%,55%,0.3)`);
+  ctx.fillStyle=cg;
+  ctx.beginPath();ctx.arc(0,0,size*0.22,0,Math.PI*2);ctx.fill();
+  ctx.shadowBlur=0;
+
+  // Reflection in water
+  ctx.save();
+  ctx.scale(1,-0.35);
+  ctx.globalAlpha=0.15;
+  for(let i=0;i<petalCount;i++){
+    const a=(i/petalCount)*Math.PI*2;
+    const px=Math.cos(a)*size*0.45*open;
+    const py=Math.sin(a)*size*0.4*open;
+    ctx.fillStyle=`hsla(${hue},75%,58%,0.6)`;
+    ctx.beginPath();
+    ctx.moveTo(0,0);
+    ctx.bezierCurveTo(px*0.5-py*0.4,py*0.5+px*0.4,px*0.5+py*0.4,py*0.5-px*0.4,px*2,py*2);
+    ctx.bezierCurveTo(px*1.5,py*1.5,px*0.5,py*0.5,0,0);
+    ctx.fill();
+  }
+  ctx.restore();
+  ctx.restore();
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   PARTICLES: Incense motes, holy sparks, stardust, ray dust
+   ═══════════════════════════════════════════════════════════════════════════ */
+const incenseMotes=[];
+for(let i=0;i<75;i++){
+  incenseMotes.push({
+    x:100+Math.random()*880,
+    y:H-100-Math.random()*1200,
+    vy:-(0.18+Math.random()*0.45),
+    vx:(Math.random()-0.5)*0.22,
+    phase:Math.random()*Math.PI*2,
+    sp:0.015+Math.random()*0.025,
+    r:0.8+Math.random()*2.2,
+    hue:42+Math.random()*16,
+    a:0.25+Math.random()*0.35,
+    sway:Math.random()*Math.PI*2,
+    swaySp:0.01+Math.random()*0.015,
+  });
+}
+
+const holySparks=[];
+for(let i=0;i<28;i++){
+  const ang=Math.random()*Math.PI*2;
+  const r=RING_R*0.3+Math.random()*RING_R*0.9;
+  holySparks.push({
+    x:RING_CX+Math.cos(ang)*r,
+    y:RING_CY+Math.sin(ang)*r,
+    vx:(Math.random()-0.5)*1.0,
+    vy:-(0.3+Math.random()*0.8),
+    phase:Math.random()*Math.PI*2,
+    sp:0.04+Math.random()*0.06,
+    r2:0.8+Math.random()*2,
+    hue:44+Math.random()*12,
+    a:0.4+Math.random()*0.4,
+    life:Math.random(),
+    lifeSpd:0.006+Math.random()*0.008,
+  });
+}
+
+const starDust=[];
+for(let i=0;i<50;i++){
+  starDust.push({
+    x:140+Math.random()*800,
+    y:80+Math.random()*1400,
+    vx:(Math.random()-0.5)*0.12,
+    vy:(Math.random()-0.5)*0.08,
+    phase:Math.random()*Math.PI*2,
+    sp:0.035+Math.random()*0.06,
+    r:0.5+Math.random()*1.4,
+    hue:45+Math.random()*18,
+  });
+}
+
+// Ray dust — particles visible inside sun shafts
+const rayDust=[];
+for(let i=0;i<40;i++){
+  // Place near ray angles
+  const rayAng=[-18,-7,5,16,-28][Math.floor(Math.random()*5)]*Math.PI/180;
+  const dist=200+Math.random()*900;
+  rayDust.push({
+    x:W/2+Math.sin(rayAng)*dist+(Math.random()-0.5)*50,
+    y:Math.cos(rayAng)*dist*0.4+(Math.random()-0.5)*30,
+    vx:Math.sin(rayAng)*0.08+(Math.random()-0.5)*0.1,
+    vy:Math.cos(rayAng)*0.08+0.05,
+    phase:Math.random()*Math.PI*2,
+    sp:0.02+Math.random()*0.03,
+    r:0.8+Math.random()*1.5,
+    a:0.15+Math.random()*0.2,
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MAIN LOOP
+   ═══════════════════════════════════════════════════════════════════════════ */
 let t=0;
+
 function loop(){
   t+=0.016;
-  lt.clearRect(0,0,W,H);
-  for(const l of lotuses)drawLotus(l.x,l.y,l.r,t);
 
-  pt.clearRect(0,0,W,H);
-  for(const p of parts){p.ph+=0.04;
-    p.y+=p.vy;p.x+=p.vx+Math.sin(p.ph)*0.3;
-    if(p.y<-20){p.y=H+20;p.x=Math.random()*W;}
-    pt.fillStyle=`hsla(${p.hue},100%,70%,${p.a*(0.7+Math.sin(p.ph)*0.3)})`;
-    pt.shadowBlur=10;pt.shadowColor='#ffd700';
-    pt.beginPath();pt.arc(p.x,p.y,p.r,0,Math.PI*2);pt.fill();}
-  pt.shadowBlur=0;
+  /* ── SACRED GEOMETRY ── */
+  geomCtx.clearRect(0,0,W,H);
+  geomCtx.save();
+  for(const gl of geomLayers){
+    gl.rot+=gl.rotSp;
+    const pulse=0.7+Math.sin(t*0.8+gl.rot)*0.3;
+    const a=gl.alpha*pulse;
+    geomCtx.globalAlpha=1;
+    if(gl.type==='hexgrid')      drawHexGrid(geomCtx,RING_CX,RING_CY,gl.r,gl.rot,a,gl.hue);
+    else if(gl.type==='triangle12') drawTriangle12(geomCtx,RING_CX,RING_CY,gl.r,gl.rot,a,gl.hue);
+    else                          drawPetals(geomCtx,RING_CX,RING_CY,gl.r,gl.rot,a,gl.hue);
+  }
+  geomCtx.restore();
 
-  dv.clearRect(0,0,W,H);
-  for(const b of doves){b.flap+=b.flapSp;b.bob+=0.02;b.x+=b.vx;b.y+=Math.sin(b.bob)*0.4;
-    if(b.x<-40)b.x=W+40;if(b.x>W+40)b.x=-40;
-    const fl=Math.sin(b.flap)*0.5;
-    dv.fillStyle='rgba(255,245,220,0.95)';dv.shadowBlur=10;dv.shadowColor='#fff5dc';
-    dv.save();dv.translate(b.x,b.y);dv.scale(b.vx>0?1:-1,1);
-    dv.beginPath();dv.moveTo(0,0);
-    dv.quadraticCurveTo(-b.sz*0.4,-b.sz*(0.4+fl*0.6),-b.sz*1.2,-b.sz*0.1);
-    dv.lineTo(-b.sz*0.5,0);
-    dv.quadraticCurveTo(-b.sz*0.4,b.sz*(0.3+fl*0.4),-b.sz*1.0,b.sz*0.2);
-    dv.lineTo(0,0);dv.closePath();dv.fill();
-    dv.save();dv.scale(-1,1);
-    dv.beginPath();dv.moveTo(0,0);
-    dv.quadraticCurveTo(-b.sz*0.4,-b.sz*(0.4+fl*0.6),-b.sz*1.2,-b.sz*0.1);
-    dv.lineTo(-b.sz*0.5,0);
-    dv.quadraticCurveTo(-b.sz*0.4,b.sz*(0.3+fl*0.4),-b.sz*1.0,b.sz*0.2);
-    dv.lineTo(0,0);dv.closePath();dv.fill();dv.restore();
-    dv.restore();}
-  dv.shadowBlur=0;
+  // Lotus flowers on pond — drawn on geometry layer
+  for(const lo of lotuses){
+    lo.phase+=lo.sp;
+    lo.openness=0.45+Math.sin(lo.phase)*0.42;
+    drawLotus(geomCtx,lo,t);
+  }
+
+  /* ── RING ALTAR ── */
+  ringCtx.clearRect(0,0,W,H);
+
+  // Central altar halo — layered gold glow
+  const haloPulse=0.55+Math.sin(t*1.2)*0.3;
+  for(let hi=0;hi<3;hi++){
+    const hr=RING_R*(0.35+hi*0.22);
+    const hg=ringCtx.createRadialGradient(RING_CX,RING_CY,hr*0.5,RING_CX,RING_CY,hr);
+    hg.addColorStop(0,`rgba(255,215,80,${(0.22-hi*0.06)*haloPulse})`);
+    hg.addColorStop(0.6,`rgba(220,170,45,${(0.1-hi*0.03)*haloPulse})`);
+    hg.addColorStop(1,'rgba(0,0,0,0)');
+    ringCtx.fillStyle=hg;
+    ringCtx.beginPath();ringCtx.arc(RING_CX,RING_CY,hr,0,Math.PI*2);ringCtx.fill();
+  }
+  // Outer altar glow
+  const ag=ringCtx.createRadialGradient(RING_CX,RING_CY,RING_R-15,RING_CX,RING_CY,RING_R+200);
+  ag.addColorStop(0,`rgba(255,200,60,${0.18*haloPulse})`);
+  ag.addColorStop(0.35,`rgba(220,160,40,${0.08*haloPulse})`);
+  ag.addColorStop(1,'rgba(0,0,0,0)');
+  ringCtx.fillStyle=ag;ringCtx.beginPath();ringCtx.arc(RING_CX,RING_CY,RING_R+200,0,Math.PI*2);ringCtx.fill();
+
+  // Light pillars
+  for(const lp of lightPillars){
+    lp.phase+=lp.sp;
+    const pulse=0.35+Math.abs(Math.sin(lp.phase))*0.5;
+    const sx=RING_CX+Math.cos(lp.ang)*lp.startR;
+    const sy=RING_CY+Math.sin(lp.ang)*lp.startR;
+    const grad=ringCtx.createLinearGradient(sx,sy,RING_CX,RING_CY);
+    grad.addColorStop(0,'rgba(255,210,80,0)');
+    grad.addColorStop(0.4,`hsla(${lp.hue},95%,72%,${pulse*0.3})`);
+    grad.addColorStop(0.85,`hsla(${lp.hue},100%,78%,${pulse*0.5})`);
+    grad.addColorStop(1,`hsla(${lp.hue},100%,80%,${pulse*0.2})`);
+    ringCtx.strokeStyle=grad;
+    ringCtx.lineWidth=lp.width;
+    ringCtx.lineCap='round';
+    ringCtx.shadowBlur=8;ringCtx.shadowColor=`hsla(${lp.hue},100%,70%,0.5)`;
+    ringCtx.beginPath();ringCtx.moveTo(sx,sy);ringCtx.lineTo(RING_CX,RING_CY);ringCtx.stroke();
+    ringCtx.shadowBlur=0;
+  }
+
+  // Sacred flames — elegant, slow, golden
+  for(const sf of sacredFlames){
+    sf.phase+=sf.sp;
+    const flick=0.5+Math.sin(sf.phase)*0.45+Math.sin(sf.phase*1.8)*0.05;
+    const fh=sf.h*(0.65+flick*0.35);
+    const fx=RING_CX+Math.cos(sf.ang)*sf.orbitR;
+    const fy=RING_CY+Math.sin(sf.ang)*sf.orbitR;
+    // Flame points outward from ring
+    const outX=Math.cos(sf.ang), outY=Math.sin(sf.ang);
+    const perpX=-outY, perpY=outX;
+    const sw=Math.sin(sf.phase*0.6)*sf.w*0.25;
+
+    const fg=ringCtx.createLinearGradient(fx,fy,fx+outX*fh,fy+outY*fh);
+    fg.addColorStop(0,`hsla(${sf.hue+15},95%,78%,${flick*0.88})`);
+    fg.addColorStop(0.35,`hsla(${sf.hue+8},90%,65%,${flick*0.7})`);
+    fg.addColorStop(0.7,`hsla(${sf.hue},85%,52%,${flick*0.4})`);
+    fg.addColorStop(1,`hsla(${sf.hue-5},80%,40%,0)`);
+    ringCtx.fillStyle=fg;
+    ringCtx.shadowBlur=10+flick*8;
+    ringCtx.shadowColor=`hsla(${sf.hue},100%,65%,0.55)`;
+    ringCtx.beginPath();
+    ringCtx.moveTo(fx-perpX*sf.w*0.5+sw*perpX,fy-perpY*sf.w*0.5+sw*perpY);
+    ringCtx.quadraticCurveTo(
+      fx-outX*fh*0.1+perpX*sw,fy-outY*fh*0.1+perpY*sw,
+      fx+outX*fh*0.9,fy+outY*fh*0.9
+    );
+    ringCtx.quadraticCurveTo(
+      fx+outX*fh*1.0,fy+outY*fh*1.0,
+      fx+outX*fh*0.85-perpX*sw,fy+outY*fh*0.85-perpY*sw
+    );
+    ringCtx.quadraticCurveTo(
+      fx+outX*fh*0.4-perpX*sf.w*0.4,fy+outY*fh*0.4-perpY*sf.w*0.4,
+      fx+perpX*sf.w*0.5+sw*perpX,fy+perpY*sf.w*0.5+sw*perpY
+    );
+    ringCtx.fill();
+    ringCtx.shadowBlur=0;
+  }
+
+  /* ── DOVES ── */
+  dovesCtx.clearRect(0,0,W,H);
+  for(const d of doves){
+    d.orbitAng+=d.orbitSp;
+    d.flapPhase+=d.flapSp;
+    d.bobPhase+=0.018;
+    const x=d.orbitCX+Math.cos(d.orbitAng)*d.orbitRx;
+    const y=d.orbitCY+Math.sin(d.orbitAng)*d.orbitRy+Math.sin(d.bobPhase)*8;
+    const flapAngle=Math.sin(d.flapPhase);
+    const dir=d.orbitSp>0?1:-1;
+    drawDove(dovesCtx,x,y,d.scale,flapAngle,dir);
+  }
+
+  /* ── PARTICLES ── */
+  partCtx.clearRect(0,0,W,H);
+
+  // Incense motes — slow rising smoke particles
+  partCtx.save();
+  for(const m of incenseMotes){
+    m.phase+=m.sp; m.sway+=m.swaySp;
+    m.x+=m.vx+Math.sin(m.sway)*0.4;m.y+=m.vy;
+    if(m.x<80)m.x=W-80;if(m.x>W-80)m.x=80;
+    if(m.y<-20) Object.assign(m,{x:100+Math.random()*880,y:H-80+Math.random()*50,vy:-(0.18+Math.random()*0.45),vx:(Math.random()-0.5)*0.22});
+    const pulse=0.45+Math.sin(m.phase)*0.4;
+    const mg=partCtx.createRadialGradient(m.x,m.y,0,m.x,m.y,m.r*3.5);
+    mg.addColorStop(0,`hsla(${m.hue},90%,75%,${pulse*m.a*0.9})`);
+    mg.addColorStop(0.5,`hsla(${m.hue},85%,60%,${pulse*m.a*0.3})`);
+    mg.addColorStop(1,'rgba(0,0,0,0)');
+    partCtx.shadowBlur=6;partCtx.shadowColor=`hsla(${m.hue},100%,65%,0.5)`;
+    partCtx.fillStyle=mg;
+    partCtx.beginPath();partCtx.arc(m.x,m.y,m.r*3.5,0,Math.PI*2);partCtx.fill();
+    partCtx.fillStyle=`hsla(${m.hue+10},100%,85%,${pulse*m.a*0.7})`;
+    partCtx.beginPath();partCtx.arc(m.x,m.y,m.r,0,Math.PI*2);partCtx.fill();
+  }
+  partCtx.shadowBlur=0;partCtx.restore();
+
+  // Holy sparks from altar
+  partCtx.save();
+  for(let i=0;i<holySparks.length;i++){
+    const s=holySparks[i];
+    s.phase+=s.sp; s.life+=s.lifeSpd;
+    s.x+=s.vx; s.y+=s.vy;
+    if(s.life>=1){
+      const ang=Math.random()*Math.PI*2;
+      const r2=RING_R*0.3+Math.random()*RING_R*0.9;
+      Object.assign(s,{x:RING_CX+Math.cos(ang)*r2,y:RING_CY+Math.sin(ang)*r2,vx:(Math.random()-0.5)*1.0,vy:-(0.3+Math.random()*0.8),life:0,lifeSpd:0.006+Math.random()*0.008});
+    }
+    const fade=(1-s.life)*(0.5+Math.sin(s.phase)*0.4);
+    partCtx.shadowBlur=8;partCtx.shadowColor=`hsla(${s.hue},100%,70%,0.7)`;
+    partCtx.fillStyle=`hsla(${s.hue+10},100%,85%,${fade*s.a})`;
+    partCtx.beginPath();partCtx.arc(s.x,s.y,s.r2,0,Math.PI*2);partCtx.fill();
+  }
+  partCtx.shadowBlur=0;partCtx.restore();
+
+  // Star dust
+  partCtx.save();
+  for(const sd of starDust){
+    sd.phase+=sd.sp;
+    sd.x+=sd.vx; sd.y+=sd.vy;
+    if(sd.x<100)sd.x=W-100;if(sd.x>W-100)sd.x=100;
+    if(sd.y<50)sd.y=H*0.85;if(sd.y>H-50)sd.y=100;
+    const flash=Math.max(0,Math.sin(sd.phase));
+    partCtx.fillStyle=`hsla(${sd.hue},90%,80%,${flash*0.45})`;
+    partCtx.beginPath();partCtx.arc(sd.x,sd.y,sd.r*flash,0,Math.PI*2);partCtx.fill();
+  }
+  partCtx.restore();
+
+  // Ray dust — dancing in sun shafts
+  partCtx.save();
+  for(const rd of rayDust){
+    rd.phase+=rd.sp;
+    rd.x+=rd.vx+Math.sin(rd.phase*0.5)*0.15;rd.y+=rd.vy;
+    if(rd.y>H*0.8){rd.y=50+Math.random()*200;rd.x=140+Math.random()*800;}
+    const pulse=0.4+Math.sin(rd.phase)*0.45;
+    partCtx.fillStyle=`rgba(255,220,130,${rd.a*pulse})`;
+    partCtx.beginPath();partCtx.arc(rd.x,rd.y,rd.r,0,Math.PI*2);partCtx.fill();
+  }
+  partCtx.restore();
+
   requestAnimationFrame(loop);
 }
+
 loop();
 </script>
 </body>

@@ -4,112 +4,529 @@
 <meta charset="UTF-8">
 <title>Cosmic — Schwarzes Loch</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-html,body{width:1080px;height:1920px;overflow:hidden;background:#000008;}
-canvas{position:absolute;inset:0;width:1080px;height:1920px;display:block;}
-.bg{position:absolute;inset:0;background:
-  radial-gradient(ellipse 50% 35% at 50% 50%, #000020 0%, #000010 50%, transparent 80%),
-  linear-gradient(180deg, #000008 0%, #000012 50%, #000008 100%);}
-/* Accretion disk — behind center */
-.disk{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-18deg);width:1400px;height:260px;
-  background:
-    radial-gradient(ellipse 50% 50% at 50% 50%, rgba(255,140,0,0.6) 0%, rgba(255,100,0,0.3) 30%, transparent 55%),
-    radial-gradient(ellipse 70% 30% at 50% 50%, rgba(255,200,60,0.8) 0%, rgba(255,140,0,0.4) 20%, transparent 50%);
-  filter:blur(8px);animation:diskSpin 40s linear infinite;mix-blend-mode:screen;}
-.disk2{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-18deg);width:1400px;height:120px;
-  background:radial-gradient(ellipse 50% 50% at 50% 50%, rgba(255,255,200,0.9) 0%, rgba(255,180,80,0.5) 25%, transparent 55%);
-  filter:blur(3px);animation:diskSpin 30s linear infinite;mix-blend-mode:screen;}
-@keyframes diskSpin{from{transform:translate(-50%,-50%) rotate(-18deg)}to{transform:translate(-50%,-50%) rotate(342deg)}}
-/* Black hole core */
-.hole{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:280px;height:280px;border-radius:50%;background:#000;box-shadow:inset 0 0 80px 40px #000,0 0 0 4px rgba(255,200,80,0.4),0 0 60px rgba(255,160,40,0.5);}
-/* Photon ring */
-.photon{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:320px;height:320px;border-radius:50%;border:2px solid rgba(255,240,180,0.6);box-shadow:0 0 40px rgba(255,200,80,0.8),inset 0 0 20px rgba(255,240,180,0.4);}
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{
+    width:1080px;height:1920px;overflow:hidden;
+    background:#000008;
+  }
+  canvas{position:absolute;inset:0;width:1080px;height:1920px;display:block;}
 
-/* Nebula patches */
-.neb-a{position:absolute;top:200px;left:10%;width:500px;height:400px;background:radial-gradient(ellipse at 50% 50%, rgba(68,0,255,0.25) 0%, transparent 65%);filter:blur(20px);}
-.neb-b{position:absolute;bottom:280px;right:5%;width:600px;height:500px;background:radial-gradient(ellipse at 50% 50%, rgba(255,140,0,0.2) 0%, transparent 65%);filter:blur(20px);}
+  /* Deep space background tints */
+  .space-bg{
+    position:absolute;inset:0;
+    background:
+      radial-gradient(ellipse 80% 60% at 15% 20%, rgba(0,20,80,0.18) 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 88% 75%, rgba(30,0,60,0.15) 0%, transparent 50%),
+      radial-gradient(ellipse 60% 45% at 50% 50%, rgba(0,0,30,0.12) 0%, transparent 60%);
+  }
 
-.zone-top{position:absolute;top:0;left:0;right:0;height:120px;background:linear-gradient(180deg,rgba(0,0,0,0.55) 0%,transparent 100%);z-index:40;}
-.zone-bot{position:absolute;bottom:0;left:0;right:0;height:920px;background:linear-gradient(0deg,rgba(0,0,5,0.55) 0%,rgba(0,0,5,0.12) 40%,transparent 100%);z-index:40;}
-.center-darken{position:absolute;top:300px;left:50%;transform:translateX(-50%);width:780px;height:540px;background:radial-gradient(ellipse 50% 50% at 50% 50%,rgba(0,0,5,0.3) 0%,transparent 70%);z-index:38;}
-.vignette{position:absolute;inset:0;background:radial-gradient(ellipse 80% 70% at 50% 50%,transparent 40%,rgba(0,0,0,0.65) 100%);z-index:39;pointer-events:none;}
+  /* Nebula patches */
+  .nebula{position:absolute;border-radius:50%;mix-blend-mode:screen;filter:blur(35px);}
+  .neb1{width:580px;height:320px;top:80px; left:-100px;background:radial-gradient(ellipse,rgba(0,80,200,0.22),transparent 70%);animation:nebDrift 22s ease-in-out infinite;}
+  .neb2{width:500px;height:280px;top:800px;right:-60px; background:radial-gradient(ellipse,rgba(180,60,0,0.2),transparent 70%); animation:nebDrift 28s ease-in-out infinite reverse;animation-delay:-8s;}
+  .neb3{width:450px;height:260px;top:1300px;left:50px;  background:radial-gradient(ellipse,rgba(80,0,160,0.18),transparent 70%);animation:nebDrift 18s ease-in-out infinite;animation-delay:-5s;}
+  .neb4{width:380px;height:220px;top:450px; right:80px; background:radial-gradient(ellipse,rgba(0,100,180,0.16),transparent 70%);animation:nebDrift 24s ease-in-out infinite reverse;animation-delay:-12s;}
+  @keyframes nebDrift{
+    0%,100%{transform:translate(0,0) scale(1)}
+    33%{transform:translate(20px,-15px) scale(1.04)}
+    66%{transform:translate(-15px,20px) scale(0.97)}
+  }
+
+  /* Gravitational distortion around black hole — subtle warping */
+  .grav-distort{
+    position:absolute;top:180px;left:50%;transform:translateX(-50%);
+    width:900px;height:900px;border-radius:50%;
+    background:radial-gradient(ellipse 100% 100% at 50% 50%,
+      rgba(0,0,0,0.0) 0%,
+      rgba(0,0,0,0.0) 48%,
+      rgba(0,5,20,0.08) 58%,
+      rgba(0,8,30,0.15) 65%,
+      rgba(0,0,0,0.0) 72%);
+    mix-blend-mode:multiply;filter:blur(8px);
+  }
+
+  /* Photon ring glow */
+  .photon-ring{
+    position:absolute;top:228px;left:50%;transform:translateX(-50%);
+    width:804px;height:804px;border-radius:50%;
+    background:transparent;
+    border:2px solid rgba(255,220,100,0.0);
+    box-shadow:
+      0 0 8px 2px rgba(255,200,80,0.6),
+      0 0 20px 4px rgba(255,150,30,0.4),
+      0 0 40px 8px rgba(255,100,0,0.2);
+    animation:photonPulse 3s ease-in-out infinite;
+  }
+  @keyframes photonPulse{
+    0%,100%{box-shadow:0 0 8px 2px rgba(255,200,80,0.6),0 0 20px 4px rgba(255,150,30,0.4),0 0 40px 8px rgba(255,100,0,0.2)}
+    50%{box-shadow:0 0 12px 3px rgba(255,220,100,0.85),0 0 30px 6px rgba(255,170,40,0.55),0 0 60px 12px rgba(255,110,0,0.28)}
+  }
+
+  /* Black hole event horizon */
+  .event-horizon{
+    position:absolute;top:240px;left:50%;transform:translateX(-50%);
+    width:780px;height:780px;border-radius:50%;
+    background:radial-gradient(circle,#000 0%,#000005 60%,rgba(0,0,8,0) 100%);
+    box-shadow:0 0 60px 30px rgba(0,0,0,0.95);
+    z-index:10;
+  }
+
+  /* UI */
+  .center-darken{position:absolute;top:300px;left:50%;transform:translateX(-50%);width:780px;height:540px;background:radial-gradient(ellipse 50% 50% at 50% 50%,rgba(0,0,5,0.42) 0%,transparent 70%);z-index:38;}
+  .vignette{position:absolute;inset:0;background:radial-gradient(ellipse 82% 72% at 50% 50%,transparent 38%,rgba(0,0,8,0.82) 100%);z-index:39;pointer-events:none;}
+  .zone-top{position:absolute;top:0;left:0;right:0;height:120px;background:linear-gradient(180deg,rgba(0,0,0,0.6) 0%,transparent 100%);z-index:40;}
+  .zone-bot{position:absolute;bottom:0;left:0;right:0;height:920px;background:linear-gradient(0deg,rgba(0,0,15,0.65) 0%,rgba(0,0,15,0.14) 40%,transparent 100%);z-index:40;}
 </style>
 </head>
 <body>
-<div class="bg"></div>
-<canvas id="stars"></canvas>
-<div class="neb-a"></div>
-<div class="neb-b"></div>
-<div class="disk"></div>
-<div class="disk2"></div>
-<div class="hole"></div>
-<div class="photon"></div>
-<canvas id="ship"></canvas>
-<canvas id="warp"></canvas>
-<div class="center-darken"></div>
-<div class="vignette"></div>
-<div class="zone-top"></div>
-<div class="zone-bot"></div>
-<script>
-const W=1080,H=1920;
-function setup(id){const c=document.getElementById(id);c.width=W;c.height=H;return c.getContext('2d');}
+  <div class="space-bg"></div>
+  <div class="nebula neb1"></div><div class="nebula neb2"></div>
+  <div class="nebula neb3"></div><div class="nebula neb4"></div>
 
-const st=setup('stars');
+  <!-- Canvas stack: stars → disk → ring/waves → ship → particles -->
+  <canvas id="cStars"></canvas>
+  <canvas id="cDisk"></canvas>
+  <canvas id="cRing"></canvas>
+  <canvas id="cShip"></canvas>
+  <canvas id="cParticles"></canvas>
+
+  <div class="grav-distort"></div>
+  <div class="photon-ring"></div>
+  <div class="event-horizon"></div>
+  <div class="center-darken"></div>
+  <div class="vignette"></div>
+  <div class="zone-top"></div>
+  <div class="zone-bot"></div>
+
+<script>
+const W=1080, H=1920;
+const BH_X=540, BH_Y=630; // Black hole center (slightly below ring center)
+const RING_CX=540, RING_CY=590, RING_R=300;
+const BH_R=390; // Event horizon radius
+
+function mkCanvas(id){
+  const c=document.getElementById(id);
+  c.width=W; c.height=H;
+  return c.getContext('2d');
+}
+const starsCtx  = mkCanvas('cStars');
+const diskCtx   = mkCanvas('cDisk');
+const ringCtx   = mkCanvas('cRing');
+const shipCtx   = mkCanvas('cShip');
+const partCtx   = mkCanvas('cParticles');
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   STAR FIELD — gravitational lensing effect near black hole
+   ═══════════════════════════════════════════════════════════════════════════ */
+const STAR_COUNT=380;
 const stars=[];
-for(let i=0;i<400;i++){
-  const a=Math.random()*Math.PI*2;
-  const r=150+Math.random()*900;
-  stars.push({x:W/2+Math.cos(a)*r,y:H/2+Math.sin(a)*r,
-    r:Math.random()*1.5+0.3,tw:Math.random()*Math.PI*2,a0:a,dist:r,
-    hue:Math.random()<0.2?220:Math.random()<0.4?40:0});
+for(let i=0;i<STAR_COUNT;i++){
+  const x=Math.random()*W, y=Math.random()*H;
+  const dx=x-BH_X, dy=y-BH_Y;
+  const dist=Math.hypot(dx,dy);
+  // Stars closer to BH orbit faster and get more lensed
+  const orbitSpeed = dist<500
+    ? (0.0008+Math.random()*0.001)*(Math.random()<0.5?1:-1)
+    : (0.0001+Math.random()*0.0003)*(Math.random()<0.5?1:-1);
+  stars.push({
+    x, y,
+    baseX:x, baseY:y,
+    orbitAng:Math.atan2(dy,dx),
+    orbitR:dist,
+    orbitSp:orbitSpeed,
+    r:0.4+Math.random()*2.0,
+    a:0.3+Math.random()*0.7,
+    flicker:Math.random()<0.2,
+    flickPhase:Math.random()*Math.PI*2,
+    flickSp:0.04+Math.random()*0.08,
+    // Color: most white, some blue/orange
+    hue:Math.random()<0.15?200+Math.random()*40:Math.random()<0.1?30+Math.random()*20:0,
+    milky:Math.random()<0.25, // part of milky way band
+  });
 }
 
-const sp=setup('ship');
-const ship={x:-80,y:600,vx:0.6,ph:0};
+// Milky way band — drawn once as background
+(function drawMilkyWay(){
+  starsCtx.clearRect(0,0,W,H);
+  // Diagonal band of dense star clusters
+  for(let i=0;i<800;i++){
+    const t2=Math.random();
+    const bandX=W*0.1+t2*W*1.1;
+    const bandY=H*0.85-t2*H*0.7+(Math.random()-0.5)*120;
+    const a=0.04+Math.random()*0.1;
+    const r=0.3+Math.random()*1.2;
+    starsCtx.fillStyle=`rgba(${180+Math.floor(Math.random()*75)},${180+Math.floor(Math.random()*75)},${200+Math.floor(Math.random()*55)},${a})`;
+    starsCtx.beginPath();starsCtx.arc(bandX,bandY,r,0,Math.PI*2);starsCtx.fill();
+  }
+})();
 
-const wp=setup('warp');
+/* ═══════════════════════════════════════════════════════════════════════════
+   ACCRETION DISK — tilted elliptical rotating disk
+   ═══════════════════════════════════════════════════════════════════════════ */
+let diskRot=0;
+const DISK_TILT=Math.PI*0.08; // ~14 degree tilt
 
+// Pre-generate disk texture points
+const diskTexture=[];
+for(let i=0;i<2000;i++){
+  const ang=Math.random()*Math.PI*2;
+  // Disk extends from just outside BH to ~1.8x BH_R
+  const r=BH_R*1.02+Math.random()*(BH_R*0.85);
+  const brightness=1-((r-BH_R)/(BH_R*0.85))*0.8; // brighter near center
+  diskTexture.push({
+    ang, r, brightness,
+    hue:Math.random()<0.4?45+Math.random()*20:15+Math.random()*25,
+    size:0.5+Math.random()*2.5,
+    phase:Math.random()*Math.PI*2,
+    phaseSp:0.02+Math.random()*0.05,
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   GRAVITATIONAL WAVES
+   ═══════════════════════════════════════════════════════════════════════════ */
+const gravWaves=[];
+let waveTimer=0;
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   RELATIVISTIC JETS — beams shooting from poles of black hole
+   ═══════════════════════════════════════════════════════════════════════════ */
+const jetParticles=[];
+let jetTimer=0;
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SPACESHIP
+   ═══════════════════════════════════════════════════════════════════════════ */
+const ship={
+  x:-60, y:420,
+  vx:0.22, vy:0.06,
+  trail:[],
+  visible:true,
+  resetTimer:0,
+};
+
+function drawShip(ctx,x,y,vx,vy){
+  ctx.save();
+  ctx.translate(x,y);
+  const ang=Math.atan2(vy,vx);
+  ctx.rotate(ang);
+  ctx.fillStyle='rgba(160,180,200,0.85)';
+  ctx.shadowBlur=8; ctx.shadowColor='rgba(100,150,255,0.6)';
+  // Hull
+  ctx.beginPath();
+  ctx.moveTo(28,0);
+  ctx.lineTo(-16,-7);
+  ctx.lineTo(-20,0);
+  ctx.lineTo(-16,7);
+  ctx.closePath(); ctx.fill();
+  // Engine glow
+  ctx.shadowBlur=12; ctx.shadowColor='rgba(100,180,255,0.9)';
+  ctx.fillStyle='rgba(80,160,255,0.7)';
+  ctx.beginPath(); ctx.ellipse(-20,0,5,3,0,0,Math.PI*2); ctx.fill();
+  // Wings
+  ctx.shadowBlur=0;
+  ctx.fillStyle='rgba(120,140,160,0.75)';
+  ctx.beginPath();
+  ctx.moveTo(0,0); ctx.lineTo(-15,-18); ctx.lineTo(-20,-4); ctx.closePath(); ctx.fill();
+  ctx.beginPath();
+  ctx.moveTo(0,0); ctx.lineTo(-15,18); ctx.lineTo(-20,4); ctx.closePath(); ctx.fill();
+  ctx.restore();
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ACCRETION SPIRAL PARTICLES — matter being pulled in
+   ═══════════════════════════════════════════════════════════════════════════ */
+const spiralParticles=[];
+for(let i=0;i<80;i++) spiralParticles.push(mkSpiral(true));
+function mkSpiral(init){
+  const ang=Math.random()*Math.PI*2;
+  const r=init?(BH_R*1.1+Math.random()*W*0.6):(BH_R*1.6+Math.random()*W*0.5);
+  return{
+    ang, r,
+    vAng:0.004+Math.random()*0.008, // angular velocity
+    vR:-(0.4+Math.random()*0.8),    // inward radial velocity
+    r0:r,
+    hue:20+Math.random()*30,
+    size:0.8+Math.random()*2.2,
+    a:0.4+Math.random()*0.5,
+    trail:[],
+  };
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MAIN LOOP
+   ═══════════════════════════════════════════════════════════════════════════ */
 let t=0;
+
 function loop(){
   t+=0.016;
-  st.clearRect(0,0,W,H);
+  diskRot+=0.00035; // Full rotation ~5 minutes
+
+  /* ── STARS with gravitational lensing ── */
+  starsCtx.clearRect(0,0,W,H);
+  // Redraw milky way
+  // (already drawn, but we need to redraw animated stars on top)
+  // Minimal: just draw the animated/flickering stars
+
   for(const s of stars){
-    s.tw+=0.03;
-    // Gravitational lensing — warp slightly around center
-    const dx=s.x-W/2,dy=s.y-H/2;
-    const d=Math.hypot(dx,dy);
-    const warp=d<400?(400-d)/400*0.3:0;
-    const ang=Math.atan2(dy,dx)+warp*0.05;
-    const x=W/2+Math.cos(ang)*d;
-    const y=H/2+Math.sin(ang)*d;
-    const a=0.4+Math.sin(s.tw)*0.4;
-    if(s.hue===220)st.fillStyle=`rgba(180,200,255,${a})`;
-    else if(s.hue===40)st.fillStyle=`rgba(255,220,180,${a})`;
-    else st.fillStyle=`rgba(255,255,255,${a})`;
-    st.beginPath();st.arc(x,y,s.r,0,Math.PI*2);st.fill();
+    // Gravitational lensing: stars orbit around black hole
+    // Stars near BH get pulled into curved paths
+    const distToBH=s.orbitR;
+    const lensingStr=Math.max(0, 1-(distToBH/(BH_R*3)));
+
+    // Update orbit angle (lensing effect)
+    s.orbitAng+=s.orbitSp*(1+lensingStr*4);
+    s.x=BH_X+Math.cos(s.orbitAng)*s.orbitR;
+    s.y=BH_Y+Math.sin(s.orbitAng)*s.orbitR;
+
+    // Don't draw stars inside event horizon
+    if(distToBH<BH_R*1.05) continue;
+
+    let alpha=s.a;
+    if(s.flicker){
+      s.flickPhase+=s.flickSp;
+      alpha=s.a*(0.4+Math.abs(Math.sin(s.flickPhase))*0.7);
+    }
+
+    // Color: lensed stars near BH get blue-shifted
+    let col;
+    if(s.hue===0){
+      const blueShift=lensingStr*50;
+      col=`rgba(${220-blueShift},${220-blueShift},${220+blueShift},${alpha})`;
+    } else {
+      col=`hsla(${s.hue},80%,80%,${alpha})`;
+    }
+
+    starsCtx.fillStyle=col;
+    if(lensingStr>0.3){
+      starsCtx.shadowBlur=4; starsCtx.shadowColor=col;
+    }
+    starsCtx.beginPath();
+    starsCtx.arc(s.x,s.y,s.r*(1+lensingStr*0.5),0,Math.PI*2);
+    starsCtx.fill();
+    starsCtx.shadowBlur=0;
   }
 
-  // Ship — tiny crossing
-  sp.clearRect(0,0,W,H);
-  ship.x+=ship.vx;ship.ph+=0.02;
-  if(ship.x>W+80){ship.x=-80;ship.y=300+Math.random()*1200;}
-  sp.fillStyle='rgba(200,220,255,0.9)';sp.shadowBlur=10;sp.shadowColor='#80c0ff';
-  sp.beginPath();sp.ellipse(ship.x,ship.y,4,1.5,0,0,Math.PI*2);sp.fill();
-  // Trail
-  sp.strokeStyle='rgba(100,160,255,0.5)';sp.lineWidth=1;sp.shadowBlur=5;
-  sp.beginPath();sp.moveTo(ship.x-3,ship.y);sp.lineTo(ship.x-80,ship.y);sp.stroke();
-  sp.shadowBlur=0;
+  /* ── ACCRETION DISK ── */
+  diskCtx.clearRect(0,0,W,H);
+  diskCtx.save();
+  diskCtx.translate(BH_X,BH_Y);
 
-  // Warp distortion rings around hole
-  wp.clearRect(0,0,W,H);
-  for(let i=0;i<4;i++){
-    const r=180+((t*60+i*80)%320);
-    const a=Math.max(0,1-((t*60+i*80)%320)/320)*0.25;
-    wp.strokeStyle=`rgba(255,200,120,${a})`;wp.lineWidth=1.5;
-    wp.beginPath();wp.arc(W/2,H/2,r,0,Math.PI*2);wp.stroke();
+  // Draw disk in two halves (front and back) for 3D illusion
+  // Back half first (dimmer)
+  for(let half=0;half<2;half++){
+    const isBack=half===0;
+    diskCtx.save();
+    // Tilt: scale Y to simulate inclination
+    diskCtx.scale(1, Math.cos(DISK_TILT)*(isBack?0.85:1.0));
+    // Clip to half
+    diskCtx.beginPath();
+    diskCtx.rect(-W,isBack?-H:0,W*2,H);
+    diskCtx.clip();
+
+    // Draw disk segments as arcs
+    const SEGS=120;
+    for(let si=0;si<SEGS;si++){
+      const ang=diskRot+(si/SEGS)*Math.PI*2;
+      const ang2=diskRot+((si+1)/SEGS)*Math.PI*2;
+
+      // Multiple radial bands
+      const bands=[
+        {r1:BH_R*1.02,r2:BH_R*1.08,hue:55,sat:100,light:85,a:0.9},
+        {r1:BH_R*1.08,r2:BH_R*1.18,hue:45,sat:100,light:70,a:0.8},
+        {r1:BH_R*1.18,r2:BH_R*1.35,hue:30,sat:100,light:55,a:0.65},
+        {r1:BH_R*1.35,r2:BH_R*1.6, hue:18,sat:90, light:40,a:0.45},
+        {r1:BH_R*1.6, r2:BH_R*1.9, hue:12,sat:80, light:28,a:0.25},
+      ];
+      for(const b of bands){
+        // Doppler effect: approaching side brighter/bluer, receding dimmer/redder
+        const doppler=Math.cos(ang-diskRot+Math.PI/2)*0.35;
+        const bright=isBack?0.35:1.0;
+        const aDoppler=b.a*(bright+doppler*0.3);
+        const hueDoppler=b.hue+(isBack?-5:doppler*15);
+
+        diskCtx.strokeStyle=`hsla(${hueDoppler},${b.sat}%,${b.light}%,${aDoppler})`;
+        diskCtx.lineWidth=(b.r2-b.r1)*0.7;
+        diskCtx.shadowBlur=isBack?0:(b.r2-b.r1)*0.8;
+        diskCtx.shadowColor=`hsla(${hueDoppler},100%,${b.light}%,0.6)`;
+        diskCtx.beginPath();
+        diskCtx.arc(0,0,(b.r1+b.r2)/2,ang,ang2);
+        diskCtx.stroke();
+      }
+    }
+    diskCtx.shadowBlur=0;
+    diskCtx.restore();
   }
+  diskCtx.restore();
+
+  // Relativistic jet — narrow beam from north pole
+  const jetPulse=0.5+Math.sin(t*1.8)*0.3;
+  const jetG=diskCtx.createLinearGradient(BH_X,BH_Y,BH_X,0);
+  jetG.addColorStop(0,`rgba(100,150,255,${jetPulse*0.7})`);
+  jetG.addColorStop(0.4,`rgba(60,100,255,${jetPulse*0.3})`);
+  jetG.addColorStop(1,'rgba(0,40,200,0)');
+  diskCtx.shadowBlur=20; diskCtx.shadowColor='rgba(100,150,255,0.6)';
+  diskCtx.strokeStyle=jetG; diskCtx.lineWidth=3+(jetPulse*2);
+  diskCtx.lineCap='round';
+  diskCtx.beginPath(); diskCtx.moveTo(BH_X,BH_Y-BH_R); diskCtx.lineTo(BH_X,60); diskCtx.stroke();
+  // South jet
+  const jetG2=diskCtx.createLinearGradient(BH_X,BH_Y,BH_X,H);
+  jetG2.addColorStop(0,`rgba(100,150,255,${jetPulse*0.5})`);
+  jetG2.addColorStop(0.4,`rgba(60,100,255,${jetPulse*0.2})`);
+  jetG2.addColorStop(1,'rgba(0,40,200,0)');
+  diskCtx.strokeStyle=jetG2;
+  diskCtx.beginPath(); diskCtx.moveTo(BH_X,BH_Y+BH_R); diskCtx.lineTo(BH_X,H-100); diskCtx.stroke();
+  diskCtx.shadowBlur=0;
+
+  /* ── RING: Grav waves + sigils ── */
+  ringCtx.clearRect(0,0,W,H);
+
+  // Spawn gravitational waves
+  waveTimer+=0.016;
+  if(waveTimer>3+Math.random()*2){
+    waveTimer=0;
+    gravWaves.push({r:BH_R+10,life:1,decay:0.012+Math.random()*0.008});
+  }
+  for(let i=gravWaves.length-1;i>=0;i--){
+    const w=gravWaves[i];
+    w.r+=2.2; w.life-=w.decay;
+    if(w.life<=0){gravWaves.splice(i,1);continue;}
+    const alpha=w.life*0.35;
+    ringCtx.strokeStyle=`rgba(180,140,60,${alpha})`;
+    ringCtx.lineWidth=1.5;
+    ringCtx.shadowBlur=8; ringCtx.shadowColor=`rgba(200,160,80,${alpha*1.5})`;
+    ringCtx.beginPath(); ringCtx.arc(BH_X,BH_Y,w.r,0,Math.PI*2); ringCtx.stroke();
+    ringCtx.shadowBlur=0;
+  }
+
+  // Innermost stable circular orbit glow
+  const iscoR=BH_R*1.05;
+  const iscoPulse=0.4+Math.sin(t*2.5)*0.35;
+  ringCtx.strokeStyle=`rgba(255,220,100,${iscoPulse*0.6})`;
+  ringCtx.lineWidth=1;
+  ringCtx.shadowBlur=12; ringCtx.shadowColor=`rgba(255,200,80,0.8)`;
+  ringCtx.beginPath(); ringCtx.arc(BH_X,BH_Y,iscoR,0,Math.PI*2); ringCtx.stroke();
+  ringCtx.shadowBlur=0;
+
+  /* ── SPACESHIP ── */
+  shipCtx.clearRect(0,0,W,H);
+
+  // Gravitation slowly curves ship path
+  const dxToBH=BH_X-ship.x, dyToBH=BH_Y-ship.y;
+  const distToBH=Math.hypot(dxToBH,dyToBH);
+  const gravStr=Math.min(0.0004, 800000/(distToBH*distToBH*distToBH));
+  ship.vx+=dxToBH*gravStr; ship.vy+=dyToBH*gravStr;
+  ship.x+=ship.vx; ship.y+=ship.vy;
+
+  ship.trail.push({x:ship.x,y:ship.y});
+  if(ship.trail.length>25) ship.trail.shift();
+
+  // Reset if too close to BH or off screen
+  if(distToBH<BH_R*1.1||ship.x>W+100||ship.x<-100||ship.y>H+100||ship.y<-100){
+    ship.x=Math.random()<0.5?-60:W+60;
+    ship.y=100+Math.random()*500;
+    ship.vx=ship.x<0?0.18+Math.random()*0.15:-(0.18+Math.random()*0.15);
+    ship.vy=(Math.random()-0.5)*0.12;
+    ship.trail=[];
+  }
+
+  // Draw trail
+  for(let ti=1;ti<ship.trail.length;ti++){
+    const ta=(ti/ship.trail.length)*0.45;
+    shipCtx.strokeStyle=`rgba(120,180,255,${ta})`;
+    shipCtx.lineWidth=1+(ti/ship.trail.length)*1.5;
+    shipCtx.lineCap='round';
+    shipCtx.beginPath();
+    shipCtx.moveTo(ship.trail[ti-1].x,ship.trail[ti-1].y);
+    shipCtx.lineTo(ship.trail[ti].x,ship.trail[ti].y);
+    shipCtx.stroke();
+  }
+  drawShip(shipCtx,ship.x,ship.y,ship.vx,ship.vy);
+
+  /* ── PARTICLES ── */
+  partCtx.clearRect(0,0,W,H);
+
+  // Accretion spiral particles
+  for(let i=0;i<spiralParticles.length;i++){
+    const p=spiralParticles[i];
+    // Speed up as they get closer (conservation of angular momentum)
+    const speedBoost=Math.max(1,(BH_R*1.5)/Math.max(p.r,BH_R*0.5));
+    p.ang+=p.vAng*speedBoost;
+    p.r+=p.vR*speedBoost*0.5;
+
+    if(p.r<BH_R*0.95){
+      spiralParticles[i]=mkSpiral(false); continue;
+    }
+
+    const px=BH_X+Math.cos(p.ang)*p.r;
+    const py=BH_Y+Math.sin(p.ang)*p.r;
+
+    p.trail.push({x:px,y:py});
+    if(p.trail.length>8) p.trail.shift();
+
+    // Trail
+    for(let ti=1;ti<p.trail.length;ti++){
+      const ta=(ti/p.trail.length)*p.a*0.5;
+      partCtx.strokeStyle=`hsla(${p.hue},90%,65%,${ta})`;
+      partCtx.lineWidth=p.size*(ti/p.trail.length)*0.8;
+      partCtx.lineCap='round';
+      if(ti>1){
+        partCtx.beginPath();
+        partCtx.moveTo(p.trail[ti-1].x,p.trail[ti-1].y);
+        partCtx.lineTo(p.trail[ti].x,p.trail[ti].y);
+        partCtx.stroke();
+      }
+    }
+    // Head
+    const distFactor=1-Math.max(0,(p.r-BH_R)/(BH_R*1.2));
+    partCtx.fillStyle=`hsla(${p.hue+distFactor*20},95%,${60+distFactor*25}%,${p.a})`;
+    partCtx.shadowBlur=6; partCtx.shadowColor=`hsla(${p.hue},100%,65%,0.7)`;
+    partCtx.beginPath(); partCtx.arc(px,py,p.size,0,Math.PI*2); partCtx.fill();
+    partCtx.shadowBlur=0;
+  }
+
+  // Jet particles from poles
+  jetTimer+=0.016;
+  if(jetTimer>0.06){
+    jetTimer=0;
+    // North jet
+    jetParticles.push({
+      x:BH_X+(Math.random()-0.5)*30,
+      y:BH_Y-BH_R,
+      vx:(Math.random()-0.5)*1.5,
+      vy:-(3+Math.random()*3),
+      life:1, decay:0.015+Math.random()*0.01,
+      r:1+Math.random()*2.5,
+    });
+    // South jet
+    jetParticles.push({
+      x:BH_X+(Math.random()-0.5)*30,
+      y:BH_Y+BH_R,
+      vx:(Math.random()-0.5)*1.5,
+      vy:3+Math.random()*3,
+      life:1, decay:0.015+Math.random()*0.01,
+      r:1+Math.random()*2.5,
+    });
+  }
+  partCtx.save();
+  for(let i=jetParticles.length-1;i>=0;i--){
+    const jp=jetParticles[i];
+    jp.x+=jp.vx; jp.y+=jp.vy;
+    jp.life-=jp.decay;
+    if(jp.life<=0){jetParticles.splice(i,1);continue;}
+    const jg=partCtx.createRadialGradient(jp.x,jp.y,0,jp.x,jp.y,jp.r*3);
+    jg.addColorStop(0,`rgba(150,200,255,${jp.life*0.8})`);
+    jg.addColorStop(0.5,`rgba(80,130,255,${jp.life*0.3})`);
+    jg.addColorStop(1,'rgba(0,0,0,0)');
+    partCtx.shadowBlur=8; partCtx.shadowColor='rgba(120,170,255,0.8)';
+    partCtx.fillStyle=jg;
+    partCtx.beginPath(); partCtx.arc(jp.x,jp.y,jp.r*3,0,Math.PI*2); partCtx.fill();
+  }
+  partCtx.shadowBlur=0; partCtx.restore();
+
   requestAnimationFrame(loop);
 }
+
 loop();
 </script>
 </body>

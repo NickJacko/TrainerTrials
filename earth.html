@@ -2,106 +2,575 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>Earth — Kristallhöhle</title>
+<title>Earth — Tektonische Tiefe</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-html,body{width:1080px;height:1920px;overflow:hidden;background:#0a0600;}
-canvas{position:absolute;inset:0;width:1080px;height:1920px;display:block;}
-.bg{position:absolute;inset:0;background:
-  radial-gradient(ellipse 70% 45% at 50% 50%, #3a2010 0%, #1a0a00 50%, transparent 80%),
-  linear-gradient(180deg, #0a0600 0%, #150a00 35%, #1a0a00 60%, #0a0500 100%);}
-/* Cave walls — jagged silhouettes top & bottom */
-.stals-top{position:absolute;top:0;left:0;right:0;height:320px;background:#0a0500;
-  clip-path:polygon(0 0, 100% 0, 100% 30%, 96% 70%, 92% 20%, 88% 85%, 84% 40%, 80% 90%, 76% 30%, 72% 75%, 68% 25%, 64% 80%, 60% 35%, 56% 95%, 52% 40%, 48% 85%, 44% 30%, 40% 90%, 36% 40%, 32% 75%, 28% 25%, 24% 80%, 20% 35%, 16% 90%, 12% 30%, 8% 70%, 4% 25%, 0 55%);}
-.stals-bot{position:absolute;bottom:0;left:0;right:0;height:360px;background:#0a0500;
-  clip-path:polygon(0 100%, 100% 100%, 100% 45%, 96% 30%, 92% 80%, 88% 15%, 84% 60%, 80% 10%, 76% 70%, 72% 25%, 68% 75%, 64% 20%, 60% 65%, 56% 5%, 52% 60%, 48% 15%, 44% 70%, 40% 10%, 36% 60%, 32% 25%, 28% 75%, 24% 20%, 20% 65%, 16% 10%, 12% 70%, 8% 30%, 4% 75%, 0 45%);}
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{
+    width:1080px;height:1920px;overflow:hidden;
+    background:#060200;
+  }
+  canvas{position:absolute;inset:0;width:1080px;height:1920px;display:block;}
 
-/* Underground lake reflection */
-.lake{position:absolute;bottom:0;left:0;right:0;height:140px;background:linear-gradient(0deg, rgba(255,153,68,0.15) 0%, transparent 80%);mix-blend-mode:screen;animation:lakePulse 5s ease-in-out infinite;}
-@keyframes lakePulse{0%,100%{opacity:0.7}50%{opacity:1}}
+  /* Base rock texture gradient */
+  .rock-base{
+    position:absolute;inset:0;
+    background:
+      radial-gradient(ellipse 100% 60% at 50% 100%, #3a1200 0%, #1e0800 30%, #0a0200 65%, transparent 85%),
+      radial-gradient(ellipse 80%  50% at 20% 60%,  #250e04 0%, transparent 55%),
+      radial-gradient(ellipse 70%  45% at 85% 40%,  #1e0a03 0%, transparent 50%),
+      linear-gradient(180deg, #040100 0%, #0c0400 35%, #180800 70%, #0e0400 100%);
+  }
 
-.zone-top{position:absolute;top:0;left:0;right:0;height:120px;background:linear-gradient(180deg,rgba(0,0,0,0.45) 0%,transparent 100%);z-index:40;}
-.zone-bot{position:absolute;bottom:0;left:0;right:0;height:920px;background:linear-gradient(0deg,rgba(10,5,0,0.5) 0%,rgba(10,5,0,0.1) 40%,transparent 100%);z-index:40;}
-.center-darken{position:absolute;top:300px;left:50%;transform:translateX(-50%);width:780px;height:540px;background:radial-gradient(ellipse 50% 50% at 50% 50%,rgba(10,5,0,0.35) 0%,transparent 70%);z-index:38;}
-.vignette{position:absolute;inset:0;background:radial-gradient(ellipse 80% 70% at 50% 50%,transparent 40%,rgba(0,0,0,0.6) 100%);z-index:39;pointer-events:none;}
+  /* Magma glow rising from below — the planet's blood */
+  .magma-rise{
+    position:absolute;bottom:0;left:0;right:0;height:800px;
+    background:
+      radial-gradient(ellipse 110% 55% at 50% 100%, #cc4400 0%, #882200 22%, #441000 45%, transparent 68%),
+      radial-gradient(ellipse  75% 40% at 18% 100%, #aa3500 0%, transparent 50%),
+      radial-gradient(ellipse  65% 35% at 85% 100%, #bb3c00 0%, transparent 48%);
+    animation:magmaBreath 5s ease-in-out infinite;
+  }
+  @keyframes magmaBreath{0%,100%{opacity:0.7}50%{opacity:1}}
+
+  /* Tectonic pressure lines — horizontal stress fractures */
+  .tect-line{
+    position:absolute;left:0;right:0;height:2px;
+    background:linear-gradient(90deg,transparent 5%,rgba(255,100,0,0.18) 25%,rgba(255,140,0,0.3) 50%,rgba(255,100,0,0.18) 75%,transparent 95%);
+    filter:blur(1px);
+    animation:linePulse 6s ease-in-out infinite;
+  }
+  .tl1{top:380px;animation-delay:0s;}
+  .tl2{top:720px;animation-delay:-2s;opacity:0.7;}
+  .tl3{top:1050px;animation-delay:-4s;opacity:0.6;}
+  .tl4{top:1350px;animation-delay:-1s;opacity:0.8;}
+  @keyframes linePulse{0%,100%{opacity:0.4;transform:scaleX(1)}50%{opacity:1;transform:scaleX(1.02)}}
+
+  /* Rock slab edges — massive stone plates */
+  .slab-left{
+    position:absolute;top:0;left:0;width:180px;height:100%;
+    background:linear-gradient(90deg, #030100 0%, #0e0500 60%, transparent 100%);
+  }
+  .slab-right{
+    position:absolute;top:0;right:0;width:180px;height:100%;
+    background:linear-gradient(270deg, #030100 0%, #0e0500 60%, transparent 100%);
+  }
+
+  /* Ground magma pool */
+  .magma-pool{
+    position:absolute;bottom:0;left:0;right:0;height:320px;
+    background:
+      linear-gradient(0deg, #ff4400 0%, #cc2200 15%, #881100 35%, #440800 60%, transparent 100%);
+    animation:poolPulse 3s ease-in-out infinite;
+  }
+  @keyframes poolPulse{0%,100%{opacity:0.55}50%{opacity:0.75}}
+
+  /* Spawn ring — magma from below illuminates it */
+  .ring-magma-glow{
+    position:absolute;top:215px;left:50%;transform:translateX(-50%);
+    width:840px;height:840px;border-radius:50%;
+    background:radial-gradient(ellipse 100% 100% at 50% 50%,
+      rgba(220,80,0,0.14) 0%,rgba(160,50,0,0.06) 48%,transparent 68%);
+    mix-blend-mode:screen;filter:blur(22px);
+    animation:ringMagma 4s ease-in-out infinite;
+  }
+  @keyframes ringMagma{0%,100%{opacity:0.65;transform:translateX(-50%) scale(1)}50%{opacity:1;transform:translateX(-50%) scale(1.02)}}
+
+  /* Scene heat shimmer */
+  .heat-flicker{
+    position:absolute;inset:0;
+    background:radial-gradient(ellipse 60% 50% at 52% 65%, rgba(180,60,0,0.06) 0%, transparent 60%);
+    mix-blend-mode:screen;
+    animation:heatFlick 3.5s ease-in-out infinite;pointer-events:none;
+  }
+  @keyframes heatFlick{0%,100%{opacity:0.5}22%{opacity:0.9}55%{opacity:0.55}80%{opacity:1}}
+
+  /* UI */
+  .center-darken{position:absolute;top:300px;left:50%;transform:translateX(-50%);width:780px;height:540px;background:radial-gradient(ellipse 50% 50% at 50% 50%,rgba(5,1,0,0.44) 0%,transparent 70%);z-index:38;}
+  .vignette{position:absolute;inset:0;background:radial-gradient(ellipse 80% 70% at 50% 50%,transparent 38%,rgba(1,0,0,0.78) 100%);z-index:39;pointer-events:none;}
+  .zone-top{position:absolute;top:0;left:0;right:0;height:120px;background:linear-gradient(180deg,rgba(0,0,0,0.65) 0%,transparent 100%);z-index:40;}
+  .zone-bot{position:absolute;bottom:0;left:0;right:0;height:920px;background:linear-gradient(0deg,rgba(1,0,0,0.68) 0%,rgba(1,0,0,0.16) 40%,transparent 100%);z-index:40;}
 </style>
 </head>
 <body>
-<div class="bg"></div>
-<canvas id="crystals"></canvas>
-<div class="stals-top"></div>
-<div class="stals-bot"></div>
-<div class="lake"></div>
-<canvas id="drops"></canvas>
-<canvas id="dust"></canvas>
-<div class="center-darken"></div>
-<div class="vignette"></div>
-<div class="zone-top"></div>
-<div class="zone-bot"></div>
+  <div class="rock-base"></div>
+  <div class="slab-left"></div>
+  <div class="slab-right"></div>
+  <div class="tect-line tl1"></div>
+  <div class="tect-line tl2"></div>
+  <div class="tect-line tl3"></div>
+  <div class="tect-line tl4"></div>
+
+  <!-- Canvas stack: rock layers → lava cracks → ring → eruptions → particles -->
+  <canvas id="cRock"></canvas>
+  <canvas id="cLava"></canvas>
+  <canvas id="cRing"></canvas>
+  <canvas id="cErupt"></canvas>
+  <canvas id="cParticles"></canvas>
+
+  <div class="magma-rise"></div>
+  <div class="magma-pool"></div>
+  <div class="ring-magma-glow"></div>
+  <div class="heat-flicker"></div>
+  <div class="center-darken"></div>
+  <div class="vignette"></div>
+  <div class="zone-top"></div>
+  <div class="zone-bot"></div>
+
 <script>
-const W=1080,H=1920;
-function setup(id){const c=document.getElementById(id);c.width=W;c.height=H;return c.getContext('2d');}
+const W=1080, H=1920;
+const RING_CX=540, RING_CY=590, RING_R=300;
 
-const cr=setup('crystals');
-const crystals=[];
-const cHues=[30,15,200,280,45];
-for(let i=0;i<30;i++){
-  const top=Math.random()<0.5;
-  const x=Math.random()*W;
-  const y=top?50+Math.random()*250:H-80-Math.random()*250;
-  crystals.push({x,y,sz:20+Math.random()*50,rot:(Math.random()-0.5)*0.4,hue:cHues[Math.floor(Math.random()*cHues.length)],ph:Math.random()*Math.PI*2,top});
+function mkCanvas(id){
+  const c=document.getElementById(id);
+  c.width=W; c.height=H;
+  return c.getContext('2d');
 }
-// Middle ambient crystals (smaller, softer)
-for(let i=0;i<14;i++){
-  crystals.push({x:Math.random()*W,y:400+Math.random()*1000,sz:12+Math.random()*18,rot:Math.random()*Math.PI*2,hue:cHues[Math.floor(Math.random()*cHues.length)],ph:Math.random()*Math.PI*2,top:false,floating:true});
+const rockCtx  = mkCanvas('cRock');
+const lavaCtx  = mkCanvas('cLava');
+const ringCtx  = mkCanvas('cRing');
+const eruptCtx = mkCanvas('cErupt');
+const partCtx  = mkCanvas('cParticles');
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ROCK LAYERS — tectonic plates drawn once, organic stone silhouettes
+   ═══════════════════════════════════════════════════════════════════════════ */
+(function buildRock(){
+  rockCtx.clearRect(0,0,W,H);
+
+  // Stone layer bands — horizontal strata at different depths
+  const strata=[
+    {y:160,  h:80,  col:'#0d0401', edge:'#1a0802'},
+    {y:320,  h:100, col:'#100502', edge:'#200a03'},
+    {y:680,  h:90,  col:'#0e0401', edge:'#1c0903'},
+    {y:1020, h:110, col:'#120602', edge:'#220b03'},
+    {y:1280, h:85,  col:'#0f0401', edge:'#1e0902'},
+    {y:1520, h:95,  col:'#110502', edge:'#200a03'},
+  ];
+  for(const s of strata){
+    // Organic wavy top edge
+    rockCtx.fillStyle=s.col;
+    rockCtx.beginPath();
+    rockCtx.moveTo(0,s.y);
+    const steps=32;
+    for(let i=0;i<=steps;i++){
+      const px=i/steps*W;
+      const py=s.y+Math.sin(i*0.7+s.y*0.01)*8+Math.sin(i*1.4)*4+Math.sin(i*2.8)*2;
+      i===0?rockCtx.moveTo(px,py):rockCtx.lineTo(px,py);
+    }
+    rockCtx.lineTo(W,s.y+s.h);rockCtx.lineTo(0,s.y+s.h);
+    rockCtx.fill();
+    // Bright edge highlight
+    rockCtx.strokeStyle=s.edge;
+    rockCtx.lineWidth=1.5;
+    rockCtx.beginPath();
+    for(let i=0;i<=steps;i++){
+      const px=i/steps*W;
+      const py=s.y+Math.sin(i*0.7+s.y*0.01)*8+Math.sin(i*1.4)*4+Math.sin(i*2.8)*2;
+      i===0?rockCtx.moveTo(px,py):rockCtx.lineTo(px,py);
+    }
+    rockCtx.stroke();
+  }
+
+  // Massive rock formations — irregular silhouettes
+  // Left wall formation
+  const leftRock=[
+    [0,0],[0,H],[120,H],[110,1600],[135,1450],[105,1300],
+    [145,1150],[115,980],[155,820],[120,660],[160,500],
+    [130,350],[165,200],[140,100],[120,0]
+  ];
+  const lg=rockCtx.createLinearGradient(0,0,160,0);
+  lg.addColorStop(0,'#040100');lg.addColorStop(1,'rgba(20,8,2,0)');
+  rockCtx.fillStyle=lg;
+  rockCtx.beginPath();
+  leftRock.forEach(([x,y],i)=>i===0?rockCtx.moveTo(x,y):rockCtx.lineTo(x,y));
+  rockCtx.closePath();rockCtx.fill();
+
+  // Right wall formation
+  const rightRock=[
+    [W,0],[W,H],[W-115,H],[W-105,1580],[W-140,1420],[W-108,1280],
+    [W-150,1120],[W-118,960],[W-158,800],[W-125,640],[W-165,480],
+    [W-135,330],[W-170,185],[W-145,90],[W-125,0]
+  ];
+  const rg2=rockCtx.createLinearGradient(W,0,W-165,0);
+  rg2.addColorStop(0,'#040100');rg2.addColorStop(1,'rgba(20,8,2,0)');
+  rockCtx.fillStyle=rg2;
+  rockCtx.beginPath();
+  rightRock.forEach(([x,y],i)=>i===0?rockCtx.moveTo(x,y):rockCtx.lineTo(x,y));
+  rockCtx.closePath();rockCtx.fill();
+
+  // Rock ceiling chunks — dark overhanging masses
+  const chunks=[
+    {pts:[[0,0],[260,0],[240,55],[200,35],[175,80],[145,45],[110,90],[80,40],[45,70],[0,50]]},
+    {pts:[[350,0],[680,0],[665,60],[630,30],[605,85],[565,40],[530,75],[495,35],[460,70],[420,38],[385,65]]},
+    {pts:[[750,0],[1080,0],[1080,55],[1050,30],[1020,72],[985,40],[948,78],[910,42],[875,68],[840,35],[808,65],[780,38]]},
+  ];
+  for(const chunk of chunks){
+    rockCtx.fillStyle='#050200';
+    rockCtx.beginPath();
+    chunk.pts.forEach(([x,y],i)=>i===0?rockCtx.moveTo(x,y):rockCtx.lineTo(x,y));
+    rockCtx.closePath();rockCtx.fill();
+    // Rim glow from heat below
+    rockCtx.strokeStyle='rgba(80,28,4,0.4)';
+    rockCtx.lineWidth=1;
+    rockCtx.beginPath();
+    chunk.pts.slice(2).forEach(([x,y],i)=>i===0?rockCtx.moveTo(x,y):rockCtx.lineTo(x,y));
+    rockCtx.stroke();
+  }
+
+  // Rock floor — uneven ground
+  rockCtx.fillStyle='#060200';
+  rockCtx.beginPath();
+  rockCtx.moveTo(0,H);rockCtx.lineTo(W,H);rockCtx.lineTo(W,H-160);
+  const gsteps=28;
+  for(let i=gsteps;i>=0;i--){
+    const px=i/gsteps*W;
+    const py=H-160+Math.sin(i*0.65)*30+Math.sin(i*1.3)*15+Math.sin(i*2.6)*6;
+    rockCtx.lineTo(px,py);
+  }
+  rockCtx.closePath();rockCtx.fill();
+})();
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   LAVA CRACK NETWORK — deep fissures glowing with magma
+   ═══════════════════════════════════════════════════════════════════════════ */
+const lavaCracks=[];
+function genCrack(startX,startY,length,angle,depth,maxDepth){
+  const pts=[{x:startX,y:startY}];
+  let cx=startX,cy=startY,a=angle;
+  const segs=Math.floor(length/22);
+  for(let i=0;i<segs;i++){
+    a+=(Math.random()-0.5)*0.55;
+    cx+=Math.cos(a)*22; cy+=Math.sin(a)*18;
+    pts.push({x:cx,y:cy});
+  }
+  lavaCracks.push({
+    pts,
+    phase:Math.random()*Math.PI*2,
+    sp:0.015+Math.random()*0.025,
+    w:depth===0?3+Math.random()*3:1.5+Math.random()*2,
+    depth,
+  });
+  if(depth<maxDepth && Math.random()<0.55){
+    const mid=pts[Math.floor(pts.length/2)];
+    genCrack(mid.x,mid.y,length*0.55,angle+(Math.random()<0.5?1:-1)*0.8,depth+1,maxDepth);
+  }
 }
-function drawCrystal(c,cr){
-  c.save();c.translate(cr.x,cr.y);c.rotate(cr.rot);
-  const a=0.6+Math.sin(cr.ph)*0.35;
-  c.shadowBlur=20;c.shadowColor=`hsl(${cr.hue},90%,60%)`;
-  const grad=c.createLinearGradient(0,-cr.sz,0,cr.sz);
-  grad.addColorStop(0,`hsla(${cr.hue},90%,70%,${a})`);
-  grad.addColorStop(1,`hsla(${cr.hue},90%,40%,${a*0.6})`);
-  c.fillStyle=grad;
-  c.beginPath();
-  c.moveTo(0,-cr.sz);c.lineTo(cr.sz*0.4,-cr.sz*0.4);c.lineTo(cr.sz*0.4,cr.sz*0.7);c.lineTo(0,cr.sz);
-  c.lineTo(-cr.sz*0.4,cr.sz*0.7);c.lineTo(-cr.sz*0.4,-cr.sz*0.4);c.closePath();c.fill();
-  c.strokeStyle=`hsla(${cr.hue},90%,85%,${a*0.7})`;c.lineWidth=1;c.stroke();
-  c.restore();
+// Major crack networks
+genCrack(80,  450, 280, 0.3,  0, 2);
+genCrack(320, 380, 220, -0.2, 0, 2);
+genCrack(650, 400, 260, 0.5,  0, 2);
+genCrack(900, 370, 200, -0.4, 0, 2);
+genCrack(150, 820, 300, 0.6,  0, 3);
+genCrack(500, 780, 340, -0.1, 0, 3);
+genCrack(820, 800, 280, 0.4,  0, 2);
+genCrack(60,  1200,320, 0.2,  0, 2);
+genCrack(400, 1150,360, -0.3, 0, 3);
+genCrack(750, 1180,300, 0.5,  0, 2);
+genCrack(200, 1550,260, 0.1,  0, 2);
+genCrack(600, 1520,280, -0.2, 0, 2);
+genCrack(880, 1480,240, 0.4,  0, 2);
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   RING: Stone mandala carved into rock face
+   Concentric circles of ancient earth runes carved into rock
+   ═══════════════════════════════════════════════════════════════════════════ */
+// Carved ring grooves — filled with magma light
+const ringGrooves=[
+  {r:RING_R-20, w:4, phase:0, sp:0.012},
+  {r:RING_R+35, w:3, phase:1.2, sp:-0.008},
+  {r:RING_R+75, w:2.5,phase:2.5, sp:0.005},
+];
+
+// Radial carved lines — like spokes in stone
+const SPOKE_COUNT=16;
+const spokePhases=Array.from({length:SPOKE_COUNT},()=>Math.random()*Math.PI*2);
+let spokeRot=0;
+
+// Eruption vents on the ring — small magma burst points
+const VENT_COUNT=8;
+const ringVents=[];
+for(let i=0;i<VENT_COUNT;i++){
+  const ang=(i/VENT_COUNT)*Math.PI*2;
+  ringVents.push({
+    ang,
+    x:RING_CX+Math.cos(ang)*(RING_R+18),
+    y:RING_CY+Math.sin(ang)*(RING_R+18),
+    phase:Math.random()*Math.PI*2,
+    sp:0.035+Math.random()*0.04,
+  });
 }
 
-const dp=setup('drops');
-const drops=[];
-for(let i=0;i<8;i++)drops.push({x:Math.random()*W,y:200+Math.random()*100,vy:3+Math.random()*2,next:performance.now()+Math.random()*3000});
+/* ═══════════════════════════════════════════════════════════════════════════
+   ERUPTIONS — periodic magma bursts from floor cracks
+   ═══════════════════════════════════════════════════════════════════════════ */
+const eruptions=[];
+const ERUPT_SOURCES=[
+  {x:180, y:H-200},{x:420,y:H-180},{x:650,y:H-220},{x:880,y:H-190},
+  {x:90,  y:H-160},{x:540,y:H-240},{x:960,y:H-170},
+];
+let eruptTimer=0;
 
-const du=setup('dust');
-const dusts=[];
-for(let i=0;i<80;i++)dusts.push({x:Math.random()*W,y:Math.random()*H,r:0.5+Math.random()*1.2,vx:(Math.random()-0.5)*0.15,vy:(Math.random()-0.5)*0.1,a:0.2+Math.random()*0.3,hue:25+Math.random()*20});
+/* ═══════════════════════════════════════════════════════════════════════════
+   PARTICLES — magma sparks, rock dust, heat shimmer
+   ═══════════════════════════════════════════════════════════════════════════ */
+const magmaSparks=[];
+for(let i=0;i<90;i++) magmaSparks.push(mkSpark(true));
+function mkSpark(init){
+  return{
+    x:Math.random()*W,
+    y:init?H-50-Math.random()*600:H-30+Math.random()*40,
+    vy:-(0.6+Math.random()*2.2),
+    vx:(Math.random()-0.5)*0.8,
+    flick:Math.random()*Math.PI*2,
+    flickSp:0.1+Math.random()*0.18,
+    r:0.6+Math.random()*2,
+    hot:Math.random()<0.5,
+    sway:Math.random()*Math.PI*2,
+    swaySp:0.02+Math.random()*0.03,
+    swayAmp:3+Math.random()*8,
+  };
+}
 
+const rockDust=[];
+for(let i=0;i<45;i++){
+  rockDust.push({
+    x:Math.random()*W, y:100+Math.random()*1400,
+    vx:(Math.random()-0.5)*0.25, vy:(Math.random()-0.5)*0.15,
+    r:0.8+Math.random()*2.2, a:0.08+Math.random()*0.18,
+    phase:Math.random()*Math.PI*2, sp:0.008+Math.random()*0.015,
+  });
+}
+
+// Heat shimmer blobs rising from cracks
+const heatBlobs=[];
+for(let i=0;i<25;i++){
+  heatBlobs.push({
+    x:100+Math.random()*880,
+    y:H-100-Math.random()*500,
+    vy:-(0.15+Math.random()*0.3),
+    vx:(Math.random()-0.5)*0.15,
+    r:8+Math.random()*22,
+    a:0.04+Math.random()*0.06,
+    life:Math.random(), lifeSpd:0.003+Math.random()*0.005,
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MAIN LOOP
+   ═══════════════════════════════════════════════════════════════════════════ */
 let t=0;
+
 function loop(){
   t+=0.016;
-  cr.clearRect(0,0,W,H);
-  for(const c of crystals){c.ph+=0.025;drawCrystal(cr,c);}
-  cr.shadowBlur=0;
 
-  dp.clearRect(0,0,W,H);
-  for(const d of drops){
-    if(performance.now()>d.next){
-      d.y+=d.vy;
-      if(d.y>H-200){d.next=performance.now()+2000+Math.random()*4000;d.y=200+Math.random()*100;d.x=Math.random()*W;}
-      dp.fillStyle='rgba(200,220,255,0.6)';dp.shadowBlur=6;dp.shadowColor='#aaccff';
-      dp.beginPath();dp.ellipse(d.x,d.y,2,5,0,0,Math.PI*2);dp.fill();
+  /* ── LAVA CRACKS ── */
+  lavaCtx.clearRect(0,0,W,H);
+  lavaCtx.globalCompositeOperation='screen';
+  for(const lc of lavaCracks){
+    lc.phase+=lc.sp;
+    const pulse=0.4+Math.sin(lc.phase)*0.6;
+    const bright=Math.floor(50+pulse*90);
+    // Outer glow
+    lavaCtx.strokeStyle=`rgba(255,${Math.floor(30+pulse*50)},0,${pulse*0.6})`;
+    lavaCtx.lineWidth=lc.w+4;
+    lavaCtx.shadowBlur=lc.depth===0?18:10;
+    lavaCtx.shadowColor=`rgba(255,80,0,${pulse*0.7})`;
+    lavaCtx.lineCap='round';
+    lavaCtx.beginPath();
+    lavaCtx.moveTo(lc.pts[0].x,lc.pts[0].y);
+    for(let i=1;i<lc.pts.length;i++) lavaCtx.lineTo(lc.pts[i].x,lc.pts[i].y);
+    lavaCtx.stroke();
+    // Hot core
+    lavaCtx.strokeStyle=`rgba(255,${bright},${Math.floor(pulse*40)},${pulse*0.9})`;
+    lavaCtx.lineWidth=lc.w; lavaCtx.shadowBlur=0;
+    lavaCtx.stroke();
+    // White-hot center for main cracks
+    if(lc.depth===0){
+      lavaCtx.strokeStyle=`rgba(255,240,180,${pulse*0.55})`;
+      lavaCtx.lineWidth=lc.w*0.28; lavaCtx.stroke();
     }
   }
-  dp.shadowBlur=0;
+  lavaCtx.shadowBlur=0;
+  lavaCtx.globalCompositeOperation='source-over';
 
-  du.clearRect(0,0,W,H);
-  for(const d of dusts){d.x+=d.vx;d.y+=d.vy;
-    if(d.x<0)d.x=W;if(d.x>W)d.x=0;if(d.y<0)d.y=H;if(d.y>H)d.y=0;
-    du.fillStyle=`hsla(${d.hue},70%,70%,${d.a})`;du.beginPath();du.arc(d.x,d.y,d.r,0,Math.PI*2);du.fill();}
+  /* ── RING: Stone mandala ── */
+  ringCtx.clearRect(0,0,W,H);
+
+  // Carved grooves — glowing with magma light
+  for(const g of ringGrooves){
+    g.phase+=g.sp;
+    const pulse=0.45+Math.sin(g.phase)*0.45;
+    ringCtx.strokeStyle=`rgba(255,${Math.floor(80+pulse*80)},0,${pulse*0.7})`;
+    ringCtx.lineWidth=g.w;
+    ringCtx.shadowBlur=12;
+    ringCtx.shadowColor=`rgba(255,100,0,${pulse*0.7})`;
+    ringCtx.beginPath();
+    ringCtx.arc(RING_CX,RING_CY,g.r,0,Math.PI*2);
+    ringCtx.stroke();
+    ringCtx.shadowBlur=0;
+  }
+
+  // Radial spokes — carved stone lines
+  spokeRot+=0.003;
+  for(let i=0;i<SPOKE_COUNT;i++){
+    spokePhases[i]+=0.012;
+    const ang=(i/SPOKE_COUNT)*Math.PI*2+spokeRot;
+    const pulse=0.25+Math.abs(Math.sin(spokePhases[i]))*0.45;
+    const innerR=RING_R-45;
+    const outerR=RING_R+90;
+    ringCtx.strokeStyle=`rgba(255,${Math.floor(60+pulse*80)},0,${pulse*0.6})`;
+    ringCtx.lineWidth=1.2;
+    ringCtx.shadowBlur=8;
+    ringCtx.shadowColor=`rgba(255,80,0,${pulse*0.6})`;
+    ringCtx.beginPath();
+    ringCtx.moveTo(RING_CX+Math.cos(ang)*innerR,RING_CY+Math.sin(ang)*innerR);
+    ringCtx.lineTo(RING_CX+Math.cos(ang)*outerR,RING_CY+Math.sin(ang)*outerR);
+    ringCtx.stroke();
+    ringCtx.shadowBlur=0;
+  }
+
+  // Magma vent glows on ring
+  for(const v of ringVents){
+    v.phase+=v.sp;
+    const pulse=0.4+Math.sin(v.phase)*0.5;
+    if(pulse<0.2) continue;
+    const vg=ringCtx.createRadialGradient(v.x,v.y,0,v.x,v.y,22);
+    vg.addColorStop(0,`rgba(255,${Math.floor(150+pulse*105)},0,${pulse*0.85})`);
+    vg.addColorStop(0.4,`rgba(255,80,0,${pulse*0.35})`);
+    vg.addColorStop(1,'rgba(0,0,0,0)');
+    ringCtx.fillStyle=vg;
+    ringCtx.shadowBlur=12;
+    ringCtx.shadowColor=`rgba(255,120,0,${pulse*0.7})`;
+    ringCtx.beginPath();
+    ringCtx.arc(v.x,v.y,22,0,Math.PI*2);
+    ringCtx.fill();
+    ringCtx.shadowBlur=0;
+  }
+
+  // Central magma upwelling — heat from the core
+  const corePulse=0.5+Math.sin(t*1.5)*0.35;
+  const cg=ringCtx.createRadialGradient(RING_CX,RING_CY,0,RING_CX,RING_CY,RING_R+180);
+  cg.addColorStop(0,`rgba(255,80,0,${0.18*corePulse})`);
+  cg.addColorStop(0.35,`rgba(200,50,0,${0.09*corePulse})`);
+  cg.addColorStop(1,'rgba(0,0,0,0)');
+  ringCtx.fillStyle=cg;
+  ringCtx.beginPath();ringCtx.arc(RING_CX,RING_CY,RING_R+180,0,Math.PI*2);ringCtx.fill();
+
+  /* ── ERUPTIONS ── */
+  eruptCtx.clearRect(0,0,W,H);
+  eruptTimer+=0.016;
+  if(eruptTimer>1.5+Math.random()*3){
+    eruptTimer=0;
+    const src=ERUPT_SOURCES[Math.floor(Math.random()*ERUPT_SOURCES.length)];
+    eruptions.push({
+      x:src.x+(Math.random()-0.5)*40,
+      y:src.y,
+      particles:[],
+      phase:0,
+      active:true,
+    });
+    // Spawn burst particles
+    for(let i=0;i<12+Math.floor(Math.random()*10);i++){
+      const ang=-Math.PI/2+(Math.random()-0.5)*1.2;
+      const spd=3+Math.random()*6;
+      eruptions[eruptions.length-1].particles.push({
+        x:src.x+(Math.random()-0.5)*20,
+        y:src.y,
+        vx:Math.cos(ang)*spd,
+        vy:Math.sin(ang)*spd-2,
+        life:1, decay:0.018+Math.random()*0.015,
+        r:2+Math.random()*5,
+        hue:15+Math.random()*20,
+        trail:[],
+      });
+    }
+  }
+
+  for(let ei=eruptions.length-1;ei>=0;ei--){
+    const e=eruptions[ei];
+    let allDead=true;
+    for(let pi=e.particles.length-1;pi>=0;pi--){
+      const p=e.particles[pi];
+      p.trail.push({x:p.x,y:p.y});
+      if(p.trail.length>6) p.trail.shift();
+      p.x+=p.vx; p.y+=p.vy; p.vy+=0.14; p.life-=p.decay;
+      if(p.life>0) allDead=false;
+      else continue;
+      // Trail
+      for(let ti=1;ti<p.trail.length;ti++){
+        const ta=(ti/p.trail.length)*p.life*0.5;
+        eruptCtx.strokeStyle=`hsla(${p.hue},100%,60%,${ta})`;
+        eruptCtx.lineWidth=p.r*(ti/p.trail.length)*0.7;
+        eruptCtx.lineCap='round';
+        eruptCtx.beginPath();
+        eruptCtx.moveTo(p.trail[ti-1].x,p.trail[ti-1].y);
+        eruptCtx.lineTo(p.trail[ti].x,p.trail[ti].y);
+        eruptCtx.stroke();
+      }
+      // Head
+      eruptCtx.fillStyle=`hsla(${p.hue+20},100%,75%,${p.life*0.9})`;
+      eruptCtx.shadowBlur=10;eruptCtx.shadowColor=`hsla(${p.hue},100%,60%,0.8)`;
+      eruptCtx.beginPath();eruptCtx.arc(p.x,p.y,p.r,0,Math.PI*2);eruptCtx.fill();
+      eruptCtx.shadowBlur=0;
+    }
+    if(allDead) eruptions.splice(ei,1);
+  }
+
+  /* ── PARTICLES ── */
+  partCtx.clearRect(0,0,W,H);
+
+  // Magma sparks
+  partCtx.save();
+  for(let i=0;i<magmaSparks.length;i++){
+    const s=magmaSparks[i];
+    s.flick+=s.flickSp; s.sway+=s.swaySp;
+    s.x+=s.vx+Math.sin(s.sway)*s.swayAmp*0.02;
+    s.y+=s.vy;
+    if(s.y<-20) magmaSparks[i]=mkSpark(false);
+    const flick=0.35+Math.sin(s.flick)*0.65;
+    partCtx.shadowBlur=8;
+    partCtx.shadowColor=s.hot?'rgba(255,80,0,0.8)':'rgba(255,160,50,0.7)';
+    partCtx.fillStyle=s.hot
+      ?`rgba(255,${80+Math.floor(Math.random()*80)},10,${flick})`
+      :`rgba(255,${160+Math.floor(Math.random()*60)},40,${flick})`;
+    partCtx.beginPath();partCtx.arc(s.x,s.y,s.r,0,Math.PI*2);partCtx.fill();
+  }
+  partCtx.shadowBlur=0;partCtx.restore();
+
+  // Rock dust
+  for(const d of rockDust){
+    d.phase+=d.sp;
+    d.x+=d.vx+Math.sin(d.phase*0.4)*0.2;
+    d.y+=d.vy;
+    if(d.x<0)d.x=W;if(d.x>W)d.x=0;
+    if(d.y<0)d.y=H*0.85;if(d.y>H)d.y=50+Math.random()*400;
+    const pulse=0.6+Math.sin(d.phase)*0.4;
+    partCtx.fillStyle=`rgba(80,30,8,${d.a*pulse})`;
+    partCtx.beginPath();partCtx.arc(d.x,d.y,d.r,0,Math.PI*2);partCtx.fill();
+  }
+
+  // Heat blobs
+  partCtx.save();
+  for(const h of heatBlobs){
+    h.lifeSpd=h.lifeSpd||0.004;
+    h.life+=h.lifeSpd;
+    h.x+=h.vx; h.y+=h.vy; h.r+=0.05;
+    if(h.life>1){
+      Object.assign(h,{x:100+Math.random()*880,y:H-80-Math.random()*400,vy:-(0.15+Math.random()*0.3),vx:(Math.random()-0.5)*0.15,r:8+Math.random()*22,a:0.04+Math.random()*0.06,life:0,lifeSpd:0.003+Math.random()*0.005});
+    }
+    const alpha=h.a*Math.sin(h.life*Math.PI)*0.9;
+    const hg=partCtx.createRadialGradient(h.x,h.y,0,h.x,h.y,h.r);
+    hg.addColorStop(0,`rgba(200,70,0,${alpha})`);
+    hg.addColorStop(0.5,`rgba(140,40,0,${alpha*0.5})`);
+    hg.addColorStop(1,'rgba(0,0,0,0)');
+    partCtx.fillStyle=hg;
+    partCtx.beginPath();partCtx.arc(h.x,h.y,h.r,0,Math.PI*2);partCtx.fill();
+  }
+  partCtx.restore();
+
   requestAnimationFrame(loop);
 }
+
 loop();
 </script>
 </body>

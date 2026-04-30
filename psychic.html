@@ -2,130 +2,529 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>Psychic — Floating Islands</title>
+<title>Psychic — Floating Islands Mindscape</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-html,body{width:1080px;height:1920px;overflow:hidden;background:#0d0020;}
-canvas{position:absolute;inset:0;width:1080px;height:1920px;display:block;}
-.bg{position:absolute;inset:0;background:
-  radial-gradient(ellipse 80% 60% at 50% 50%, #2a0055 0%, #1a0035 40%, transparent 75%),
-  linear-gradient(180deg, #0d0020 0%, #1a0035 50%, #0d0020 100%);}
-/* Floating island silhouettes */
-.isle{position:absolute;background:radial-gradient(ellipse at 50% 30%, #2d0055 0%, #100020 70%);border-radius:50% 50% 35% 35% / 60% 60% 15% 15%;}
-.i1{width:180px;height:80px;top:280px;left:8%;transform:rotate(-5deg);animation:float1 12s ease-in-out infinite;}
-.i2{width:140px;height:70px;top:450px;right:10%;transform:rotate(3deg);animation:float1 14s ease-in-out infinite reverse;}
-.i3{width:220px;height:90px;top:1250px;left:6%;animation:float1 16s ease-in-out infinite;}
-.i4{width:160px;height:75px;top:1380px;right:8%;animation:float1 13s ease-in-out infinite reverse;}
-@keyframes float1{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-18px) rotate(3deg)}}
-/* Inverted waterfalls from islands */
-.wf{position:absolute;background:linear-gradient(180deg, rgba(157,0,255,0.35) 0%, rgba(157,0,255,0) 100%);width:20px;filter:blur(3px);}
-.wf1{height:200px;top:360px;left:calc(8% + 80px);}
-.wf2{height:150px;top:520px;right:calc(10% + 60px);}
-.wf3{height:220px;top:1340px;left:calc(6% + 100px);}
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{
+    width:1080px;height:1920px;overflow:hidden;
+    background:radial-gradient(ellipse 100% 80% at 50% 30%, #1e0048 0%, #0d0025 45%, #05000f 100%);
+  }
+  canvas{position:absolute;inset:0;width:1080px;height:1920px;display:block;}
 
-/* Giant eye in center-back */
-.eye-wrap{position:absolute;top:40%;left:50%;transform:translate(-50%,-50%);width:500px;height:260px;opacity:0.18;pointer-events:none;z-index:1;}
-.eye{position:absolute;inset:0;background:radial-gradient(ellipse 50% 50% at 50% 50%, #ff00cc 0%, #6600aa 40%, transparent 70%);border-radius:50%;animation:blink 9s ease-in-out infinite;}
-.eye-pupil{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:80px;height:80px;background:#000;border-radius:50%;box-shadow:0 0 30px #ff00cc;}
-@keyframes blink{0%,45%,55%,100%{transform:scaleY(1)}48%,52%{transform:scaleY(0.08)}}
+  /* Galactic nebula clouds */
+  .nebula{position:absolute;border-radius:50%;mix-blend-mode:screen;filter:blur(45px);}
+  .nb1{width:700px;height:380px;top:80px; left:-120px; background:radial-gradient(ellipse,rgba(120,0,200,0.22),transparent 70%);animation:nebDrift 18s ease-in-out infinite;}
+  .nb2{width:500px;height:320px;top:350px;right:-80px; background:radial-gradient(ellipse,rgba(200,0,150,0.18),transparent 70%);animation:nebDrift 24s ease-in-out infinite reverse;animation-delay:-8s;}
+  .nb3{width:600px;height:280px;top:620px;left:50px;  background:radial-gradient(ellipse,rgba(80,0,180,0.2),transparent 70%);animation:nebDrift 20s ease-in-out infinite;animation-delay:-5s;}
+  .nb4{width:450px;height:260px;top:1100px;right:20px;background:radial-gradient(ellipse,rgba(160,0,220,0.16),transparent 70%);animation:nebDrift 22s ease-in-out infinite reverse;}
+  .nb5{width:550px;height:300px;top:1400px;left:-60px;background:radial-gradient(ellipse,rgba(100,0,255,0.14),transparent 70%);animation:nebDrift 16s ease-in-out infinite;animation-delay:-11s;}
+  @keyframes nebDrift{
+    0%,100%{transform:translate(0,0) scale(1)}
+    33%{transform:translate(30px,-20px) scale(1.05)}
+    66%{transform:translate(-20px,25px) scale(0.97)}
+  }
 
-.zone-top{position:absolute;top:0;left:0;right:0;height:120px;background:linear-gradient(180deg,rgba(0,0,0,0.55) 0%,transparent 100%);z-index:40;}
-.zone-bot{position:absolute;bottom:0;left:0;right:0;height:920px;background:linear-gradient(0deg,rgba(5,0,20,0.55) 0%,rgba(5,0,20,0.12) 40%,transparent 100%);z-index:40;}
-.center-darken{position:absolute;top:300px;left:50%;transform:translateX(-50%);width:780px;height:540px;background:radial-gradient(ellipse 50% 50% at 50% 50%,rgba(5,0,20,0.45) 0%,transparent 70%);z-index:38;}
-.vignette{position:absolute;inset:0;background:radial-gradient(ellipse 80% 70% at 50% 50%,transparent 40%,rgba(0,0,0,0.65) 100%);z-index:39;pointer-events:none;}
+  /* THE EYE */
+  .eye-wrap{
+    position:absolute;top:95px;left:165px;
+    width:340px;height:180px;
+    z-index:5;pointer-events:none;
+  }
+  .eye-outer{
+    position:absolute;inset:0;
+    border-radius:50%;
+    border:2px solid rgba(180,60,255,0.35);
+    box-shadow:0 0 40px rgba(160,0,255,0.3), inset 0 0 30px rgba(120,0,220,0.2);
+    animation:eyeBlink 8s ease-in-out infinite;
+    overflow:hidden;
+  }
+  @keyframes eyeBlink{
+    0%,40%,60%,100%{transform:scaleY(1)}
+    48%,52%{transform:scaleY(0.05)}
+  }
+  .eye-iris{
+    position:absolute;top:50%;left:50%;
+    width:100px;height:100px;
+    transform:translate(-50%,-50%);
+    border-radius:50%;
+    background:conic-gradient(
+      rgba(140,0,255,0.9) 0deg,rgba(220,80,255,0.7) 60deg,
+      rgba(100,0,200,0.8) 120deg,rgba(200,40,255,0.7) 180deg,
+      rgba(160,0,240,0.9) 240deg,rgba(230,100,255,0.7) 300deg,
+      rgba(140,0,255,0.9) 360deg);
+    animation:irisRot 12s linear infinite;
+    box-shadow:0 0 20px rgba(180,0,255,0.6);
+  }
+  @keyframes irisRot{to{transform:translate(-50%,-50%) rotate(360deg)}}
+  .eye-pupil{
+    position:absolute;top:50%;left:50%;
+    width:38px;height:38px;
+    transform:translate(-50%,-50%);
+    border-radius:50%;
+    background:radial-gradient(circle,#000 0%,#0d0020 60%,rgba(80,0,160,0.4) 100%);
+    box-shadow:0 0 20px rgba(0,0,0,0.9), 0 0 8px rgba(160,0,255,0.5);
+  }
+  .eye-glow{
+    position:absolute;inset:-30px;
+    background:radial-gradient(ellipse,rgba(160,0,255,0.18) 0%,transparent 65%);
+    animation:eyeGlowPulse 4s ease-in-out infinite;
+  }
+  @keyframes eyeGlowPulse{0%,100%{opacity:0.6}50%{opacity:1}}
+
+  /* Floating islands */
+  .island{position:absolute;pointer-events:none;}
+  .isle-body{position:absolute;border-radius:50% 50% 45% 45% / 55% 55% 50% 50%;background:linear-gradient(180deg,#1a0a30 0%,#0d0520 60%,#06020f 100%);}
+  .isle-grass{position:absolute;top:0;left:0;right:0;height:28%;border-radius:50% 50% 0 0;background:linear-gradient(180deg,rgba(80,0,180,0.6),transparent);}
+  .isle-crack{position:absolute;background:linear-gradient(180deg,rgba(200,100,255,0.7),rgba(160,40,255,0.3));border-radius:1px;}
+
+  .il1{top:780px; left:30px;  animation:floatA 9s  ease-in-out infinite;}
+  .il2{top:650px; right:20px; animation:floatB 11s ease-in-out infinite;animation-delay:-3s;}
+  .il3{top:1100px;left:60px;  animation:floatA 13s ease-in-out infinite;animation-delay:-6s;}
+  .il4{top:1250px;right:40px; animation:floatB 10s ease-in-out infinite;animation-delay:-2s;}
+  .il5{top:960px; left:350px; animation:floatA 12s ease-in-out infinite;animation-delay:-9s;}
+  @keyframes floatA{0%,100%{transform:translateY(0)}50%{transform:translateY(-22px)}}
+  @keyframes floatB{0%,100%{transform:translateY(0)}50%{transform:translateY(-18px)}}
+
+  /* Energy portal ring glow */
+  .mandala-glow{
+    position:absolute;top:200px;left:50%;transform:translateX(-50%);
+    width:840px;height:840px;border-radius:50%;
+    background:radial-gradient(ellipse 100% 100% at 50% 50%,
+      rgba(160,0,255,0.1) 0%,
+      rgba(120,0,220,0.06) 45%,
+      transparent 68%);
+    mix-blend-mode:screen;filter:blur(14px);
+    animation:mandalaBreath 5s ease-in-out infinite;
+  }
+  @keyframes mandalaBreath{0%,100%{opacity:0.7;transform:translateX(-50%) scale(1)}50%{opacity:1;transform:translateX(-50%) scale(1.025)}}
+
+  /* UI zones */
+  .center-darken{position:absolute;top:300px;left:50%;transform:translateX(-50%);width:780px;height:540px;background:radial-gradient(ellipse 50% 50% at 50% 50%,rgba(5,0,15,0.45) 0%,transparent 70%);z-index:38;}
+  .vignette{position:absolute;inset:0;background:radial-gradient(ellipse 80% 70% at 50% 50%,transparent 38%,rgba(0,0,8,0.75) 100%);z-index:39;pointer-events:none;}
+  .zone-top{position:absolute;top:0;left:0;right:0;height:120px;background:linear-gradient(180deg,rgba(0,0,0,0.55) 0%,transparent 100%);z-index:40;}
+  .zone-bot{position:absolute;bottom:0;left:0;right:0;height:920px;background:linear-gradient(0deg,rgba(0,0,8,0.65) 0%,rgba(0,0,8,0.15) 40%,transparent 100%);z-index:40;}
 </style>
 </head>
 <body>
-<div class="bg"></div>
-<canvas id="galaxy"></canvas>
-<div class="eye-wrap"><div class="eye"></div><div class="eye-pupil"></div></div>
-<canvas id="fog"></canvas>
-<div class="isle i1"></div><div class="isle i2"></div><div class="isle i3"></div><div class="isle i4"></div>
-<div class="wf wf1"></div><div class="wf wf2"></div><div class="wf wf3"></div>
-<canvas id="crystals"></canvas>
-<canvas id="spirals"></canvas>
-<div class="center-darken"></div>
-<div class="vignette"></div>
-<div class="zone-top"></div>
-<div class="zone-bot"></div>
+  <!-- Nebula layers -->
+  <div class="nebula nb1"></div><div class="nebula nb2"></div><div class="nebula nb3"></div>
+  <div class="nebula nb4"></div><div class="nebula nb5"></div>
+
+  <!-- The Eye -->
+  <div class="eye-wrap">
+    <div class="eye-glow"></div>
+    <div class="eye-outer">
+      <div class="eye-iris"></div>
+      <div class="eye-pupil"></div>
+    </div>
+  </div>
+
+  <!-- Floating Islands (CSS) -->
+  <div class="island il1">
+    <div class="isle-body" style="width:210px;height:90px;">
+      <div class="isle-grass"></div>
+      <div class="isle-crack" style="width:3px;height:35px;left:55px;top:20px;transform:rotate(15deg)"></div>
+      <div class="isle-crack" style="width:2px;height:25px;left:130px;top:30px;transform:rotate(-10deg)"></div>
+    </div>
+  </div>
+  <div class="island il2">
+    <div class="isle-body" style="width:170px;height:72px;">
+      <div class="isle-grass"></div>
+      <div class="isle-crack" style="width:2px;height:28px;left:80px;top:18px;transform:rotate(5deg)"></div>
+    </div>
+  </div>
+  <div class="island il3">
+    <div class="isle-body" style="width:250px;height:105px;">
+      <div class="isle-grass"></div>
+      <div class="isle-crack" style="width:3px;height:40px;left:70px;top:25px;transform:rotate(20deg)"></div>
+      <div class="isle-crack" style="width:2px;height:30px;left:160px;top:35px;transform:rotate(-15deg)"></div>
+      <div class="isle-crack" style="width:2px;height:22px;left:200px;top:20px;transform:rotate(8deg)"></div>
+    </div>
+  </div>
+  <div class="island il4">
+    <div class="isle-body" style="width:180px;height:78px;">
+      <div class="isle-grass"></div>
+      <div class="isle-crack" style="width:2px;height:32px;left:90px;top:22px;transform:rotate(-12deg)"></div>
+    </div>
+  </div>
+  <div class="island il5">
+    <div class="isle-body" style="width:140px;height:60px;">
+      <div class="isle-grass"></div>
+    </div>
+  </div>
+
+  <!-- Canvas stack: stars → ring/mandala → island particles → ambient -->
+  <canvas id="cStars"></canvas>
+  <canvas id="cRing"></canvas>
+  <canvas id="cIslands"></canvas>
+  <canvas id="cParticles"></canvas>
+
+  <div class="mandala-glow"></div>
+  <div class="center-darken"></div>
+  <div class="vignette"></div>
+  <div class="zone-top"></div>
+  <div class="zone-bot"></div>
+
 <script>
-const W=1080,H=1920;
-function setup(id){const c=document.getElementById(id);c.width=W;c.height=H;return c.getContext('2d');}
+const W=1080, H=1920;
+const RING_CX=540, RING_CY=590, RING_R=300;
 
-const gx=setup('galaxy');
+function mkCanvas(id){
+  const c=document.getElementById(id);
+  c.width=W; c.height=H;
+  return c.getContext('2d');
+}
+const starsCtx   = mkCanvas('cStars');
+const ringCtx    = mkCanvas('cRing');
+const islandCtx  = mkCanvas('cIslands');
+const partCtx    = mkCanvas('cParticles');
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   STARS — static field drawn once + slow-moving parallax layer
+   ═══════════════════════════════════════════════════════════════════════════ */
+const STAR_COUNT=190;
 const stars=[];
-for(let i=0;i<200;i++)stars.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.5+0.2,tw:Math.random()*Math.PI*2,hue:Math.random()<0.3?300:0});
-
-const fg=setup('fog');
-const fog=[];
-for(let i=0;i<40;i++)fog.push({x:Math.random()*W,y:Math.random()*H,r:100+Math.random()*200,vx:(Math.random()-0.5)*0.2,vy:(Math.random()-0.5)*0.1,hue:280+Math.random()*40,a:0.1+Math.random()*0.15});
-
-const cr=setup('crystals');
-const crystals=[];
-for(let i=0;i<8;i++){
-  crystals.push({x:Math.random()*W,y:Math.random()*H,sz:15+Math.random()*25,
-    ph:Math.random()*Math.PI*2,rot:Math.random()*Math.PI,hue:280+Math.random()*50});
-}
-
-const sp=setup('spirals');
-let t=0;
-function drawSpirals(){
-  sp.clearRect(0,0,W,H);
-  sp.globalCompositeOperation='screen';
-  for(let i=0;i<3;i++){
-    const cx=W/2+Math.cos(t*0.2+i*2)*300;
-    const cy=H/2+Math.sin(t*0.3+i*1.7)*400;
-    sp.strokeStyle=`rgba(${i===0?'157,0,255':i===1?'255,0,204':'200,100,255'},0.25)`;
-    sp.lineWidth=2;
-    sp.beginPath();
-    for(let a=0;a<Math.PI*6;a+=0.1){
-      const r=a*8;
-      const x=cx+Math.cos(a+t*0.3)*r;
-      const y=cy+Math.sin(a+t*0.3)*r;
-      if(a===0)sp.moveTo(x,y);else sp.lineTo(x,y);
-    }
-    sp.stroke();
+(function buildStars(){
+  starsCtx.clearRect(0,0,W,H);
+  for(let i=0;i<STAR_COUNT;i++){
+    const x=Math.random()*W, y=Math.random()*H;
+    const r=0.4+Math.random()*1.8;
+    const hue=Math.random()<0.3?280+Math.random()*40:0;
+    const a=0.3+Math.random()*0.6;
+    stars.push({x,y,r,hue,a,flicker:Math.random()<0.25,phase:Math.random()*Math.PI*2,speed:0.02+Math.random()*0.04,vx:(Math.random()-0.5)*0.03,vy:(Math.random()-0.5)*0.02});
+    // Draw static stars
+    starsCtx.fillStyle=hue?`hsla(${hue},80%,75%,${a})`:`rgba(240,235,255,${a})`;
+    starsCtx.beginPath(); starsCtx.arc(x,y,r,0,Math.PI*2); starsCtx.fill();
   }
-  sp.globalCompositeOperation='source-over';
+})();
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   RING MANDALA — 3 rotating rings of geometric shapes + spirals
+   ═══════════════════════════════════════════════════════════════════════════ */
+const mandalaRings=[
+  {count:8,  shape:'triangle', r:RING_R+55, rotSpeed:0.008,  rot:0,   hue:280, size:14},
+  {count:12, shape:'hex',      r:RING_R+100,rotSpeed:-0.005, rot:0.4, hue:310, size:10},
+  {count:6,  shape:'triangle', r:RING_R+148,rotSpeed:0.003,  rot:0.8, hue:260, size:18},
+];
+
+function drawTriangle(ctx,cx,cy,size,ang,hue,a){
+  ctx.save(); ctx.translate(cx,cy); ctx.rotate(ang);
+  ctx.strokeStyle=`hsla(${hue},100%,70%,${a})`;
+  ctx.lineWidth=1.5; ctx.shadowBlur=8; ctx.shadowColor=`hsla(${hue},100%,65%,0.8)`;
+  ctx.beginPath();
+  for(let i=0;i<3;i++){
+    const pa=(i/3)*Math.PI*2-Math.PI/2;
+    i===0?ctx.moveTo(Math.cos(pa)*size,Math.sin(pa)*size):ctx.lineTo(Math.cos(pa)*size,Math.sin(pa)*size);
+  }
+  ctx.closePath(); ctx.stroke(); ctx.restore();
 }
+function drawHex(ctx,cx,cy,size,ang,hue,a){
+  ctx.save(); ctx.translate(cx,cy); ctx.rotate(ang);
+  ctx.strokeStyle=`hsla(${hue},100%,72%,${a})`;
+  ctx.lineWidth=1.2; ctx.shadowBlur=6; ctx.shadowColor=`hsla(${hue},100%,65%,0.7)`;
+  ctx.beginPath();
+  for(let i=0;i<6;i++){
+    const pa=(i/6)*Math.PI*2;
+    i===0?ctx.moveTo(Math.cos(pa)*size,Math.sin(pa)*size):ctx.lineTo(Math.cos(pa)*size,Math.sin(pa)*size);
+  }
+  ctx.closePath(); ctx.stroke(); ctx.restore();
+}
+
+// Spiral state
+const spirals=[
+  {rot:0, speed:0.012, hue:285, arms:3},
+  {rot:2.1, speed:-0.008, hue:320, arms:2},
+];
+
+// Telekinetic orbit particles
+const teleParticles=[];
+const TELE_COUNT=28;
+for(let i=0;i<TELE_COUNT;i++){
+  teleParticles.push({
+    angle:(i/TELE_COUNT)*Math.PI*2,
+    speed:0.022+Math.random()*0.015*(Math.random()<0.5?1:-1),
+    phase:Math.random()*Math.PI*2,
+    phaseSpeed:0.008+Math.random()*0.01,
+    hue:260+Math.random()*80,
+    r:1.5+Math.random()*3,
+    trail:[],
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ISLAND PARTICLES — inverted waterfalls + rune-like symbols
+   ═══════════════════════════════════════════════════════════════════════════ */
+// Island positions matching CSS
+const islandDefs=[
+  {x:135,y:825, w:210,h:90},
+  {x:885,y:695, w:170,h:72},
+  {x:185,y:1153,w:250,h:105},
+  {x:890,y:1289,w:180,h:78},
+  {x:490,y:1020,w:140,h:60},
+];
+
+// Upward waterfall particles per island
+const waterfalls=[];
+for(const isl of islandDefs){
+  for(let i=0;i<12;i++){
+    waterfalls.push({
+      x:isl.x-isl.w/2+Math.random()*isl.w,
+      y:isl.y+isl.h/2+Math.random()*20,
+      baseY:isl.y+isl.h/2+Math.random()*20,
+      vy:-(0.4+Math.random()*1.2),
+      vx:(Math.random()-0.5)*0.3,
+      life:Math.random(),
+      hue:270+Math.random()*60,
+      r:1+Math.random()*2.5,
+      island:isl,
+    });
+  }
+}
+
+// Rune shapes — abstract symbols
+const RUNE_SHAPES=['circle','cross','diamond','arc','zigzag'];
+const runes=[];
+for(const isl of islandDefs){
+  for(let i=0;i<3;i++){
+    runes.push({
+      x:isl.x-isl.w*0.4+Math.random()*isl.w*0.8,
+      y:isl.y-15-Math.random()*40,
+      shape:RUNE_SHAPES[Math.floor(Math.random()*RUNE_SHAPES.length)],
+      phase:Math.random()*Math.PI*2,
+      speed:0.02+Math.random()*0.03,
+      hue:270+Math.random()*70,
+      size:6+Math.random()*8,
+    });
+  }
+}
+
+function drawRune(ctx,x,y,shape,size,hue,a){
+  ctx.save(); ctx.translate(x,y);
+  ctx.strokeStyle=`hsla(${hue},100%,72%,${a})`;
+  ctx.lineWidth=1.2; ctx.shadowBlur=8; ctx.shadowColor=`hsla(${hue},100%,65%,0.8)`;
+  ctx.beginPath();
+  if(shape==='circle'){
+    ctx.arc(0,0,size,0,Math.PI*2);
+    ctx.moveTo(0,-size*1.4); ctx.lineTo(0,size*1.4);
+    ctx.moveTo(-size*1.4,0); ctx.lineTo(size*1.4,0);
+  } else if(shape==='cross'){
+    ctx.moveTo(0,-size); ctx.lineTo(0,size);
+    ctx.moveTo(-size,0); ctx.lineTo(size,0);
+    ctx.moveTo(-size*0.7,-size*0.7); ctx.lineTo(size*0.7,size*0.7);
+  } else if(shape==='diamond'){
+    ctx.moveTo(0,-size); ctx.lineTo(size,0);
+    ctx.lineTo(0,size); ctx.lineTo(-size,0); ctx.closePath();
+    ctx.moveTo(0,-size*0.5); ctx.lineTo(0,size*0.5);
+  } else if(shape==='arc'){
+    ctx.arc(0,0,size,-Math.PI*0.8,Math.PI*0.8);
+    ctx.moveTo(-size*0.5,-size); ctx.lineTo(0,-size*1.3); ctx.lineTo(size*0.5,-size);
+  } else {
+    ctx.moveTo(-size,-size*0.5); ctx.lineTo(-size*0.3,size*0.5);
+    ctx.lineTo(size*0.3,-size*0.5); ctx.lineTo(size,size*0.5);
+  }
+  ctx.stroke(); ctx.restore();
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   PARTICLES: Energy motes + star flickers
+   ═══════════════════════════════════════════════════════════════════════════ */
+const energyMotes=[];
+for(let i=0;i<48;i++){
+  energyMotes.push({
+    x:Math.random()*W, y:Math.random()*H,
+    vx:(Math.random()-0.5)*0.5, vy:(Math.random()-0.5)*0.4,
+    phase:Math.random()*Math.PI*2, sp:0.025+Math.random()*0.04,
+    hue:260+Math.random()*80,
+    r:1.2+Math.random()*2.8,
+    wobble:Math.random()*Math.PI*2, wobbleSp:0.03+Math.random()*0.04,
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   EYE ENERGY RAYS — radiating lines from eye center
+   ═══════════════════════════════════════════════════════════════════════════ */
+const eyeCenter={x:335,y:185};
+const eyeRays=[];
+for(let i=0;i<8;i++){
+  eyeRays.push({
+    ang:(i/8)*Math.PI*2,
+    len:60+Math.random()*80,
+    phase:Math.random()*Math.PI*2,
+    sp:0.02+Math.random()*0.03,
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MAIN LOOP
+   ═══════════════════════════════════════════════════════════════════════════ */
+let t=0;
 
 function loop(){
   t+=0.016;
-  gx.clearRect(0,0,W,H);
-  for(const s of stars){
-    s.tw+=0.03;
-    const a=0.4+Math.sin(s.tw)*0.5;
-    gx.fillStyle=s.hue?`hsla(300,100%,70%,${a})`:`rgba(255,255,255,${a})`;
-    gx.beginPath();gx.arc(s.x,s.y,s.r,0,Math.PI*2);gx.fill();
-  }
-  fg.clearRect(0,0,W,H);
-  fg.globalCompositeOperation='screen';
-  for(const f of fog){
-    f.x+=f.vx;f.y+=f.vy;
-    if(f.x<-200)f.x=W+200;if(f.x>W+200)f.x=-200;
-    if(f.y<-200)f.y=H+200;if(f.y>H+200)f.y=-200;
-    const g=fg.createRadialGradient(f.x,f.y,0,f.x,f.y,f.r);
-    g.addColorStop(0,`hsla(${f.hue},100%,40%,${f.a})`);
-    g.addColorStop(1,`hsla(${f.hue},100%,30%,0)`);
-    fg.fillStyle=g;fg.beginPath();fg.arc(f.x,f.y,f.r,0,Math.PI*2);fg.fill();
-  }
-  fg.globalCompositeOperation='source-over';
 
-  cr.clearRect(0,0,W,H);
-  for(const c of crystals){
-    c.ph+=0.025;
-    const a=0.4+Math.sin(c.ph)*0.3;
-    cr.save();cr.translate(c.x,c.y);cr.rotate(c.rot+t*0.1);
-    cr.shadowBlur=20;cr.shadowColor=`hsl(${c.hue},100%,60%)`;
-    cr.fillStyle=`hsla(${c.hue},100%,60%,${a})`;
-    cr.beginPath();
-    cr.moveTo(0,-c.sz);cr.lineTo(c.sz*0.5,-c.sz*0.3);cr.lineTo(c.sz*0.5,c.sz*0.5);cr.lineTo(0,c.sz);
-    cr.lineTo(-c.sz*0.5,c.sz*0.5);cr.lineTo(-c.sz*0.5,-c.sz*0.3);cr.closePath();cr.fill();
-    cr.restore();
+  /* ── RING MANDALA ── */
+  ringCtx.clearRect(0,0,W,H);
+
+  // Central energy glow
+  const cenPulse=0.55+Math.sin(t*1.6)*0.3;
+  const cg=ringCtx.createRadialGradient(RING_CX,RING_CY,0,RING_CX,RING_CY,RING_R+220);
+  cg.addColorStop(0,`rgba(160,0,255,${0.14*cenPulse})`);
+  cg.addColorStop(0.4,`rgba(120,0,200,${0.07*cenPulse})`);
+  cg.addColorStop(1,'rgba(0,0,0,0)');
+  ringCtx.fillStyle=cg; ringCtx.beginPath(); ringCtx.arc(RING_CX,RING_CY,RING_R+220,0,Math.PI*2); ringCtx.fill();
+
+  // Spiral arms
+  for(const sp of spirals){
+    sp.rot+=sp.speed;
+    ringCtx.save();
+    ringCtx.translate(RING_CX,RING_CY);
+    for(let arm=0;arm<sp.arms;arm++){
+      const armOff=(arm/sp.arms)*Math.PI*2;
+      ringCtx.beginPath();
+      for(let i=0;i<80;i++){
+        const angle=sp.rot+armOff+i*0.1;
+        const r=8+i*3.5;
+        if(r>RING_R+160) break;
+        const x=Math.cos(angle)*r, y=Math.sin(angle)*r;
+        i===0?ringCtx.moveTo(x,y):ringCtx.lineTo(x,y);
+      }
+      const alpha=0.3+Math.sin(t*1.2+arm)*0.2;
+      ringCtx.strokeStyle=`hsla(${sp.hue},100%,68%,${alpha})`;
+      ringCtx.lineWidth=1.2; ringCtx.shadowBlur=8; ringCtx.shadowColor=`hsla(${sp.hue},100%,65%,0.6)`;
+      ringCtx.stroke();
+    }
+    ringCtx.restore();
   }
-  drawSpirals();
+  ringCtx.shadowBlur=0;
+
+  // Mandala rings
+  for(const mr of mandalaRings){
+    mr.rot+=mr.rotSpeed;
+    const pulse=0.55+Math.sin(t*1.4+mr.hue*0.01)*0.35;
+    for(let i=0;i<mr.count;i++){
+      const ang=mr.rot+(i/mr.count)*Math.PI*2;
+      const px=RING_CX+Math.cos(ang)*mr.r;
+      const py=RING_CY+Math.sin(ang)*mr.r;
+      if(mr.shape==='triangle') drawTriangle(ringCtx,px,py,mr.size,ang+t*0.5,mr.hue,pulse);
+      else drawHex(ringCtx,px,py,mr.size,ang-t*0.3,mr.hue,pulse);
+    }
+  }
+  ringCtx.shadowBlur=0;
+
+  // Telekinetic orbit particles
+  for(const tp of teleParticles){
+    tp.angle+=tp.speed;
+    tp.phase+=tp.phaseSpeed;
+    // Pulsing orbit radius — in and out
+    const orbitR=RING_R+20+Math.sin(tp.phase)*60;
+    const px=RING_CX+Math.cos(tp.angle)*orbitR;
+    const py=RING_CY+Math.sin(tp.angle)*orbitR;
+    tp.trail.unshift({x:px,y:py});
+    if(tp.trail.length>10) tp.trail.pop();
+    // Trail
+    for(let ti=1;ti<tp.trail.length;ti++){
+      const ta=(1-ti/tp.trail.length)*0.5;
+      ringCtx.fillStyle=`hsla(${tp.hue},100%,72%,${ta})`;
+      ringCtx.beginPath(); ringCtx.arc(tp.trail[ti].x,tp.trail[ti].y,tp.r*(1-ti/tp.trail.length)*0.7,0,Math.PI*2); ringCtx.fill();
+    }
+    // Particle
+    const pulse=0.6+Math.sin(tp.phase*2)*0.4;
+    const pg=ringCtx.createRadialGradient(px,py,0,px,py,tp.r*3.5);
+    pg.addColorStop(0,`hsla(${tp.hue},100%,80%,${pulse})`);
+    pg.addColorStop(0.5,`hsla(${tp.hue},100%,65%,${pulse*0.4})`);
+    pg.addColorStop(1,'rgba(0,0,0,0)');
+    ringCtx.fillStyle=pg; ringCtx.shadowBlur=8; ringCtx.shadowColor=`hsla(${tp.hue},100%,70%,0.8)`;
+    ringCtx.beginPath(); ringCtx.arc(px,py,tp.r*3.5,0,Math.PI*2); ringCtx.fill();
+    ringCtx.fillStyle=`hsla(${tp.hue+20},100%,88%,${pulse*0.9})`;
+    ringCtx.beginPath(); ringCtx.arc(px,py,tp.r,0,Math.PI*2); ringCtx.fill();
+  }
+  ringCtx.shadowBlur=0;
+
+  /* ── ISLAND PARTICLES ── */
+  islandCtx.clearRect(0,0,W,H);
+
+  // Eye energy rays
+  for(const r of eyeRays){
+    r.phase+=r.sp;
+    const pulse=0.2+Math.abs(Math.sin(r.phase))*0.3;
+    const len=r.len*(0.6+Math.abs(Math.sin(r.phase))*0.4);
+    const ex=eyeCenter.x+Math.cos(r.ang)*len;
+    const ey=eyeCenter.y+Math.sin(r.ang)*len;
+    islandCtx.strokeStyle=`rgba(180,60,255,${pulse})`;
+    islandCtx.lineWidth=0.8;
+    islandCtx.shadowBlur=6; islandCtx.shadowColor='rgba(160,0,255,0.7)';
+    islandCtx.beginPath(); islandCtx.moveTo(eyeCenter.x,eyeCenter.y); islandCtx.lineTo(ex,ey); islandCtx.stroke();
+  }
+  islandCtx.shadowBlur=0;
+
+  // Upward waterfalls
+  for(let i=0;i<waterfalls.length;i++){
+    const w=waterfalls[i];
+    w.life+=0.012;
+    w.x+=w.vx;
+    w.y+=w.vy;
+    if(w.life>1){
+      w.life=0;
+      w.x=w.island.x-w.island.w/2+Math.random()*w.island.w;
+      w.y=w.baseY;
+    }
+    const a=(1-w.life)*0.7;
+    const rg=islandCtx.createRadialGradient(w.x,w.y,0,w.x,w.y,w.r*3);
+    rg.addColorStop(0,`hsla(${w.hue},100%,75%,${a})`);
+    rg.addColorStop(1,'rgba(0,0,0,0)');
+    islandCtx.fillStyle=rg;
+    islandCtx.beginPath(); islandCtx.arc(w.x,w.y,w.r*3,0,Math.PI*2); islandCtx.fill();
+  }
+
+  // Runes
+  for(const r of runes){
+    r.phase+=r.speed;
+    const glow=0.4+Math.sin(r.phase)*0.4;
+    const floatY=r.y+Math.sin(r.phase*0.7)*8;
+    drawRune(islandCtx,r.x,floatY,r.shape,r.size,r.hue,glow*0.8);
+  }
+  islandCtx.shadowBlur=0;
+
+  /* ── PARTICLES ── */
+  partCtx.clearRect(0,0,W,H);
+
+  // Flickering stars (just the flickering ones)
+  for(const s of stars){
+    if(!s.flicker) continue;
+    s.phase+=s.speed;
+    const a=Math.max(0.05,s.a*(0.4+Math.abs(Math.sin(s.phase))*0.8));
+    // Also drift slowly
+    s.x+=s.vx; s.y+=s.vy;
+    if(s.x<0)s.x=W; if(s.x>W)s.x=0;
+    if(s.y<0)s.y=H; if(s.y>H)s.y=0;
+    partCtx.fillStyle=s.hue?`hsla(${s.hue},80%,78%,${a})`:`rgba(240,235,255,${a})`;
+    partCtx.beginPath(); partCtx.arc(s.x,s.y,s.r,0,Math.PI*2); partCtx.fill();
+  }
+
+  // Energy motes
+  partCtx.save();
+  for(const m of energyMotes){
+    m.phase+=m.sp; m.wobble+=m.wobbleSp;
+    m.x+=m.vx+Math.sin(m.wobble)*0.2;
+    m.y+=m.vy+Math.cos(m.wobble*0.7)*0.15;
+    if(m.x<0)m.x=W; if(m.x>W)m.x=0;
+    if(m.y<0)m.y=H; if(m.y>H)m.y=0;
+    const pulse=0.35+Math.abs(Math.sin(m.phase))*0.55;
+    const mg=partCtx.createRadialGradient(m.x,m.y,0,m.x,m.y,m.r*4);
+    mg.addColorStop(0,`hsla(${m.hue},100%,78%,${pulse*0.9})`);
+    mg.addColorStop(0.4,`hsla(${m.hue},100%,62%,${pulse*0.3})`);
+    mg.addColorStop(1,'rgba(0,0,0,0)');
+    partCtx.shadowBlur=8; partCtx.shadowColor=`hsla(${m.hue},100%,65%,0.7)`;
+    partCtx.fillStyle=mg;
+    partCtx.beginPath(); partCtx.arc(m.x,m.y,m.r*4,0,Math.PI*2); partCtx.fill();
+    partCtx.fillStyle=`hsla(${m.hue+15},100%,85%,${pulse*0.85})`;
+    partCtx.beginPath(); partCtx.arc(m.x,m.y,m.r,0,Math.PI*2); partCtx.fill();
+  }
+  partCtx.shadowBlur=0; partCtx.restore();
+
   requestAnimationFrame(loop);
 }
+
 loop();
 </script>
 </body>

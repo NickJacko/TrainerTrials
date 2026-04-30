@@ -2,182 +2,624 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>Electric — Gewitter</title>
+<title>Electric — Neon Metropolis Gewitter</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-html,body{width:1080px;height:1920px;overflow:hidden;background:#050a00;}
-canvas{position:absolute;inset:0;width:1080px;height:1920px;display:block;}
-.bg{position:absolute;inset:0;background:
-  radial-gradient(ellipse 80% 50% at 50% 30%, #1a2400 0%, #0a1400 50%, transparent 80%),
-  linear-gradient(180deg, #050a00 0%, #0a1400 40%, #05080a 75%, #02050a 100%);}
-/* City skyline at bottom */
-.city{position:absolute;bottom:0;left:0;right:0;height:340px;background:#000205;
-  clip-path:polygon(
-    0 100%, 0 60%, 4% 60%, 4% 45%, 8% 45%, 8% 50%, 12% 50%, 12% 30%, 16% 30%, 16% 55%,
-    22% 55%, 22% 38%, 26% 38%, 26% 48%, 30% 48%, 30% 25%, 34% 25%, 34% 42%, 40% 42%,
-    40% 55%, 44% 55%, 44% 20%, 48% 20%, 48% 40%, 52% 40%, 52% 35%, 56% 35%, 56% 50%,
-    60% 50%, 60% 28%, 64% 28%, 64% 45%, 68% 45%, 68% 55%, 72% 55%, 72% 35%, 76% 35%,
-    76% 22%, 80% 22%, 80% 45%, 84% 45%, 84% 50%, 88% 50%, 88% 38%, 92% 38%, 92% 55%,
-    96% 55%, 96% 48%, 100% 48%, 100% 100%
-  );}
-/* Windows on city */
-.windows{position:absolute;bottom:0;left:0;right:0;height:340px;pointer-events:none;
-  background-image:
-    radial-gradient(circle 2px at 5% 75%, rgba(255,220,100,0.7), transparent),
-    radial-gradient(circle 2px at 15% 82%, rgba(255,220,100,0.5), transparent),
-    radial-gradient(circle 2px at 25% 68%, rgba(255,220,100,0.6), transparent),
-    radial-gradient(circle 2px at 35% 78%, rgba(255,220,100,0.5), transparent),
-    radial-gradient(circle 2px at 45% 70%, rgba(255,220,100,0.7), transparent),
-    radial-gradient(circle 2px at 55% 85%, rgba(200,180,255,0.5), transparent),
-    radial-gradient(circle 2px at 65% 75%, rgba(255,220,100,0.6), transparent),
-    radial-gradient(circle 2px at 75% 80%, rgba(200,180,255,0.4), transparent),
-    radial-gradient(circle 2px at 85% 72%, rgba(255,220,100,0.6), transparent),
-    radial-gradient(circle 2px at 95% 78%, rgba(255,220,100,0.5), transparent);}
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{
+    width:1080px;height:1920px;overflow:hidden;
+    background:radial-gradient(ellipse 100% 70% at 50% 0%, #0d1a00 0%, #060e00 40%, #020500 100%);
+  }
+  canvas{position:absolute;inset:0;width:1080px;height:1920px;display:block;}
 
-/* Street wet reflection */
-.reflect{position:absolute;bottom:0;left:0;right:0;height:80px;
-  background:linear-gradient(0deg, rgba(204,255,0,0.08) 0%, transparent 100%);mix-blend-mode:screen;animation:refPulse 3s ease-in-out infinite;}
-@keyframes refPulse{0%,100%{opacity:0.5}50%{opacity:1}}
+  /* Storm sky — heavy cloud layers */
+  .storm-sky{
+    position:absolute;top:0;left:0;right:0;height:1100px;
+    background:
+      radial-gradient(ellipse 700px 280px at 20% 180px, rgba(15,28,0,0.92) 0%, transparent 65%),
+      radial-gradient(ellipse 800px 320px at 72% 280px, rgba(12,22,0,0.88) 0%, transparent 60%),
+      radial-gradient(ellipse 600px 240px at 48% 520px, rgba(10,18,0,0.8) 0%, transparent 55%),
+      radial-gradient(ellipse 900px 350px at 30% 680px, rgba(8,15,0,0.75) 0%, transparent 60%),
+      radial-gradient(ellipse 750px 300px at 80% 550px, rgba(10,20,0,0.7) 0%, transparent 55%);
+  }
 
-.flash{position:absolute;inset:0;background:#ccff00;opacity:0;mix-blend-mode:screen;z-index:35;pointer-events:none;}
+  /* Wet street base */
+  .street{
+    position:absolute;bottom:0;left:0;right:0;height:680px;
+    background:
+      linear-gradient(0deg, #010300 0%, #020600 35%, transparent 100%);
+  }
 
-.zone-top{position:absolute;top:0;left:0;right:0;height:120px;background:linear-gradient(180deg,rgba(0,0,0,0.55) 0%,transparent 100%);z-index:40;}
-.zone-bot{position:absolute;bottom:0;left:0;right:0;height:920px;background:linear-gradient(0deg,rgba(0,0,0,0.5) 0%,rgba(0,0,0,0.1) 40%,transparent 100%);z-index:40;}
-.center-darken{position:absolute;top:300px;left:50%;transform:translateX(-50%);width:780px;height:540px;background:radial-gradient(ellipse 50% 50% at 50% 50%,rgba(0,0,5,0.32) 0%,transparent 70%);z-index:38;}
-.vignette{position:absolute;inset:0;background:radial-gradient(ellipse 80% 70% at 50% 50%,transparent 40%,rgba(0,0,0,0.6) 100%);z-index:39;pointer-events:none;}
+  /* Neon sign glows — floating above buildings */
+  .neon{position:absolute;border-radius:2px;filter:blur(3px);mix-blend-mode:screen;}
+  .n1{bottom:820px;left:85px; width:6px;height:180px;background:linear-gradient(180deg,#00ffcc,#00ccaa);animation:neonFlicker 4.3s ease-in-out infinite;}
+  .n2{bottom:760px;left:220px;width:5px;height:220px;background:linear-gradient(180deg,#bf00ff,#8800cc);animation:neonFlicker 6.1s ease-in-out infinite reverse;animation-delay:-1.5s;}
+  .n3{bottom:700px;right:190px;width:6px;height:260px;background:linear-gradient(180deg,#ff3300,#cc2200);animation:neonFlicker 5.2s ease-in-out infinite;animation-delay:-2.8s;}
+  .n4{bottom:750px;right:80px; width:5px;height:200px;background:linear-gradient(180deg,#0088ff,#0055cc);animation:neonFlicker 7s ease-in-out infinite reverse;}
+  .n5{bottom:680px;left:370px;width:4px;height:140px;background:linear-gradient(180deg,#ffcc00,#cc9900);animation:neonFlicker 3.8s ease-in-out infinite;animation-delay:-0.8s;}
+  .n6{bottom:720px;right:320px;width:5px;height:170px;background:linear-gradient(180deg,#00ff44,#00cc33);animation:neonFlicker 5.5s ease-in-out infinite reverse;animation-delay:-3.2s;}
+  @keyframes neonFlicker{
+    0%,95%,100%{opacity:1}
+    96%{opacity:0.1}
+    97%{opacity:0.9}
+    98%{opacity:0.2}
+    99%{opacity:1}
+  }
+
+  /* Street reflection strips */
+  .refl{position:absolute;bottom:0;mix-blend-mode:screen;filter:blur(8px);opacity:0.35;}
+  .r1{left:80px; width:12px;height:340px;background:linear-gradient(0deg,#00ffcc,transparent);}
+  .r2{left:218px;width:10px;height:280px;background:linear-gradient(0deg,#bf00ff,transparent);animation-delay:-2s;}
+  .r3{right:185px;width:12px;height:320px;background:linear-gradient(0deg,#ff3300,transparent);}
+  .r4{right:78px; width:10px;height:260px;background:linear-gradient(0deg,#0088ff,transparent);}
+  .r5{left:368px;width:8px; height:200px;background:linear-gradient(0deg,#ffcc00,transparent);}
+  .r6{right:318px;width:10px;height:240px;background:linear-gradient(0deg,#00ff44,transparent);}
+
+  /* Scene-wide flash overlay */
+  .flash{
+    position:absolute;inset:0;
+    background:rgba(180,255,40,0);
+    mix-blend-mode:screen;
+    pointer-events:none;
+    z-index:35;
+    transition:background 0.04s;
+  }
+
+  /* Ring energy field */
+  .ring-energy{
+    position:absolute;top:230px;left:50%;transform:translateX(-50%);
+    width:780px;height:780px;border-radius:50%;
+    background:radial-gradient(ellipse 100% 100% at 50% 50%,
+      transparent 52%,
+      rgba(180,255,0,0.04) 60%,
+      rgba(204,255,0,0.07) 64%,
+      rgba(180,255,0,0.03) 70%,
+      transparent 78%);
+    mix-blend-mode:screen;filter:blur(5px);
+    animation:energyPulse 1.8s ease-in-out infinite;
+  }
+  @keyframes energyPulse{
+    0%,100%{opacity:0.6;transform:translateX(-50%) scale(1)}
+    50%{opacity:1;transform:translateX(-50%) scale(1.015)}
+  }
+
+  /* UI zones */
+  .center-darken{position:absolute;top:300px;left:50%;transform:translateX(-50%);width:780px;height:540px;background:radial-gradient(ellipse 50% 50% at 50% 50%,rgba(0,5,0,0.42) 0%,transparent 70%);z-index:38;}
+  .vignette{position:absolute;inset:0;background:radial-gradient(ellipse 80% 70% at 50% 50%,transparent 40%,rgba(0,0,0,0.72) 100%);z-index:39;pointer-events:none;}
+  .zone-top{position:absolute;top:0;left:0;right:0;height:120px;background:linear-gradient(180deg,rgba(0,0,0,0.6) 0%,transparent 100%);z-index:40;}
+  .zone-bot{position:absolute;bottom:0;left:0;right:0;height:920px;background:linear-gradient(0deg,rgba(0,0,0,0.65) 0%,rgba(0,0,0,0.15) 40%,transparent 100%);z-index:40;}
 </style>
 </head>
 <body>
-<div class="bg"></div>
-<canvas id="clouds"></canvas>
-<canvas id="bolt"></canvas>
-<canvas id="arc"></canvas>
-<div class="city"></div>
-<div class="windows"></div>
-<div class="reflect"></div>
-<canvas id="rain"></canvas>
-<div class="flash" id="flash"></div>
-<div class="center-darken"></div>
-<div class="vignette"></div>
-<div class="zone-top"></div>
-<div class="zone-bot"></div>
+  <div class="storm-sky"></div>
+  <div class="street"></div>
+
+  <!-- Neon signs -->
+  <div class="neon n1"></div><div class="neon n2"></div><div class="neon n3"></div>
+  <div class="neon n4"></div><div class="neon n5"></div><div class="neon n6"></div>
+  <!-- Street reflections -->
+  <div class="refl r1"></div><div class="refl r2"></div><div class="refl r3"></div>
+  <div class="refl r4"></div><div class="refl r5"></div><div class="refl r6"></div>
+
+  <!-- Canvas stack -->
+  <canvas id="cCity"></canvas>
+  <canvas id="cClouds"></canvas>
+  <canvas id="cLightning"></canvas>
+  <canvas id="cRing"></canvas>
+  <canvas id="cParticles"></canvas>
+
+  <div class="ring-energy"></div>
+  <div class="flash" id="flash"></div>
+  <div class="center-darken"></div>
+  <div class="vignette"></div>
+  <div class="zone-top"></div>
+  <div class="zone-bot"></div>
+
 <script>
-const W=1080,H=1920;
-function setup(id){const c=document.getElementById(id);c.width=W;c.height=H;return c.getContext('2d');}
+const W=1080, H=1920;
+const RING_CX=540, RING_CY=590, RING_R=300;
 
-// Storm clouds
-const cl=setup('clouds');
+function mkCanvas(id){
+  const c=document.getElementById(id);
+  c.width=W; c.height=H;
+  return c.getContext('2d');
+}
+const cityCtx      = mkCanvas('cCity');
+const cloudsCtx    = mkCanvas('cClouds');
+const lightCtx     = mkCanvas('cLightning');
+const ringCtx      = mkCanvas('cRing');
+const partCtx      = mkCanvas('cParticles');
+const flashEl      = document.getElementById('flash');
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   CITY SKYLINE — drawn once, detailed silhouette
+   ═══════════════════════════════════════════════════════════════════════════ */
+(function buildCity(){
+  cityCtx.clearRect(0,0,W,H);
+
+  // Buildings definition: [x, width, height, windowColor, hasAntenna]
+  const buildings = [
+    // Left cluster
+    [0,   95, 420, '#00ffcc', false],
+    [88,  70, 580, '#0088ff', true],
+    [145, 110,490, '#bf00ff', false],
+    [240, 80, 650, '#ff3300', true],
+    [308, 60, 380, '#ffcc00', false],
+    [355, 90, 720, '#00ff44', true],
+    [430, 75, 530, '#0088ff', false],
+    // Center gap (spawn ring area)
+    [490, 50, 310, '#00ffcc', false],
+    [590, 50, 280, '#ff3300', false],
+    // Right cluster
+    [628, 80, 500, '#bf00ff', false],
+    [692, 100,670, '#00ff44', true],
+    [775, 65, 420, '#ffcc00', false],
+    [822, 95, 590, '#0088ff', true],
+    [900, 75, 480, '#ff3300', false],
+    [955, 85, 620, '#00ffcc', true],
+    [1015,65, 400, '#bf00ff', false],
+  ];
+
+  for(const [bx,bw,bh,winCol,antenna] of buildings){
+    const by=H-bh;
+    // Building silhouette
+    const bg=cityCtx.createLinearGradient(bx,by,bx+bw,by+bh);
+    bg.addColorStop(0,'#060c00');
+    bg.addColorStop(0.4,'#040800');
+    bg.addColorStop(1,'#020400');
+    cityCtx.fillStyle=bg;
+    cityCtx.fillRect(bx, by, bw, bh);
+
+    // Edge highlights — faint neon edge bleed
+    cityCtx.strokeStyle=winCol.replace(')',',0.08)').replace('rgb','rgba').replace('#','').length>0
+      ? winCol+'18' : 'rgba(100,255,0,0.08)';
+    cityCtx.lineWidth=1;
+    cityCtx.strokeRect(bx+0.5, by+0.5, bw-1, bh-1);
+
+    // Windows — scattered lit squares
+    const rows = Math.floor(bh/32);
+    const cols = Math.floor(bw/18);
+    for(let r=1;r<rows-1;r++){
+      for(let c=0;c<cols;c++){
+        if(Math.random()>0.38) continue;
+        const wx=bx+4+c*18+Math.random()*4;
+        const wy=by+8+r*32+Math.random()*4;
+        const ww=8+Math.random()*5;
+        const wh=10+Math.random()*5;
+        // Window glow
+        cityCtx.shadowBlur=8;
+        cityCtx.shadowColor=winCol+'88';
+        cityCtx.fillStyle=winCol+'cc';
+        cityCtx.fillRect(wx,wy,ww,wh);
+        cityCtx.shadowBlur=0;
+      }
+    }
+
+    // Antenna
+    if(antenna){
+      cityCtx.strokeStyle='rgba(180,180,160,0.6)';
+      cityCtx.lineWidth=2;
+      cityCtx.beginPath();
+      cityCtx.moveTo(bx+bw/2, by);
+      cityCtx.lineTo(bx+bw/2, by-60-Math.random()*40);
+      cityCtx.stroke();
+      // Blinking antenna light
+      cityCtx.fillStyle='rgba(255,60,60,0.9)';
+      cityCtx.shadowBlur=8; cityCtx.shadowColor='rgba(255,60,60,0.8)';
+      cityCtx.beginPath();
+      cityCtx.arc(bx+bw/2, by-65-Math.random()*35, 3, 0, Math.PI*2);
+      cityCtx.fill(); cityCtx.shadowBlur=0;
+    }
+  }
+
+  // Wet street surface
+  const streetY=H-300;
+  const streetG=cityCtx.createLinearGradient(0,streetY,0,H);
+  streetG.addColorStop(0,'rgba(8,16,0,0.8)');
+  streetG.addColorStop(0.3,'rgba(4,10,0,0.95)');
+  streetG.addColorStop(1,'rgba(2,5,0,1)');
+  cityCtx.fillStyle=streetG;
+  cityCtx.fillRect(0,streetY,W,H-streetY);
+
+  // Puddle reflections — blurry color streaks from neon
+  const neonReflections=[
+    {x:88,  col:'#00ffcc', w:14, opacity:0.22},
+    {x:220, col:'#bf00ff', w:11, opacity:0.2},
+    {x:360, col:'#00ff44', w:12, opacity:0.18},
+    {x:692, col:'#00ff44', w:14, opacity:0.22},
+    {x:825, col:'#0088ff', w:13, opacity:0.2},
+    {x:958, col:'#00ffcc', w:12, opacity:0.18},
+  ];
+  for(const nr of neonReflections){
+    const rg=cityCtx.createLinearGradient(nr.x,streetY,nr.x,H);
+    rg.addColorStop(0, nr.col+'00');
+    rg.addColorStop(0.2, nr.col+Math.floor(nr.opacity*255).toString(16).padStart(2,'0'));
+    rg.addColorStop(1, nr.col+'00');
+    cityCtx.fillStyle=rg;
+    cityCtx.filter='blur(4px)';
+    cityCtx.fillRect(nr.x-nr.w/2, streetY, nr.w, H-streetY);
+    cityCtx.filter='none';
+  }
+})();
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   STORM CLOUDS — moving dark masses
+   ═══════════════════════════════════════════════════════════════════════════ */
 const clouds=[];
-for(let i=0;i<30;i++){
-  clouds.push({x:Math.random()*W,y:Math.random()*700,
-    r:80+Math.random()*150,vx:0.15+Math.random()*0.25,
-    a:0.3+Math.random()*0.3,hue:200+Math.random()*40});
+for(let i=0;i<28;i++){
+  clouds.push({
+    x: Math.random()*W*1.5-W*0.25,
+    y: 40+Math.random()*700,
+    rx: 100+Math.random()*220,
+    ry: 50+Math.random()*100,
+    vx: 0.08+Math.random()*0.18,
+    a: 0.55+Math.random()*0.35,
+    phase: Math.random()*Math.PI*2,
+    dark: Math.random()<0.5,
+  });
 }
 
-// Lightning
-const bl=setup('bolt');
-let boltUntil=0;let boltPts=[];
-function genBolt(){
-  boltPts=[];
-  const startX=200+Math.random()*680;
-  let x=startX,y=0;
-  while(y<1600){
-    const nx=x+(Math.random()-0.5)*60;
-    const ny=y+40+Math.random()*60;
-    boltPts.push([x,y,nx,ny]);
+/* ═══════════════════════════════════════════════════════════════════════════
+   LIGHTNING SYSTEM
+   ═══════════════════════════════════════════════════════════════════════════ */
+let mainBolt=null;
+let boltTimer=0;
+let nextBolt=2+Math.random()*3;
+let flashIntensity=0;
+
+// Mini arcs between buildings — persistent
+const miniArcs=[];
+for(let i=0;i<4;i++) miniArcs.push(genMiniArc());
+let miniArcTimer=0;
+
+function genBolt(sx, sy){
+  const segs=[];
+  let x=sx, y=sy;
+  const branches=[];
+  while(y < H-350){
+    const nx=x+(Math.random()-0.5)*90;
+    const ny=y+45+Math.random()*55;
+    segs.push({x1:x,y1:y,x2:nx,y2:ny});
     // Branch
-    if(Math.random()<0.25&&y<1200){
-      let bx=nx,by=ny;
-      for(let i=0;i<4;i++){
-        const b2x=bx+(Math.random()-0.5)*80;
-        const b2y=by+30+Math.random()*50;
-        boltPts.push([bx,by,b2x,b2y,true]);
-        bx=b2x;by=b2y;
+    if(Math.random()<0.35 && y<H-500){
+      const bx=nx, by=ny;
+      let bxc=bx,byc=by;
+      const branchSegs=[];
+      for(let b=0;b<4+Math.floor(Math.random()*4);b++){
+        const bnx=bxc+(Math.random()-0.5)*70;
+        const bny=byc+35+Math.random()*45;
+        branchSegs.push({x1:bxc,y1:byc,x2:bnx,y2:bny});
+        bxc=bnx;byc=bny;
       }
+      branches.push(branchSegs);
     }
-    x=nx;y=ny;
+    x=nx; y=ny;
   }
+  return {segs, branches, life:1, decay:0.06+Math.random()*0.04, x:sx};
 }
 
-// Arcs near center
-const ar=setup('arc');
-function drawArcs(t){
-  ar.clearRect(0,0,W,H);
-  for(let i=0;i<3;i++){
-    if(Math.random()<0.1){
-      const x1=300+Math.random()*480,y1=500+Math.random()*800;
-      const x2=x1+(Math.random()-0.5)*200,y2=y1+(Math.random()-0.5)*200;
-      ar.strokeStyle='rgba(204,255,0,0.7)';ar.lineWidth=1.5;
-      ar.shadowBlur=15;ar.shadowColor='#ccff00';
-      ar.beginPath();ar.moveTo(x1,y1);
-      let cx=x1,cy=y1;
-      while(Math.hypot(x2-cx,y2-cy)>10){
-        cx+=(x2-cx)*0.25+(Math.random()-0.5)*20;
-        cy+=(y2-cy)*0.25+(Math.random()-0.5)*20;
-        ar.lineTo(cx,cy);
-      }
-      ar.stroke();ar.shadowBlur=0;
-    }
+function genMiniArc(){
+  // Arc between two building windows
+  const x1=50+Math.random()*980;
+  const y1=H-600-Math.random()*500;
+  const x2=x1+(Math.random()-0.5)*300;
+  const y2=y1+(Math.random()-0.5)*200;
+  const pts=[{x:x1,y:y1}];
+  let cx=x1,cy=y1;
+  for(let i=0;i<8;i++){
+    cx+=(x2-x1)/8+(Math.random()-0.5)*30;
+    cy+=(y2-y1)/8+(Math.random()-0.5)*20;
+    pts.push({x:cx,y:cy});
   }
+  pts.push({x:x2,y:y2});
+  return {pts, life:0.6+Math.random()*0.4, decay:0.04+Math.random()*0.06};
 }
 
-// Rain
-const rn=setup('rain');
-const drops=[];
-for(let i=0;i<220;i++){
-  drops.push({x:Math.random()*(W+400)-200,y:Math.random()*H,len:18+Math.random()*22,vy:14+Math.random()*8,vx:-4});
+function drawBolt(ctx, bolt){
+  const {segs,branches,life} = bolt;
+  // All segments
+  const drawSegs=(segList,width,brightness)=>{
+    ctx.save();
+    // Outer glow
+    ctx.strokeStyle=`rgba(200,255,80,${life*0.5})`;
+    ctx.lineWidth=width+4; ctx.shadowBlur=30; ctx.shadowColor=`rgba(180,255,0,${life*0.7})`;
+    ctx.beginPath();
+    ctx.moveTo(segList[0].x1,segList[0].y1);
+    for(const s of segList) ctx.lineTo(s.x2,s.y2);
+    ctx.stroke();
+    // Core
+    ctx.strokeStyle=`rgba(240,255,200,${life*brightness})`;
+    ctx.lineWidth=width; ctx.shadowBlur=12;
+    ctx.stroke();
+    // White hot center
+    ctx.strokeStyle=`rgba(255,255,255,${life*brightness*0.8})`;
+    ctx.lineWidth=width*0.3; ctx.shadowBlur=0;
+    ctx.stroke();
+    ctx.restore();
+  };
+  drawSegs(segs, 3, 0.95);
+  for(const b of branches) drawSegs(b, 1.5, 0.7);
 }
 
-const flash=document.getElementById('flash');
-let lastStrike=0;
-let t=0,frame=0;
+/* ═══════════════════════════════════════════════════════════════════════════
+   RING: Electric arcs + plasma orbs
+   ═══════════════════════════════════════════════════════════════════════════ */
+const electricArcs=[];
+for(let i=0;i<5;i++) electricArcs.push(genElectricArc());
+let arcTimer=0;
+
+function genElectricArc(){
+  const startAngle=Math.random()*Math.PI*2;
+  const startX=RING_CX+Math.cos(startAngle)*(RING_R+10);
+  const startY=RING_CY+Math.sin(startAngle)*(RING_R+10);
+  const endX=startX+(Math.random()-0.5)*280;
+  const endY=startY+(Math.random()-0.5)*280;
+  const pts=[{x:startX,y:startY}];
+  let cx=startX,cy=startY;
+  const steps=8+Math.floor(Math.random()*5);
+  for(let i=0;i<steps;i++){
+    cx+=(endX-startX)/steps+(Math.random()-0.5)*45;
+    cy+=(endY-startY)/steps+(Math.random()-0.5)*45;
+    pts.push({x:cx,y:cy});
+  }
+  pts.push({x:endX,y:endY});
+  return {
+    pts,
+    life: 0.7+Math.random()*0.3,
+    decay: 0.05+Math.random()*0.06,
+    hue: 70+Math.random()*30,
+  };
+}
+
+// Plasma orbs circling ring
+const plasmaOrbs=[];
+for(let i=0;i<4;i++){
+  plasmaOrbs.push({
+    angle: (i/4)*Math.PI*2,
+    speed: 0.018+Math.random()*0.012*(Math.random()<0.5?1:-1),
+    orbitR: RING_R+55+Math.random()*40,
+    size: 8+Math.random()*10,
+    hue: [80,100,60,120][i],
+    phase: Math.random()*Math.PI*2,
+    trail: [],
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   PARTICLES: Rain + Splashes + Electric sparks
+   ═══════════════════════════════════════════════════════════════════════════ */
+const rain=[];
+for(let i=0;i<240;i++){
+  rain.push({
+    x: Math.random()*W*1.4-W*0.2,
+    y: Math.random()*H,
+    len: 18+Math.random()*14,
+    speed: 14+Math.random()*6,
+    a: 0.15+Math.random()*0.2,
+  });
+}
+
+const splashes=[];
+let splashTimer=0;
+
+const eSparks=[];
+for(let i=0;i<35;i++){
+  eSparks.push(mkESpark());
+}
+function mkESpark(){
+  const ang=Math.random()*Math.PI*2;
+  const dist=RING_R+20+Math.random()*100;
+  return{
+    x:RING_CX+Math.cos(ang)*dist,
+    y:RING_CY+Math.sin(ang)*dist,
+    vx:(Math.random()-0.5)*2.5,
+    vy:(Math.random()-0.5)*2.5,
+    life:0.8+Math.random()*0.2,
+    decay:0.015+Math.random()*0.02,
+    r:1+Math.random()*2.5,
+    hue:70+Math.random()*40,
+  };
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MAIN LOOP
+   ═══════════════════════════════════════════════════════════════════════════ */
+let t=0;
+
 function loop(){
-  t+=0.016;frame++;
+  t+=0.016;
 
-  cl.clearRect(0,0,W,H);
+  /* ── CLOUDS ── */
+  cloudsCtx.clearRect(0,0,W,H);
   for(const c of clouds){
     c.x+=c.vx;
-    if(c.x>W+200)c.x=-200;
-    const g=cl.createRadialGradient(c.x,c.y,0,c.x,c.y,c.r);
-    g.addColorStop(0,`hsla(${c.hue},20%,15%,${c.a})`);
-    g.addColorStop(1,`hsla(${c.hue},20%,8%,0)`);
-    cl.fillStyle=g;cl.beginPath();cl.arc(c.x,c.y,c.r,0,Math.PI*2);cl.fill();
+    if(c.x>W+300) c.x=-300;
+    c.phase+=0.004;
+    const pulse=c.dark?1:0.75+Math.sin(c.phase)*0.25;
+    const g=cloudsCtx.createRadialGradient(c.x,c.y,0,c.x,c.y,c.rx);
+    const base=c.dark?`rgba(6,12,0,${c.a*pulse})`:`rgba(12,22,0,${c.a*pulse*0.7})`;
+    g.addColorStop(0,base);
+    g.addColorStop(0.6,c.dark?`rgba(4,8,0,${c.a*pulse*0.6})`:`rgba(8,15,0,${c.a*pulse*0.4})`);
+    g.addColorStop(1,'rgba(0,0,0,0)');
+    cloudsCtx.save();
+    cloudsCtx.scale(1,c.ry/c.rx);
+    cloudsCtx.fillStyle=g;
+    cloudsCtx.beginPath();
+    cloudsCtx.arc(c.x,c.y*(c.rx/c.ry),c.rx,0,Math.PI*2);
+    cloudsCtx.fill();
+    cloudsCtx.restore();
   }
 
-  // Trigger lightning periodically
-  if(performance.now()-lastStrike>1800+Math.random()*2200){
-    lastStrike=performance.now();
-    genBolt();boltUntil=performance.now()+220;
-    flash.animate([{opacity:0},{opacity:0.5},{opacity:0}],{duration:400});
+  /* ── LIGHTNING ── */
+  lightCtx.clearRect(0,0,W,H);
+  boltTimer+=0.016;
+  if(!mainBolt && boltTimer>nextBolt){
+    boltTimer=0; nextBolt=2+Math.random()*3.5;
+    const bx=150+Math.random()*780;
+    mainBolt=genBolt(bx, -20);
+    flashIntensity=0.55+Math.random()*0.35;
+    flashEl.style.background=`rgba(180,255,40,${flashIntensity})`;
+    setTimeout(()=>{flashEl.style.background='rgba(180,255,40,0)';},80);
+    // Afterflash
+    setTimeout(()=>{
+      flashEl.style.background=`rgba(180,255,40,${flashIntensity*0.3})`;
+      setTimeout(()=>{flashEl.style.background='rgba(180,255,40,0)';},60);
+    },140);
+  }
+  if(mainBolt){
+    mainBolt.life-=mainBolt.decay;
+    if(mainBolt.life<=0) mainBolt=null;
+    else drawBolt(lightCtx, mainBolt);
   }
 
-  bl.clearRect(0,0,W,H);
-  if(performance.now()<boltUntil){
-    const life=(boltUntil-performance.now())/220;
-    bl.strokeStyle=`rgba(255,255,255,${life})`;
-    bl.lineWidth=4;bl.shadowBlur=25;bl.shadowColor='#ccff00';
-    for(const p of boltPts){
-      bl.lineWidth=p[4]?2:4;
-      bl.beginPath();bl.moveTo(p[0],p[1]);bl.lineTo(p[2],p[3]);bl.stroke();
+  // Mini arcs
+  miniArcTimer+=0.016;
+  if(miniArcTimer>0.25+Math.random()*0.35){
+    miniArcTimer=0;
+    const idx=Math.floor(Math.random()*miniArcs.length);
+    miniArcs[idx]=genMiniArc();
+  }
+  for(const arc of miniArcs){
+    arc.life-=arc.decay*0.5;
+    if(arc.life<=0) continue;
+    lightCtx.save();
+    lightCtx.strokeStyle=`rgba(150,230,0,${arc.life*0.5})`;
+    lightCtx.lineWidth=2; lightCtx.shadowBlur=12; lightCtx.shadowColor='rgba(180,255,0,0.7)';
+    lightCtx.beginPath();
+    lightCtx.moveTo(arc.pts[0].x,arc.pts[0].y);
+    for(const p of arc.pts) lightCtx.lineTo(p.x,p.y);
+    lightCtx.stroke();
+    lightCtx.strokeStyle=`rgba(220,255,180,${arc.life*0.8})`;
+    lightCtx.lineWidth=0.8; lightCtx.shadowBlur=0;
+    lightCtx.stroke();
+    lightCtx.restore();
+  }
+
+  /* ── RING AREA ── */
+  ringCtx.clearRect(0,0,W,H);
+
+  // Ring energy glow
+  const ringPulse=0.6+Math.sin(t*2.8)*0.4+(mainBolt?0.4:0);
+  const rg=ringCtx.createRadialGradient(RING_CX,RING_CY,RING_R-10,RING_CX,RING_CY,RING_R+200);
+  rg.addColorStop(0,`rgba(180,255,0,${0.15*ringPulse})`);
+  rg.addColorStop(0.3,`rgba(140,220,0,${0.07*ringPulse})`);
+  rg.addColorStop(1,'rgba(0,0,0,0)');
+  ringCtx.fillStyle=rg;
+  ringCtx.beginPath(); ringCtx.arc(RING_CX,RING_CY,RING_R+200,0,Math.PI*2); ringCtx.fill();
+
+  // Electric arcs from ring
+  arcTimer+=0.016;
+  if(arcTimer>0.06+Math.random()*0.08){
+    arcTimer=0;
+    const idx=Math.floor(Math.random()*electricArcs.length);
+    electricArcs[idx]=genElectricArc();
+  }
+  for(const arc of electricArcs){
+    arc.life-=arc.decay*0.3;
+    if(arc.life<=0) continue;
+    ringCtx.save();
+    ringCtx.strokeStyle=`hsla(${arc.hue},100%,70%,${arc.life*0.7})`;
+    ringCtx.lineWidth=2.5; ringCtx.shadowBlur=18; ringCtx.shadowColor=`hsla(${arc.hue},100%,60%,0.9)`;
+    ringCtx.lineCap='round';
+    ringCtx.beginPath();
+    ringCtx.moveTo(arc.pts[0].x,arc.pts[0].y);
+    for(const p of arc.pts) ringCtx.lineTo(p.x,p.y);
+    ringCtx.stroke();
+    // Bright core
+    ringCtx.strokeStyle=`rgba(255,255,220,${arc.life*0.85})`;
+    ringCtx.lineWidth=0.8; ringCtx.shadowBlur=0;
+    ringCtx.stroke();
+    ringCtx.restore();
+  }
+
+  // Plasma orbs
+  for(const orb of plasmaOrbs){
+    orb.angle+=orb.speed;
+    orb.phase+=0.06;
+    const ox=RING_CX+Math.cos(orb.angle)*orb.orbitR;
+    const oy=RING_CY+Math.sin(orb.angle)*orb.orbitR;
+    orb.trail.unshift({x:ox,y:oy});
+    if(orb.trail.length>18) orb.trail.pop();
+    // Trail
+    for(let ti=1;ti<orb.trail.length;ti++){
+      const ta=(1-ti/orb.trail.length)*0.55;
+      const ts=orb.size*(1-ti/orb.trail.length)*0.5;
+      ringCtx.fillStyle=`hsla(${orb.hue},100%,70%,${ta})`;
+      ringCtx.beginPath(); ringCtx.arc(orb.trail[ti].x,orb.trail[ti].y,ts,0,Math.PI*2); ringCtx.fill();
     }
-    // Brighter core
-    bl.strokeStyle=`rgba(204,255,0,${life})`;bl.lineWidth=1.5;bl.shadowBlur=0;
-    for(const p of boltPts){bl.beginPath();bl.moveTo(p[0],p[1]);bl.lineTo(p[2],p[3]);bl.stroke();}
+    // Orb
+    const pulse=0.7+Math.sin(orb.phase)*0.3;
+    const og=ringCtx.createRadialGradient(ox,oy,0,ox,oy,orb.size*2.5);
+    og.addColorStop(0,`hsla(${orb.hue},100%,85%,${pulse})`);
+    og.addColorStop(0.4,`hsla(${orb.hue},100%,65%,${pulse*0.5})`);
+    og.addColorStop(1,'rgba(0,0,0,0)');
+    ringCtx.fillStyle=og;
+    ringCtx.shadowBlur=20; ringCtx.shadowColor=`hsla(${orb.hue},100%,60%,0.9)`;
+    ringCtx.beginPath(); ringCtx.arc(ox,oy,orb.size*2.5,0,Math.PI*2); ringCtx.fill();
+    ringCtx.fillStyle=`hsla(${orb.hue+20},100%,90%,${pulse*0.95})`;
+    ringCtx.beginPath(); ringCtx.arc(ox,oy,orb.size,0,Math.PI*2); ringCtx.fill();
+    ringCtx.shadowBlur=0;
   }
 
-  drawArcs(t);
+  /* ── PARTICLES ── */
+  partCtx.clearRect(0,0,W,H);
 
   // Rain
-  rn.clearRect(0,0,W,H);
-  rn.strokeStyle='rgba(180,220,255,0.35)';rn.lineWidth=1.2;
-  for(const d of drops){
-    d.x+=d.vx;d.y+=d.vy;
-    if(d.y>H){d.y=-20;d.x=Math.random()*(W+400)-200;}
-    rn.beginPath();rn.moveTo(d.x,d.y);rn.lineTo(d.x+d.vx*1.5,d.y+d.len);rn.stroke();
+  partCtx.strokeStyle='rgba(180,220,255,0.22)';
+  partCtx.lineWidth=1.1;
+  partCtx.lineCap='round';
+  for(const r of rain){
+    r.x+=-3; r.y+=r.speed;
+    if(r.y>H+30||r.x<-50){
+      r.x=Math.random()*W*1.5-W*0.1;
+      r.y=-30;
+    }
+    partCtx.globalAlpha=r.a*(mainBolt?1.4:1);
+    partCtx.beginPath();
+    partCtx.moveTo(r.x,r.y);
+    partCtx.lineTo(r.x-3,r.y+r.len);
+    partCtx.stroke();
+  }
+  partCtx.globalAlpha=1;
+
+  // Splashes
+  splashTimer+=0.016;
+  if(splashTimer>0.035){
+    splashTimer=0;
+    for(let i=0;i<3;i++){
+      splashes.push({
+        x:Math.random()*W,
+        y:H-280+Math.random()*200,
+        vx:(Math.random()-0.5)*2.5,
+        vy:-(1.5+Math.random()*2.5),
+        life:1,
+        r:1+Math.random()*2,
+      });
+    }
+  }
+  for(let i=splashes.length-1;i>=0;i--){
+    const s=splashes[i];
+    s.x+=s.vx; s.y+=s.vy; s.vy+=0.15; s.life-=0.06;
+    if(s.life<=0){splashes.splice(i,1);continue;}
+    partCtx.fillStyle=`rgba(160,210,255,${s.life*0.6})`;
+    partCtx.beginPath(); partCtx.arc(s.x,s.y,s.r,0,Math.PI*2); partCtx.fill();
+  }
+
+  // Electric sparks
+  for(let i=0;i<eSparks.length;i++){
+    const s=eSparks[i];
+    s.x+=s.vx; s.y+=s.vy; s.life-=s.decay;
+    if(s.life<=0) eSparks[i]=mkESpark();
+    const flick=0.5+Math.sin(t*15+i)*0.5;
+    partCtx.save();
+    partCtx.shadowBlur=10; partCtx.shadowColor=`hsla(${s.hue},100%,70%,0.9)`;
+    partCtx.fillStyle=`hsla(${s.hue},100%,75%,${s.life*flick})`;
+    partCtx.beginPath(); partCtx.arc(s.x,s.y,s.r,0,Math.PI*2); partCtx.fill();
+    partCtx.restore();
   }
 
   requestAnimationFrame(loop);
 }
+
 loop();
 </script>
 </body>

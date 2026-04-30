@@ -4,121 +4,701 @@
 <meta charset="UTF-8">
 <title>Steel — Raumstation</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-html,body{width:1080px;height:1920px;overflow:hidden;background:#030810;}
-canvas{position:absolute;inset:0;width:1080px;height:1920px;display:block;}
-.bg{position:absolute;inset:0;background:
-  radial-gradient(ellipse 70% 50% at 50% 50%, #0a1a30 0%, #050e1a 55%, transparent 80%),
-  linear-gradient(180deg, #030810 0%, #050e1a 50%, #030810 100%);}
-/* Station frame — metallic grid around edges */
-.frame-top{position:absolute;top:0;left:0;right:0;height:200px;background:linear-gradient(180deg, #0a1525 0%, #050c18 100%);border-bottom:2px solid #102840;box-shadow:inset 0 -20px 30px rgba(0,170,255,0.1);}
-.frame-bot{position:absolute;bottom:0;left:0;right:0;height:240px;background:linear-gradient(0deg, #0a1525 0%, #050c18 100%);border-top:2px solid #102840;box-shadow:inset 0 20px 30px rgba(0,170,255,0.1);}
-.pillar-l{position:absolute;top:150px;bottom:200px;left:0;width:80px;background:linear-gradient(90deg, #0a1828 0%, #050e1a 100%);border-right:2px solid #102840;}
-.pillar-r{position:absolute;top:150px;bottom:200px;right:0;width:80px;background:linear-gradient(270deg, #0a1828 0%, #050e1a 100%);border-left:2px solid #102840;}
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{
+    width:1080px;height:1920px;overflow:hidden;
+    background:#020508;
+  }
+  canvas{position:absolute;inset:0;width:1080px;height:1920px;display:block;}
 
-/* Grid struts */
-.struts{position:absolute;top:200px;bottom:240px;left:80px;right:80px;pointer-events:none;
-  background:
-    linear-gradient(90deg, transparent 49.5%, rgba(0,170,255,0.04) 50%, transparent 50.5%) 0 0/200px 100%,
-    linear-gradient(0deg, transparent 49.5%, rgba(0,170,255,0.04) 50%, transparent 50.5%) 0 0/100% 160px;}
+  /* Station interior walls */
+  .station-walls{
+    position:absolute;inset:0;
+    background:
+      linear-gradient(90deg, #040c18 0%, #060e1c 8%, transparent 22%, transparent 78%, #060e1c 92%, #040c18 100%),
+      linear-gradient(180deg, #060e1c 0%, transparent 12%, transparent 88%, #060e1c 100%);
+  }
 
-/* Viewport "window" — the space seen through */
-.view{position:absolute;top:220px;bottom:260px;left:100px;right:100px;border-radius:20px;overflow:hidden;border:3px solid #1a3a5a;box-shadow:inset 0 0 60px rgba(0,100,200,0.15),0 0 40px rgba(0,150,255,0.1);}
-.view-bg{position:absolute;inset:0;background:
-  radial-gradient(ellipse 60% 40% at 30% 30%, rgba(0,170,255,0.3) 0%, transparent 60%),
-  radial-gradient(ellipse 70% 50% at 70% 70%, rgba(50,100,200,0.3) 0%, transparent 60%),
-  linear-gradient(180deg, #000612 0%, #000a18 100%);}
+  /* Metal panel texture — left wall */
+  .panel-left{
+    position:absolute;top:0;left:0;width:130px;height:100%;
+    background:
+      repeating-linear-gradient(0deg, transparent 0px, transparent 58px, rgba(0,120,200,0.06) 58px, rgba(0,120,200,0.06) 60px),
+      repeating-linear-gradient(90deg, transparent 0px, transparent 28px, rgba(0,80,150,0.04) 28px, rgba(0,80,150,0.04) 30px),
+      linear-gradient(90deg, #050d1a 0%, #07121f 70%, transparent 100%);
+  }
+  .panel-right{
+    position:absolute;top:0;right:0;width:130px;height:100%;
+    background:
+      repeating-linear-gradient(0deg, transparent 0px, transparent 58px, rgba(0,120,200,0.06) 58px, rgba(0,120,200,0.06) 60px),
+      repeating-linear-gradient(90deg, transparent 0px, transparent 28px, rgba(0,80,150,0.04) 28px, rgba(0,80,150,0.04) 30px),
+      linear-gradient(270deg, #050d1a 0%, #07121f 70%, transparent 100%);
+  }
 
-/* LED strips */
-.led-l{position:absolute;left:40px;top:200px;bottom:240px;width:4px;background:#00aaff;box-shadow:0 0 12px #00aaff;opacity:0.8;animation:ledP 2s ease-in-out infinite;}
-.led-r{position:absolute;right:40px;top:200px;bottom:240px;width:4px;background:#00aaff;box-shadow:0 0 12px #00aaff;opacity:0.8;animation:ledP 2s ease-in-out infinite;animation-delay:-1s;}
-@keyframes ledP{0%,100%{opacity:0.5}50%{opacity:1}}
+  /* LED strips on walls */
+  .led-l1{position:absolute;top:0;left:118px;width:3px;height:100%;background:linear-gradient(180deg,transparent 2%,rgba(0,180,255,0.7) 8%,rgba(0,180,255,0.5) 50%,rgba(0,180,255,0.7) 92%,transparent 98%);filter:blur(2px);box-shadow:0 0 8px rgba(0,180,255,0.5),0 0 20px rgba(0,140,220,0.3);}
+  .led-l2{position:absolute;top:0;left:88px; width:2px;height:100%;background:linear-gradient(180deg,transparent 5%,rgba(0,100,200,0.4) 15%,rgba(0,100,200,0.3) 85%,transparent 95%);filter:blur(1px);}
+  .led-r1{position:absolute;top:0;right:118px;width:3px;height:100%;background:linear-gradient(180deg,transparent 2%,rgba(0,180,255,0.7) 8%,rgba(0,180,255,0.5) 50%,rgba(0,180,255,0.7) 92%,transparent 98%);filter:blur(2px);box-shadow:0 0 8px rgba(0,180,255,0.5),0 0 20px rgba(0,140,220,0.3);}
+  .led-r2{position:absolute;top:0;right:88px; width:2px;height:100%;background:linear-gradient(180deg,transparent 5%,rgba(0,100,200,0.4) 15%,rgba(0,100,200,0.3) 85%,transparent 95%);filter:blur(1px);}
 
-/* Holo display corner — subtle */
-.holo{position:absolute;top:100px;left:120px;width:220px;height:70px;border:1px solid rgba(0,170,255,0.4);border-radius:4px;padding:10px;font-family:'Courier New',monospace;color:rgba(0,200,255,0.7);font-size:11px;line-height:1.5;background:rgba(0,40,80,0.15);backdrop-filter:blur(4px);}
-.holo .blink{animation:bl 1.2s steps(2,end) infinite;}
-@keyframes bl{0%,50%{opacity:1}51%,100%{opacity:0}}
-.holo-r{position:absolute;bottom:120px;right:120px;width:200px;height:60px;border:1px solid rgba(0,170,255,0.4);border-radius:4px;padding:8px;font-family:'Courier New',monospace;color:rgba(0,200,255,0.7);font-size:10px;background:rgba(0,40,80,0.15);backdrop-filter:blur(4px);text-align:right;}
+  /* Horizontal structural beams */
+  .beam{position:absolute;left:0;right:0;height:4px;background:linear-gradient(90deg,transparent 5%,rgba(0,140,220,0.25) 20%,rgba(0,180,255,0.35) 50%,rgba(0,140,220,0.25) 80%,transparent 95%);filter:blur(1px);}
+  .bm1{top:245px;} .bm2{top:690px;} .bm3{top:1050px;}
+  .bm4{top:1320px;}.bm5{top:1640px;}
 
-.zone-top{position:absolute;top:0;left:0;right:0;height:120px;background:linear-gradient(180deg,rgba(0,0,0,0.55) 0%,transparent 100%);z-index:40;}
-.zone-bot{position:absolute;bottom:0;left:0;right:0;height:920px;background:linear-gradient(0deg,rgba(0,5,15,0.55) 0%,rgba(0,5,15,0.12) 40%,transparent 100%);z-index:40;}
-.center-darken{position:absolute;top:300px;left:50%;transform:translateX(-50%);width:780px;height:540px;background:radial-gradient(ellipse 50% 50% at 50% 50%,rgba(0,10,25,0.3) 0%,transparent 70%);z-index:38;}
-.vignette{position:absolute;inset:0;background:radial-gradient(ellipse 80% 70% at 50% 50%,transparent 40%,rgba(0,0,0,0.6) 100%);z-index:39;pointer-events:none;}
+  /* Rivet dots on panels */
+  .rivets-l,.rivets-r{position:absolute;top:0;width:18px;height:100%;}
+  .rivets-l{left:105px;background:repeating-linear-gradient(0deg,transparent 0px,transparent 95px,rgba(40,100,160,0.5) 95px,rgba(40,100,160,0.5) 97px);}
+  .rivets-r{right:105px;background:repeating-linear-gradient(0deg,transparent 0px,transparent 95px,rgba(40,100,160,0.5) 95px,rgba(40,100,160,0.5) 97px);}
+
+  /* Porthole frame — big circular window */
+  .porthole-frame{
+    position:absolute;top:55px;left:50%;transform:translateX(-50%);
+    width:680px;height:680px;border-radius:50%;
+    border:12px solid #0c1e35;
+    box-shadow:
+      0 0 0 4px #081525,
+      0 0 0 8px #0a1a2e,
+      0 0 0 12px #06111e,
+      inset 0 0 30px rgba(0,0,0,0.8),
+      0 0 40px rgba(0,100,200,0.15);
+    z-index:5;overflow:hidden;
+    background:#000;
+  }
+  /* Porthole inner rim bolts */
+  .porthole-frame::before{
+    content:'';position:absolute;inset:8px;border-radius:50%;
+    border:2px solid rgba(0,100,180,0.35);
+    box-shadow:inset 0 0 15px rgba(0,50,100,0.3);
+  }
+
+  /* Hologram displays — floating data panels */
+  .holo{
+    position:absolute;border:1px solid rgba(0,200,255,0.3);
+    background:rgba(0,30,60,0.35);
+    backdrop-filter:blur(2px);
+    box-shadow:0 0 12px rgba(0,180,255,0.2),inset 0 0 8px rgba(0,100,200,0.1);
+    border-radius:4px;
+    overflow:hidden;
+  }
+  .holo::before{
+    content:'';position:absolute;top:0;left:0;right:0;height:20px;
+    background:linear-gradient(90deg,rgba(0,150,255,0.3),rgba(0,200,255,0.15),rgba(0,150,255,0.3));
+    border-bottom:1px solid rgba(0,180,255,0.2);
+  }
+  .h1{top:820px; left:28px; width:220px;height:140px;animation:holoFlick 7s ease-in-out infinite;}
+  .h2{top:940px; right:28px;width:200px;height:125px;animation:holoFlick 9s ease-in-out infinite reverse;animation-delay:-3s;}
+  .h3{top:1160px;left:40px; width:190px;height:130px;animation:holoFlick 6s ease-in-out infinite;animation-delay:-5s;}
+  .h4{top:1280px;right:35px;width:210px;height:145px;animation:holoFlick 11s ease-in-out infinite reverse;animation-delay:-1s;}
+  @keyframes holoFlick{
+    0%,90%,100%{opacity:1}
+    92%{opacity:0.1}93%{opacity:0.8}95%{opacity:0.15}97%{opacity:1}
+  }
+
+  /* Warning stripe floor at bottom */
+  .floor-stripe{
+    position:absolute;bottom:0;left:0;right:0;height:80px;
+    background:repeating-linear-gradient(90deg,rgba(255,150,0,0.08) 0px,rgba(255,150,0,0.08) 28px,transparent 28px,transparent 56px);
+    border-top:2px solid rgba(0,140,220,0.3);
+  }
+
+  /* Ring energy portal glow */
+  .ring-portal{
+    position:absolute;top:215px;left:50%;transform:translateX(-50%);
+    width:840px;height:840px;border-radius:50%;
+    background:radial-gradient(ellipse 100% 100% at 50% 50%,
+      rgba(0,200,255,0.1) 0%,rgba(0,150,220,0.05) 48%,transparent 68%);
+    mix-blend-mode:screen;filter:blur(18px);
+    animation:portalGlow 4s ease-in-out infinite;
+  }
+  @keyframes portalGlow{0%,100%{opacity:0.65;transform:translateX(-50%) scale(1)}50%{opacity:1;transform:translateX(-50%) scale(1.02)}}
+
+  /* UI */
+  .center-darken{position:absolute;top:300px;left:50%;transform:translateX(-50%);width:780px;height:540px;background:radial-gradient(ellipse 50% 50% at 50% 50%,rgba(0,5,15,0.42) 0%,transparent 70%);z-index:38;}
+  .vignette{position:absolute;inset:0;background:radial-gradient(ellipse 80% 70% at 50% 50%,transparent 38%,rgba(0,0,8,0.78) 100%);z-index:39;pointer-events:none;}
+  .zone-top{position:absolute;top:0;left:0;right:0;height:120px;background:linear-gradient(180deg,rgba(0,0,0,0.55) 0%,transparent 100%);z-index:40;}
+  .zone-bot{position:absolute;bottom:0;left:0;right:0;height:920px;background:linear-gradient(0deg,rgba(0,0,10,0.65) 0%,rgba(0,0,10,0.14) 40%,transparent 100%);z-index:40;}
 </style>
 </head>
 <body>
-<div class="bg"></div>
-<div class="view"><div class="view-bg"></div><canvas id="space"></canvas></div>
-<div class="frame-top"></div>
-<div class="frame-bot"></div>
-<div class="pillar-l"></div>
-<div class="pillar-r"></div>
-<div class="struts"></div>
-<div class="led-l"></div>
-<div class="led-r"></div>
-<div class="holo">
-  <div>▸ STATION SYS <span style="color:#00ff80">OK</span></div>
-  <div>▸ NAV LOCK <span style="color:#00ff80">STABLE</span></div>
-  <div>▸ SIGNAL<span class="blink">_</span></div>
-</div>
-<div class="holo-r">
-  <div>⬡ QUADRANT 7-B</div>
-  <div>⬡ 0.047 PARSEC</div>
-  <div>⬡ <span class="blink">SCANNING</span></div>
-</div>
-<canvas id="data"></canvas>
-<div class="center-darken"></div>
-<div class="vignette"></div>
-<div class="zone-top"></div>
-<div class="zone-bot"></div>
-<script>
-const W=1080,H=1920;
-function setup(id){const c=document.getElementById(id);c.width=W;c.height=H;return c.getContext('2d');}
+  <div class="station-walls"></div>
+  <div class="panel-left"></div><div class="panel-right"></div>
+  <div class="led-l1"></div><div class="led-l2"></div>
+  <div class="led-r1"></div><div class="led-r2"></div>
+  <div class="rivets-l"></div><div class="rivets-r"></div>
+  <div class="beam bm1"></div><div class="beam bm2"></div><div class="beam bm3"></div>
+  <div class="beam bm4"></div><div class="beam bm5"></div>
+  <div class="floor-stripe"></div>
 
-// Space through window — stars far
-const sp=document.getElementById('space');
-sp.width=880;sp.height=1480;
-const spc=sp.getContext('2d');
-const sStars=[];
-for(let i=0;i<220;i++)sStars.push({x:Math.random()*880,y:Math.random()*1480,r:Math.random()*1.4+0.2,tw:Math.random()*Math.PI*2,hue:Math.random()<0.25?220:Math.random()<0.4?40:0});
-// Planets/moons
-const planets=[
-  {x:150,y:280,r:60,hue:200,a:0.6},
-  {x:700,y:1100,r:90,hue:30,a:0.5}
+  <!-- Porthole -->
+  <div class="porthole-frame" id="porthole"></div>
+
+  <!-- Hologram displays -->
+  <div class="holo h1"><canvas id="holo1" width="220" height="140"></canvas></div>
+  <div class="holo h2"><canvas id="holo2" width="200" height="125"></canvas></div>
+  <div class="holo h3"><canvas id="holo3" width="190" height="130"></canvas></div>
+  <div class="holo h4"><canvas id="holo4" width="210" height="145"></canvas></div>
+
+  <!-- Main canvas stack -->
+  <canvas id="cSpace"></canvas>
+  <canvas id="cStation"></canvas>
+  <canvas id="cRing"></canvas>
+  <canvas id="cParticles"></canvas>
+
+  <div class="ring-portal"></div>
+  <div class="center-darken"></div>
+  <div class="vignette"></div>
+  <div class="zone-top"></div>
+  <div class="zone-bot"></div>
+
+<script>
+const W=1080, H=1920;
+const RING_CX=540, RING_CY=590, RING_R=300;
+// Porthole center
+const PH_CX=540, PH_CY=395, PH_R=328;
+
+function mkCanvas(id){
+  const c=document.getElementById(id);
+  c.width=W; c.height=H;
+  return c.getContext('2d');
+}
+const spaceCtx   = mkCanvas('cSpace');
+const stationCtx = mkCanvas('cStation');
+const ringCtx    = mkCanvas('cRing');
+const partCtx    = mkCanvas('cParticles');
+
+// Hologram canvases (already sized in HTML)
+const holoCtxs=[
+  document.getElementById('holo1').getContext('2d'),
+  document.getElementById('holo2').getContext('2d'),
+  document.getElementById('holo3').getContext('2d'),
+  document.getElementById('holo4').getContext('2d'),
 ];
 
-const dt=setup('data');
-const dparts=[];
-for(let i=0;i<25;i++)dparts.push({x:Math.random()*W,y:Math.random()*H,sz:3+Math.random()*6,vy:-0.2-Math.random()*0.3,ph:Math.random()*Math.PI*2,hue:190+Math.random()*30});
+/* ═══════════════════════════════════════════════════════════════════════════
+   SPACE through porthole — stars, planet, nebula
+   ═══════════════════════════════════════════════════════════════════════════ */
+const STAR_COUNT=240;
+const stars=[];
+for(let i=0;i<STAR_COUNT;i++){
+  // Place stars within porthole area
+  const ang=Math.random()*Math.PI*2;
+  const r=Math.random()*PH_R*0.95;
+  stars.push({
+    x:PH_CX+Math.cos(ang)*r,
+    y:PH_CY+Math.sin(ang)*r,
+    r:0.4+Math.random()*1.8,
+    a:0.3+Math.random()*0.7,
+    flicker:Math.random()<0.18,
+    phase:Math.random()*Math.PI*2,
+    flickSp:0.04+Math.random()*0.07,
+    // Slow drift (station rotation)
+    driftAng:Math.random()*Math.PI*2,
+    driftSp:0.00008+Math.random()*0.00012,
+    hue:Math.random()<0.12?200+Math.random()*40:0,
+  });
+}
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   STATION INTERIOR — pipes, panels, cables drawn once
+   ═══════════════════════════════════════════════════════════════════════════ */
+(function buildStation(){
+  stationCtx.clearRect(0,0,W,H);
+
+  // Vertical pipes on walls
+  const pipes=[
+    {x:32,  w:8,  col:'#0a1828', accent:'rgba(0,100,180,0.4)'},
+    {x:55,  w:5,  col:'#080f1e', accent:'rgba(0,80,160,0.3)'},
+    {x:72,  w:6,  col:'#0a1828', accent:'rgba(0,100,180,0.35)'},
+    {x:W-32,w:8,  col:'#0a1828', accent:'rgba(0,100,180,0.4)', flip:true},
+    {x:W-55,w:5,  col:'#080f1e', accent:'rgba(0,80,160,0.3)',  flip:true},
+    {x:W-72,w:6,  col:'#0a1828', accent:'rgba(0,100,180,0.35)',flip:true},
+  ];
+  for(const p of pipes){
+    const px=p.flip?p.x-p.w:p.x;
+    stationCtx.fillStyle=p.col;
+    stationCtx.fillRect(px,0,p.w,H);
+    stationCtx.strokeStyle=p.accent;
+    stationCtx.lineWidth=1;
+    stationCtx.strokeRect(px,0,p.w,H);
+    // Pipe joints every 200px
+    for(let jy=100;jy<H;jy+=200){
+      stationCtx.fillStyle='rgba(10,28,50,0.9)';
+      stationCtx.fillRect(px-2,jy,p.w+4,10);
+      stationCtx.strokeStyle='rgba(0,120,200,0.35)';
+      stationCtx.lineWidth=0.8;
+      stationCtx.strokeRect(px-2,jy,p.w+4,10);
+    }
+  }
+
+  // Porthole frame bolts — decorative
+  stationCtx.fillStyle='rgba(8,22,40,0.9)';
+  stationCtx.strokeStyle='rgba(0,120,200,0.45)';
+  stationCtx.lineWidth=1.5;
+  for(let i=0;i<12;i++){
+    const ang=(i/12)*Math.PI*2;
+    const bx=PH_CX+Math.cos(ang)*(PH_R+28);
+    const by=PH_CY+Math.sin(ang)*(PH_R+28);
+    stationCtx.beginPath();stationCtx.arc(bx,by,7,0,Math.PI*2);
+    stationCtx.fill();stationCtx.stroke();
+    // Bolt highlight
+    stationCtx.fillStyle='rgba(0,100,180,0.4)';
+    stationCtx.beginPath();stationCtx.arc(bx-1.5,by-1.5,2.5,0,Math.PI*2);stationCtx.fill();
+    stationCtx.fillStyle='rgba(8,22,40,0.9)';
+  }
+
+  // Cable bundles running across walls
+  const cables=[
+    {y:310, x1:0, x2:140, w:4},
+    {y:315, x1:0, x2:120, w:2},
+    {y:730, x1:W, x2:W-145, w:4},
+    {y:735, x1:W, x2:W-125, w:2},
+    {y:1120,x1:0, x2:160,   w:3},
+    {y:1480,x1:W, x2:W-150, w:3},
+  ];
+  for(const cb of cables){
+    const g=stationCtx.createLinearGradient(cb.x1,cb.y,cb.x2,cb.y);
+    g.addColorStop(0,'rgba(0,0,0,0)');
+    g.addColorStop(0.3,'rgba(5,14,28,0.8)');
+    g.addColorStop(1,'rgba(5,14,28,0.6)');
+    stationCtx.strokeStyle=g;
+    stationCtx.lineWidth=cb.w;
+    stationCtx.beginPath();
+    stationCtx.moveTo(cb.x1,cb.y);
+    stationCtx.quadraticCurveTo((cb.x1+cb.x2)/2,cb.y+10,cb.x2,cb.y);
+    stationCtx.stroke();
+    // Glowing data line alongside cable
+    stationCtx.strokeStyle=`rgba(0,140,255,0.2)`;
+    stationCtx.lineWidth=0.8;
+    stationCtx.beginPath();
+    stationCtx.moveTo(cb.x1,cb.y-2);
+    stationCtx.quadraticCurveTo((cb.x1+cb.x2)/2,cb.y+8,cb.x2,cb.y-2);
+    stationCtx.stroke();
+  }
+
+  // Floor grating
+  const floorY=H-85;
+  for(let gx=130;gx<W-130;gx+=18){
+    stationCtx.strokeStyle='rgba(0,80,150,0.12)';
+    stationCtx.lineWidth=0.8;
+    stationCtx.beginPath();
+    stationCtx.moveTo(gx,floorY);stationCtx.lineTo(gx,H);stationCtx.stroke();
+  }
+  for(let gy=floorY;gy<H;gy+=16){
+    stationCtx.beginPath();
+    stationCtx.moveTo(130,gy);stationCtx.lineTo(W-130,gy);stationCtx.stroke();
+  }
+})();
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   RING: Hologram rings + data streams + scanner
+   ═══════════════════════════════════════════════════════════════════════════ */
+const holoRings=[
+  {r:RING_R+55, rot:0, rotSp:0.012,  dashLen:12, gapLen:8,  hue:190, width:1.5},
+  {r:RING_R+100,rot:1, rotSp:-0.008, dashLen:20, gapLen:14, hue:200, width:1.2},
+  {r:RING_R+148,rot:2, rotSp:0.005,  dashLen:8,  gapLen:16, hue:180, width:1.0},
+  {r:RING_R+195,rot:3, rotSp:-0.003, dashLen:30, gapLen:20, hue:210, width:0.8},
+];
+
+// Data streams (lines from outside pointing to ring center)
+const DATA_STREAM_COUNT=10;
+const dataStreams=[];
+for(let i=0;i<DATA_STREAM_COUNT;i++){
+  const ang=(i/DATA_STREAM_COUNT)*Math.PI*2+(Math.random()-0.5)*0.3;
+  const startR=RING_R+220+Math.random()*120;
+  dataStreams.push({
+    ang,
+    startR, endR:RING_R-20,
+    packets:[],
+    packetTimer:Math.random()*2,
+    packetInterval:0.8+Math.random()*1.2,
+    hue:185+Math.random()*30,
+  });
+}
+
+// Scanner beam
+let scannerAng=0;
+const SCANNER_SPEED=0.025;
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   HOLOGRAM DISPLAY RENDERERS
+   ═══════════════════════════════════════════════════════════════════════════ */
+const holoData=[
+  {type:'waveform', phase:0, color:'#00ccff'},
+  {type:'bargraph', phase:1.5, color:'#00ffcc'},
+  {type:'scatter',  phase:3.0, color:'#4488ff'},
+  {type:'radar',    phase:0.8, color:'#00aaff'},
+];
+
+function renderHolo(ctx,w,h,data,t2){
+  ctx.clearRect(0,0,w,h);
+  ctx.fillStyle='rgba(0,10,25,0.6)';
+  ctx.fillRect(0,0,w,h);
+  ctx.strokeStyle=data.color;
+  ctx.fillStyle=data.color;
+  ctx.shadowBlur=6;ctx.shadowColor=data.color;
+
+  if(data.type==='waveform'){
+    ctx.lineWidth=1.2;ctx.beginPath();
+    for(let xi=0;xi<w;xi+=2){
+      const v=h*0.5+Math.sin(xi*0.08+t2*2+data.phase)*15+Math.sin(xi*0.15+t2)*8;
+      xi===0?ctx.moveTo(xi,v):ctx.lineTo(xi,v);
+    }
+    ctx.stroke();
+    // Fill below wave
+    ctx.globalAlpha=0.1;
+    ctx.fillRect(0,0,w,h);ctx.globalAlpha=1;
+    // Grid
+    ctx.strokeStyle='rgba(0,150,220,0.15)';ctx.lineWidth=0.5;
+    for(let yi=0;yi<h;yi+=15){
+      ctx.beginPath();ctx.moveTo(0,yi);ctx.lineTo(w,yi);ctx.stroke();
+    }
+
+  } else if(data.type==='bargraph'){
+    const bars=8;
+    for(let bi=0;bi<bars;bi++){
+      const bh=(0.2+0.7*Math.abs(Math.sin(bi*0.9+t2*1.5+data.phase)))*h*0.7;
+      const bx=12+bi*(w-24)/bars;
+      const grad=ctx.createLinearGradient(bx,h-24,bx,h-24-bh);
+      grad.addColorStop(0,data.color);
+      grad.addColorStop(1,data.color.replace('ff','44').replace('cc','22'));
+      ctx.fillStyle=grad;ctx.fillRect(bx,h-24-bh,12,bh);
+    }
+    // Axis
+    ctx.strokeStyle='rgba(0,150,220,0.3)';ctx.lineWidth=0.8;
+    ctx.beginPath();ctx.moveTo(8,22);ctx.lineTo(8,h-20);ctx.lineTo(w-8,h-20);ctx.stroke();
+
+  } else if(data.type==='scatter'){
+    for(let pi=0;pi<20;pi++){
+      const px=20+Math.sin(pi*2.3+t2*0.5+data.phase)*((w-40)/2)+(w-40)/2;
+      const py=25+Math.cos(pi*1.7+t2*0.7+data.phase)*((h-50)/2)+(h-50)/2;
+      const size=1.5+Math.abs(Math.sin(pi+t2))*2;
+      ctx.beginPath();ctx.arc(px,py,size,0,Math.PI*2);ctx.fill();
+    }
+    // Connecting lines
+    ctx.lineWidth=0.5;ctx.globalAlpha=0.3;
+    ctx.beginPath();
+    for(let pi=0;pi<20;pi++){
+      const px=20+Math.sin(pi*2.3+t2*0.5+data.phase)*((w-40)/2)+(w-40)/2;
+      const py=25+Math.cos(pi*1.7+t2*0.7+data.phase)*((h-50)/2)+(h-50)/2;
+      pi===0?ctx.moveTo(px,py):ctx.lineTo(px,py);
+    }
+    ctx.stroke();ctx.globalAlpha=1;
+
+  } else { // radar
+    const cx2=w/2, cy2=h/2;
+    const rad=Math.min(w,h)*0.38;
+    // Grid circles
+    ctx.strokeStyle='rgba(0,150,220,0.2)';ctx.lineWidth=0.6;
+    for(let ri=1;ri<=3;ri++){
+      ctx.beginPath();ctx.arc(cx2,cy2,rad*ri/3,0,Math.PI*2);ctx.stroke();
+    }
+    // Axes
+    for(let ai=0;ai<6;ai++){
+      const a2=(ai/6)*Math.PI*2;
+      ctx.beginPath();ctx.moveTo(cx2,cy2);
+      ctx.lineTo(cx2+Math.cos(a2)*rad,cy2+Math.sin(a2)*rad);ctx.stroke();
+    }
+    // Rotating sweep
+    const sweepAng=t2*1.2+data.phase;
+    ctx.strokeStyle=data.color;ctx.lineWidth=1;
+    ctx.globalAlpha=0.8;
+    ctx.beginPath();ctx.moveTo(cx2,cy2);
+    ctx.lineTo(cx2+Math.cos(sweepAng)*rad,cy2+Math.sin(sweepAng)*rad);ctx.stroke();
+    // Blip
+    ctx.globalAlpha=1;ctx.beginPath();
+    ctx.arc(cx2+Math.cos(sweepAng)*rad*0.6,cy2+Math.sin(sweepAng)*rad*0.6,3,0,Math.PI*2);
+    ctx.fill();
+    ctx.globalAlpha=1;
+  }
+  ctx.shadowBlur=0;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   PARTICLES
+   ═══════════════════════════════════════════════════════════════════════════ */
+// Microgravity dust
+const dustParticles=[];
+for(let i=0;i<50;i++){
+  dustParticles.push({
+    x:130+Math.random()*(W-260),
+    y:100+Math.random()*H,
+    vx:(Math.random()-0.5)*0.22,
+    vy:(Math.random()-0.5)*0.15,
+    r:0.5+Math.random()*1.5,
+    a:0.1+Math.random()*0.25,
+    phase:Math.random()*Math.PI*2,
+    sp:0.005+Math.random()*0.01,
+  });
+}
+
+// Data packets floating horizontally
+const dataPackets=[];
+for(let i=0;i<35;i++){
+  dataPackets.push(mkPacket(true));
+}
+function mkPacket(init){
+  const fromLeft=Math.random()<0.5;
+  return{
+    x:fromLeft?100:W-100,
+    y:init?200+Math.random()*H*0.7:700+Math.random()*800,
+    vx:fromLeft?(0.8+Math.random()*1.2):-(0.8+Math.random()*1.2),
+    w:4+Math.random()*10,
+    h:2+Math.random()*3,
+    hue:185+Math.random()*30,
+    a:0.4+Math.random()*0.5,
+    phase:Math.random()*Math.PI*2,
+  };
+}
+
+// Energy sparks near ring
+const energySparks=[];
+for(let i=0;i<30;i++){
+  const ang=Math.random()*Math.PI*2;
+  const r=RING_R+20+Math.random()*80;
+  energySparks.push({
+    x:RING_CX+Math.cos(ang)*r,
+    y:RING_CY+Math.sin(ang)*r,
+    vx:(Math.random()-0.5)*1.5,
+    vy:(Math.random()-0.5)*1.5,
+    life:Math.random(),
+    decay:0.012+Math.random()*0.018,
+    r:0.8+Math.random()*2,
+    hue:185+Math.random()*30,
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MAIN LOOP
+   ═══════════════════════════════════════════════════════════════════════════ */
 let t=0;
+
 function loop(){
   t+=0.016;
-  spc.clearRect(0,0,880,1480);
-  for(const p of planets){
-    const g=spc.createRadialGradient(p.x-p.r*0.3,p.y-p.r*0.3,0,p.x,p.y,p.r);
-    g.addColorStop(0,`hsla(${p.hue},80%,55%,${p.a})`);g.addColorStop(0.7,`hsla(${p.hue},80%,25%,${p.a*0.6})`);g.addColorStop(1,'rgba(0,0,0,0)');
-    spc.fillStyle=g;spc.beginPath();spc.arc(p.x,p.y,p.r,0,Math.PI*2);spc.fill();
+
+  /* ── SPACE through porthole ── */
+  spaceCtx.clearRect(0,0,W,H);
+  // Clip to porthole circle
+  spaceCtx.save();
+  spaceCtx.beginPath();
+  spaceCtx.arc(PH_CX,PH_CY,PH_R,0,Math.PI*2);
+  spaceCtx.clip();
+
+  // Deep space background inside porthole
+  const spBg=spaceCtx.createRadialGradient(PH_CX,PH_CY,0,PH_CX,PH_CY,PH_R);
+  spBg.addColorStop(0,'#000010');
+  spBg.addColorStop(0.5,'#00000c');
+  spBg.addColorStop(1,'#000008');
+  spaceCtx.fillStyle=spBg;
+  spaceCtx.fillRect(PH_CX-PH_R,PH_CY-PH_R,PH_R*2,PH_R*2);
+
+  // Nebula patches
+  const nebulas=[
+    {x:PH_CX-120,y:PH_CY-80, rx:200,ry:120,hue:200,a:0.12},
+    {x:PH_CX+80, y:PH_CY+60, rx:160,ry:100,hue:260,a:0.1},
+    {x:PH_CX-60, y:PH_CY+100,rx:180,ry:90, hue:180,a:0.08},
+  ];
+  spaceCtx.globalCompositeOperation='screen';
+  for(const n of nebulas){
+    const ng=spaceCtx.createRadialGradient(n.x,n.y,0,n.x,n.y,n.rx);
+    ng.addColorStop(0,`hsla(${n.hue},80%,40%,${n.a})`);
+    ng.addColorStop(1,'rgba(0,0,0,0)');
+    spaceCtx.save();spaceCtx.scale(1,n.ry/n.rx);
+    spaceCtx.fillStyle=ng;
+    spaceCtx.beginPath();spaceCtx.arc(n.x,n.y*(n.rx/n.ry),n.rx,0,Math.PI*2);spaceCtx.fill();
+    spaceCtx.restore();
   }
-  for(const s of sStars){
-    s.tw+=0.03;const a=0.4+Math.sin(s.tw)*0.5;
-    if(s.hue===220)spc.fillStyle=`rgba(180,210,255,${a})`;
-    else if(s.hue===40)spc.fillStyle=`rgba(255,230,180,${a})`;
-    else spc.fillStyle=`rgba(255,255,255,${a})`;
-    spc.beginPath();spc.arc(s.x,s.y,s.r,0,Math.PI*2);spc.fill();
+  spaceCtx.globalCompositeOperation='source-over';
+
+  // Planet — partially visible at edge
+  const planetX=PH_CX+160, planetY=PH_CY+120;
+  const planetR=210;
+  // Atmosphere glow
+  const atmG=spaceCtx.createRadialGradient(planetX,planetY,planetR*0.85,planetX,planetY,planetR*1.25);
+  atmG.addColorStop(0,'rgba(40,100,200,0.35)');
+  atmG.addColorStop(0.5,'rgba(20,60,150,0.15)');
+  atmG.addColorStop(1,'rgba(0,0,0,0)');
+  spaceCtx.fillStyle=atmG;
+  spaceCtx.beginPath();spaceCtx.arc(planetX,planetY,planetR*1.25,0,Math.PI*2);spaceCtx.fill();
+  // Planet surface
+  const pg=spaceCtx.createRadialGradient(planetX-40,planetY-40,0,planetX,planetY,planetR);
+  pg.addColorStop(0,'#2a5080');
+  pg.addColorStop(0.3,'#1e3d60');
+  pg.addColorStop(0.6,'#3d2e18');
+  pg.addColorStop(0.85,'#1a1408');
+  pg.addColorStop(1,'rgba(0,0,0,0)');
+  spaceCtx.fillStyle=pg;
+  spaceCtx.beginPath();spaceCtx.arc(planetX,planetY,planetR,0,Math.PI*2);spaceCtx.fill();
+  // Cloud bands
+  spaceCtx.globalAlpha=0.15;
+  for(let band=0;band<3;band++){
+    const by=planetY-50+band*40+Math.sin(t*0.1+band)*5;
+    spaceCtx.fillStyle='rgba(180,200,255,0.5)';
+    spaceCtx.beginPath();spaceCtx.ellipse(planetX,by,planetR*0.8,8,0,0,Math.PI*2);spaceCtx.fill();
+  }
+  spaceCtx.globalAlpha=1;
+
+  // Stars (slowly drifting)
+  for(const s of stars){
+    s.driftAng+=s.driftSp;
+    const offX=Math.cos(s.driftAng)*0.3;
+    const offY=Math.sin(s.driftAng)*0.2;
+    let a=s.a;
+    if(s.flicker){s.phase+=s.flickSp;a=s.a*(0.4+Math.abs(Math.sin(s.phase))*0.7);}
+    const col=s.hue?`hsla(${s.hue},80%,80%,${a})`:`rgba(220,230,255,${a})`;
+    spaceCtx.fillStyle=col;
+    spaceCtx.beginPath();spaceCtx.arc(s.x+offX,s.y+offY,s.r,0,Math.PI*2);spaceCtx.fill();
+  }
+  spaceCtx.restore();
+
+  // Porthole inner glass reflection
+  spaceCtx.save();
+  const reflG=spaceCtx.createRadialGradient(PH_CX-PH_R*0.3,PH_CY-PH_R*0.3,0,PH_CX,PH_CY,PH_R);
+  reflG.addColorStop(0,'rgba(80,140,220,0.08)');
+  reflG.addColorStop(0.4,'rgba(40,100,180,0.03)');
+  reflG.addColorStop(1,'rgba(0,0,0,0)');
+  spaceCtx.beginPath();spaceCtx.arc(PH_CX,PH_CY,PH_R,0,Math.PI*2);
+  spaceCtx.fillStyle=reflG;spaceCtx.fill();
+  spaceCtx.restore();
+
+  /* ── RING AREA ── */
+  ringCtx.clearRect(0,0,W,H);
+
+  // Portal energy glow
+  const rPulse=0.5+Math.sin(t*1.8)*0.35;
+  const rg=ringCtx.createRadialGradient(RING_CX,RING_CY,RING_R*0.2,RING_CX,RING_CY,RING_R+220);
+  rg.addColorStop(0,`rgba(0,200,255,${0.16*rPulse})`);
+  rg.addColorStop(0.38,`rgba(0,150,230,${0.07*rPulse})`);
+  rg.addColorStop(1,'rgba(0,0,0,0)');
+  ringCtx.fillStyle=rg;ringCtx.beginPath();ringCtx.arc(RING_CX,RING_CY,RING_R+220,0,Math.PI*2);ringCtx.fill();
+
+  // Hologram rings
+  for(const hr of holoRings){
+    hr.rot+=hr.rotSp;
+    const pulse=0.45+Math.sin(t*1.4+hr.rot)*0.35;
+    ringCtx.save();
+    ringCtx.strokeStyle=`hsla(${hr.hue},100%,65%,${pulse})`;
+    ringCtx.lineWidth=hr.width;
+    ringCtx.shadowBlur=8;ringCtx.shadowColor=`hsla(${hr.hue},100%,60%,0.7)`;
+    ringCtx.setLineDash([hr.dashLen,hr.gapLen]);
+    ringCtx.lineDashOffset=-hr.rot*hr.r;
+    ringCtx.beginPath();ringCtx.arc(RING_CX,RING_CY,hr.r,0,Math.PI*2);ringCtx.stroke();
+    ringCtx.setLineDash([]);
+    ringCtx.restore();
+  }
+  ringCtx.shadowBlur=0;
+
+  // Scanner sweep
+  scannerAng+=SCANNER_SPEED;
+  const scanLen=RING_R+220;
+  ringCtx.save();
+  const scanG=ringCtx.createConicalGradient?null:null; // fallback
+  // Manual sweep with triangle
+  for(let si=0;si<20;si++){
+    const a=scannerAng-si*0.025;
+    const alpha=(1-si/20)*0.15;
+    ringCtx.fillStyle=`rgba(0,220,255,${alpha})`;
+    ringCtx.beginPath();
+    ringCtx.moveTo(RING_CX,RING_CY);
+    ringCtx.arc(RING_CX,RING_CY,scanLen,a,a+0.025);
+    ringCtx.closePath();ringCtx.fill();
+  }
+  ringCtx.restore();
+
+  // Data streams + packets
+  for(const ds of dataStreams){
+    ds.packetTimer+=0.016;
+    if(ds.packetTimer>ds.packetInterval){
+      ds.packetTimer=0;
+      ds.packets.push({
+        progress:0,
+        speed:0.012+Math.random()*0.01,
+        w:5+Math.random()*8,
+        h:2+Math.random()*2,
+      });
+    }
+    // Draw stream line
+    const sx=RING_CX+Math.cos(ds.ang)*ds.startR;
+    const sy=RING_CY+Math.sin(ds.ang)*ds.startR;
+    const ex=RING_CX+Math.cos(ds.ang)*ds.endR;
+    const ey=RING_CY+Math.sin(ds.ang)*ds.endR;
+    ringCtx.strokeStyle=`hsla(${ds.hue},90%,55%,0.12)`;
+    ringCtx.lineWidth=0.8;
+    ringCtx.beginPath();ringCtx.moveTo(sx,sy);ringCtx.lineTo(ex,ey);ringCtx.stroke();
+
+    // Animate packets
+    for(let pi=ds.packets.length-1;pi>=0;pi--){
+      const pk=ds.packets[pi];
+      pk.progress+=pk.speed;
+      if(pk.progress>=1){ds.packets.splice(pi,1);continue;}
+      const px=sx+(ex-sx)*pk.progress;
+      const py=sy+(ey-sy)*pk.progress;
+      const fade=1-Math.abs(pk.progress-0.5)*2;
+      const pang=Math.atan2(ey-sy,ex-sx);
+      ringCtx.save();
+      ringCtx.translate(px,py);ringCtx.rotate(pang);
+      ringCtx.fillStyle=`hsla(${ds.hue},100%,72%,${fade*0.9})`;
+      ringCtx.shadowBlur=8;ringCtx.shadowColor=`hsla(${ds.hue},100%,65%,0.8)`;
+      ringCtx.fillRect(-pk.w/2,-pk.h/2,pk.w,pk.h);
+      ringCtx.restore();
+    }
+  }
+  ringCtx.shadowBlur=0;
+
+  /* ── HOLOGRAM DISPLAYS ── */
+  const holoSizes=[[220,140],[200,125],[190,130],[210,145]];
+  for(let hi=0;hi<holoCtxs.length;hi++){
+    const [hw,hh]=holoSizes[hi];
+    renderHolo(holoCtxs[hi],hw,hh,holoData[hi],t);
   }
 
-  dt.clearRect(0,0,W,H);
-  for(const p of dparts){
-    p.ph+=0.04;p.y+=p.vy;
-    if(p.y<-20){p.y=H+20;p.x=Math.random()*W;}
-    dt.fillStyle=`hsla(${p.hue},100%,70%,${0.4+Math.sin(p.ph)*0.3})`;
-    dt.shadowBlur=8;dt.shadowColor=`hsl(${p.hue},100%,60%)`;
-    dt.fillRect(p.x,p.y,p.sz*0.4,p.sz);
+  /* ── PARTICLES ── */
+  partCtx.clearRect(0,0,W,H);
+
+  // Microgravity dust
+  for(const d of dustParticles){
+    d.phase+=d.sp;
+    d.x+=d.vx+Math.sin(d.phase)*0.05;
+    d.y+=d.vy+Math.cos(d.phase*0.7)*0.05;
+    if(d.x<130)d.x=W-130;if(d.x>W-130)d.x=130;
+    if(d.y<100)d.y=H-100;if(d.y>H-80)d.y=100+Math.random()*200;
+    partCtx.fillStyle=`rgba(140,180,220,${d.a*(0.6+Math.sin(d.phase)*0.4)})`;
+    partCtx.beginPath();partCtx.arc(d.x,d.y,d.r,0,Math.PI*2);partCtx.fill();
   }
-  dt.shadowBlur=0;
+
+  // Data packets floating freely
+  for(let i=0;i<dataPackets.length;i++){
+    const p=dataPackets[i];
+    p.x+=p.vx;
+    if(p.x<100||p.x>W-100) dataPackets[i]=mkPacket(false);
+    partCtx.save();
+    partCtx.fillStyle=`hsla(${p.hue},90%,65%,${p.a*(0.5+Math.sin(p.phase+t*2)*0.5)})`;
+    partCtx.shadowBlur=6;partCtx.shadowColor=`hsla(${p.hue},100%,60%,0.6)`;
+    partCtx.fillRect(p.x-p.w/2,p.y-p.h/2,p.w,p.h);
+    partCtx.restore();
+  }
+
+  // Energy sparks near ring
+  partCtx.save();
+  for(let i=0;i<energySparks.length;i++){
+    const s=energySparks[i];
+    s.x+=s.vx;s.y+=s.vy;s.life-=s.decay;
+    if(s.life<=0){
+      const ang=Math.random()*Math.PI*2;
+      const r=RING_R+20+Math.random()*80;
+      Object.assign(s,{x:RING_CX+Math.cos(ang)*r,y:RING_CY+Math.sin(ang)*r,vx:(Math.random()-0.5)*1.5,vy:(Math.random()-0.5)*1.5,life:0.8+Math.random()*0.2,decay:0.012+Math.random()*0.018});
+      continue;
+    }
+    const flick=0.4+Math.sin(t*12+i)*0.6;
+    partCtx.fillStyle=`hsla(${s.hue},100%,72%,${s.life*flick})`;
+    partCtx.shadowBlur=8;partCtx.shadowColor=`hsla(${s.hue},100%,65%,0.8)`;
+    partCtx.beginPath();partCtx.arc(s.x,s.y,s.r,0,Math.PI*2);partCtx.fill();
+  }
+  partCtx.shadowBlur=0;partCtx.restore();
+
   requestAnimationFrame(loop);
 }
+
 loop();
 </script>
 </body>

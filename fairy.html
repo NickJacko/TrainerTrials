@@ -2,111 +2,635 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>Fairy — Pilzwald</title>
+<title>Fairy — Leuchtender Pilzwald</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-html,body{width:1080px;height:1920px;overflow:hidden;background:#0e0015;}
-canvas{position:absolute;inset:0;width:1080px;height:1920px;display:block;}
-.bg{position:absolute;inset:0;background:
-  radial-gradient(ellipse 80% 50% at 50% 45%, #3a0055 0%, #1a0025 45%, transparent 75%),
-  linear-gradient(180deg, #0e0015 0%, #160020 40%, #1a0030 70%, #0e0015 100%);}
-/* Mushroom silhouettes */
-.mush{position:absolute;pointer-events:none;}
-.cap{position:absolute;border-radius:50% 50% 40% 40% / 80% 80% 20% 20%;box-shadow:0 0 40px rgba(255,105,180,0.5),0 0 80px rgba(218,112,214,0.3);}
-.stem{position:absolute;background:linear-gradient(180deg,#3a1050,#200020);border-radius:30% 30% 10% 10%;}
-.m1{bottom:220px;left:3%;}.m1 .cap{width:220px;height:130px;background:radial-gradient(ellipse at 50% 70%,#ff8cc8 0%,#d946a3 60%,#8a1a6a 100%);top:0;}.m1 .stem{width:70px;height:170px;top:110px;left:75px;}
-.m2{bottom:180px;right:5%;}.m2 .cap{width:260px;height:150px;background:radial-gradient(ellipse at 50% 70%,#c080ff 0%,#9932cc 60%,#5a1080 100%);top:0;box-shadow:0 0 50px rgba(153,50,204,0.5);}.m2 .stem{width:80px;height:200px;top:130px;left:90px;}
-.m3{bottom:320px;left:30%;}.m3 .cap{width:140px;height:85px;background:radial-gradient(ellipse at 50% 70%,#ff6bb8 0%,#c92080 60%,#6a0845 100%);top:0;}.m3 .stem{width:42px;height:120px;top:70px;left:49px;}
-.m4{bottom:260px;left:60%;}.m4 .cap{width:180px;height:110px;background:radial-gradient(ellipse at 50% 70%,#d6a0ff 0%,#a050dc 60%,#501880 100%);top:0;}.m4 .stem{width:56px;height:160px;top:95px;left:62px;}
-/* Spots on caps */
-.spot{position:absolute;width:10px;height:10px;background:rgba(255,255,255,0.7);border-radius:50%;box-shadow:0 0 6px rgba(255,255,255,0.5);}
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{
+    width:1080px;height:1920px;overflow:hidden;
+    background:radial-gradient(ellipse 100% 70% at 50% 30%, #280040 0%, #140028 45%, #060010 100%);
+  }
+  canvas{position:absolute;inset:0;width:1080px;height:1920px;display:block;}
 
-/* Canopy at top */
-.canopy{position:absolute;top:0;left:0;right:0;height:260px;
-  background:radial-gradient(ellipse 600px 180px at 20% 0%,#0a0015 0%,transparent 60%),
-  radial-gradient(ellipse 700px 200px at 60% 0%,#0d0018 0%,transparent 60%),
-  radial-gradient(ellipse 500px 160px at 90% 0%,#0a0015 0%,transparent 60%);filter:blur(2px);}
+  /* Deep forest ambient */
+  .forest-bg{
+    position:absolute;inset:0;
+    background:
+      radial-gradient(ellipse 70% 55% at 50% 42%, rgba(80,0,120,0.18) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 40% at 15% 55%, rgba(60,0,100,0.15) 0%, transparent 50%),
+      radial-gradient(ellipse 45% 38% at 88% 48%, rgba(70,0,110,0.14) 0%, transparent 48%);
+  }
 
-.zone-top{position:absolute;top:0;left:0;right:0;height:120px;background:linear-gradient(180deg,rgba(0,0,0,0.5) 0%,transparent 100%);z-index:40;}
-.zone-bot{position:absolute;bottom:0;left:0;right:0;height:920px;background:linear-gradient(0deg,rgba(10,0,15,0.55) 0%,rgba(10,0,15,0.12) 40%,transparent 100%);z-index:40;}
-.center-darken{position:absolute;top:300px;left:50%;transform:translateX(-50%);width:780px;height:540px;background:radial-gradient(ellipse 50% 50% at 50% 50%,rgba(10,0,20,0.3) 0%,transparent 70%);z-index:38;}
-.vignette{position:absolute;inset:0;background:radial-gradient(ellipse 80% 70% at 50% 50%,transparent 40%,rgba(0,0,0,0.6) 100%);z-index:39;pointer-events:none;}
+  /* Tree silhouettes — ancient forest canopy */
+  .trees{position:absolute;top:0;left:0;right:0;height:660px;pointer-events:none;}
+  .tree-left{
+    position:absolute;top:0;left:0;width:420px;height:660px;
+    background:#040008;
+    clip-path:polygon(0 0,0 100%,15% 100%,12% 68%,22% 55%,18% 40%,28% 30%,24% 18%,35% 8%,30% 0);
+  }
+  .tree-left2{
+    position:absolute;top:0;left:80px;width:320px;height:580px;
+    background:#060010;
+    clip-path:polygon(0 0,0 100%,18% 100%,14% 72%,25% 58%,20% 44%,32% 32%,27% 20%,38% 10%,33% 0);
+  }
+  .tree-right{
+    position:absolute;top:0;right:0;width:420px;height:640px;
+    background:#040008;
+    clip-path:polygon(100% 0,100% 100%,85% 100%,88% 66%,78% 52%,82% 38%,72% 28%,76% 16%,65% 6%,70% 0);
+  }
+  .tree-right2{
+    position:absolute;top:0;right:70px;width:300px;height:560px;
+    background:#060010;
+    clip-path:polygon(100% 0,100% 100%,82% 100%,86% 70%,76% 56%,80% 42%,70% 30%,74% 18%,64% 8%,69% 0);
+  }
+  /* Branch overlays */
+  .branches{
+    position:absolute;top:0;left:0;right:0;height:500px;
+    background:
+      radial-gradient(ellipse 200px 80px at 12%  80px, rgba(4,0,8,0.95) 0%, transparent 80%),
+      radial-gradient(ellipse 180px 70px at 25%  180px,rgba(4,0,8,0.9)  0%, transparent 75%),
+      radial-gradient(ellipse 220px 90px at 82%  100px,rgba(4,0,8,0.95) 0%, transparent 80%),
+      radial-gradient(ellipse 160px 65px at 92%  240px,rgba(4,0,8,0.9)  0%, transparent 75%),
+      radial-gradient(ellipse 140px 55px at 48%  60px, rgba(4,0,8,0.85) 0%, transparent 70%);
+    pointer-events:none;
+  }
+
+  /* Ground floor — dark moss */
+  .ground{
+    position:absolute;bottom:0;left:0;right:0;height:560px;
+    background:
+      radial-gradient(ellipse 100% 50% at 50% 100%, #1a0030 0%, #0e001c 30%, #060010 60%, transparent 80%),
+      linear-gradient(0deg, #080014 0%, #0c001a 35%, transparent 100%);
+  }
+
+  /* Flower carpet */
+  .flowers{
+    position:absolute;bottom:0;left:0;right:0;height:440px;
+    background:
+      radial-gradient(ellipse 85px 35px at 8%  95%, rgba(255,80,180,0.35) 0%, transparent 70%),
+      radial-gradient(ellipse 70px 28px at 18% 90%, rgba(180,60,255,0.3)  0%, transparent 65%),
+      radial-gradient(ellipse 90px 38px at 30% 96%, rgba(255,100,200,0.32)0%, transparent 68%),
+      radial-gradient(ellipse 65px 25px at 42% 92%, rgba(200,80,255,0.28) 0%, transparent 62%),
+      radial-gradient(ellipse 80px 32px at 55% 97%, rgba(255,120,220,0.3) 0%, transparent 66%),
+      radial-gradient(ellipse 75px 30px at 68% 91%, rgba(160,50,255,0.32) 0%, transparent 64%),
+      radial-gradient(ellipse 88px 36px at 80% 95%, rgba(255,80,200,0.35) 0%, transparent 70%),
+      radial-gradient(ellipse 72px 28px at 92% 93%, rgba(200,100,255,0.28)0%, transparent 62%);
+    mix-blend-mode:screen;
+    animation:flowerGlow 6s ease-in-out infinite;
+  }
+  @keyframes flowerGlow{0%,100%{opacity:0.7}50%{opacity:1}}
+
+  /* Ground fog / magic mist */
+  .mist{
+    position:absolute;bottom:0;left:0;right:0;height:480px;
+    background:
+      radial-gradient(ellipse 110% 50% at 50% 100%, rgba(80,0,120,0.45) 0%, transparent 60%),
+      radial-gradient(ellipse  75% 35% at 20% 100%, rgba(60,0,90,0.3)   0%, transparent 52%),
+      radial-gradient(ellipse  70% 32% at 85% 100%, rgba(70,0,100,0.28)  0%, transparent 50%);
+    filter:blur(16px);mix-blend-mode:screen;
+    animation:mistDrift 14s ease-in-out infinite alternate;
+  }
+  @keyframes mistDrift{0%{transform:translateX(0)}100%{transform:translateX(22px)}}
+
+  /* Ring glow */
+  .ring-fairy{
+    position:absolute;top:210px;left:50%;transform:translateX(-50%);
+    width:860px;height:860px;border-radius:50%;
+    background:radial-gradient(ellipse 100% 100% at 50% 50%,
+      rgba(200,80,255,0.1) 0%, rgba(160,40,220,0.05) 48%, transparent 68%);
+    mix-blend-mode:screen;filter:blur(22px);
+    animation:fairyGlow 4s ease-in-out infinite;
+  }
+  @keyframes fairyGlow{0%,100%{opacity:0.65;transform:translateX(-50%) scale(1)}50%{opacity:1;transform:translateX(-50%) scale(1.022)}}
+
+  /* Mushroom ring elements — CSS positioned */
+  .shroom{position:absolute;pointer-events:none;}
+  .shroom-stem{position:absolute;bottom:0;left:50%;transform:translateX(-50%);border-radius:4px 4px 2px 2px;}
+  .shroom-cap{position:absolute;bottom:100%;left:50%;transform:translateX(-50%);border-radius:50% 50% 30% 30%;}
+
+  /* UI */
+  .center-darken{position:absolute;top:300px;left:50%;transform:translateX(-50%);width:780px;height:540px;background:radial-gradient(ellipse 50% 50% at 50% 50%,rgba(5,0,10,0.45) 0%,transparent 70%);z-index:38;}
+  .vignette{position:absolute;inset:0;background:radial-gradient(ellipse 80% 70% at 50% 50%,transparent 38%,rgba(0,0,8,0.78) 100%);z-index:39;pointer-events:none;}
+  .zone-top{position:absolute;top:0;left:0;right:0;height:120px;background:linear-gradient(180deg,rgba(0,0,0,0.6) 0%,transparent 100%);z-index:40;}
+  .zone-bot{position:absolute;bottom:0;left:0;right:0;height:920px;background:linear-gradient(0deg,rgba(0,0,8,0.65) 0%,rgba(0,0,8,0.15) 40%,transparent 100%);z-index:40;}
 </style>
 </head>
 <body>
-<div class="bg"></div>
-<canvas id="stars"></canvas>
-<div class="canopy"></div>
-<canvas id="glow"></canvas>
-<div class="mush m1"><div class="cap"><div class="spot" style="top:30%;left:20%"></div><div class="spot" style="top:50%;left:55%"></div><div class="spot" style="top:25%;left:75%"></div></div><div class="stem"></div></div>
-<div class="mush m2"><div class="cap"><div class="spot" style="top:35%;left:25%"></div><div class="spot" style="top:45%;left:60%"></div><div class="spot" style="top:30%;left:80%"></div></div><div class="stem"></div></div>
-<div class="mush m3"><div class="cap"><div class="spot" style="top:35%;left:30%"></div><div class="spot" style="top:50%;left:70%"></div></div><div class="stem"></div></div>
-<div class="mush m4"><div class="cap"><div class="spot" style="top:30%;left:25%"></div><div class="spot" style="top:55%;left:60%"></div></div><div class="stem"></div></div>
-<canvas id="fairies"></canvas>
-<canvas id="flowers"></canvas>
-<div class="center-darken"></div>
-<div class="vignette"></div>
-<div class="zone-top"></div>
-<div class="zone-bot"></div>
+  <div class="forest-bg"></div>
+  <div class="trees">
+    <div class="tree-left"></div><div class="tree-left2"></div>
+    <div class="tree-right"></div><div class="tree-right2"></div>
+  </div>
+  <div class="branches"></div>
+
+  <!-- Canvas stack: mushrooms → ring → fairies → particles -->
+  <canvas id="cMushrooms"></canvas>
+  <canvas id="cRing"></canvas>
+  <canvas id="cFairies"></canvas>
+  <canvas id="cParticles"></canvas>
+
+  <div class="ground"></div>
+  <div class="flowers"></div>
+  <div class="mist"></div>
+  <div class="ring-fairy"></div>
+  <div class="center-darken"></div>
+  <div class="vignette"></div>
+  <div class="zone-top"></div>
+  <div class="zone-bot"></div>
+
 <script>
-const W=1080,H=1920;
-function setup(id){const c=document.getElementById(id);c.width=W;c.height=H;return c.getContext('2d');}
+const W=1080, H=1920;
+const RING_CX=540, RING_CY=590, RING_R=300;
 
-const st=setup('stars');
-const stars=[];
-for(let i=0;i<100;i++)stars.push({x:Math.random()*W,y:Math.random()*400,r:Math.random()*1.2+0.2,tw:Math.random()*Math.PI*2,hue:Math.random()<0.3?320:0});
+function mkCanvas(id){
+  const c=document.getElementById(id);
+  c.width=W; c.height=H;
+  return c.getContext('2d');
+}
+const shroomCtx  = mkCanvas('cMushrooms');
+const ringCtx    = mkCanvas('cRing');
+const fairyCtx   = mkCanvas('cFairies');
+const partCtx    = mkCanvas('cParticles');
 
-const gl=setup('glow');
-const glows=[];
-for(let i=0;i<25;i++)glows.push({x:Math.random()*W,y:300+Math.random()*1400,r:80+Math.random()*140,hue:280+Math.random()*60,a:0.1+Math.random()*0.15,ph:Math.random()*Math.PI*2});
+/* ═══════════════════════════════════════════════════════════════════════════
+   MUSHROOM DEFINITIONS — ring + scattered
+   ═══════════════════════════════════════════════════════════════════════════ */
+const SHROOM_COLORS=[
+  {hue:320, name:'pink'},
+  {hue:280, name:'purple'},
+  {hue:175, name:'teal'},
+  {hue:300, name:'lavender'},
+  {hue:340, name:'rose'},
+  {hue:260, name:'violet'},
+  {hue:190, name:'aqua'},
+  {hue:310, name:'magenta'},
+];
 
-const fr=setup('fairies');
+// Ring mushrooms — 8 around spawn ring
+const RING_SHROOM_COUNT=8;
+const ringShrooms=[];
+for(let i=0;i<RING_SHROOM_COUNT;i++){
+  const ang=(i/RING_SHROOM_COUNT)*Math.PI*2;
+  const col=SHROOM_COLORS[i];
+  ringShrooms.push({
+    x:RING_CX+Math.cos(ang)*(RING_R+80),
+    y:RING_CY+Math.sin(ang)*(RING_R+80)+50,
+    stemW:14+Math.random()*10,
+    stemH:55+Math.random()*40,
+    capW:55+Math.random()*30,
+    capH:35+Math.random()*20,
+    hue:col.hue,
+    phase:i*(Math.PI*2/RING_SHROOM_COUNT), // wave offset
+    phaseSp:0.018,
+    dots:Math.floor(3+Math.random()*5),
+    tilt:(Math.random()-0.5)*0.18,
+    ring:true,
+    idx:i,
+  });
+}
+
+// Scattered forest mushrooms
+const SCATTER_DATA=[
+  {x:60,  y:1700,stemW:9,  stemH:35,capW:38,capH:22,hue:320,dots:3},
+  {x:160, y:1650,stemW:12, stemH:48,capW:50,capH:28,hue:175,dots:4},
+  {x:280, y:1720,stemW:8,  stemH:30,capW:32,capH:18,hue:280,dots:3},
+  {x:380, y:1680,stemW:11, stemH:42,capW:45,capH:25,hue:310,dots:5},
+  {x:700, y:1690,stemW:10, stemH:38,capW:42,capH:24,hue:260,dots:4},
+  {x:820, y:1710,stemW:13, stemH:50,capW:52,capH:30,hue:340,dots:3},
+  {x:940, y:1660,stemW:9,  stemH:32,capW:36,capH:20,hue:190,dots:4},
+  {x:1010,y:1730,stemW:8,  stemH:28,capW:30,capH:16,hue:295,dots:3},
+  // Mid-ground
+  {x:120, y:1350,stemW:7,  stemH:25,capW:28,capH:16,hue:175,dots:3},
+  {x:350, y:1380,stemW:8,  stemH:30,capW:32,capH:18,hue:310,dots:4},
+  {x:650, y:1360,stemW:7,  stemH:28,capW:30,capH:16,hue:280,dots:3},
+  {x:900, y:1370,stemW:8,  stemH:26,capW:28,capH:15,hue:340,dots:4},
+];
+const scatterShrooms=SCATTER_DATA.map(d=>({
+  ...d,
+  phase:Math.random()*Math.PI*2,
+  phaseSp:0.012+Math.random()*0.015,
+  dots:d.dots,
+  tilt:(Math.random()-0.5)*0.2,
+  ring:false,
+}));
+
+const allShrooms=[...ringShrooms,...scatterShrooms];
+
+function drawMushroom(ctx, s, bright){
+  ctx.save();
+  ctx.translate(s.x,s.y);
+  if(s.tilt) ctx.rotate(s.tilt);
+
+  const glow=bright*(s.ring?1.0:0.7);
+
+  // Stem
+  const stemG=ctx.createLinearGradient(-s.stemW/2,0,s.stemW/2,-s.stemH);
+  stemG.addColorStop(0,`hsla(${s.hue},60%,18%,0.9)`);
+  stemG.addColorStop(0.5,`hsla(${s.hue},65%,28%,0.85)`);
+  stemG.addColorStop(1,`hsla(${s.hue},70%,35%,0.8)`);
+  ctx.fillStyle=stemG;
+  ctx.beginPath();
+  ctx.moveTo(-s.stemW*0.5,0);
+  ctx.bezierCurveTo(-s.stemW*0.6,-s.stemH*0.4,-s.stemW*0.45,-s.stemH*0.8,-s.stemW*0.35,-s.stemH);
+  ctx.lineTo(s.stemW*0.35,-s.stemH);
+  ctx.bezierCurveTo(s.stemW*0.45,-s.stemH*0.8,s.stemW*0.6,-s.stemH*0.4,s.stemW*0.5,0);
+  ctx.closePath(); ctx.fill();
+
+  // Cap glow halo
+  const haloG=ctx.createRadialGradient(0,-s.stemH,0,0,-s.stemH,s.capW*0.9);
+  haloG.addColorStop(0,`hsla(${s.hue},100%,65%,${glow*0.6})`);
+  haloG.addColorStop(0.5,`hsla(${s.hue},100%,50%,${glow*0.25})`);
+  haloG.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.fillStyle=haloG;
+  ctx.shadowBlur=25+glow*20;
+  ctx.shadowColor=`hsla(${s.hue},100%,65%,${glow*0.8})`;
+  ctx.beginPath();ctx.arc(0,-s.stemH,s.capW*0.9,0,Math.PI*2);ctx.fill();
+  ctx.shadowBlur=0;
+
+  // Cap body
+  const capG=ctx.createRadialGradient(-s.capW*0.2,-s.stemH-s.capH*0.3,0,0,-s.stemH,s.capW);
+  capG.addColorStop(0,`hsla(${s.hue},90%,${55+glow*25}%,0.95)`);
+  capG.addColorStop(0.4,`hsla(${s.hue},85%,${40+glow*20}%,0.88)`);
+  capG.addColorStop(0.75,`hsla(${s.hue-10},80%,${28+glow*15}%,0.8)`);
+  capG.addColorStop(1,`hsla(${s.hue-15},75%,18%,0.5)`);
+  ctx.fillStyle=capG;
+  ctx.shadowBlur=12+glow*15;
+  ctx.shadowColor=`hsla(${s.hue},100%,60%,${glow*0.7})`;
+  ctx.beginPath();
+  ctx.ellipse(0,-s.stemH-s.capH*0.2,s.capW,s.capH,0,-Math.PI,0);
+  ctx.bezierCurveTo(s.capW*0.95,-s.stemH+6,s.capW*1.05,-s.stemH+4,s.capW*0.5,-s.stemH+2);
+  ctx.lineTo(-s.capW*0.5,-s.stemH+2);
+  ctx.bezierCurveTo(-s.capW*1.05,-s.stemH+4,-s.capW*0.95,-s.stemH+6,-s.capW,-s.stemH-s.capH*0.2);
+  ctx.fill();ctx.shadowBlur=0;
+
+  // White spots on cap
+  const spotPositions=[];
+  for(let si=0;si<s.dots;si++){
+    const sa=(si/s.dots)*Math.PI+0.2;
+    const sr=s.capW*(0.25+si/(s.dots-1||1)*0.45);
+    spotPositions.push({
+      x:Math.cos(sa)*sr*0.7,
+      y:-s.stemH-s.capH*0.4+Math.sin(sa)*sr*0.35
+    });
+  }
+  for(const sp of spotPositions){
+    ctx.fillStyle=`rgba(255,255,255,${0.45+glow*0.3})`;
+    ctx.shadowBlur=8;ctx.shadowColor=`rgba(255,255,255,${glow*0.5})`;
+    ctx.beginPath();ctx.arc(sp.x,sp.y,s.capW*0.07+glow*1.5,0,Math.PI*2);ctx.fill();
+  }
+  ctx.shadowBlur=0;
+
+  // Bioluminescent rim — underside glow
+  const rimG=ctx.createLinearGradient(-s.capW,0,s.capW,0);
+  rimG.addColorStop(0,'rgba(0,0,0,0)');
+  rimG.addColorStop(0.5,`hsla(${s.hue},100%,70%,${glow*0.5})`);
+  rimG.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.fillStyle=rimG;
+  ctx.beginPath();
+  ctx.ellipse(0,-s.stemH+3,s.capW*0.85,5,0,0,Math.PI*2);
+  ctx.fill();
+
+  ctx.restore();
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   FAIRIES — dancing light sprites with trails
+   ═══════════════════════════════════════════════════════════════════════════ */
+const FAIRY_COLORS=[
+  {hue:320,name:'rose'},
+  {hue:280,name:'purple'},
+  {hue:175,name:'teal'},
+  {hue:48, name:'gold'},
+  {hue:300,name:'lavender'},
+  {hue:195,name:'cyan'},
+  {hue:340,name:'pink'},
+  {hue:265,name:'violet'},
+  {hue:160,name:'mint'},
+  {hue:30, name:'amber'},
+];
+
 const fairies=[];
-for(let i=0;i<25;i++)fairies.push({x:Math.random()*W,y:300+Math.random()*1200,
-  vx:(Math.random()-0.5)*1.5,vy:(Math.random()-0.5)*1.2,ph:Math.random()*Math.PI*2,
-  sz:1.5+Math.random()*2,hue:[300,320,280,340][Math.floor(Math.random()*4)],trail:[]});
+for(let i=0;i<10;i++){
+  const col=FAIRY_COLORS[i%FAIRY_COLORS.length];
+  fairies.push({
+    x:200+Math.random()*680,
+    y:300+Math.random()*800,
+    // Bezier control points for path
+    target:{x:200+Math.random()*680,y:200+Math.random()*900},
+    path:[],
+    phase:Math.random()*Math.PI*2,
+    speed:0.008+Math.random()*0.01,
+    hue:col.hue,
+    size:2.5+Math.random()*2,
+    trail:[],
+    trailLen:28+Math.floor(Math.random()*18),
+    wingPhase:Math.random()*Math.PI*2,
+    wingSp:0.2+Math.random()*0.15,
+    targetTimer:0,
+    targetInterval:3+Math.random()*4,
+    vx:0,vy:0,
+    flicker:Math.random()*Math.PI*2,
+  });
+}
 
-const fl=setup('flowers');
-const flowers=[];
-for(let i=0;i<20;i++)flowers.push({x:Math.random()*W,y:1500+Math.random()*350,r:3+Math.random()*5,hue:300+Math.random()*50,ph:Math.random()*Math.PI*2});
+/* ═══════════════════════════════════════════════════════════════════════════
+   RING: Mushroom communication waves + magic
+   ═══════════════════════════════════════════════════════════════════════════ */
+const commWaves=[];
+let waveTimer=0;
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   PARTICLES
+   ═══════════════════════════════════════════════════════════════════════════ */
+// Spores rising from mushrooms
+const spores=[];
+for(let i=0;i<90;i++) spores.push(mkSpore(true));
+function mkSpore(init){
+  const src=allShrooms[Math.floor(Math.random()*allShrooms.length)];
+  return{
+    x:src.x+(Math.random()-0.5)*src.capW,
+    y:init?(src.y-src.stemH+Math.random()*src.capH*2):src.y-src.stemH-5,
+    vy:-(0.15+Math.random()*0.4),
+    vx:(Math.random()-0.5)*0.25,
+    r:0.5+Math.random()*1.5,
+    life:init?Math.random():0,
+    lifeSpd:0.003+Math.random()*0.005,
+    hue:src.hue,
+    sway:Math.random()*Math.PI*2,
+    swaySp:0.02+Math.random()*0.03,
+  };
+}
+
+// Magic glitter — fast flicker
+const glitter=[];
+for(let i=0;i<75;i++){
+  glitter.push({
+    x:100+Math.random()*880,
+    y:100+Math.random()*1700,
+    phase:Math.random()*Math.PI*2,
+    sp:0.12+Math.random()*0.2, // fast!
+    r:0.8+Math.random()*2.2,
+    hue:SHROOM_COLORS[Math.floor(Math.random()*SHROOM_COLORS.length)].hue,
+    driftX:(Math.random()-0.5)*0.15,
+    driftY:(Math.random()-0.5)*0.1,
+  });
+}
+
+// Petals
+const petals=[];
+for(let i=0;i<20;i++) petals.push(mkPetal(true));
+function mkPetal(init){
+  return{
+    x:Math.random()*W, y:init?Math.random()*H:-20,
+    vy:0.3+Math.random()*0.6, vx:(Math.random()-0.5)*0.4,
+    rot:Math.random()*Math.PI*2, rotV:(Math.random()-0.5)*0.03,
+    sw:Math.random()*Math.PI*2, swSp:0.012+Math.random()*0.018, swAmp:15+Math.random()*25,
+    size:5+Math.random()*8,
+    hue:300+Math.random()*60,
+    a:0.5+Math.random()*0.4,
+  };
+}
+
+// Light motes
+const motes=[];
+for(let i=0;i<30;i++){
+  motes.push({
+    x:150+Math.random()*780, y:200+Math.random()*1400,
+    vx:(Math.random()-0.5)*0.3, vy:(Math.random()-0.5)*0.25-0.05,
+    phase:Math.random()*Math.PI*2, sp:0.015+Math.random()*0.025,
+    r:3+Math.random()*7,
+    hue:SHROOM_COLORS[Math.floor(Math.random()*SHROOM_COLORS.length)].hue,
+    wobble:Math.random()*Math.PI*2, wobSp:0.02+Math.random()*0.03,
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MAIN LOOP
+   ═══════════════════════════════════════════════════════════════════════════ */
 let t=0;
+
 function loop(){
   t+=0.016;
-  st.clearRect(0,0,W,H);
-  for(const s of stars){s.tw+=0.03;const a=0.4+Math.sin(s.tw)*0.5;
-    st.fillStyle=s.hue?`hsla(320,100%,75%,${a})`:`rgba(255,240,255,${a})`;
-    st.beginPath();st.arc(s.x,s.y,s.r,0,Math.PI*2);st.fill();}
 
-  gl.clearRect(0,0,W,H);gl.globalCompositeOperation='screen';
-  for(const g of glows){g.ph+=0.015;const a=g.a*(0.7+Math.sin(g.ph)*0.3);
-    const rg=gl.createRadialGradient(g.x,g.y,0,g.x,g.y,g.r);
-    rg.addColorStop(0,`hsla(${g.hue},100%,60%,${a})`);rg.addColorStop(1,`hsla(${g.hue},100%,50%,0)`);
-    gl.fillStyle=rg;gl.beginPath();gl.arc(g.x,g.y,g.r,0,Math.PI*2);gl.fill();}
-  gl.globalCompositeOperation='source-over';
+  /* ── MUSHROOMS ── */
+  shroomCtx.clearRect(0,0,W,H);
 
-  fr.clearRect(0,0,W,H);
-  for(const f of fairies){f.ph+=0.05;
-    f.vx+=(Math.random()-0.5)*0.1;f.vy+=(Math.random()-0.5)*0.1;
-    f.vx*=0.96;f.vy*=0.96;
-    f.x+=f.vx;f.y+=f.vy;
-    if(f.x<50||f.x>W-50)f.vx*=-1;if(f.y<300||f.y>1600)f.vy*=-1;
-    f.trail.unshift({x:f.x,y:f.y});if(f.trail.length>8)f.trail.pop();
-    for(let i=0;i<f.trail.length;i++){
-      const p=f.trail[i],a=(1-i/f.trail.length)*0.6;
-      fr.fillStyle=`hsla(${f.hue},100%,80%,${a})`;fr.shadowBlur=10;fr.shadowColor=`hsl(${f.hue},100%,70%)`;
-      fr.beginPath();fr.arc(p.x,p.y,f.sz*(1-i/f.trail.length*0.5),0,Math.PI*2);fr.fill();
+  for(const s of allShrooms){
+    s.phase+=s.phaseSp;
+    // Wave pattern for ring mushrooms — sequential pulse
+    let bright;
+    if(s.ring){
+      bright=0.45+Math.sin(s.phase)*0.55;
+    } else {
+      bright=0.35+Math.sin(s.phase)*0.45;
     }
+    drawMushroom(shroomCtx,s,Math.max(0,bright));
   }
-  fr.shadowBlur=0;
 
-  fl.clearRect(0,0,W,H);
-  for(const f of flowers){f.ph+=0.03;const a=0.5+Math.sin(f.ph)*0.4;
-    fl.fillStyle=`hsla(${f.hue},100%,70%,${a})`;fl.shadowBlur=12;fl.shadowColor=`hsl(${f.hue},100%,60%)`;
-    fl.beginPath();fl.arc(f.x,f.y,f.r,0,Math.PI*2);fl.fill();}
-  fl.shadowBlur=0;
+  /* ── RING AREA ── */
+  ringCtx.clearRect(0,0,W,H);
+
+  // Central fairy circle glow
+  const cenPulse=0.5+Math.sin(t*1.5)*0.3;
+  const cg=ringCtx.createRadialGradient(RING_CX,RING_CY,0,RING_CX,RING_CY,RING_R+200);
+  cg.addColorStop(0,`rgba(200,80,255,${0.15*cenPulse})`);
+  cg.addColorStop(0.4,`rgba(150,40,220,${0.07*cenPulse})`);
+  cg.addColorStop(1,'rgba(0,0,0,0)');
+  ringCtx.fillStyle=cg;ringCtx.beginPath();ringCtx.arc(RING_CX,RING_CY,RING_R+200,0,Math.PI*2);ringCtx.fill();
+
+  // Communication waves between ring mushrooms
+  waveTimer+=0.016;
+  if(waveTimer>1.2+Math.random()*1.5){
+    waveTimer=0;
+    const srcIdx=Math.floor(Math.random()*RING_SHROOM_COUNT);
+    const dstIdx=(srcIdx+1+Math.floor(Math.random()*(RING_SHROOM_COUNT-1)))%RING_SHROOM_COUNT;
+    commWaves.push({
+      sx:ringShrooms[srcIdx].x, sy:ringShrooms[srcIdx].y-ringShrooms[srcIdx].stemH,
+      ex:ringShrooms[dstIdx].x, ey:ringShrooms[dstIdx].y-ringShrooms[dstIdx].stemH,
+      progress:0, speed:0.02+Math.random()*0.015,
+      hue:ringShrooms[srcIdx].hue,
+    });
+    // Also wave to center (the ring)
+    commWaves.push({
+      sx:ringShrooms[srcIdx].x, sy:ringShrooms[srcIdx].y-ringShrooms[srcIdx].stemH,
+      ex:RING_CX, ey:RING_CY,
+      progress:0, speed:0.018+Math.random()*0.012,
+      hue:ringShrooms[srcIdx].hue,
+    });
+  }
+  for(let i=commWaves.length-1;i>=0;i--){
+    const cw=commWaves[i];
+    cw.progress+=cw.speed;
+    if(cw.progress>=1){commWaves.splice(i,1);continue;}
+    // Draw the connecting arc (slightly curved)
+    const mx=(cw.sx+cw.ex)/2, my=(cw.sy+cw.ey)/2-40;
+    ringCtx.strokeStyle=`hsla(${cw.hue},100%,65%,${(1-cw.progress)*0.3})`;
+    ringCtx.lineWidth=1;
+    ringCtx.setLineDash([4,8]);
+    ringCtx.beginPath();ringCtx.moveTo(cw.sx,cw.sy);
+    ringCtx.quadraticCurveTo(mx,my,cw.ex,cw.ey);
+    ringCtx.stroke();ringCtx.setLineDash([]);
+    // Traveling pulse along arc
+    const px=lerp(lerp(cw.sx,mx,cw.progress),lerp(mx,cw.ex,cw.progress),cw.progress);
+    const py=lerp(lerp(cw.sy,my,cw.progress),lerp(my,cw.ey,cw.progress),cw.progress);
+    const fade=1-Math.abs(cw.progress-0.5)*2;
+    const pg=ringCtx.createRadialGradient(px,py,0,px,py,8);
+    pg.addColorStop(0,`hsla(${cw.hue},100%,80%,${fade*0.9})`);
+    pg.addColorStop(0.5,`hsla(${cw.hue},100%,60%,${fade*0.3})`);
+    pg.addColorStop(1,'rgba(0,0,0,0)');
+    ringCtx.fillStyle=pg;
+    ringCtx.shadowBlur=10;ringCtx.shadowColor=`hsla(${cw.hue},100%,65%,0.8)`;
+    ringCtx.beginPath();ringCtx.arc(px,py,8,0,Math.PI*2);ringCtx.fill();
+    ringCtx.shadowBlur=0;
+  }
+
+  function lerp(a,b,t2){return a+(b-a)*t2;}
+
+  /* ── FAIRIES ── */
+  fairyCtx.clearRect(0,0,W,H);
+
+  for(const f of fairies){
+    f.wingPhase+=f.wingSp;
+    f.flicker+=0.12;
+    f.targetTimer+=0.016;
+
+    // Steer toward target with smooth curves
+    const dx=f.target.x-f.x, dy=f.target.y-f.y;
+    const dist=Math.hypot(dx,dy);
+    if(dist<30||f.targetTimer>f.targetInterval){
+      f.target={x:150+Math.random()*780,y:200+Math.random()*900};
+      f.targetTimer=0;f.targetInterval=2.5+Math.random()*4;
+    }
+    f.vx+=(dx/dist)*0.12;
+    f.vy+=(dy/dist)*0.12;
+    const spd=Math.hypot(f.vx,f.vy);
+    if(spd>2.8){f.vx=f.vx/spd*2.8;f.vy=f.vy/spd*2.8;}
+    // Organic sway
+    f.phase+=0.025;
+    f.vx+=Math.sin(f.phase*1.3)*0.06;
+    f.vy+=Math.cos(f.phase)*0.05;
+    f.x+=f.vx; f.y+=f.vy;
+    if(f.x<80)f.vx=Math.abs(f.vx);if(f.x>W-80)f.vx=-Math.abs(f.vx);
+    if(f.y<150)f.vy=Math.abs(f.vy);if(f.y>H-300)f.vy=-Math.abs(f.vy);
+
+    f.trail.unshift({x:f.x,y:f.y});
+    if(f.trail.length>f.trailLen) f.trail.pop();
+
+    // Draw trail — sparkle fade
+    for(let ti=1;ti<f.trail.length;ti++){
+      const ta=(1-ti/f.trail.length)*0.7;
+      const tr=f.size*(1-ti/f.trail.length)*0.7;
+      // Occasional sparkle in trail
+      if(ti%4===0&&Math.random()<0.3){
+        fairyCtx.fillStyle=`hsla(${f.hue+20},100%,90%,${ta*0.8})`;
+        fairyCtx.shadowBlur=6;fairyCtx.shadowColor=`hsla(${f.hue},100%,70%,0.7)`;
+        fairyCtx.beginPath();fairyCtx.arc(f.trail[ti].x,f.trail[ti].y,tr*1.5,0,Math.PI*2);fairyCtx.fill();
+      } else {
+        fairyCtx.fillStyle=`hsla(${f.hue},90%,70%,${ta*0.5})`;
+        fairyCtx.beginPath();fairyCtx.arc(f.trail[ti].x,f.trail[ti].y,tr,0,Math.PI*2);fairyCtx.fill();
+      }
+    }
+
+    // Fairy body — glowing orb
+    const glowFlick=0.6+Math.sin(f.flicker)*0.4;
+    const fg=fairyCtx.createRadialGradient(f.x,f.y,0,f.x,f.y,f.size*5);
+    fg.addColorStop(0,`hsla(${f.hue},100%,88%,${glowFlick*0.95})`);
+    fg.addColorStop(0.4,`hsla(${f.hue},100%,70%,${glowFlick*0.45})`);
+    fg.addColorStop(1,'rgba(0,0,0,0)');
+    fairyCtx.fillStyle=fg;
+    fairyCtx.shadowBlur=15+glowFlick*10;
+    fairyCtx.shadowColor=`hsla(${f.hue},100%,65%,0.8)`;
+    fairyCtx.beginPath();fairyCtx.arc(f.x,f.y,f.size*5,0,Math.PI*2);fairyCtx.fill();
+    // Bright core
+    fairyCtx.fillStyle=`hsla(${f.hue+20},100%,95%,${glowFlick*0.9})`;
+    fairyCtx.beginPath();fairyCtx.arc(f.x,f.y,f.size,0,Math.PI*2);fairyCtx.fill();
+    // Wing shimmer
+    const wingOpen=Math.abs(Math.cos(f.wingPhase));
+    for(let wi=0;wi<2;wi++){
+      const wx=f.x+(wi===0?-1:1)*f.size*3.5*wingOpen;
+      const wy=f.y-f.size;
+      fairyCtx.fillStyle=`hsla(${f.hue+30},80%,85%,${wingOpen*0.35*glowFlick})`;
+      fairyCtx.shadowBlur=0;
+      fairyCtx.beginPath();
+      fairyCtx.ellipse(wx,wy,f.size*2.2*wingOpen,f.size*1.4,wi===0?-0.4:0.4,0,Math.PI*2);
+      fairyCtx.fill();
+    }
+    fairyCtx.shadowBlur=0;
+  }
+
+  /* ── PARTICLES ── */
+  partCtx.clearRect(0,0,W,H);
+
+  // Spores rising
+  partCtx.save();
+  for(let i=0;i<spores.length;i++){
+    const s=spores[i];
+    s.sway+=s.swaySp; s.life+=s.lifeSpd;
+    s.x+=s.vx+Math.sin(s.sway)*0.4; s.y+=s.vy;
+    if(s.life>=1) spores[i]=mkSpore(false);
+    const fa=(1-s.life)*(0.4+Math.abs(Math.sin(s.sway))*0.4);
+    partCtx.shadowBlur=5;partCtx.shadowColor=`hsla(${s.hue},100%,65%,0.7)`;
+    partCtx.fillStyle=`hsla(${s.hue},90%,72%,${fa})`;
+    partCtx.beginPath();partCtx.arc(s.x,s.y,s.r,0,Math.PI*2);partCtx.fill();
+  }
+  partCtx.shadowBlur=0;partCtx.restore();
+
+  // Magic glitter — fast flash
+  partCtx.save();
+  for(const g of glitter){
+    g.phase+=g.sp;
+    g.x+=g.driftX; g.y+=g.driftY;
+    if(g.x<50)g.x=W-50;if(g.x>W-50)g.x=50;
+    if(g.y<80)g.y=H-200;if(g.y>H-80)g.y=100+Math.random()*400;
+    const flash=Math.max(0,Math.sin(g.phase));
+    if(flash<0.15) continue;
+    partCtx.shadowBlur=8;partCtx.shadowColor=`hsla(${g.hue},100%,70%,0.8)`;
+    partCtx.fillStyle=`hsla(${g.hue},100%,85%,${flash*0.85})`;
+    partCtx.beginPath();partCtx.arc(g.x,g.y,g.r*flash,0,Math.PI*2);partCtx.fill();
+  }
+  partCtx.shadowBlur=0;partCtx.restore();
+
+  // Petals
+  partCtx.save();
+  for(let i=0;i<petals.length;i++){
+    const p=petals[i];
+    p.sw+=p.swSp;p.rot+=p.rotV;
+    p.x+=p.vx+Math.sin(p.sw)*p.swAmp*0.018;p.y+=p.vy;
+    if(p.y>H+20) petals[i]=mkPetal(false);
+    partCtx.save();
+    partCtx.translate(p.x,p.y);partCtx.rotate(p.rot);
+    partCtx.fillStyle=`hsla(${p.hue},80%,72%,${p.a})`;
+    partCtx.shadowBlur=6;partCtx.shadowColor=`hsla(${p.hue},90%,65%,0.5)`;
+    partCtx.beginPath();
+    partCtx.moveTo(0,-p.size);
+    partCtx.bezierCurveTo(p.size*0.7,-p.size*0.3,p.size*0.7,p.size*0.3,0,p.size);
+    partCtx.bezierCurveTo(-p.size*0.7,p.size*0.3,-p.size*0.7,-p.size*0.3,0,-p.size);
+    partCtx.fill();partCtx.shadowBlur=0;partCtx.restore();
+  }
+  partCtx.restore();
+
+  // Light motes
+  partCtx.save();
+  for(const m of motes){
+    m.phase+=m.sp;m.wobble+=m.wobSp;
+    m.x+=m.vx+Math.sin(m.wobble)*0.2;m.y+=m.vy+Math.cos(m.wobble*0.7)*0.15;
+    if(m.x<80)m.x=W-80;if(m.x>W-80)m.x=80;
+    if(m.y<80)m.y=H*0.8;if(m.y>H-80)m.y=150+Math.random()*400;
+    const pulse=0.35+Math.sin(m.phase)*0.45;
+    const mg=partCtx.createRadialGradient(m.x,m.y,0,m.x,m.y,m.r*4);
+    mg.addColorStop(0,`hsla(${m.hue},100%,80%,${pulse*0.88})`);
+    mg.addColorStop(0.4,`hsla(${m.hue},100%,60%,${pulse*0.3})`);
+    mg.addColorStop(1,'rgba(0,0,0,0)');
+    partCtx.shadowBlur=12;partCtx.shadowColor=`hsla(${m.hue},100%,65%,0.6)`;
+    partCtx.fillStyle=mg;
+    partCtx.beginPath();partCtx.arc(m.x,m.y,m.r*4,0,Math.PI*2);partCtx.fill();
+    partCtx.fillStyle=`hsla(${m.hue+15},100%,88%,${pulse*0.8})`;
+    partCtx.beginPath();partCtx.arc(m.x,m.y,m.r,0,Math.PI*2);partCtx.fill();
+  }
+  partCtx.shadowBlur=0;partCtx.restore();
+
   requestAnimationFrame(loop);
 }
+
 loop();
 </script>
 </body>

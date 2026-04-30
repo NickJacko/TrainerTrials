@@ -2,306 +2,642 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>Grass — Lichtungswald</title>
+<title>Grass — Zauberwald Lichtung</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-html,body{width:1080px;height:1920px;overflow:hidden;background:#08220a;}
-canvas{position:absolute;inset:0;width:1080px;height:1920px;display:block;}
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{
+    width:1080px;height:1920px;overflow:hidden;
+    background:radial-gradient(ellipse 80% 55% at 50% 38%, #2a5a0a 0%, #143a08 35%, #0a2206 70%, #060f03 100%);
+  }
+  canvas{position:absolute;inset:0;width:1080px;height:1920px;display:block;}
 
-/* Deep forest background — looking through the woods into a clearing */
-.bg{position:absolute;inset:0;background:
-  radial-gradient(ellipse 45% 32% at 50% 42%, #9ed26a 0%, #5fa84a 20%, #2d6b1a 50%, transparent 75%),
-  radial-gradient(ellipse 70% 50% at 50% 55%, #3a7a28 0%, #1e4a1a 55%, transparent 80%),
-  linear-gradient(180deg, #0a2a0d 0%, #143d18 25%, #1a4a20 55%, #0d2a10 100%);}
+  /* Lichtungs-Glow — warmes Zentrum */
+  .clearing{
+    position:absolute;top:240px;left:50%;transform:translateX(-50%);
+    width:900px;height:700px;
+    background:radial-gradient(ellipse 60% 55% at 50% 42%,
+      rgba(200,255,100,0.13) 0%,
+      rgba(140,220,60,0.07) 40%,
+      transparent 70%);
+    mix-blend-mode:screen;
+    animation:clearingBreath 8s ease-in-out infinite;
+  }
+  @keyframes clearingBreath{0%,100%{opacity:0.7}50%{opacity:1}}
 
-/* Far trees in the clearing — small, misty */
-.far-trees{position:absolute;top:620px;left:0;right:0;height:260px;opacity:0.6;background:#1a3a20;
-  clip-path:polygon(0 100%, 0 75%, 3% 65%, 6% 72%, 10% 60%, 13% 68%, 17% 55%, 21% 68%, 25% 62%, 29% 70%, 33% 58%, 37% 65%, 42% 55%, 46% 68%, 50% 60%, 54% 70%, 58% 55%, 62% 68%, 66% 60%, 71% 72%, 75% 58%, 79% 68%, 83% 62%, 87% 55%, 91% 70%, 95% 62%, 100% 68%, 100% 100%);
-  filter:blur(3px);}
+  /* Sonnen-Rays von oben-rechts */
+  .ray{
+    position:absolute;top:-120px;right:-80px;
+    transform-origin:top right;
+    mix-blend-mode:screen;filter:blur(28px);
+  }
+  .ray1{width:160px;height:1600px;background:linear-gradient(195deg,rgba(255,230,100,0.22) 0%,transparent 65%);transform:rotate(-8deg);animation:rayBreath 9s ease-in-out infinite;}
+  .ray2{width:120px;height:1400px;background:linear-gradient(200deg,rgba(255,210,80,0.18) 0%,transparent 60%);transform:rotate(-14deg);animation:rayBreath 11s ease-in-out infinite reverse;animation-delay:-3s;}
+  .ray3{width:180px;height:1200px;background:linear-gradient(190deg,rgba(255,240,120,0.16) 0%,transparent 55%);transform:rotate(-4deg);animation:rayBreath 7s ease-in-out infinite;animation-delay:-1.5s;}
+  .ray4{width:100px;height:1300px;background:linear-gradient(205deg,rgba(255,200,60,0.14) 0%,transparent 58%);transform:rotate(-20deg);animation:rayBreath 13s ease-in-out infinite reverse;}
+  @keyframes rayBreath{0%,100%{opacity:0.55}40%{opacity:1}70%{opacity:0.65}}
 
-/* Ground — undergrowth, darker near bottom */
-.ground{position:absolute;bottom:0;left:0;right:0;height:520px;background:
-  radial-gradient(ellipse 70% 60% at 50% 100%, #3a6a2a 0%, #1e4a1a 50%, #0a1e08 100%);}
+  /* Waldboden-Nebel */
+  .ground-fog{
+    position:absolute;bottom:0;left:0;right:0;height:520px;
+    background:
+      radial-gradient(ellipse 110% 60% at 50% 100%, rgba(30,80,10,0.55) 0%, transparent 65%),
+      radial-gradient(ellipse 80% 40% at 20% 100%, rgba(20,60,8,0.4) 0%, transparent 55%),
+      radial-gradient(ellipse 70% 35% at 85% 100%, rgba(25,70,10,0.35) 0%, transparent 50%);
+    filter:blur(18px);mix-blend-mode:screen;
+    animation:fogDrift 12s ease-in-out infinite alternate;
+  }
+  @keyframes fogDrift{0%{transform:translateX(0)}100%{transform:translateX(25px)}}
 
-/* BIG tree trunks on left and right — framing the view through the forest */
-.trunk{position:absolute;top:-80px;bottom:-80px;}
-.trunk svg{width:100%;height:100%;display:block;}
-.trunk-l{left:-20px;width:300px;}
-.trunk-r{right:-20px;width:320px;}
-/* Mid-ground smaller trunks for depth */
-.trunk-l2{left:40px;width:160px;top:200px;bottom:-80px;opacity:0.85;filter:blur(0.5px);}
-.trunk-r2{right:60px;width:180px;top:180px;bottom:-80px;opacity:0.85;filter:blur(0.5px);}
+  /* Ring-Moos-Glow */
+  .ring-moss{
+    position:absolute;top:210px;left:50%;transform:translateX(-50%);
+    width:900px;height:900px;border-radius:50%;
+    background:radial-gradient(ellipse 100% 100% at 50% 50%,
+      transparent 50%,
+      rgba(80,200,40,0.06) 58%,
+      rgba(100,220,50,0.1) 63%,
+      rgba(80,200,40,0.05) 70%,
+      transparent 78%);
+    mix-blend-mode:screen;filter:blur(10px);
+    animation:mossPulse 4s ease-in-out infinite;
+  }
+  @keyframes mossPulse{0%,100%{opacity:0.6;transform:translateX(-50%) scale(1)}50%{opacity:1;transform:translateX(-50%) scale(1.02)}}
 
-/* Dense leafy bushes — left and right foreground */
-.bush{position:absolute;bottom:-40px;filter:blur(1px);}
-.bush-l{left:-40px;width:520px;height:720px;}
-.bush-r{right:-40px;width:560px;height:780px;}
-.bush svg{width:100%;height:100%;display:block;}
+  /* Leuchtende Blumen um den Ring */
+  .flower-ring{position:absolute;pointer-events:none;}
+  .flower{position:absolute;width:22px;height:22px;transform:translate(-50%,-50%);}
+  .petal{position:absolute;width:8px;height:14px;border-radius:50% 50% 40% 40%;transform-origin:50% 100%;left:7px;top:0;}
+  .flower-center{position:absolute;width:7px;height:7px;border-radius:50%;left:50%;top:50%;transform:translate(-50%,-50%);}
 
-/* Canopy leaves hanging from top */
-.canopy{position:absolute;top:-50px;left:-40px;right:-40px;height:420px;}
-.canopy svg{width:100%;height:100%;display:block;}
-
-/* Sun shaft from top-left through the clearing */
-.shaft{position:absolute;top:-150px;left:-100px;width:900px;height:1800px;
-  background:linear-gradient(160deg, rgba(255,240,150,0.35) 0%, rgba(255,235,130,0.15) 25%, transparent 50%);
-  filter:blur(50px);mix-blend-mode:screen;animation:sh 9s ease-in-out infinite;}
-.shaft2{position:absolute;top:-80px;left:120px;width:600px;height:1400px;
-  background:linear-gradient(172deg, rgba(255,235,140,0.25) 0%, transparent 45%);
-  filter:blur(35px);mix-blend-mode:screen;animation:sh 12s ease-in-out infinite reverse;}
-@keyframes sh{0%,100%{opacity:0.75}50%{opacity:1}}
-
-.zone-top{position:absolute;top:0;left:0;right:0;height:120px;background:linear-gradient(180deg,rgba(0,0,0,0.55) 0%,transparent 100%);z-index:40;}
-.zone-bot{position:absolute;bottom:0;left:0;right:0;height:920px;background:linear-gradient(0deg,rgba(0,10,0,0.55) 0%,rgba(0,10,0,0.15) 40%,transparent 100%);z-index:40;}
-.center-darken{position:absolute;top:300px;left:50%;transform:translateX(-50%);width:780px;height:540px;background:radial-gradient(ellipse 50% 50% at 50% 50%,rgba(0,10,0,0.3) 0%,transparent 70%);z-index:38;}
-.vignette{position:absolute;inset:0;background:radial-gradient(ellipse 75% 65% at 50% 50%,transparent 35%,rgba(0,0,0,0.65) 100%);z-index:39;pointer-events:none;}
+  /* UI zones */
+  .center-darken{position:absolute;top:300px;left:50%;transform:translateX(-50%);width:780px;height:540px;background:radial-gradient(ellipse 50% 50% at 50% 50%,rgba(0,8,0,0.38) 0%,transparent 70%);z-index:38;}
+  .vignette{position:absolute;inset:0;background:radial-gradient(ellipse 80% 70% at 50% 50%,transparent 40%,rgba(0,5,0,0.7) 100%);z-index:39;pointer-events:none;}
+  .zone-top{position:absolute;top:0;left:0;right:0;height:120px;background:linear-gradient(180deg,rgba(0,0,0,0.55) 0%,transparent 100%);z-index:40;}
+  .zone-bot{position:absolute;bottom:0;left:0;right:0;height:920px;background:linear-gradient(0deg,rgba(0,5,0,0.6) 0%,rgba(0,5,0,0.14) 40%,transparent 100%);z-index:40;}
 </style>
 </head>
 <body>
-<div class="bg"></div>
-<div class="far-trees"></div>
-<div class="ground"></div>
-<canvas id="bokeh"></canvas>
-<div class="shaft"></div>
-<div class="shaft2"></div>
+  <div class="clearing"></div>
+  <div class="ray ray1"></div>
+  <div class="ray ray2"></div>
+  <div class="ray ray3"></div>
+  <div class="ray ray4"></div>
 
-<!-- Mid-ground trunks -->
-<div class="trunk trunk-l2"><svg viewBox="0 0 160 1640" preserveAspectRatio="none"><path d="M65 0 Q70 400 55 800 Q45 1200 60 1640 L100 1640 Q85 1200 95 800 Q105 400 95 0 Z" fill="#1a2a10"/></svg></div>
-<div class="trunk trunk-r2"><svg viewBox="0 0 180 1660" preserveAspectRatio="none"><path d="M85 0 Q95 400 70 800 Q60 1200 80 1660 L125 1660 Q110 1200 120 800 Q130 400 115 0 Z" fill="#1a2a10"/></svg></div>
+  <!-- Canvas stack -->
+  <canvas id="cTrees"></canvas>
+  <canvas id="cGround"></canvas>
+  <canvas id="cRing"></canvas>
+  <canvas id="cCreatures"></canvas>
+  <canvas id="cParticles"></canvas>
 
-<!-- Main framing trunks -->
-<div class="trunk trunk-l"><svg viewBox="0 0 300 2080" preserveAspectRatio="none">
-  <path d="M60 0 Q90 300 40 700 Q0 1100 50 1500 Q30 1800 80 2080 L200 2080 Q240 1800 210 1500 Q260 1100 220 700 Q270 300 240 0 Z" fill="#0a1a08"/>
-  <!-- Bark texture -->
-  <path d="M80 100 Q75 400 90 700 M140 200 Q135 500 150 900 M180 150 Q175 450 190 800 M100 800 Q95 1200 110 1600 M160 1000 Q155 1400 170 1900" stroke="#051008" stroke-width="3" fill="none" opacity="0.6"/>
-</svg></div>
-<div class="trunk trunk-r"><svg viewBox="0 0 320 2080" preserveAspectRatio="none">
-  <path d="M80 0 Q50 300 110 700 Q160 1100 90 1500 Q120 1800 60 2080 L240 2080 Q200 1800 230 1500 Q280 1100 220 700 Q260 300 230 0 Z" fill="#0a1a08"/>
-  <path d="M120 100 Q125 400 110 700 M180 250 Q185 600 170 1000 M220 180 Q225 500 210 900 M140 900 Q145 1300 130 1700 M200 1100 Q205 1500 190 1900" stroke="#051008" stroke-width="3" fill="none" opacity="0.6"/>
-</svg></div>
+  <div class="ground-fog"></div>
+  <div class="ring-moss"></div>
 
-<!-- Canopy overhead -->
-<div class="canopy"><svg viewBox="0 0 1160 420" preserveAspectRatio="none">
-  <g fill="#0a1e08">
-    <ellipse cx="80" cy="40" rx="200" ry="140"/>
-    <ellipse cx="260" cy="10" rx="220" ry="150"/>
-    <ellipse cx="460" cy="30" rx="240" ry="160"/>
-    <ellipse cx="680" cy="5" rx="230" ry="140"/>
-    <ellipse cx="900" cy="25" rx="240" ry="155"/>
-    <ellipse cx="1100" cy="40" rx="200" ry="140"/>
-  </g>
-  <g fill="#143018" opacity="0.8">
-    <ellipse cx="160" cy="80" rx="120" ry="90"/>
-    <ellipse cx="380" cy="70" rx="140" ry="100"/>
-    <ellipse cx="580" cy="90" rx="130" ry="90"/>
-    <ellipse cx="780" cy="60" rx="150" ry="110"/>
-    <ellipse cx="1000" cy="85" rx="130" ry="95"/>
-  </g>
-  <!-- Hanging vines -->
-  <g stroke="#1a3a1e" stroke-width="3" fill="none" opacity="0.8">
-    <path d="M120 140 Q115 220 125 300"/>
-    <path d="M320 160 Q325 240 315 320"/>
-    <path d="M560 150 Q565 230 555 310"/>
-    <path d="M820 170 Q815 250 825 330"/>
-    <path d="M1020 140 Q1025 220 1015 300"/>
-  </g>
-</svg></div>
+  <!-- Flower ring (CSS) -->
+  <div id="flowerRing" class="flower-ring"></div>
 
-<!-- Left bush -->
-<div class="bush bush-l"><svg viewBox="0 0 520 720" preserveAspectRatio="none">
-  <g fill="#0a1f0a">
-    <ellipse cx="100" cy="600" rx="180" ry="180"/>
-    <ellipse cx="260" cy="520" rx="200" ry="200"/>
-    <ellipse cx="420" cy="620" rx="170" ry="160"/>
-    <ellipse cx="180" cy="360" rx="160" ry="170"/>
-    <ellipse cx="340" cy="300" rx="170" ry="180"/>
-    <ellipse cx="80" cy="180" rx="140" ry="160"/>
-    <ellipse cx="260" cy="120" rx="150" ry="140"/>
-  </g>
-  <g fill="#1a3a18" opacity="0.9">
-    <ellipse cx="140" cy="500" rx="100" ry="100"/>
-    <ellipse cx="320" cy="420" rx="120" ry="110"/>
-    <ellipse cx="220" cy="260" rx="110" ry="120"/>
-    <ellipse cx="380" cy="200" rx="100" ry="110"/>
-  </g>
-  <!-- Leaf details -->
-  <g fill="#2d6b2a" opacity="0.85">
-    <ellipse cx="90" cy="480" rx="14" ry="22" transform="rotate(-20 90 480)"/>
-    <ellipse cx="170" cy="430" rx="14" ry="22" transform="rotate(15 170 430)"/>
-    <ellipse cx="270" cy="380" rx="14" ry="22" transform="rotate(-10 270 380)"/>
-    <ellipse cx="350" cy="310" rx="14" ry="22" transform="rotate(25 350 310)"/>
-    <ellipse cx="180" cy="220" rx="14" ry="22" transform="rotate(-30 180 220)"/>
-    <ellipse cx="280" cy="150" rx="14" ry="22" transform="rotate(10 280 150)"/>
-    <ellipse cx="420" cy="470" rx="14" ry="22" transform="rotate(20 420 470)"/>
-    <ellipse cx="120" cy="280" rx="14" ry="22" transform="rotate(40 120 280)"/>
-  </g>
-  <!-- Small flowers -->
-  <g>
-    <circle cx="210" cy="440" r="5" fill="#fff8b0"/><circle cx="210" cy="440" r="2" fill="#ffcc40"/>
-    <circle cx="340" cy="360" r="5" fill="#ffb0d8"/><circle cx="340" cy="360" r="2" fill="#ff70a0"/>
-    <circle cx="420" cy="540" r="5" fill="#fff8b0"/><circle cx="420" cy="540" r="2" fill="#ffcc40"/>
-    <circle cx="140" cy="340" r="5" fill="#d8b0ff"/><circle cx="140" cy="340" r="2" fill="#a070ff"/>
-  </g>
-</svg></div>
-
-<!-- Right bush -->
-<div class="bush bush-r"><svg viewBox="0 0 560 780" preserveAspectRatio="none">
-  <g fill="#0a1f0a">
-    <ellipse cx="460" cy="640" rx="180" ry="180"/>
-    <ellipse cx="300" cy="550" rx="210" ry="210"/>
-    <ellipse cx="140" cy="660" rx="180" ry="170"/>
-    <ellipse cx="380" cy="380" rx="170" ry="180"/>
-    <ellipse cx="220" cy="320" rx="180" ry="180"/>
-    <ellipse cx="480" cy="200" rx="150" ry="170"/>
-    <ellipse cx="300" cy="130" rx="160" ry="150"/>
-  </g>
-  <g fill="#1a3a18" opacity="0.9">
-    <ellipse cx="420" cy="520" rx="110" ry="110"/>
-    <ellipse cx="240" cy="440" rx="130" ry="120"/>
-    <ellipse cx="340" cy="280" rx="120" ry="130"/>
-    <ellipse cx="180" cy="210" rx="110" ry="120"/>
-  </g>
-  <g fill="#2d6b2a" opacity="0.85">
-    <ellipse cx="470" cy="500" rx="14" ry="22" transform="rotate(20 470 500)"/>
-    <ellipse cx="390" cy="450" rx="14" ry="22" transform="rotate(-15 390 450)"/>
-    <ellipse cx="290" cy="400" rx="14" ry="22" transform="rotate(10 290 400)"/>
-    <ellipse cx="210" cy="330" rx="14" ry="22" transform="rotate(-25 210 330)"/>
-    <ellipse cx="380" cy="240" rx="14" ry="22" transform="rotate(30 380 240)"/>
-    <ellipse cx="280" cy="160" rx="14" ry="22" transform="rotate(-10 280 160)"/>
-    <ellipse cx="140" cy="480" rx="14" ry="22" transform="rotate(-20 140 480)"/>
-    <ellipse cx="440" cy="300" rx="14" ry="22" transform="rotate(-40 440 300)"/>
-  </g>
-  <g>
-    <circle cx="350" cy="460" r="5" fill="#fff8b0"/><circle cx="350" cy="460" r="2" fill="#ffcc40"/>
-    <circle cx="220" cy="380" r="5" fill="#ffb0d8"/><circle cx="220" cy="380" r="2" fill="#ff70a0"/>
-    <circle cx="140" cy="560" r="5" fill="#fff8b0"/><circle cx="140" cy="560" r="2" fill="#ffcc40"/>
-    <circle cx="420" cy="340" r="5" fill="#d8b0ff"/><circle cx="420" cy="340" r="2" fill="#a070ff"/>
-  </g>
-</svg></div>
-
-<canvas id="pollen"></canvas>
-<canvas id="leaves"></canvas>
-<canvas id="butter"></canvas>
-<canvas id="grass-blades"></canvas>
-
-<div class="center-darken"></div>
-<div class="vignette"></div>
-<div class="zone-top"></div>
-<div class="zone-bot"></div>
+  <div class="center-darken"></div>
+  <div class="vignette"></div>
+  <div class="zone-top"></div>
+  <div class="zone-bot"></div>
 
 <script>
-const W=1080,H=1920;
-function setup(id){const c=document.getElementById(id);c.width=W;c.height=H;return c.getContext('2d');}
+const W=1080, H=1920;
+const RING_CX=540, RING_CY=590, RING_R=300;
 
-// Soft bokeh light spots
-const bk=setup('bokeh');
-const bokeh=[];
-for(let i=0;i<45;i++){
-  bokeh.push({x:Math.random()*W,y:Math.random()*H,r:14+Math.random()*36,
-    hue:55+Math.random()*50,a:0.1+Math.random()*0.3,
-    vx:(Math.random()-0.5)*0.25,vy:(Math.random()-0.5)*0.15-0.04,
-    ph:Math.random()*Math.PI*2,sp:0.3+Math.random()*0.6});
+function mkCanvas(id){
+  const c=document.getElementById(id);
+  c.width=W; c.height=H;
+  return c.getContext('2d');
+}
+const treeCtx     = mkCanvas('cTrees');
+const groundCtx   = mkCanvas('cGround');
+const ringCtx     = mkCanvas('cRing');
+const creatureCtx = mkCanvas('cCreatures');
+const partCtx     = mkCanvas('cParticles');
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   TREES — drawn once, silhouettes with organic canopy
+   ═══════════════════════════════════════════════════════════════════════════ */
+(function buildTrees(){
+  treeCtx.clearRect(0,0,W,H);
+
+  // Tree data: [x, trunkW, trunkH, canopyW, canopyH, color, layers]
+  const trees=[
+    {x:0,   tw:80, th:600, cw:380, ch:520, col:'#020a01', layers:4, side:'l'},
+    {x:60,  tw:60, th:500, cw:280, ch:420, col:'#030d02', layers:3, side:'l'},
+    {x:130, tw:50, th:450, cw:240, ch:380, col:'#020b01', layers:3, side:'l'},
+    {x:W,   tw:90, th:650, cw:400, ch:560, col:'#020a01', layers:4, side:'r'},
+    {x:W-70,tw:65, th:540, cw:300, ch:450, col:'#030d02', layers:3, side:'r'},
+    {x:W-140,tw:55,th:480, cw:260, ch:400, col:'#020b01', layers:3, side:'r'},
+  ];
+
+  for(const t of trees){
+    const bx = t.side==='l' ? t.x : t.x-t.tw;
+    // Trunk
+    const tg=treeCtx.createLinearGradient(bx,H-t.th,bx+t.tw,H);
+    tg.addColorStop(0,'#050f02'); tg.addColorStop(1,'#020600');
+    treeCtx.fillStyle=tg;
+    treeCtx.beginPath();
+    treeCtx.moveTo(bx, H);
+    treeCtx.lineTo(bx+t.tw*0.15, H-t.th);
+    treeCtx.lineTo(bx+t.tw*0.85, H-t.th);
+    treeCtx.lineTo(bx+t.tw, H);
+    treeCtx.fill();
+
+    // Canopy layers (organic blob shapes)
+    const cx = t.side==='l' ? t.x+t.cw*0.35 : t.x-t.cw*0.35;
+    for(let ly=0;ly<t.layers;ly++){
+      const layerY = H-t.th - ly*(t.ch*0.3);
+      const lw = t.cw*(1-ly*0.12);
+      const lh = t.ch*(0.5-ly*0.05);
+      // Organic shape via multiple overlapping ellipses
+      const cg=treeCtx.createRadialGradient(cx,layerY,0,cx,layerY,lw*0.55);
+      cg.addColorStop(0, ly===0?'#041202':'#030e01');
+      cg.addColorStop(0.6, ly===0?'#020a01':'#020801');
+      cg.addColorStop(1,'rgba(0,0,0,0)');
+      treeCtx.fillStyle=cg;
+      // Main blob
+      for(let blob=0;blob<5;blob++){
+        const boffX=(blob-2)*lw*0.18;
+        const boffY=(Math.random()>0.5?1:-1)*lh*0.12*blob;
+        treeCtx.beginPath();
+        treeCtx.ellipse(cx+boffX, layerY+boffY, lw*0.38, lh*(0.55+ly*0.05), 0, 0, Math.PI*2);
+        treeCtx.fill();
+      }
+      // Leaf edge highlight — faint warm tint from sunrays
+      if(t.side==='r' && ly===0){
+        const eg=treeCtx.createRadialGradient(cx-lw*0.2,layerY-lh*0.2,0,cx-lw*0.2,layerY-lh*0.2,lw*0.4);
+        eg.addColorStop(0,'rgba(80,120,20,0.08)');
+        eg.addColorStop(1,'rgba(0,0,0,0)');
+        treeCtx.fillStyle=eg;
+        treeCtx.beginPath();
+        treeCtx.ellipse(cx-lw*0.2, layerY-lh*0.15, lw*0.35, lh*0.5, 0, 0, Math.PI*2);
+        treeCtx.fill();
+      }
+    }
+  }
+
+  // Undergrowth silhouettes at bottom
+  for(let i=0;i<22;i++){
+    const bx=Math.random()*W;
+    const by=H;
+    const bw=40+Math.random()*80;
+    const bh=80+Math.random()*160;
+    treeCtx.fillStyle=`rgba(${2+Math.floor(Math.random()*4)},${8+Math.floor(Math.random()*8)},${1+Math.floor(Math.random()*3)},${0.7+Math.random()*0.25})`;
+    treeCtx.beginPath();
+    treeCtx.moveTo(bx,by);
+    treeCtx.quadraticCurveTo(bx-bw*0.3,by-bh*0.6,bx+bw*0.1,by-bh);
+    treeCtx.quadraticCurveTo(bx+bw*0.5,by-bh*0.7,bx+bw,by);
+    treeCtx.fill();
+  }
+})();
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   GROUND — grass, moss patches, tiny floor flowers
+   ═══════════════════════════════════════════════════════════════════════════ */
+(function buildGround(){
+  groundCtx.clearRect(0,0,W,H);
+
+  // Grass blades near bottom
+  const BLADE_COUNT=320;
+  for(let i=0;i<BLADE_COUNT;i++){
+    const gx=Math.random()*W;
+    const gy=H-20-Math.random()*180;
+    const gh=15+Math.random()*55;
+    const gw=2+Math.random()*2.5;
+    const hue=90+Math.random()*30;
+    const lean=(Math.random()-0.5)*0.5;
+    const g=groundCtx.createLinearGradient(gx,gy,gx+lean*gh,gy-gh);
+    g.addColorStop(0,`hsla(${hue},70%,22%,0.9)`);
+    g.addColorStop(0.6,`hsla(${hue+5},75%,35%,0.7)`);
+    g.addColorStop(1,`hsla(${hue+10},80%,50%,0.2)`);
+    groundCtx.strokeStyle=g;
+    groundCtx.lineWidth=gw;
+    groundCtx.lineCap='round';
+    groundCtx.beginPath();
+    groundCtx.moveTo(gx,gy);
+    groundCtx.quadraticCurveTo(gx+lean*gh*0.5,gy-gh*0.5,gx+lean*gh,gy-gh);
+    groundCtx.stroke();
+  }
+
+  // Moss patches
+  for(let i=0;i<18;i++){
+    const mx=80+Math.random()*(W-160);
+    const my=H-60-Math.random()*200;
+    const mr=20+Math.random()*50;
+    const mg=groundCtx.createRadialGradient(mx,my,0,mx,my,mr);
+    mg.addColorStop(0,`rgba(40,100,15,0.35)`);
+    mg.addColorStop(0.6,`rgba(25,70,8,0.2)`);
+    mg.addColorStop(1,'rgba(0,0,0,0)');
+    groundCtx.fillStyle=mg;
+    groundCtx.beginPath();
+    groundCtx.ellipse(mx,my,mr,mr*0.45,Math.random()*Math.PI,0,Math.PI*2);
+    groundCtx.fill();
+  }
+})();
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   FLOWER RING — CSS flowers around spawn ring
+   ═══════════════════════════════════════════════════════════════════════════ */
+const FLOWER_COUNT=10;
+const flowerDefs=[];
+const FLOWER_COLORS=[
+  {petals:'#ff88cc',center:'#ffee44',glow:'rgba(255,150,200,0.7)'},
+  {petals:'#88ffaa',center:'#ffff66',glow:'rgba(100,255,150,0.6)'},
+  {petals:'#ffcc44',center:'#ffffff',glow:'rgba(255,220,60,0.65)'},
+  {petals:'#cc88ff',center:'#ffee88',glow:'rgba(200,140,255,0.6)'},
+  {petals:'#88ddff',center:'#ffffff',glow:'rgba(120,200,255,0.55)'},
+];
+const flowerRingEl=document.getElementById('flowerRing');
+flowerRingEl.style.cssText=`position:absolute;inset:0;pointer-events:none;z-index:36;`;
+
+for(let i=0;i<FLOWER_COUNT;i++){
+  const ang=(i/FLOWER_COUNT)*Math.PI*2 - Math.PI/2;
+  const r=RING_R+80+Math.sin(i*1.4)*30;
+  const fx=RING_CX+Math.cos(ang)*r;
+  const fy=RING_CY+Math.sin(ang)*r;
+  const col=FLOWER_COLORS[i%FLOWER_COLORS.length];
+  const scale=0.7+Math.random()*0.6;
+  const delay=Math.random()*3;
+
+  const div=document.createElement('div');
+  div.style.cssText=`
+    position:absolute;
+    left:${fx}px;top:${fy}px;
+    width:${28*scale}px;height:${28*scale}px;
+    transform:translate(-50%,-50%);
+    animation:flowerPulse ${2.5+Math.random()*2}s ease-in-out infinite;
+    animation-delay:-${delay}s;
+  `;
+
+  // 5 petals
+  for(let p=0;p<5;p++){
+    const petal=document.createElement('div');
+    petal.style.cssText=`
+      position:absolute;
+      width:${10*scale}px;height:${16*scale}px;
+      background:${col.petals};
+      border-radius:50% 50% 40% 40%;
+      transform-origin:50% 100%;
+      left:${14*scale-5*scale}px;top:0;
+      transform:rotate(${p*72}deg);
+      box-shadow:0 0 ${8*scale}px ${col.glow};
+      opacity:0.85;
+    `;
+    div.appendChild(petal);
+  }
+  // Center
+  const center=document.createElement('div');
+  center.style.cssText=`
+    position:absolute;
+    width:${9*scale}px;height:${9*scale}px;
+    background:${col.center};
+    border-radius:50%;
+    left:50%;top:50%;
+    transform:translate(-50%,-50%);
+    box-shadow:0 0 ${10*scale}px ${col.glow};
+  `;
+  div.appendChild(center);
+  flowerRingEl.appendChild(div);
+  flowerDefs.push({el:div,ang,r,scale});
 }
 
-// Pollen/dust motes (tiny)
-const pl=setup('pollen');
-const pollen=[];
-for(let i=0;i<120;i++)pollen.push({x:Math.random()*W,y:Math.random()*H,r:0.5+Math.random()*1.5,vx:(Math.random()-0.5)*0.3,vy:-0.1-Math.random()*0.3,a:0.3+Math.random()*0.5,hue:50+Math.random()*30,ph:Math.random()*Math.PI*2});
+// Inject keyframe
+const style=document.createElement('style');
+style.textContent=`@keyframes flowerPulse{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.12)}}`;
+document.head.appendChild(style);
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   FIREFLY RING — orbit around spawn ring
+   ═══════════════════════════════════════════════════════════════════════════ */
+const RING_FF_COUNT=18;
+const ringFireflies=[];
+for(let i=0;i<RING_FF_COUNT;i++){
+  ringFireflies.push({
+    angle: (i/RING_FF_COUNT)*Math.PI*2,
+    speed: 0.006+Math.random()*0.006*(Math.random()<0.5?1:-1),
+    rVar: RING_R+75+Math.random()*55,
+    phase: Math.random()*Math.PI*2,
+    glowSpeed: 0.05+Math.random()*0.08,
+    hue: 75+Math.random()*35,
+    size: 2.5+Math.random()*3,
+    trail:[],
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   BUTTERFLIES
+   ═══════════════════════════════════════════════════════════════════════════ */
+const butterflies=[];
+const BFLY_COLORS=[
+  {body:'#442200',top:'#ff8800',bot:'#ffaa00',spot:'#ffffff'},
+  {body:'#220044',top:'#8800ff',bot:'#cc44ff',spot:'#ffff88'},
+  {body:'#002244',top:'#0066ff',bot:'#44aaff',spot:'#ffffff'},
+  {body:'#002200',top:'#00cc44',bot:'#44ff88',spot:'#ffff44'},
+  {body:'#440022',top:'#ff2288',bot:'#ff88cc',spot:'#ffffff'},
+  {body:'#333300',top:'#ddcc00',bot:'#ffee44',spot:'#ff6600'},
+];
+for(let i=0;i<7;i++){
+  const col=BFLY_COLORS[i%BFLY_COLORS.length];
+  butterflies.push({
+    x:200+Math.random()*680, y:250+Math.random()*900,
+    vx:(Math.random()<0.5?1:-1)*(0.7+Math.random()*1.2),
+    vy:(Math.random()-0.5)*0.5,
+    flap:Math.random()*Math.PI*2,
+    flapSpeed:0.14+Math.random()*0.1,
+    size:14+Math.random()*12,
+    col,
+    targetX:Math.random()*W, targetY:300+Math.random()*900,
+    turnTimer:0, turnInterval:3+Math.random()*4,
+    bobPhase:Math.random()*Math.PI*2,
+  });
+}
+
+function drawButterfly(ctx, b){
+  ctx.save();
+  ctx.translate(b.x,b.y);
+  const flip=b.vx<0?-1:1;
+  ctx.scale(flip,1);
+
+  const flapAngle=Math.cos(b.flap); // -1 to 1, wings open/close
+  const s=b.size;
+
+  // Upper wings
+  ctx.save();
+  ctx.transform(flapAngle,0,0,1,0,0); // squish = flap
+  const ug=ctx.createRadialGradient(s*0.35,0,0,s*0.35,0,s*0.85);
+  ug.addColorStop(0,b.col.top+'ee');
+  ug.addColorStop(0.5,b.col.top+'bb');
+  ug.addColorStop(1,b.col.top+'44');
+  ctx.fillStyle=ug;
+  ctx.shadowBlur=10; ctx.shadowColor=b.col.top+'88';
+  // Left upper
+  ctx.beginPath();
+  ctx.moveTo(0,0);
+  ctx.bezierCurveTo(s*0.2,-s*0.9, s*0.85,-s*0.85, s*0.85,-s*0.1);
+  ctx.bezierCurveTo(s*0.85,s*0.25, s*0.3,s*0.15, 0,0);
+  ctx.fill();
+  ctx.restore();
+
+  // Lower wings
+  ctx.save();
+  ctx.transform(flapAngle,0,0,1,0,0);
+  const lg=ctx.createRadialGradient(s*0.3,s*0.4,0,s*0.3,s*0.4,s*0.65);
+  lg.addColorStop(0,b.col.bot+'dd');
+  lg.addColorStop(0.6,b.col.bot+'99');
+  lg.addColorStop(1,b.col.bot+'22');
+  ctx.fillStyle=lg;
+  ctx.beginPath();
+  ctx.moveTo(0,0);
+  ctx.bezierCurveTo(s*0.15,s*0.3, s*0.75,s*0.7, s*0.6,s*0.85);
+  ctx.bezierCurveTo(s*0.3,s*1.0, s*0.05,s*0.65, 0,0);
+  ctx.fill();
+  // Wing spots
+  ctx.fillStyle=b.col.spot+'99';
+  ctx.beginPath(); ctx.arc(s*0.4,s*0.45,s*0.08,0,Math.PI*2); ctx.fill();
+  ctx.restore();
+
+  // Body
+  ctx.shadowBlur=0;
+  ctx.fillStyle=b.col.body;
+  ctx.beginPath();
+  ctx.ellipse(0,0,s*0.08,s*0.55,0,0,Math.PI*2);
+  ctx.fill();
+  // Antennae
+  ctx.strokeStyle=b.col.body+'cc';
+  ctx.lineWidth=1.2;
+  ctx.beginPath();
+  ctx.moveTo(0,-s*0.5);
+  ctx.quadraticCurveTo(-s*0.2,-s*0.9,-s*0.15,-s*1.1);
+  ctx.moveTo(0,-s*0.5);
+  ctx.quadraticCurveTo(s*0.2,-s*0.9,s*0.15,-s*1.1);
+  ctx.stroke();
+
+  ctx.restore();
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   PARTICLES: Leaves, Pollen, Motes, Ambient Fireflies
+   ═══════════════════════════════════════════════════════════════════════════ */
 
 // Falling leaves
-const lv=setup('leaves');
 const leaves=[];
-const leafCol=['#7fc940','#9edc5a','#b8e878','#c9d94a','#e8d75f','#5fa83a','#8fd050','#d4c040','#6ab030'];
-for(let i=0;i<40;i++)leaves.push({x:Math.random()*W,y:Math.random()*H-H,sz:7+Math.random()*13,col:leafCol[Math.floor(Math.random()*leafCol.length)],vy:0.5+Math.random()*1.2,vx:(Math.random()-0.5)*0.6,rot:Math.random()*Math.PI*2,vr:(Math.random()-0.5)*0.04,sw:Math.random()*Math.PI*2,swSp:0.008+Math.random()*0.014});
-
-// Butterflies
-const bt=setup('butter');
-const butters=[];
-for(let i=0;i<4;i++)butters.push({x:Math.random()*W,y:400+Math.random()*800,vx:(Math.random()<0.5?1:-1)*(0.8+Math.random()*0.5),vy:(Math.random()-0.5)*0.3,flap:Math.random()*Math.PI*2,flapSp:0.25,col:['#ff6ba0','#ffe86b','#6bb5ff','#ff9d6b'][Math.floor(Math.random()*4)],sz:12+Math.random()*7,bob:Math.random()*Math.PI*2});
-
-// Grass blades at bottom, swaying
-const gb=setup('grass-blades');
-const blades=[];
-for(let i=0;i<55;i++)blades.push({x:Math.random()*W,base:1750+Math.random()*170,h:30+Math.random()*60,sw:Math.random()*Math.PI*2,swSp:0.02+Math.random()*0.02,hue:80+Math.random()*30,light:25+Math.random()*15});
-
-function drawLeaf(ctx,x,y,sz,rot,col){
-  ctx.save();ctx.translate(x,y);ctx.rotate(rot);
-  ctx.fillStyle=col;
-  ctx.beginPath();ctx.ellipse(0,0,sz*0.45,sz,0,0,Math.PI*2);ctx.fill();
-  ctx.strokeStyle='rgba(40,80,20,0.5)';ctx.lineWidth=0.8;
-  ctx.beginPath();ctx.moveTo(0,-sz);ctx.lineTo(0,sz);ctx.stroke();
-  ctx.restore();
-}
-function drawButterfly(ctx,b){
-  ctx.save();ctx.translate(b.x,b.y);
-  const flap=Math.sin(b.flap)*0.8;
-  ctx.fillStyle=b.col;ctx.globalAlpha=0.85;
-  ctx.save();ctx.scale(Math.cos(flap),1);
-  ctx.beginPath();ctx.ellipse(-b.sz*0.5,0,b.sz*0.6,b.sz*0.8,0.3,0,Math.PI*2);ctx.fill();
-  ctx.beginPath();ctx.ellipse(-b.sz*0.4,b.sz*0.5,b.sz*0.35,b.sz*0.5,0.2,0,Math.PI*2);ctx.fill();
-  ctx.restore();
-  ctx.save();ctx.scale(-Math.cos(flap),1);
-  ctx.beginPath();ctx.ellipse(-b.sz*0.5,0,b.sz*0.6,b.sz*0.8,0.3,0,Math.PI*2);ctx.fill();
-  ctx.beginPath();ctx.ellipse(-b.sz*0.4,b.sz*0.5,b.sz*0.35,b.sz*0.5,0.2,0,Math.PI*2);ctx.fill();
-  ctx.restore();
-  ctx.fillStyle='#2a1a0a';ctx.globalAlpha=1;
-  ctx.beginPath();ctx.ellipse(0,0,2,b.sz*0.7,0,0,Math.PI*2);ctx.fill();
-  ctx.restore();
+const LEAF_COLORS=['#4a8a1a','#6aaa25','#8aba35','#b8c840','#d4a830','#c87020','#b05818'];
+for(let i=0;i<50;i++) leaves.push(mkLeaf(true));
+function mkLeaf(init){
+  return{
+    x:Math.random()*W, y:init?Math.random()*H:-30,
+    vy:0.6+Math.random()*1.0,
+    vx:(Math.random()-0.5)*0.5,
+    rot:Math.random()*Math.PI*2, rotV:(Math.random()-0.5)*0.04,
+    sw:Math.random()*Math.PI*2, swSp:0.01+Math.random()*0.015,
+    swAmp:18+Math.random()*28,
+    size:7+Math.random()*11,
+    col:LEAF_COLORS[Math.floor(Math.random()*LEAF_COLORS.length)],
+    aspect:0.45+Math.random()*0.3,
+  };
 }
 
+// Pollen / spores
+const pollen=[];
+for(let i=0;i<75;i++){
+  pollen.push({
+    x:Math.random()*W, y:Math.random()*H,
+    vx:(Math.random()-0.5)*0.15, vy:-(0.08+Math.random()*0.18),
+    phase:Math.random()*Math.PI*2, sp:0.02+Math.random()*0.04,
+    r:0.8+Math.random()*1.4,
+    hue:55+Math.random()*40,
+  });
+}
+
+// Light motes
+const motes=[];
+for(let i=0;i<20;i++){
+  motes.push({
+    x:150+Math.random()*780, y:200+Math.random()*1200,
+    vx:(Math.random()-0.5)*0.25, vy:(Math.random()-0.5)*0.2-0.05,
+    phase:Math.random()*Math.PI*2, sp:0.018+Math.random()*0.025,
+    r:3+Math.random()*6,
+    hue:45+Math.random()*25,
+  });
+}
+
+// Ambient fireflies
+const ambientFF=[];
+for(let i=0;i<38;i++){
+  ambientFF.push({
+    x:Math.random()*W, y:300+Math.random()*1300,
+    vx:(Math.random()-0.5)*0.4, vy:(Math.random()-0.5)*0.3,
+    phase:Math.random()*Math.PI*2, sp:0.03+Math.random()*0.05,
+    r:1.5+Math.random()*2.5,
+    hue:75+Math.random()*40,
+    offTimer:0, offDur:0, onDur:1+Math.random()*3,
+    on:true,
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MAIN LOOP
+   ═══════════════════════════════════════════════════════════════════════════ */
 let t=0;
+
 function loop(){
   t+=0.016;
 
-  bk.clearRect(0,0,W,H);
-  for(const p of bokeh){
-    p.x+=p.vx;p.y+=p.vy;p.ph+=0.02*p.sp;
-    if(p.x<-50)p.x=W+50;if(p.x>W+50)p.x=-50;
-    if(p.y<-50)p.y=H+50;if(p.y>H+50)p.y=-50;
-    const a=p.a*(0.7+Math.sin(p.ph)*0.3);
-    const g=bk.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r);
-    g.addColorStop(0,`hsla(${p.hue},75%,65%,${a})`);
-    g.addColorStop(1,`hsla(${p.hue},75%,65%,0)`);
-    bk.fillStyle=g;bk.beginPath();bk.arc(p.x,p.y,p.r,0,Math.PI*2);bk.fill();
+  /* ── RING: Firefly crown + glow ── */
+  ringCtx.clearRect(0,0,W,H);
+
+  // Soft moss glow center
+  const mossPulse=0.55+Math.sin(t*1.2)*0.25;
+  const mg=ringCtx.createRadialGradient(RING_CX,RING_CY,RING_R*0.4,RING_CX,RING_CY,RING_R+240);
+  mg.addColorStop(0,`rgba(80,200,30,${0.12*mossPulse})`);
+  mg.addColorStop(0.4,`rgba(60,160,20,${0.06*mossPulse})`);
+  mg.addColorStop(1,'rgba(0,0,0,0)');
+  ringCtx.fillStyle=mg;
+  ringCtx.beginPath(); ringCtx.arc(RING_CX,RING_CY,RING_R+240,0,Math.PI*2); ringCtx.fill();
+
+  // Ring fireflies
+  for(const ff of ringFireflies){
+    ff.angle+=ff.speed;
+    ff.phase+=ff.glowSpeed;
+    const glow=0.35+Math.sin(ff.phase)*0.5;
+    if(glow<0.05) continue;
+    const fx=RING_CX+Math.cos(ff.angle)*ff.rVar;
+    const fy=RING_CY+Math.sin(ff.angle)*ff.rVar;
+    ff.trail.unshift({x:fx,y:fy});
+    if(ff.trail.length>6) ff.trail.pop();
+    // Trail
+    for(let ti=1;ti<ff.trail.length;ti++){
+      const ta=glow*(1-ti/ff.trail.length)*0.4;
+      ringCtx.fillStyle=`hsla(${ff.hue},100%,70%,${ta})`;
+      ringCtx.beginPath(); ringCtx.arc(ff.trail[ti].x,ff.trail[ti].y,ff.size*(1-ti/ff.trail.length)*0.6,0,Math.PI*2); ringCtx.fill();
+    }
+    // Orb
+    const ffg=ringCtx.createRadialGradient(fx,fy,0,fx,fy,ff.size*4);
+    ffg.addColorStop(0,`hsla(${ff.hue},100%,80%,${glow*0.95})`);
+    ffg.addColorStop(0.4,`hsla(${ff.hue},100%,65%,${glow*0.4})`);
+    ffg.addColorStop(1,'rgba(0,0,0,0)');
+    ringCtx.fillStyle=ffg;
+    ringCtx.beginPath(); ringCtx.arc(fx,fy,ff.size*4,0,Math.PI*2); ringCtx.fill();
+    ringCtx.fillStyle=`hsla(${ff.hue+10},100%,88%,${glow*0.95})`;
+    ringCtx.beginPath(); ringCtx.arc(fx,fy,ff.size,0,Math.PI*2); ringCtx.fill();
   }
 
-  pl.clearRect(0,0,W,H);
+  /* ── CREATURES: Butterflies ── */
+  creatureCtx.clearRect(0,0,W,H);
+
+  for(const b of butterflies){
+    // Steering
+    b.turnTimer+=0.016;
+    if(b.turnTimer>b.turnInterval){
+      b.turnTimer=0; b.turnInterval=3+Math.random()*4;
+      b.targetX=150+Math.random()*780;
+      b.targetY=250+Math.random()*900;
+    }
+    const dx=b.targetX-b.x, dy=b.targetY-b.y;
+    b.vx+=(dx>0?1:-1)*0.012; b.vy+=dy*0.003;
+    // Speed cap
+    const spd=Math.hypot(b.vx,b.vy);
+    if(spd>2.2){b.vx=b.vx/spd*2.2;b.vy=b.vy/spd*2.2;}
+    if(spd<0.4){b.vx*=1.1;}
+    // Bob
+    b.bobPhase+=0.03; b.y+=Math.sin(b.bobPhase)*0.25;
+    b.x+=b.vx; b.y+=b.vy;
+    b.flap+=b.flapSpeed;
+    if(b.x<-60)b.x=W+60; if(b.x>W+60)b.x=-60;
+    if(b.y<120)b.vy=Math.abs(b.vy); if(b.y>1100)b.vy=-Math.abs(b.vy);
+    drawButterfly(creatureCtx,b);
+  }
+
+  /* ── PARTICLES ── */
+  partCtx.clearRect(0,0,W,H);
+
+  // Leaves
+  for(let i=0;i<leaves.length;i++){
+    const l=leaves[i];
+    l.sw+=l.swSp; l.rot+=l.rotV;
+    l.x+=l.vx+Math.sin(l.sw)*l.swAmp*0.025;
+    l.y+=l.vy;
+    if(l.y>H+30) leaves[i]=mkLeaf(false);
+    partCtx.save();
+    partCtx.translate(l.x,l.y); partCtx.rotate(l.rot);
+    partCtx.fillStyle=l.col+'cc';
+    partCtx.shadowBlur=4; partCtx.shadowColor=l.col+'88';
+    partCtx.beginPath();
+    partCtx.ellipse(0,0,l.size,l.size*l.aspect,0,0,Math.PI*2);
+    // Leaf vein
+    partCtx.fill();
+    partCtx.strokeStyle=l.col+'66';
+    partCtx.lineWidth=0.7;
+    partCtx.beginPath(); partCtx.moveTo(-l.size,0); partCtx.lineTo(l.size,0); partCtx.stroke();
+    partCtx.restore();
+  }
+  partCtx.shadowBlur=0;
+
+  // Pollen
   for(const p of pollen){
-    p.ph+=0.04;p.x+=p.vx+Math.sin(p.ph)*0.2;p.y+=p.vy;
+    p.phase+=p.sp;
+    p.x+=p.vx+Math.sin(p.phase*0.5)*0.12;
+    p.y+=p.vy;
     if(p.y<-10){p.y=H+10;p.x=Math.random()*W;}
-    if(p.x<-10)p.x=W+10;if(p.x>W+10)p.x=-10;
-    pl.fillStyle=`hsla(${p.hue},80%,75%,${p.a})`;
-    pl.beginPath();pl.arc(p.x,p.y,p.r,0,Math.PI*2);pl.fill();
+    const g=0.25+Math.abs(Math.sin(p.phase))*0.55;
+    partCtx.fillStyle=`hsla(${p.hue},90%,80%,${g})`;
+    partCtx.beginPath(); partCtx.arc(p.x,p.y,p.r,0,Math.PI*2); partCtx.fill();
   }
 
-  lv.clearRect(0,0,W,H);
-  for(const l of leaves){
-    l.sw+=l.swSp;l.x+=l.vx+Math.sin(l.sw)*0.8;l.y+=l.vy;l.rot+=l.vr;
-    if(l.y>H+40){l.y=-40;l.x=Math.random()*W;}
-    if(l.x<-40)l.x=W+40;if(l.x>W+40)l.x=-40;
-    drawLeaf(lv,l.x,l.y,l.sz,l.rot,l.col);
+  // Light motes
+  partCtx.save();
+  for(const m of motes){
+    m.phase+=m.sp;
+    m.x+=m.vx+Math.sin(m.phase*0.4)*0.2;
+    m.y+=m.vy;
+    if(m.x<0)m.x=W; if(m.x>W)m.x=0;
+    if(m.y<0)m.y=H*0.8; if(m.y>H)m.y=100+Math.random()*400;
+    const pulse=0.4+Math.sin(m.phase)*0.4;
+    const mg2=partCtx.createRadialGradient(m.x,m.y,0,m.x,m.y,m.r*3);
+    mg2.addColorStop(0,`hsla(${m.hue},95%,80%,${pulse*0.9})`);
+    mg2.addColorStop(0.4,`hsla(${m.hue},90%,65%,${pulse*0.4})`);
+    mg2.addColorStop(1,'rgba(0,0,0,0)');
+    partCtx.fillStyle=mg2;
+    partCtx.shadowBlur=12; partCtx.shadowColor=`hsla(${m.hue},100%,70%,0.7)`;
+    partCtx.beginPath(); partCtx.arc(m.x,m.y,m.r*3,0,Math.PI*2); partCtx.fill();
   }
+  partCtx.shadowBlur=0; partCtx.restore();
 
-  bt.clearRect(0,0,W,H);
-  for(const b of butters){
-    b.flap+=b.flapSp;b.bob+=0.03;b.x+=b.vx;b.y+=b.vy+Math.sin(b.bob)*0.3;
-    if(b.x<-40)b.x=W+40;if(b.x>W+40)b.x=-40;
-    if(b.y<350)b.vy=Math.abs(b.vy);if(b.y>1200)b.vy=-Math.abs(b.vy);
-    drawButterfly(bt,b);
+  // Ambient fireflies
+  for(let i=0;i<ambientFF.length;i++){
+    const ff=ambientFF[i];
+    ff.phase+=ff.sp;
+    ff.x+=ff.vx+Math.sin(ff.phase*0.6)*0.2;
+    ff.y+=ff.vy;
+    if(ff.x<0)ff.x=W; if(ff.x>W)ff.x=0;
+    if(ff.y<200)ff.y=H*0.7; if(ff.y>H)ff.y=300+Math.random()*800;
+    // Blink logic
+    if(ff.on){
+      ff.offTimer+=0.016;
+      if(ff.offTimer>ff.onDur){ff.on=false;ff.offTimer=0;ff.offDur=0.5+Math.random()*1.5;}
+    } else {
+      ff.offTimer+=0.016;
+      if(ff.offTimer>ff.offDur){ff.on=true;ff.offTimer=0;ff.onDur=1+Math.random()*3;}
+    }
+    if(!ff.on) continue;
+    const glow=0.4+Math.sin(ff.phase)*0.45;
+    const ffg=partCtx.createRadialGradient(ff.x,ff.y,0,ff.x,ff.y,ff.r*5);
+    ffg.addColorStop(0,`hsla(${ff.hue},100%,80%,${glow*0.9})`);
+    ffg.addColorStop(0.5,`hsla(${ff.hue},100%,65%,${glow*0.35})`);
+    ffg.addColorStop(1,'rgba(0,0,0,0)');
+    partCtx.fillStyle=ffg;
+    partCtx.shadowBlur=8; partCtx.shadowColor=`hsla(${ff.hue},100%,70%,0.8)`;
+    partCtx.beginPath(); partCtx.arc(ff.x,ff.y,ff.r*5,0,Math.PI*2); partCtx.fill();
+    partCtx.fillStyle=`hsla(${ff.hue+15},100%,90%,${glow})`;
+    partCtx.beginPath(); partCtx.arc(ff.x,ff.y,ff.r,0,Math.PI*2); partCtx.fill();
   }
-
-  gb.clearRect(0,0,W,H);
-  for(const b of blades){
-    b.sw+=b.swSp;
-    const bend=Math.sin(b.sw)*8;
-    gb.strokeStyle=`hsl(${b.hue},70%,${b.light}%)`;gb.lineWidth=2.2;gb.lineCap='round';
-    gb.beginPath();gb.moveTo(b.x,b.base);
-    gb.quadraticCurveTo(b.x+bend*0.5,b.base-b.h*0.5,b.x+bend,b.base-b.h);
-    gb.stroke();
-  }
+  partCtx.shadowBlur=0;
 
   requestAnimationFrame(loop);
 }
+
 loop();
 </script>
 </body>

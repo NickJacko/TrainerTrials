@@ -2,282 +2,516 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>Ice — Eishöhle</title>
+<title>Ice — Arktisches Nordlicht</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-html,body{width:1080px;height:1920px;overflow:hidden;background:#000814;}
-canvas{position:absolute;inset:0;width:1080px;height:1920px;display:block;}
-/* Deep cave with frozen blue tunnel opening into distance */
-.cave{position:absolute;inset:0;background:
-  radial-gradient(ellipse 35% 30% at 50% 50%, #7fdfff 0%, #3a9fd5 15%, #0a4878 40%, #001830 70%, #000814 100%),
-  radial-gradient(ellipse 60% 55% at 50% 55%, #0a4878 0%, #001830 50%, #000814 100%);}
-/* Frosty glow ring from tunnel entrance */
-.tunnel-glow{position:absolute;top:480px;left:50%;transform:translateX(-50%);width:700px;height:700px;border-radius:50%;
-  background:radial-gradient(circle,rgba(180,240,255,0.35) 0%,rgba(100,200,255,0.15) 30%,transparent 65%);
-  filter:blur(40px);animation:pu 6s ease-in-out infinite;}
-@keyframes pu{0%,100%{opacity:0.8;transform:translateX(-50%) scale(1)}50%{opacity:1;transform:translateX(-50%) scale(1.06)}}
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{
+    width:1080px;height:1920px;overflow:hidden;
+    background:radial-gradient(ellipse 100% 80% at 50% 20%, #001530 0%, #000c1e 45%, #000408 100%);
+  }
+  canvas{position:absolute;inset:0;width:1080px;height:1920px;display:block;}
 
-/* Cave walls — top/bottom edges, jagged ice */
-.wall-top{position:absolute;top:-20px;left:-20px;right:-20px;height:360px;}
-.wall-bot{position:absolute;bottom:-20px;left:-20px;right:-20px;height:420px;}
-.wall-l{position:absolute;left:-20px;top:-20px;bottom:-20px;width:340px;}
-.wall-r{position:absolute;right:-20px;top:-20px;bottom:-20px;width:360px;}
-.wall-top svg,.wall-bot svg,.wall-l svg,.wall-r svg{width:100%;height:100%;display:block;}
+  /* Star field base */
+  .stars{
+    position:absolute;top:0;left:0;right:0;height:1100px;
+    background-image:
+      radial-gradient(circle 1px at 12% 8%, rgba(255,255,255,0.85), transparent),
+      radial-gradient(circle 1px at 28% 5%, rgba(200,230,255,0.7), transparent),
+      radial-gradient(circle 1px at 45% 12%, rgba(255,255,255,0.9), transparent),
+      radial-gradient(circle 1px at 67% 4%, rgba(200,220,255,0.75), transparent),
+      radial-gradient(circle 1px at 83% 9%, rgba(255,255,255,0.8), transparent),
+      radial-gradient(circle 1px at 92% 15%, rgba(220,240,255,0.7), transparent),
+      radial-gradient(circle 1px at 8%  22%, rgba(255,255,255,0.65), transparent),
+      radial-gradient(circle 1px at 35% 18%, rgba(200,230,255,0.8), transparent),
+      radial-gradient(circle 1px at 55% 7%, rgba(255,255,255,0.75), transparent),
+      radial-gradient(circle 1px at 74% 20%, rgba(210,235,255,0.7), transparent),
+      radial-gradient(circle 1px at 19% 35%, rgba(255,255,255,0.55), transparent),
+      radial-gradient(circle 1px at 88% 28%, rgba(255,255,255,0.65), transparent),
+      radial-gradient(circle 2px at 52% 25%, rgba(200,230,255,0.4), transparent),
+      radial-gradient(circle 1px at 38% 40%, rgba(255,255,255,0.45), transparent),
+      radial-gradient(circle 1px at 6%  48%, rgba(200,220,255,0.5), transparent),
+      radial-gradient(circle 1px at 96% 42%, rgba(255,255,255,0.5), transparent);
+  }
 
-.zone-top{position:absolute;top:0;left:0;right:0;height:120px;background:linear-gradient(180deg,rgba(0,0,0,0.55) 0%,transparent 100%);z-index:40;}
-.zone-bot{position:absolute;bottom:0;left:0;right:0;height:920px;background:linear-gradient(0deg,rgba(0,8,20,0.55) 0%,transparent 100%);z-index:40;}
-.center-darken{position:absolute;top:300px;left:50%;transform:translateX(-50%);width:780px;height:540px;background:radial-gradient(ellipse 50% 50% at 50% 50%,rgba(0,8,20,0.25) 0%,transparent 70%);z-index:38;}
-.vignette{position:absolute;inset:0;background:radial-gradient(ellipse 75% 65% at 50% 50%,transparent 35%,rgba(0,0,0,0.7) 100%);z-index:39;pointer-events:none;}
-</style></head><body>
-<div class="cave"></div>
-<div class="tunnel-glow"></div>
+  /* Distant mountain silhouette */
+  .mountains{
+    position:absolute;bottom:480px;left:0;right:0;height:340px;
+    background:#000c18;
+    clip-path:polygon(
+      0 100%, 0 70%, 4% 62%, 9% 72%, 14% 52%, 19% 65%, 24% 44%,
+      29% 58%, 34% 38%, 39% 54%, 44% 36%, 49% 50%, 54% 33%,
+      59% 48%, 64% 30%, 69% 46%, 74% 34%, 79% 52%, 84% 38%,
+      89% 55%, 94% 42%, 98% 60%, 100% 65%, 100% 100%);
+  }
+  .mountain-snow{
+    position:absolute;bottom:680px;left:0;right:0;height:80px;
+    background:rgba(160,200,240,0.1);
+    clip-path:polygon(
+      4% 100%, 9% 55%, 14% 100%, 24% 30%, 29% 100%, 34% 20%,
+      39% 100%, 44% 18%, 49% 100%, 54% 15%, 59% 100%, 64% 12%,
+      69% 100%, 74% 18%, 79% 100%, 84% 22%, 89% 100%);
+    filter:blur(2px);
+  }
 
-<!-- Top wall with icicles hanging down -->
-<div class="wall-top"><svg viewBox="0 0 1120 360" preserveAspectRatio="none">
-  <defs><linearGradient id="ice1" x1="0" y1="0" x2="0" y2="1">
-    <stop offset="0%" stop-color="#1a4878"/>
-    <stop offset="40%" stop-color="#3a8dc0"/>
-    <stop offset="80%" stop-color="#9fdfff"/>
-    <stop offset="100%" stop-color="#e0f5ff"/>
-  </linearGradient></defs>
-  <!-- Cave roof rock base -->
-  <path d="M0 0 L1120 0 L1120 180 Q950 200 800 170 Q650 140 500 180 Q350 210 200 170 Q80 140 0 180 Z" fill="#0a2038"/>
-  <path d="M0 0 L1120 0 L1120 160 Q950 180 800 150 Q650 120 500 160 Q350 190 200 150 Q80 120 0 160 Z" fill="#143a5a" opacity="0.7"/>
-  <!-- Icicles hanging -->
-  <g fill="url(#ice1)" opacity="0.92">
-    <path d="M40 160 L55 280 L70 160 Z"/>
-    <path d="M100 170 L120 340 L140 170 Z"/>
-    <path d="M180 165 L195 250 L210 165 Z"/>
-    <path d="M240 175 L260 310 L280 175 Z"/>
-    <path d="M320 160 L335 220 L350 160 Z"/>
-    <path d="M380 175 L400 330 L420 175 Z"/>
-    <path d="M460 170 L475 260 L490 170 Z"/>
-    <path d="M520 160 L540 290 L560 160 Z"/>
-    <path d="M600 175 L615 240 L630 175 Z"/>
-    <path d="M660 170 L680 320 L700 170 Z"/>
-    <path d="M740 165 L755 255 L770 165 Z"/>
-    <path d="M800 175 L820 300 L840 175 Z"/>
-    <path d="M880 170 L895 240 L910 170 Z"/>
-    <path d="M940 165 L960 310 L980 165 Z"/>
-    <path d="M1020 170 L1035 260 L1050 170 Z"/>
-    <path d="M1080 175 L1100 330 L1120 175 Z"/>
-  </g>
-  <!-- Highlight on icicles -->
-  <g fill="#e0f5ff" opacity="0.5">
-    <path d="M55 170 L58 270 L62 170 Z"/>
-    <path d="M118 180 L122 320 L128 180 Z"/>
-    <path d="M258 185 L262 290 L268 185 Z"/>
-    <path d="M398 185 L402 310 L408 185 Z"/>
-    <path d="M538 170 L542 270 L548 170 Z"/>
-    <path d="M678 180 L682 300 L688 180 Z"/>
-    <path d="M818 185 L822 280 L828 185 Z"/>
-    <path d="M958 175 L962 290 L968 175 Z"/>
-    <path d="M1098 185 L1102 310 L1108 185 Z"/>
-  </g>
-</svg></div>
+  /* Icebergs */
+  .iceberg{position:absolute;mix-blend-mode:screen;}
+  .ib1{bottom:380px;left:30px;width:260px;height:200px;
+    background:linear-gradient(135deg,rgba(160,220,255,0.18) 0%,rgba(80,160,220,0.1) 60%,transparent 100%);
+    clip-path:polygon(15% 100%,0 60%,12% 30%,25% 45%,40% 15%,55% 35%,70% 20%,85% 40%,100% 60%,88% 100%);
+    filter:blur(1px);}
+  .ib2{bottom:340px;right:60px;width:220px;height:180px;
+    background:linear-gradient(150deg,rgba(140,210,255,0.15) 0%,rgba(60,140,200,0.08) 60%,transparent 100%);
+    clip-path:polygon(0 100%,5% 55%,18% 25%,35% 45%,50% 10%,65% 38%,80% 22%,92% 50%,100% 70%,100% 100%);
+    filter:blur(1px);}
+  .ib3{bottom:360px;left:320px;width:180px;height:150px;
+    background:linear-gradient(140deg,rgba(180,230,255,0.12) 0%,rgba(100,170,230,0.06) 60%,transparent 100%);
+    clip-path:polygon(10% 100%,0 65%,20% 30%,38% 50%,55% 20%,72% 45%,88% 32%,100% 55%,90% 100%);
+    filter:blur(1px);}
+  /* Iceberg glow from aurora */
+  .ib-glow{
+    position:absolute;bottom:340px;left:0;right:0;height:120px;
+    background:linear-gradient(180deg,transparent 0%,rgba(0,200,150,0.06) 60%,rgba(0,160,200,0.04) 100%);
+    mix-blend-mode:screen;
+    animation:ibGlow 7s ease-in-out infinite;
+  }
+  @keyframes ibGlow{0%,100%{opacity:0.6}50%{opacity:1}}
 
-<!-- Bottom wall with stalagmites -->
-<div class="wall-bot"><svg viewBox="0 0 1120 420" preserveAspectRatio="none">
-  <defs><linearGradient id="ice2" x1="0" y1="0" x2="0" y2="1">
-    <stop offset="0%" stop-color="#e0f5ff"/>
-    <stop offset="30%" stop-color="#9fdfff"/>
-    <stop offset="70%" stop-color="#3a8dc0"/>
-    <stop offset="100%" stop-color="#0a2848"/>
-  </linearGradient></defs>
-  <path d="M0 420 L1120 420 L1120 240 Q950 200 800 240 Q650 280 500 230 Q350 190 200 240 Q80 280 0 240 Z" fill="#0a2038"/>
-  <path d="M0 420 L1120 420 L1120 260 Q950 220 800 260 Q650 300 500 250 Q350 210 200 260 Q80 300 0 260 Z" fill="#143a5a" opacity="0.7"/>
-  <!-- Stalagmites rising -->
-  <g fill="url(#ice2)" opacity="0.92">
-    <path d="M50 240 L70 100 L90 240 Z"/>
-    <path d="M130 250 L145 180 L160 250 Z"/>
-    <path d="M200 240 L220 60 L240 240 Z"/>
-    <path d="M290 250 L305 170 L320 250 Z"/>
-    <path d="M360 235 L380 90 L400 235 Z"/>
-    <path d="M440 250 L455 180 L470 250 Z"/>
-    <path d="M510 240 L530 110 L550 240 Z"/>
-    <path d="M600 245 L615 175 L630 245 Z"/>
-    <path d="M670 235 L690 80 L710 235 Z"/>
-    <path d="M760 250 L775 175 L790 250 Z"/>
-    <path d="M830 240 L850 100 L870 240 Z"/>
-    <path d="M920 250 L935 180 L950 250 Z"/>
-    <path d="M990 240 L1010 90 L1030 240 Z"/>
-    <path d="M1070 250 L1085 175 L1100 250 Z"/>
-  </g>
-  <g fill="#e0f5ff" opacity="0.5">
-    <path d="M68 130 L71 235 L75 130 Z"/>
-    <path d="M218 90 L222 235 L226 90 Z"/>
-    <path d="M378 120 L382 230 L386 120 Z"/>
-    <path d="M528 140 L532 235 L536 140 Z"/>
-    <path d="M688 110 L692 230 L696 110 Z"/>
-    <path d="M848 130 L852 235 L856 130 Z"/>
-    <path d="M1008 120 L1012 235 L1016 120 Z"/>
-  </g>
-</svg></div>
+  /* Ice plain */
+  .ice-plain{
+    position:absolute;bottom:0;left:0;right:0;height:420px;
+    background:
+      linear-gradient(0deg, #000c1c 0%, #001428 35%, #001830 70%, transparent 100%);
+  }
+  /* Ice surface sheen */
+  .ice-sheen{
+    position:absolute;bottom:0;left:0;right:0;height:300px;
+    background:
+      radial-gradient(ellipse 80% 30% at 30% 100%, rgba(0,180,200,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 25% at 70% 100%, rgba(0,160,220,0.06) 0%, transparent 55%),
+      radial-gradient(ellipse 100% 20% at 50% 100%, rgba(0,200,180,0.05) 0%, transparent 50%);
+    mix-blend-mode:screen;
+    animation:sheenShift 10s ease-in-out infinite alternate;
+  }
+  @keyframes sheenShift{0%{transform:translateX(0)}100%{transform:translateX(20px)}}
 
-<!-- Left wall -->
-<div class="wall-l"><svg viewBox="0 0 340 1960" preserveAspectRatio="none">
-  <defs><linearGradient id="ice3" x1="0" y1="0" x2="1" y2="0">
-    <stop offset="0%" stop-color="#0a2038"/>
-    <stop offset="60%" stop-color="#1a4878"/>
-    <stop offset="100%" stop-color="#5fafdf"/>
-  </linearGradient></defs>
-  <path d="M0 0 L180 0 Q160 300 200 600 Q240 900 170 1200 Q210 1500 180 1960 L0 1960 Z" fill="url(#ice3)"/>
-  <!-- Ice protrusions -->
-  <g fill="#7fcfef" opacity="0.7">
-    <path d="M170 200 L260 240 L180 280 Z"/>
-    <path d="M190 500 L280 560 L200 600 Z"/>
-    <path d="M170 800 L270 840 L180 880 Z"/>
-    <path d="M200 1100 L290 1150 L210 1200 Z"/>
-    <path d="M180 1400 L270 1440 L190 1480 Z"/>
-    <path d="M200 1700 L280 1750 L210 1790 Z"/>
-  </g>
-  <g fill="#c0ecff" opacity="0.5">
-    <path d="M180 210 L245 245 L190 275 Z"/>
-    <path d="M200 510 L265 560 L210 595 Z"/>
-    <path d="M180 810 L255 840 L190 875 Z"/>
-    <path d="M210 1110 L275 1150 L220 1195 Z"/>
-  </g>
-</svg></div>
+  /* Ring ice glow from below */
+  .ring-ice-glow{
+    position:absolute;top:230px;left:50%;transform:translateX(-50%);
+    width:760px;height:760px;border-radius:50%;
+    background:radial-gradient(ellipse 100% 100% at 50% 50%,
+      rgba(0,220,200,0.12) 0%,
+      rgba(0,180,220,0.06) 40%,
+      transparent 65%);
+    mix-blend-mode:screen;filter:blur(20px);
+    animation:icePulse 5s ease-in-out infinite;
+  }
+  @keyframes icePulse{0%,100%{opacity:0.7;transform:translateX(-50%) scale(1)}50%{opacity:1;transform:translateX(-50%) scale(1.03)}}
 
-<!-- Right wall -->
-<div class="wall-r"><svg viewBox="0 0 360 1960" preserveAspectRatio="none">
-  <defs><linearGradient id="ice4" x1="1" y1="0" x2="0" y2="0">
-    <stop offset="0%" stop-color="#0a2038"/>
-    <stop offset="60%" stop-color="#1a4878"/>
-    <stop offset="100%" stop-color="#5fafdf"/>
-  </linearGradient></defs>
-  <path d="M360 0 L180 0 Q200 300 160 600 Q120 900 190 1200 Q150 1500 180 1960 L360 1960 Z" fill="url(#ice4)"/>
-  <g fill="#7fcfef" opacity="0.7">
-    <path d="M190 250 L100 290 L180 330 Z"/>
-    <path d="M170 550 L80 610 L160 650 Z"/>
-    <path d="M190 850 L90 890 L180 930 Z"/>
-    <path d="M160 1150 L70 1200 L150 1250 Z"/>
-    <path d="M180 1450 L90 1490 L170 1530 Z"/>
-    <path d="M160 1750 L80 1800 L150 1840 Z"/>
-  </g>
-  <g fill="#c0ecff" opacity="0.5">
-    <path d="M180 260 L115 295 L170 325 Z"/>
-    <path d="M160 560 L95 610 L150 645 Z"/>
-    <path d="M180 860 L105 890 L170 925 Z"/>
-    <path d="M150 1160 L85 1200 L140 1245 Z"/>
-  </g>
-</svg></div>
+  /* UI zones */
+  .center-darken{position:absolute;top:300px;left:50%;transform:translateX(-50%);width:780px;height:540px;background:radial-gradient(ellipse 50% 50% at 50% 50%,rgba(0,8,20,0.42) 0%,transparent 70%);z-index:38;}
+  .vignette{position:absolute;inset:0;background:radial-gradient(ellipse 80% 70% at 50% 50%,transparent 40%,rgba(0,0,10,0.72) 100%);z-index:39;pointer-events:none;}
+  .zone-top{position:absolute;top:0;left:0;right:0;height:120px;background:linear-gradient(180deg,rgba(0,0,0,0.5) 0%,transparent 100%);z-index:40;}
+  .zone-bot{position:absolute;bottom:0;left:0;right:0;height:920px;background:linear-gradient(0deg,rgba(0,0,12,0.65) 0%,rgba(0,0,12,0.15) 40%,transparent 100%);z-index:40;}
+</style>
+</head>
+<body>
+  <div class="stars"></div>
+  <div class="mountains"></div>
+  <div class="mountain-snow"></div>
+  <div class="iceberg ib1"></div>
+  <div class="iceberg ib2"></div>
+  <div class="iceberg ib3"></div>
+  <div class="ib-glow"></div>
 
-<canvas id="shimmer"></canvas>
-<canvas id="drops"></canvas>
-<canvas id="crystals"></canvas>
-<canvas id="mist"></canvas>
+  <!-- Canvas stack: aurora → ice → ring crystals → particles -->
+  <canvas id="cAurora"></canvas>
+  <canvas id="cIce"></canvas>
+  <canvas id="cRing"></canvas>
+  <canvas id="cParticles"></canvas>
 
-<div class="center-darken"></div><div class="vignette"></div><div class="zone-top"></div><div class="zone-bot"></div>
+  <div class="ice-plain"></div>
+  <div class="ice-sheen"></div>
+  <div class="ring-ice-glow"></div>
+  <div class="center-darken"></div>
+  <div class="vignette"></div>
+  <div class="zone-top"></div>
+  <div class="zone-bot"></div>
 
 <script>
-const W=1080,H=1920;
-function s(id){const c=document.getElementById(id);c.width=W;c.height=H;return c.getContext('2d');}
-const sh=s('shimmer'),dp=s('drops'),cr=s('crystals'),ms=s('mist');
+const W=1080, H=1920;
+const RING_CX=540, RING_CY=590, RING_R=300;
 
-// Shimmer — sparkles on ice walls
-const sparkles=[];
-for(let i=0;i<70;i++){
-  const side=Math.random();
-  let x,y;
-  if(side<0.25){x=Math.random()*320;y=Math.random()*H;}
-  else if(side<0.5){x=W-Math.random()*320;y=Math.random()*H;}
-  else if(side<0.75){x=Math.random()*W;y=Math.random()*300;}
-  else{x=Math.random()*W;y=H-Math.random()*350;}
-  sparkles.push({x,y,sz:1.5+Math.random()*3,ph:Math.random()*Math.PI*2,sp:0.04+Math.random()*0.06,hue:185+Math.random()*25});
+function mkCanvas(id){
+  const c=document.getElementById(id);
+  c.width=W; c.height=H;
+  return c.getContext('2d');
 }
+const auroraCtx  = mkCanvas('cAurora');
+const iceCtx     = mkCanvas('cIce');
+const ringCtx    = mkCanvas('cRing');
+const partCtx    = mkCanvas('cParticles');
 
-// Water drops falling from icicles
-const drops=[];
-const dropSources=[55,120,195,260,335,400,475,540,615,680,755,820,895,960,1035,1100];
-function addDrop(){
-  const x=dropSources[Math.floor(Math.random()*dropSources.length)]+(Math.random()-0.5)*4;
-  drops.push({x,y:250+Math.random()*80,vy:1+Math.random()*1.5,a:1,sz:2+Math.random()*2,trail:[]});
-}
+/* ═══════════════════════════════════════════════════════════════════════════
+   AURORA BOREALIS — 5 animated bands
+   ═══════════════════════════════════════════════════════════════════════════ */
+const auroraBands=[
+  {y:180, amp:55,  freq:0.0028, phOff:0,    speed:0.006, hue:160, sat:100, ht:160, bright:0.45},
+  {y:320, amp:45,  freq:0.0035, phOff:1.2,  speed:0.009, hue:195, sat:95,  ht:130, bright:0.40},
+  {y:220, amp:65,  freq:0.0022, phOff:2.5,  speed:0.005, hue:270, sat:90,  ht:120, bright:0.35},
+  {y:400, amp:40,  freq:0.0042, phOff:3.8,  speed:0.011, hue:175, sat:100, ht:100, bright:0.38},
+  {y:140, amp:70,  freq:0.0018, phOff:0.7,  speed:0.004, hue:210, sat:90,  ht:140, bright:0.32},
+];
+// Per-band phase and flare state
+const bandState=auroraBands.map(()=>({phase:Math.random()*Math.PI*2, flare:0, flareTimer:8+Math.random()*12}));
 
-// Floating ice crystals
+/* ═══════════════════════════════════════════════════════════════════════════
+   ICE PLAIN — cracks drawn once
+   ═══════════════════════════════════════════════════════════════════════════ */
+(function buildIceCracks(){
+  iceCtx.clearRect(0,0,W,H);
+  const crackY=H-420;
+  for(let i=0;i<22;i++){
+    const x1=Math.random()*W, y1=crackY+Math.random()*(H-crackY);
+    let cx=x1,cy=y1;
+    const len=3+Math.floor(Math.random()*8);
+    const a=Math.random()*Math.PI*2;
+    iceCtx.beginPath(); iceCtx.moveTo(cx,cy);
+    for(let s=0;s<len;s++){
+      const na=a+(Math.random()-0.5)*0.6;
+      cx+=Math.cos(na)*18+Math.random()*10;
+      cy+=Math.sin(na)*6+Math.random()*4;
+      iceCtx.lineTo(cx,cy);
+    }
+    const alpha=0.04+Math.random()*0.08;
+    iceCtx.strokeStyle=`rgba(100,200,240,${alpha})`;
+    iceCtx.lineWidth=0.8+Math.random()*1.2;
+    iceCtx.stroke();
+  }
+  // Reflection shimmer lines
+  for(let i=0;i<8;i++){
+    const rx=100+Math.random()*880;
+    const rg=iceCtx.createLinearGradient(rx,crackY,rx+Math.random()*80-40,H);
+    rg.addColorStop(0,'rgba(0,200,220,0)');
+    rg.addColorStop(0.4,`rgba(0,180,220,${0.04+Math.random()*0.06})`);
+    rg.addColorStop(1,'rgba(0,200,220,0)');
+    iceCtx.strokeStyle=rg;
+    iceCtx.lineWidth=1.5+Math.random()*2;
+    iceCtx.beginPath();
+    iceCtx.moveTo(rx,crackY);
+    iceCtx.lineTo(rx+(Math.random()-0.5)*40,H);
+    iceCtx.stroke();
+  }
+})();
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ICE CRYSTALS — hexagonal prisms around ring
+   ═══════════════════════════════════════════════════════════════════════════ */
+const CRYSTAL_COUNT=14;
 const crystals=[];
-for(let i=0;i<35;i++)crystals.push({x:Math.random()*W,y:Math.random()*H,sz:3+Math.random()*6,rot:Math.random()*Math.PI*2,vr:(Math.random()-0.5)*0.02,vy:-0.15-Math.random()*0.3,vx:(Math.random()-0.5)*0.3,a:0.4+Math.random()*0.4,hue:190+Math.random()*20});
+for(let i=0;i<CRYSTAL_COUNT;i++){
+  const ang=(i/CRYSTAL_COUNT)*Math.PI*2;
+  crystals.push({
+    ang,
+    orbitR: RING_R+75+Math.random()*50,
+    h: 38+Math.random()*55,
+    w: 12+Math.random()*10,
+    rot: Math.random()*0.3-0.15,
+    rotV: (Math.random()-0.5)*0.003,
+    phase: Math.random()*Math.PI*2,
+    speed: 0.012+Math.random()*0.008,
+    hue: 160+Math.random()*120,
+    tilt: (Math.random()-0.5)*0.4,
+  });
+}
 
-// Mist tendrils
-const mists=[];
-for(let i=0;i<10;i++)mists.push({x:Math.random()*W,y:400+Math.random()*900,r:180+Math.random()*160,vx:(Math.random()-0.5)*0.4,a:0.04+Math.random()*0.06,ph:Math.random()*Math.PI*2});
+function drawHexCrystal(ctx, cx, cy, w, h, rot, hue, bright){
+  ctx.save();
+  ctx.translate(cx, cy);
+  ctx.rotate(rot);
 
-function drawCrystal(ctx,x,y,sz,rot,col,a){
-  ctx.save();ctx.translate(x,y);ctx.rotate(rot);ctx.globalAlpha=a;
-  ctx.fillStyle=col;ctx.strokeStyle='#e0f5ff';ctx.lineWidth=0.5;
+  // Crystal body — hexagonal prism top view
+  const pts6=[];
+  for(let i=0;i<6;i++){
+    const a=(i/6)*Math.PI*2-Math.PI/6;
+    pts6.push({x:Math.cos(a)*w, y:Math.sin(a)*w});
+  }
+
+  // Tall crystal shape: flat hex base, pointed tip above
+  const tipX=Math.sin(0.2)*h*0.3;
+  const tipY=-h;
+
+  // Side faces (trapezoids)
+  for(let i=0;i<6;i++){
+    const p1=pts6[i], p2=pts6[(i+1)%6];
+    const shade=0.4+0.6*((i+0.5)/6);
+    const cg=ctx.createLinearGradient(0,0,0,-h);
+    cg.addColorStop(0,`hsla(${hue},80%,${30*shade}%,0.85)`);
+    cg.addColorStop(0.5,`hsla(${hue+10},85%,${55*shade*bright}%,0.7)`);
+    cg.addColorStop(1,`hsla(${hue+20},90%,${75*bright}%,0.3)`);
+    ctx.fillStyle=cg;
+    ctx.shadowBlur=12; ctx.shadowColor=`hsla(${hue},100%,70%,0.7)`;
+    ctx.beginPath();
+    ctx.moveTo(p1.x,p1.y);
+    ctx.lineTo(p2.x,p2.y);
+    ctx.lineTo(p2.x*0.3+tipX*0.7,p2.y*0.3+tipY*0.7);
+    ctx.lineTo(p1.x*0.3+tipX*0.7,p1.y*0.3+tipY*0.7);
+    ctx.closePath(); ctx.fill();
+  }
+
+  // Top tip (bright point)
+  const tg=ctx.createRadialGradient(tipX,tipY,0,tipX,tipY,w*0.8);
+  tg.addColorStop(0,`hsla(${hue+30},100%,90%,${bright*0.95})`);
+  tg.addColorStop(0.4,`hsla(${hue+10},95%,70%,${bright*0.5})`);
+  tg.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.fillStyle=tg;
+  ctx.shadowBlur=20; ctx.shadowColor=`hsla(${hue},100%,80%,0.9)`;
+  ctx.beginPath(); ctx.arc(tipX,tipY,w*0.5,0,Math.PI*2); ctx.fill();
+
+  // Hex base cap
+  ctx.shadowBlur=0;
+  ctx.strokeStyle=`hsla(${hue},90%,75%,${bright*0.5})`;
+  ctx.lineWidth=0.8;
   ctx.beginPath();
-  ctx.moveTo(0,-sz);ctx.lineTo(sz*0.7,-sz*0.3);ctx.lineTo(sz*0.5,sz*0.8);
-  ctx.lineTo(-sz*0.5,sz*0.8);ctx.lineTo(-sz*0.7,-sz*0.3);ctx.closePath();
-  ctx.fill();ctx.stroke();
+  ctx.moveTo(pts6[0].x,pts6[0].y);
+  for(let i=1;i<6;i++) ctx.lineTo(pts6[i].x,pts6[i].y);
+  ctx.closePath(); ctx.stroke();
+
   ctx.restore();
 }
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   SNOWFLAKE RING — delicate crystals swirling around spawn ring
+   ═══════════════════════════════════════════════════════════════════════════ */
+const snowRing=[];
+for(let i=0;i<24;i++){
+  snowRing.push({
+    angle:(i/24)*Math.PI*2,
+    speed:(0.004+Math.random()*0.006)*(Math.random()<0.5?1:-1),
+    r:RING_R+30+Math.random()*40,
+    size:4+Math.random()*7,
+    phase:Math.random()*Math.PI*2,
+  });
+}
+
+function drawSnowflake(ctx,x,y,size,rotation,alpha){
+  ctx.save();
+  ctx.translate(x,y); ctx.rotate(rotation);
+  ctx.strokeStyle=`rgba(200,240,255,${alpha})`;
+  ctx.lineWidth=1;
+  ctx.shadowBlur=6; ctx.shadowColor=`rgba(150,220,255,${alpha*0.8})`;
+  // 6 arms
+  for(let i=0;i<6;i++){
+    const a=(i/6)*Math.PI*2;
+    ctx.beginPath();
+    ctx.moveTo(0,0);
+    ctx.lineTo(Math.cos(a)*size, Math.sin(a)*size);
+    // side branches
+    const bx=Math.cos(a)*size*0.5, by=Math.sin(a)*size*0.5;
+    ctx.moveTo(bx,by);
+    ctx.lineTo(bx+Math.cos(a+Math.PI/3)*size*0.3, by+Math.sin(a+Math.PI/3)*size*0.3);
+    ctx.moveTo(bx,by);
+    ctx.lineTo(bx+Math.cos(a-Math.PI/3)*size*0.3, by+Math.sin(a-Math.PI/3)*size*0.3);
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   PARTICLES: Snowfall, Ice glitter, Aurora motes
+   ═══════════════════════════════════════════════════════════════════════════ */
+const snowflakes=[];
+for(let i=0;i<95;i++) snowflakes.push(mkSnow(true));
+function mkSnow(init){
+  return{
+    x:Math.random()*W, y:init?Math.random()*H:-20,
+    r:0.8+Math.random()*2.8,
+    vy:0.4+Math.random()*0.8,
+    vx:(Math.random()-0.5)*0.4-0.3,
+    sway:Math.random()*Math.PI*2,
+    swSp:0.008+Math.random()*0.015,
+    a:0.3+Math.random()*0.5,
+  };
+}
+
+// Ice glitter on the ice plain
+const glitter=[];
+for(let i=0;i<38;i++){
+  glitter.push({
+    x:Math.random()*W,
+    y:H-20-Math.random()*380,
+    phase:Math.random()*Math.PI*2,
+    speed:0.04+Math.random()*0.08,
+    r:0.8+Math.random()*1.8,
+    hue:160+Math.random()*60,
+  });
+}
+
+// Aurora motes drifting along bands
+const auroraMotes=[];
+for(let i=0;i<20;i++){
+  const band=auroraBands[Math.floor(Math.random()*auroraBands.length)];
+  auroraMotes.push({
+    x:Math.random()*W,
+    y:band.y+Math.random()*50,
+    vx:0.3+Math.random()*0.8,
+    phase:Math.random()*Math.PI*2,
+    hue:band.hue,
+    r:1.5+Math.random()*3,
+    a:0.4+Math.random()*0.4,
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MAIN LOOP
+   ═══════════════════════════════════════════════════════════════════════════ */
 let t=0;
+
 function loop(){
   t+=0.016;
 
-  sh.clearRect(0,0,W,H);
-  for(const p of sparkles){
-    p.ph+=p.sp;
-    const a=(Math.sin(p.ph)*0.5+0.5);
-    if(a>0.1){
-      sh.fillStyle=`hsla(${p.hue},100%,85%,${a})`;
-      sh.beginPath();sh.arc(p.x,p.y,p.sz*a,0,Math.PI*2);sh.fill();
-      // Cross sparkle
-      sh.strokeStyle=`hsla(${p.hue},100%,95%,${a*0.7})`;sh.lineWidth=0.8;
-      sh.beginPath();
-      sh.moveTo(p.x-p.sz*3*a,p.y);sh.lineTo(p.x+p.sz*3*a,p.y);
-      sh.moveTo(p.x,p.y-p.sz*3*a);sh.lineTo(p.x,p.y+p.sz*3*a);
-      sh.stroke();
+  /* ── AURORA ── */
+  auroraCtx.clearRect(0,0,W,H);
+  auroraCtx.globalCompositeOperation='screen';
+
+  // Global breath — slow pulsing intensity
+  const globalBreath=0.65+Math.sin(t*0.22)*0.22+Math.sin(t*0.37)*0.13;
+
+  for(let bi=0;bi<auroraBands.length;bi++){
+    const b=auroraBands[bi];
+    const bs=bandState[bi];
+    bs.phase+=b.speed;
+
+    // Flare logic — occasional brightness spike
+    bs.flareTimer-=0.016;
+    if(bs.flareTimer<0){
+      bs.flare=1;
+      bs.flareTimer=8+Math.random()*16;
+    }
+    if(bs.flare>0) bs.flare=Math.max(0,bs.flare-0.025);
+    const flareBoost=bs.flare*0.6;
+
+    const intensity=globalBreath*(0.6+flareBoost);
+
+    // Draw band as a series of gradient strips
+    const STEPS=W/4;
+    for(let xi=0;xi<=STEPS;xi++){
+      const x=(xi/STEPS)*W;
+      const xNext=((xi+1)/STEPS)*W;
+      const waveMid=Math.sin(x*b.freq+bs.phase+b.phOff)*b.amp;
+      const waveNext=Math.sin(xNext*b.freq+bs.phase+b.phOff)*b.amp;
+      const yMid=b.y+waveMid;
+      const yNext=b.y+waveNext;
+
+      const grad=auroraCtx.createLinearGradient(x,yMid-b.ht*0.5,x,yMid+b.ht);
+      grad.addColorStop(0,`hsla(${b.hue},${b.sat}%,60%,0)`);
+      grad.addColorStop(0.2,`hsla(${b.hue},${b.sat}%,65%,${b.bright*intensity*0.6})`);
+      grad.addColorStop(0.45,`hsla(${b.hue+8},${b.sat}%,72%,${b.bright*intensity})`);
+      grad.addColorStop(0.7,`hsla(${b.hue+15},${b.sat}%,60%,${b.bright*intensity*0.5})`);
+      grad.addColorStop(1,`hsla(${b.hue},${b.sat}%,50%,0)`);
+
+      auroraCtx.fillStyle=grad;
+      auroraCtx.beginPath();
+      auroraCtx.moveTo(x, yMid-b.ht*0.5);
+      auroraCtx.lineTo(xNext, yNext-b.ht*0.5);
+      auroraCtx.lineTo(xNext, yNext+b.ht);
+      auroraCtx.lineTo(x, yMid+b.ht);
+      auroraCtx.fill();
     }
   }
+  auroraCtx.globalCompositeOperation='source-over';
 
-  dp.clearRect(0,0,W,H);
-  if(Math.random()<0.08)addDrop();
-  for(let i=drops.length-1;i>=0;i--){
-    const d=drops[i];d.vy+=0.04;d.y+=d.vy;
-    d.trail.push({x:d.x,y:d.y});if(d.trail.length>12)d.trail.shift();
-    // Trail
-    for(let k=0;k<d.trail.length;k++){
-      const tp=d.trail[k];const ta=(k/d.trail.length)*0.5;
-      dp.fillStyle=`rgba(180,240,255,${ta})`;
-      dp.beginPath();dp.arc(tp.x,tp.y,d.sz*0.4,0,Math.PI*2);dp.fill();
-    }
-    // Drop
-    dp.fillStyle='rgba(220,245,255,0.95)';
-    dp.beginPath();dp.ellipse(d.x,d.y,d.sz,d.sz*1.4,0,0,Math.PI*2);dp.fill();
-    dp.fillStyle='rgba(255,255,255,0.9)';
-    dp.beginPath();dp.arc(d.x-d.sz*0.3,d.y-d.sz*0.4,d.sz*0.3,0,Math.PI*2);dp.fill();
-    // Splash when reaching bottom
-    if(d.y>1600+Math.random()*100){
-      // small ripple
-      dp.strokeStyle='rgba(180,240,255,0.6)';dp.lineWidth=1.5;
-      dp.beginPath();dp.ellipse(d.x,d.y,d.sz*2,d.sz*0.5,0,0,Math.PI*2);dp.stroke();
-      drops.splice(i,1);
-    }
-  }
+  /* ── RING: Ice crystals + snowflake ring ── */
+  ringCtx.clearRect(0,0,W,H);
 
-  cr.clearRect(0,0,W,H);
+  // Under-ice glow
+  const iceGlow=0.6+Math.sin(t*1.4)*0.3;
+  const ig=ringCtx.createRadialGradient(RING_CX,RING_CY,0,RING_CX,RING_CY,RING_R+180);
+  ig.addColorStop(0,`rgba(0,220,200,${0.18*iceGlow})`);
+  ig.addColorStop(0.35,`rgba(0,180,220,${0.09*iceGlow})`);
+  ig.addColorStop(0.7,`rgba(0,140,200,${0.04*iceGlow})`);
+  ig.addColorStop(1,'rgba(0,0,0,0)');
+  ringCtx.fillStyle=ig;
+  ringCtx.beginPath(); ringCtx.arc(RING_CX,RING_CY,RING_R+180,0,Math.PI*2); ringCtx.fill();
+
+  // Crystals
   for(const c of crystals){
-    c.x+=c.vx;c.y+=c.vy;c.rot+=c.vr;
-    if(c.y<-20){c.y=H+20;c.x=Math.random()*W;}
-    if(c.x<-20)c.x=W+20;if(c.x>W+20)c.x=-20;
-    drawCrystal(cr,c.x,c.y,c.sz,c.rot,`hsl(${c.hue},70%,80%)`,c.a);
+    c.phase+=c.speed;
+    c.rot+=c.rotV;
+    const bright=0.5+Math.sin(c.phase)*0.5;
+    // Color shifts with aurora
+    const hueShift=c.hue+Math.sin(t*0.4+c.ang)*40;
+    const cx=RING_CX+Math.cos(c.ang)*c.orbitR;
+    const cy=RING_CY+Math.sin(c.ang)*c.orbitR;
+    drawHexCrystal(ringCtx,cx,cy,c.w,c.h,c.rot+c.tilt,hueShift,bright);
+  }
+  ringCtx.shadowBlur=0;
+
+  // Snowflake ring
+  for(const sf of snowRing){
+    sf.angle+=sf.speed;
+    sf.phase+=0.04;
+    const glow=0.4+Math.sin(sf.phase)*0.4;
+    const sx=RING_CX+Math.cos(sf.angle)*sf.r;
+    const sy=RING_CY+Math.sin(sf.angle)*sf.r;
+    drawSnowflake(ringCtx,sx,sy,sf.size,sf.angle+t*0.5,glow*0.7);
+  }
+  ringCtx.shadowBlur=0;
+
+  /* ── PARTICLES ── */
+  partCtx.clearRect(0,0,W,H);
+
+  // Snow
+  for(let i=0;i<snowflakes.length;i++){
+    const s=snowflakes[i];
+    s.sway+=s.swSp;
+    s.x+=s.vx+Math.sin(s.sway)*0.5;
+    s.y+=s.vy;
+    if(s.y>H+20) snowflakes[i]=mkSnow(false);
+    partCtx.fillStyle=`rgba(220,240,255,${s.a})`;
+    partCtx.beginPath(); partCtx.arc(s.x,s.y,s.r,0,Math.PI*2); partCtx.fill();
+    // Larger flakes get a small cross shape
+    if(s.r>2){
+      partCtx.strokeStyle=`rgba(220,240,255,${s.a*0.5})`;
+      partCtx.lineWidth=0.6;
+      partCtx.beginPath();
+      partCtx.moveTo(s.x-s.r*1.4,s.y); partCtx.lineTo(s.x+s.r*1.4,s.y);
+      partCtx.moveTo(s.x,s.y-s.r*1.4); partCtx.lineTo(s.x,s.y+s.r*1.4);
+      partCtx.stroke();
+    }
   }
 
-  ms.clearRect(0,0,W,H);
-  for(const m of mists){
-    m.ph+=0.01;m.x+=m.vx;
-    if(m.x<-m.r)m.x=W+m.r;if(m.x>W+m.r)m.x=-m.r;
-    const g=ms.createRadialGradient(m.x,m.y,0,m.x,m.y,m.r);
-    g.addColorStop(0,`rgba(180,220,240,${m.a*(0.8+Math.sin(m.ph)*0.2)})`);
-    g.addColorStop(1,'rgba(180,220,240,0)');
-    ms.fillStyle=g;ms.beginPath();ms.arc(m.x,m.y,m.r,0,Math.PI*2);ms.fill();
+  // Ice glitter
+  partCtx.save();
+  for(const g of glitter){
+    g.phase+=g.speed;
+    const pulse=Math.max(0,Math.sin(g.phase));
+    if(pulse<0.05) continue;
+    partCtx.shadowBlur=6; partCtx.shadowColor=`hsla(${g.hue},90%,80%,0.8)`;
+    partCtx.fillStyle=`hsla(${g.hue},90%,85%,${pulse*0.85})`;
+    partCtx.beginPath(); partCtx.arc(g.x,g.y,g.r,0,Math.PI*2); partCtx.fill();
   }
+  partCtx.shadowBlur=0; partCtx.restore();
+
+  // Aurora motes
+  partCtx.save();
+  for(const m of auroraMotes){
+    m.phase+=0.04;
+    m.x+=m.vx;
+    if(m.x>W+50) m.x=-50;
+    const band=auroraBands[auroraMotes.indexOf(m)%auroraBands.length];
+    m.y=band.y+Math.sin(m.x*band.freq+bandState[auroraMotes.indexOf(m)%auroraBands.length].phase)*band.amp
+       +Math.sin(m.phase)*15;
+    const pulse=0.4+Math.sin(m.phase*1.5)*0.4;
+    partCtx.shadowBlur=10; partCtx.shadowColor=`hsla(${m.hue},100%,70%,0.9)`;
+    partCtx.fillStyle=`hsla(${m.hue},100%,80%,${m.a*pulse})`;
+    partCtx.beginPath(); partCtx.arc(m.x,m.y,m.r,0,Math.PI*2); partCtx.fill();
+  }
+  partCtx.shadowBlur=0; partCtx.restore();
 
   requestAnimationFrame(loop);
 }
+
 loop();
 </script>
-</body></html>
+</body>
+</html>

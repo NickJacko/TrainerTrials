@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8"/>
+<title>Der Zeitriss — Legendary Background</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{
+  width:1080px;height:1920px;
+  overflow:hidden;
+  background:#000;
+  position:relative;
+}
+canvas{
+  position:absolute;
+  top:0;left:0;
+  width:1080px;height:1920px;
+  pointer-events:none;
+}
+/* Zone overlays */
+#zone-top{
+  position:absolute;top:0;left:0;
+  width:1080px;height:120px;
+  background:linear-gradient(to bottom,rgba(0,0,0,0.6) 0%,transparent 100%);
+  z-index:50;pointer-events:none;
+}
+#zone-bot{
+  position:absolute;bottom:0;left:0;
+  width:1080px;height:920px;
+  background:linear-gradient(to top,rgba(0,0,0,0.55) 0%,transparent 100%);
+  z-index:50;pointer-events:none;
+}
+#vignette{
+  position:absolute;top:0;left:0;
+  width:1080px;height:1920px;
+  background:radial-gradient(ellipse 90% 90% at 50% 50%,transparent 35%,rgba(0,0,0,0.65) 100%);
+  z-index:49;pointer-events:none;
+}
+#center-darken{
+  position:absolute;
+  left:150px;top:300px;
+  width:780px;height:540px;
+  background:radial-gradient(ellipse at center,rgba(0,0,0,0.38) 0%,transparent 70%);
+  z-index:48;pointer-events:none;
+}
+</style>
+</head>
+<body>
+
+<!-- Canvas stack, bottom to top -->
+<canvas id="cvBase"   style="z-index:1"></canvas>
+<canvas id="cvPast"   style="z-index:2"></canvas>
+<canvas id="cvFuture" style="z-index:3"></canvas>
+<canvas id="cvRift"   style="z-index:4"></canvas>
+<canvas id="cvClocks" style="z-index:5"></canvas>
+<canvas id="cvParticles" style="z-index:6"></canvas>
+
+<!-- Zone overlays -->
+<div id="zone-top"></div>
+<div id="zone-bot"></div>
+<div id="vignette"></div>
+<div id="center-darken"></div>
+
+<script>
+// ─────────────────────────────────────────────────────────────────────────────
+// CONSTANTS
+// ─────────────────────────────────────────────────────────────────────────────
+const W = 1080, H = 1920;
+const CX = 540, CY = 590;   // Spawn ring center
+const RING_R = 300;
+
+// Setup all canvases
+['cvBase','cvPast','cvFuture','cvRift','cvClocks','cvParticles'].forEach(id=>{
+  const c = document.getElementById(id);
+  c.width = W; c.height = H;
+});
+const cvBase      = document.getElementById('cvBase');
+const cvPast      = document.getElementById('cvPast');
+const cvFuture    = document.getElementById('cvFuture');
+const cvRift      = document.getElementById('cvRift');
+const cvClocks    = document.getElementById('cvClocks');
+const cvParticles = document.getElementById('cvParticles');
+
+const ctxBase      = cvBase.getContext('2d');
+const ctxPast      = cvPast.getContext('2d');
+const ctxFuture    = cvFuture.getContext('2d');
+const ctxRift      = cvRift.getContext('2d');
+const ctxClocks    = cvClocks.getContext('2d');
+const ctxPart      = cvParticles.getContext('2d');
+
+// blend modes — set via CSS is unreliable across canvases with OBS; use globalCompositeOperation
+cvPast.style.mixBlendMode   = 'screen';
+cvFuture.style.mixBlendMode = 'screen';
+cvRift.style.mixBlendMode   = 'screen';
+cvClocks.style.mixBlendMode = 'screen';
+cvParticles.style.mixBlendMode = 'screen';
+
+// ─────────────────────────────────────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────────────────────────────────────
+let t = 0;       // global time in seconds
+let last = performance.now();
+
+// ─────────────────────────────────────────────────────────────────────────────
+// UTILS
+// ─────────────────────────────────────────────────────────────────────────────
+function noise(x,y,z){
+  // cheap pseudo-noise using sin combos
+  return Math.sin(x*127.1+y*311.7)*43758.5453 % 1;
+}
+function smoothNoise(x,y,z){
+  return (Math.sin(x*3.1+y*1.7+z*0.9)+Math.sin(x*1.3+y*4.1+z*2.3))*0.5;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// LAYER 1 — BASE: deep void between worlds
+// ─────────────────────────────────────────────────────────────────────────────
+function drawBase(){
+  const ctx = ctxBase;
+  ctx.clearRect(0,0,W,H);
+
+  // Deep void gradient — dark center, hint of colour at edges
+  const bg = ctx.createRadialGradient(CX,CY,0, CX,CY,960);
+  bg.addColorStop(0,   '#0a0008');
+  bg.addColorStop(0.3, '#060010');
+  bg.addColorStop(0.6, '#040015');
+  bg.addColorStop(1,   '#000000');
+  ctx.fillStyle = bg;
+  ctx.fillRect(0,0,W,H);
+
+  // Slow nebula wisps — gold left, cyan right
+  // Past nebula (gold/amber left side)
+  for(let i=0;i<6;i++){
+    const x = 100 + i*60 + Math.sin(t*0.07+i*1.2)*80;
+    const y = 400 + i*180 + Math.cos(t*0.05+i*0.9)*120;
+    const r = 200 + Math.sin(t*0.03+i)*60;
+    const a = 0.035 + 0.015*Math.sin(t*0.08+i);
+    const g = ctx.createRadialGradient(x,y,0,x,y,r);
+    g.addColorStop(0, `rgba(180,110,10,${a})`);
+    g.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fill();
+  }
+  // Future nebula (cyan/steel right side)
+  for(let i=0;i<6;i++){
+    const x = W-100 - i*55 + Math.sin(t*0.06+i*1.5+2)*70;
+    const y = 300 + i*200 + Math.cos(t*0.04+i*1.1+1)*100;
+    const r = 180 + Math.sin(t*0.04+i*1.3)*50;
+    const a = 0.03 + 0.012*Math.sin(t*0.07+i+3);
+    const g = ctx.createRadialGradient(x,y,0,x,y,r);
+    g.addColorStop(0, `rgba(10,120,160,${a})`);
+    g.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fill();
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// LAYER 2 — PAST: amber/gold streams flowing from left
+// ─────────────────────────────────────────────────────────────────────────────
+class PastStream {
+  constructor(i){
+    this.i = i;
+    this.reset();
+  }
+  reset(){
+    this.y0   = Math.random()*H;
+    this.amp  = 80 + Math.random()*120;
+    this.freq = 0.0008 + Math.random()*0.0012;
+    this.speed= 0.2 + Math.random()*0.4;
+    this.phase= Math.random()*Math.PI*2;
+    this.alpha= 0.12 + Math.random()*0.12;
+    this.thick= 1 + Math.random()*2.5;
+    this.len  = 300 + Math.random()*400;
+    this.x    = -this.len;
+    this.hue  = 35 + Math.random()*25; // amber-gold
+  }
+  update(dt){
+    this.x += this.speed * dt * 60;
+    if(this.x > W+100) this.reset();
+  }
+  draw(ctx){
+    ctx.save();
+    ctx.globalAlpha = this.alpha * (0.7+0.3*Math.sin(t*1.2+this.phase));
+    ctx.strokeStyle = `hsl(${this.hue},90%,65%)`;
+    ctx.lineWidth   = this.thick;
+    ctx.shadowColor = `hsl(${this.hue},100%,70%)`;
+    ctx.shadowBlur  = 8;
+    ctx.beginPath();
+    for(let dx=0; dx<this.len; dx+=4){
+      const px = this.x + dx;
+      const py = this.y0 + Math.sin(px*this.freq*Math.PI*2 + this.phase + t*0.3)*this.amp;
+      if(dx===0) ctx.moveTo(px,py); else ctx.lineTo(px,py);
+    }
+    ctx.stroke();
+    ctx.restore();
+  }
+}
+const pastStreams = Array.from({length:18},(_,i)=>new PastStream(i));
+
+// Gold dust motes (memory fragments)
+class GoldMote {
+  constructor(){this.reset(true)}
+  reset(init=false){
+    this.x = init ? Math.random()*W*0.6 : -20;
+    this.y = Math.random()*H;
+    this.vx= 0.3 + Math.random()*0.8;
+    this.vy= (Math.random()-0.5)*0.4;
+    this.r = 1.5 + Math.random()*3;
+    this.alpha=0.5+Math.random()*0.5;
+    this.life=1;
+    this.decay=0.0008+Math.random()*0.0008;
+    this.hue=38+Math.random()*20;
+  }
+  update(dt){
+    this.x+=this.vx*dt*60;
+    this.y+=this.vy*dt*60 + Math.sin(t*2+this.x*0.01)*0.3;
+    this.life-=this.decay*dt*60;
+    if(this.x>W*0.7 || this.life<=0) this.reset();
+  }
+  draw(ctx){
+    ctx.save();
+    ctx.globalAlpha=this.alpha*this.life;
+    ctx.fillStyle=`hsl(${this.hue},100%,72%)`;
+    ctx.shadowColor=`hsl(${this.hue},100%,75%)`;
+    ctx.shadowBlur=this.r*4;
+    ctx.beginPath(); ctx.arc(this.x,this.y,this.r,0,Math.PI*2); ctx.fill();
+    ctx.restore();
+  }
+}
+const goldMotes = Array.from({length:60},()=>new GoldMote());
+
+function drawPast(dt){
+  const ctx = ctxPast;
+  ctx.clearRect(0,0,W,H);
+
+  // Wash — amber glow from left edge
+  const wash = ctx.createLinearGradient(0,0,W*0.55,0);
+  wash.addColorStop(0, `rgba(160,90,5,${0.07+0.03*Math.sin(t*0.4)})`);
+  wash.addColorStop(0.5, `rgba(120,70,5,${0.04+0.02*Math.sin(t*0.3)})`);
+  wash.addColorStop(1,   'rgba(0,0,0,0)');
+  ctx.fillStyle = wash;
+  ctx.fillRect(0,0,W,H);
+
+  // Streams
+  pastStreams.forEach(s=>{ s.update(dt); s.draw(ctx); });
+
+  // Gold motes
+  goldMotes.forEach(m=>{ m.update(dt); m.draw(ctx); });
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// LAYER 3 — FUTURE: cold cyan/steel streams from right
+// ─────────────────────────────────────────────────────────────────────────────
+class FutureStream {
+  constructor(i){
+    this.i = i;
+    this.reset();
+  }
+  reset(){
+    this.y0    = Math.random()*H;
+    this.amp   = 60+Math.random()*100;
+    this.freq  = 0.001+Math.random()*0.0015;
+    this.speed = 0.25+Math.random()*0.5;
+    this.phase = Math.random()*Math.PI*2;
+    this.alpha = 0.1+Math.random()*0.13;
+    this.thick = 0.8+Math.random()*2;
+    this.len   = 250+Math.random()*350;
+    this.x     = W+this.len;
+    this.hue   = 185+Math.random()*20; // cyan-steel
+  }
+  update(dt){
+    this.x -= this.speed * dt*60;
+    if(this.x < -this.len-100) this.reset();
+  }
+  draw(ctx){
+    ctx.save();
+    ctx.globalAlpha = this.alpha*(0.7+0.3*Math.sin(t*1.5+this.phase));
+    ctx.strokeStyle = `hsl(${this.hue},80%,70%)`;
+    ctx.lineWidth   = this.thick;
+    ctx.shadowColor = `hsl(${this.hue},100%,75%)`;
+    ctx.shadowBlur  = 7;
+    ctx.beginPath();
+    for(let dx=0; dx<this.len; dx+=4){
+      const px = this.x - dx;  // right to left
+      const py = this.y0 + Math.sin(px*this.freq*Math.PI*2 + this.phase - t*0.35)*this.amp;
+      if(dx===0) ctx.moveTo(px,py); else ctx.lineTo(px,py);
+    }
+    ctx.stroke();
+    ctx.restore();
+  }
+}
+const futureStreams = Array.from({length:16},(_,i)=>new FutureStream(i));
+
+// Electric cyan sparks
+class CyanSpark {
+  constructor(){this.reset(true)}
+  reset(init=false){
+    this.x = init ? W*0.4+Math.random()*W*0.6 : W+20;
+    this.y = Math.random()*H;
+    this.vx= -(0.4+Math.random()*1.0);
+    this.vy= (Math.random()-0.5)*0.5;
+    this.r = 1+Math.random()*2.5;
+    this.alpha=0.4+Math.random()*0.6;
+    this.life=1;
+    this.decay=0.001+Math.random()*0.0012;
+    this.hue=190+Math.random()*15;
+  }
+  update(dt){
+    this.x+=this.vx*dt*60;
+    this.y+=this.vy*dt*60+Math.cos(t*2.5+this.y*0.01)*0.25;
+    this.life-=this.decay*dt*60;
+    if(this.x<W*0.3||this.life<=0) this.reset();
+  }
+  draw(ctx){
+    ctx.save();
+    ctx.globalAlpha=this.alpha*this.life;
+    ctx.fillStyle=`hsl(${this.hue},100%,78%)`;
+    ctx.shadowColor=`hsl(${this.hue},100%,82%)`;
+    ctx.shadowBlur=this.r*5;
+    ctx.beginPath(); ctx.arc(this.x,this.y,this.r,0,Math.PI*2); ctx.fill();
+    ctx.restore();
+  }
+}
+const cyanSparks = Array.from({length:50},()=>new CyanSpark());
+
+function drawFuture(dt){
+  const ctx = ctxFuture;
+  ctx.clearRect(0,0,W,H);
+
+  // Wash — cyan glow from right edge
+  const wash = ctx.createLinearGradient(W,0,W*0.45,0);
+  wash.addColorStop(0, `rgba(0,130,180,${0.07+0.03*Math.sin(t*0.5+1)})`);
+  wash.addColorStop(0.5, `rgba(0,80,120,${0.04})`);
+  wash.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = wash;
+  ctx.fillRect(0,0,W,H);
+
+  futureStreams.forEach(s=>{ s.update(dt); s.draw(ctx); });
+  cyanSparks.forEach(s=>{ s.update(dt); s.draw(ctx); });
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// LAYER 4 — RIFT: the tear between worlds
+// Six timeline ribbons + collision explosions + spawn vortex
+// ─────────────────────────────────────────────────────────────────────────────
+
+// Six diagonal timeline ribbons, different angles
+const RIBBONS = [
+  {angle: -0.35, baseY: 420,  color1:'rgba(255,200,80,',  color2:'rgba(0,200,255,',  w:3.5, speed:0.12},
+  {angle:  0.28, baseY: 650,  color1:'rgba(255,160,40,',  color2:'rgba(80,220,255,', w:2.5, speed:-0.09},
+  {angle: -0.55, baseY: 900,  color1:'rgba(220,140,20,',  color2:'rgba(40,180,240,', w:2,   speed:0.07},
+  {angle:  0.45, baseY: 1100, color1:'rgba(200,120,10,',  color2:'rgba(20,160,220,', w:3,   speed:-0.14},
+  {angle: -0.2,  baseY: 1350, color1:'rgba(255,210,100,', color2:'rgba(100,230,255,',w:2.5, speed:0.1},
+  {angle:  0.6,  baseY: 1550, color1:'rgba(180,100,5,',   color2:'rgba(0,140,200,',  w:1.5, speed:-0.06},
+];
+
+// Collision explosions at ribbon intersections
+class RiftExplosion {
+  constructor(x,y){
+    this.x=x; this.y=y;
+    this.r=0; this.maxR=30+Math.random()*50;
+    this.alpha=0.9;
+    this.life=1;
+    this.decay=0.025+Math.random()*0.02;
+  }
+  update(dt){
+    this.r += (this.maxR-this.r)*0.1*dt*60;
+    this.life -= this.decay*dt*60;
+    return this.life>0;
+  }
+  draw(ctx){
+    ctx.save();
+    ctx.globalAlpha=this.alpha*this.life*this.life;
+    const g=ctx.createRadialGradient(this.x,this.y,0,this.x,this.y,this.r);
+    g.addColorStop(0,'rgba(255,255,255,0.9)');
+    g.addColorStop(0.3,'rgba(200,230,255,0.5)');
+    g.addColorStop(1,'rgba(100,200,255,0)');
+    ctx.fillStyle=g;
+    ctx.shadowColor='rgba(200,220,255,0.8)';
+    ctx.shadowBlur=20;
+    ctx.beginPath(); ctx.arc(this.x,this.y,this.r,0,Math.PI*2); ctx.fill();
+    ctx.restore();
+  }
+}
+let riftExplosions = [];
+let nextExplosion = 0;
+
+// "Windows" — brief glimpses through the rift
+class RiftWindow {
+  constructor(){
+    const a = Math.random()*Math.PI*2;
+    const d = 120+Math.random()*180;
+    this.x = CX + Math.cos(a)*d;
+    this.y = CY + Math.sin(a)*d;
+    this.w = 30+Math.random()*60;
+    this.h = 20+Math.random()*40;
+    this.angle = Math.random()*Math.PI;
+    this.life = 1;
+    this.decay = 0.008+Math.random()*0.01;
+    this.hue = Math.random()<0.5 ? 38 : 190;
+  }
+  update(dt){ this.life-=this.decay*dt*60; return this.life>0; }
+  draw(ctx){
+    ctx.save();
+    ctx.translate(this.x,this.y); ctx.rotate(this.angle);
+    ctx.globalAlpha = this.life*(0.3+0.2*Math.sin(t*5+this.x));
+    const g = ctx.createLinearGradient(-this.w/2,0,this.w/2,0);
+    g.addColorStop(0,'rgba(0,0,0,0)');
+    g.addColorStop(0.15,`hsla(${this.hue},90%,75%,0.6)`);
+    g.addColorStop(0.5, `hsla(${this.hue},100%,88%,0.8)`);
+    g.addColorStop(0.85,`hsla(${this.hue},90%,75%,0.6)`);
+    g.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle=g;
+    ctx.fillRect(-this.w/2,-this.h/2,this.w,this.h);
+    ctx.restore();
+  }
+}
+let riftWindows = [];
+
+// Vortex spirals around spawn ring
+function drawVortex(ctx){
+  const arms = 6;
+  for(let arm=0; arm<arms; arm++){
+    const cw = arm%2===0 ? 1 : -1;        // clockwise / counter
+    const baseAngle = (arm/arms)*Math.PI*2;
+    const speed = cw * (arm%2===0 ? 0.4 : -0.6);
+
+    ctx.save();
+    ctx.translate(CX,CY);
+    ctx.beginPath();
+
+    let alpha = 0;
+    for(let i=0; i<200; i++){
+      const frac = i/200;
+      const r = RING_R*0.15 + RING_R*0.9*frac;
+      const angle = baseAngle + frac*Math.PI*2.5*cw + t*speed;
+      const px = Math.cos(angle)*r;
+      const py = Math.sin(angle)*r;
+      if(i===0) ctx.moveTo(px,py); else ctx.lineTo(px,py);
+      alpha = frac;
+    }
+
+    // Color by arm: even=past(gold), odd=future(cyan)
+    const hue = arm%2===0 ? 40 : 190;
+    const a = 0.15+0.08*Math.sin(t*1.5+arm);
+    ctx.strokeStyle = `hsla(${hue},90%,70%,${a})`;
+    ctx.lineWidth = 1.5;
+    ctx.shadowColor = `hsla(${hue},100%,75%,0.5)`;
+    ctx.shadowBlur = 8;
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  // Collision flares where arms meet
+  const pulseMag = 0.3+0.7*((Math.sin(t*2)+1)/2);
+  const flareR = RING_R*(0.95+0.08*Math.sin(t*3));
+  const flareG = ctx.createRadialGradient(CX,CY,flareR*0.8,CX,CY,flareR*1.2);
+  flareG.addColorStop(0,'rgba(200,220,255,0)');
+  flareG.addColorStop(0.5,`rgba(200,220,255,${0.08*pulseMag})`);
+  flareG.addColorStop(1,'rgba(200,220,255,0)');
+  ctx.fillStyle=flareG;
+  ctx.beginPath(); ctx.arc(CX,CY,flareR*1.2,0,Math.PI*2); ctx.fill();
+}
+
+// Central rift crack — the tear itself
+function drawCentralRift(ctx){
+  ctx.save();
+  // Main vertical crack
+  const pw = 2+2*Math.sin(t*3);
+  ctx.lineWidth=pw;
+  ctx.shadowBlur=25;
+
+  // Rift glow layers
+  for(let layer=3; layer>=0; layer--){
+    const la = [0.04,0.08,0.15,0.3][layer];
+    const lw = [80,40,15,pw][layer];
+    ctx.lineWidth=lw;
+    ctx.strokeStyle=`rgba(230,240,255,${la*(0.7+0.3*Math.sin(t*4))})`;
+    ctx.shadowColor='rgba(200,220,255,0.5)';
+    ctx.shadowBlur=lw*0.8;
+
+    ctx.beginPath();
+    // Jagged crack from top to bottom through CX, disturbed around CY
+    const pts=[];
+    for(let iy=0; iy<H; iy+=12){
+      const dist = Math.abs(iy-CY);
+      const warp = Math.min(30, 200/(dist+20));
+      const jag = (Math.sin(iy*0.04+t*2.1)*0.4 + Math.sin(iy*0.09-t*1.7)*0.6)*warp;
+      pts.push([CX+jag, iy]);
+    }
+    ctx.moveTo(pts[0][0],pts[0][1]);
+    for(let i=1;i<pts.length;i++) ctx.lineTo(pts[i][0],pts[i][1]);
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
+function drawRift(dt){
+  const ctx = ctxRift;
+  ctx.clearRect(0,0,W,H);
+
+  // Time collision flash pulse
+  const pulse = 0.5+0.5*Math.sin(t*1.8);
+
+  // ── Timeline ribbons ──────────────────────────────────────────────
+  RIBBONS.forEach((rb,ri)=>{
+    ctx.save();
+    const scrollX = t * rb.speed * 150;
+    // Each ribbon is a diagonal band across the full screen
+    const dx = Math.cos(rb.angle)*W*2;
+    const dy = Math.sin(rb.angle)*W*2;
+    // Start/end on screen edges
+    const x0=-dx*0.5+scrollX, y0=rb.baseY-dy*0.5;
+    const x1= dx*0.5+scrollX, y1=rb.baseY+dy*0.5;
+
+    const g = ctx.createLinearGradient(0,0,W,0);
+    const aVal = 0.12+0.06*Math.sin(t*0.6+ri);
+    g.addColorStop(0, rb.color1+aVal+')');
+    g.addColorStop(0.45, rb.color1+(aVal*0.5)+')');
+    g.addColorStop(0.5, 'rgba(255,255,255,'+(aVal*0.3)+')');
+    g.addColorStop(0.55, rb.color2+(aVal*0.5)+')');
+    g.addColorStop(1, rb.color2+aVal+')');
+
+    ctx.strokeStyle=g;
+    ctx.lineWidth=rb.w*(0.8+0.2*Math.sin(t*2+ri));
+    ctx.shadowColor='rgba(200,220,255,0.4)';
+    ctx.shadowBlur=12;
+    ctx.globalAlpha=1;
+
+    ctx.beginPath();
+    // Draw ribbon as wavy line
+    for(let x=0;x<=W;x+=8){
+      const frac=x/W;
+      const y=rb.baseY + Math.sin(rb.angle)*(x-W/2)
+               + Math.sin(x*0.006+t*1.2+ri)*15
+               + Math.sin(x*0.003-t*0.8)*8
+               + (Math.abs(x-CX)<300 ? Math.sin(t*3)*20*(1-(Math.abs(x-CX)/300)) : 0);
+      if(x===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+    }
+    ctx.stroke();
+    ctx.restore();
+  });
+
+  // ── Rift explosions at ribbon crossings ──────────────────────────
+  nextExplosion -= dt;
+  if(nextExplosion<=0){
+    // Pick a random ribbon crossing
+    const r1 = RIBBONS[Math.floor(Math.random()*RIBBONS.length)];
+    const ex = 200+Math.random()*680;
+    const ey = r1.baseY + Math.sin(r1.angle)*(ex-W/2) + (Math.random()-0.5)*80;
+    riftExplosions.push(new RiftExplosion(ex,ey));
+    nextExplosion = 0.3+Math.random()*0.8;
+  }
+  riftExplosions = riftExplosions.filter(e=>{ e.update(dt); e.draw(ctx); return true; });
+  riftExplosions = riftExplosions.filter(e=>e.life>0);
+
+  // ── Rift windows ─────────────────────────────────────────────────
+  if(Math.random()<0.015*dt*60){
+    riftWindows.push(new RiftWindow());
+  }
+  riftWindows = riftWindows.filter(w=>{ const a=w.update(dt); w.draw(ctx); return a; });
+
+  // ── Central rift crack ───────────────────────────────────────────
+  drawCentralRift(ctx);
+
+  // ── Vortex around spawn ring ──────────────────────────────────────
+  drawVortex(ctx);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// LAYER 5 — CLOCKS: 5 displaced clocks
+// ─────────────────────────────────────────────────────────────────────────────
+const CLOCK_DEFS = [
+  // {x, y, r, behavior}
+  // 0: backward fast (panic)
+  {x:160,  y:480,  r:55, type:'backward_fast'},
+  // 1: frozen hands still move (paradox)
+  {x:900,  y:350,  r:45, type:'frozen_moving'},
+  // 2: exists every other second (quantum)
+  {x:240,  y:1480, r:50, type:'quantum'},
+  // 3: impossible time
+  {x:870,  y:1350, r:42, type:'impossible'},
+  // 4: broken — split face, dancing hands
+  {x:540,  y:1700, r:60, type:'broken'},
+];
+
+function drawClock(ctx, cd, t){
+  const {x,y,r,type} = cd;
+
+  // visibility for quantum clock
+  if(type==='quantum'){
+    const vis = Math.floor(t*1.5)%2===0;
+    if(!vis) return;
+  }
+
+  ctx.save();
+  ctx.translate(x,y);
+
+  // Crack effect for broken clock
+  if(type==='broken'){
+    ctx.save();
+    // clip to half
+    const alpha = 0.55;
+    ctx.globalAlpha=alpha;
+
+    // draw face halves with different tints
+    const faceL = ctx.createRadialGradient(-10,0,0,-10,0,r);
+    faceL.addColorStop(0,'rgba(60,30,5,0.95)');
+    faceL.addColorStop(0.7,'rgba(30,15,2,0.9)');
+    faceL.addColorStop(1,'rgba(180,90,5,0.2)');
+
+    const faceR = ctx.createRadialGradient(10,0,0,10,0,r);
+    faceR.addColorStop(0,'rgba(5,20,45,0.95)');
+    faceR.addColorStop(0.7,'rgba(2,10,25,0.9)');
+    faceR.addColorStop(1,'rgba(0,80,130,0.2)');
+
+    ctx.fillStyle=faceL;
+    ctx.beginPath(); ctx.moveTo(0,-r); ctx.arc(0,0,r,-Math.PI/2,Math.PI/2); ctx.closePath(); ctx.fill();
+    ctx.fillStyle=faceR;
+    ctx.beginPath(); ctx.moveTo(0,-r); ctx.arc(0,0,r,Math.PI/2,-Math.PI/2); ctx.closePath(); ctx.fill();
+    ctx.restore();
+  } else {
+    // Normal clock face
+    const hue = (type==='backward_fast'||type==='impossible') ? 38 : 190;
+    ctx.globalAlpha=0.55;
+    const face = ctx.createRadialGradient(0,0,0,0,0,r);
+    face.addColorStop(0,`hsla(${hue},60%,12%,0.95)`);
+    face.addColorStop(0.7,`hsla(${hue},40%,8%,0.92)`);
+    face.addColorStop(1,`hsla(${hue},80%,40%,0.25)`);
+    ctx.fillStyle=face;
+    ctx.beginPath(); ctx.arc(0,0,r,0,Math.PI*2); ctx.fill();
+    ctx.globalAlpha=1;
+  }
+
+  // Rim
+  const hueRim = (type==='backward_fast'||type==='impossible') ? 42 : 195;
+  ctx.globalAlpha=0.7;
+  ctx.strokeStyle=`hsla(${hueRim},90%,65%,0.8)`;
+  ctx.lineWidth=2;
+  ctx.shadowColor=`hsla(${hueRim},100%,70%,0.6)`;
+  ctx.shadowBlur=12;
+  ctx.beginPath(); ctx.arc(0,0,r,0,Math.PI*2); ctx.stroke();
+  ctx.globalAlpha=1; ctx.shadowBlur=0;
+
+  // Tick marks
+  for(let i=0;i<12;i++){
+    const a=i/12*Math.PI*2-Math.PI/2;
+    const inner=(i%3===0)?r*0.72:r*0.82;
+    const outer=r*0.92;
+    ctx.strokeStyle=`hsla(${hueRim},80%,70%,0.6)`;
+    ctx.lineWidth=(i%3===0)?2:1;
+    ctx.beginPath();
+    ctx.moveTo(Math.cos(a)*inner,Math.sin(a)*inner);
+    ctx.lineTo(Math.cos(a)*outer,Math.sin(a)*outer);
+    ctx.stroke();
+  }
+
+  // Compute hand angles per behavior
+  let hourA, minA, secA, secVisible=true, showCrack=false;
+
+  if(type==='backward_fast'){
+    // Runs backward — fast
+    const fakeT = -t*2.5;
+    secA  = (fakeT%60)/60*Math.PI*2-Math.PI/2;
+    minA  = (fakeT%3600)/3600*Math.PI*2-Math.PI/2;
+    hourA = (fakeT%43200)/43200*Math.PI*2-Math.PI/2;
+  } else if(type==='frozen_moving'){
+    // Clock face frozen (hour+min static) but second hand moves
+    hourA = 0.5;
+    minA  = 2.1;
+    secA  = (t%60)/60*Math.PI*2-Math.PI/2;
+  } else if(type==='quantum'){
+    // Normal but with glitchy second hand
+    secA  = (t%60)/60*Math.PI*2-Math.PI/2 + Math.sin(t*9)*0.4;
+    minA  = (t%3600)/3600*Math.PI*2-Math.PI/2;
+    hourA = (t%43200)/43200*Math.PI*2-Math.PI/2;
+  } else if(type==='impossible'){
+    // Shows time 27:63 — static impossible
+    hourA = (27%12)/12*Math.PI*2-Math.PI/2;
+    minA  = (63%60)/60*Math.PI*2-Math.PI/2;
+    secA  = 0;
+  } else if(type==='broken'){
+    // Two second hands dancing in circles
+    secA  = (t%60)/60*Math.PI*2-Math.PI/2;
+    minA  = -(t%60)/60*Math.PI*2-Math.PI/2; // mirror
+    hourA = Math.sin(t*0.5)*Math.PI;
+    showCrack=true;
+  }
+
+  // Draw hands
+  function hand(len,width,angle,col,glow){
+    ctx.save();
+    ctx.rotate(angle);
+    ctx.strokeStyle=col;
+    ctx.lineWidth=width;
+    ctx.shadowColor=glow;
+    ctx.shadowBlur=10;
+    ctx.lineCap='round';
+    ctx.beginPath();
+    ctx.moveTo(0,r*0.12); ctx.lineTo(0,-len);
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  const handHue = (type==='backward_fast'||type==='impossible') ? 42 : 195;
+  hand(r*0.55, 2.5, hourA, `hsla(${handHue},80%,75%,0.9)`, `hsla(${handHue},100%,80%,0.8)`);
+  hand(r*0.75, 1.5, minA,  `hsla(${handHue},80%,85%,0.9)`, `hsla(${handHue},100%,90%,0.8)`);
+  // Second hand — thin, contrasting
+  hand(r*0.85, 1, secA, `hsla(${handHue+150},90%,70%,0.9)`, `hsla(${handHue+150},100%,75%,0.8)`);
+
+  if(showCrack){
+    // Crack line down center
+    ctx.save();
+    ctx.globalAlpha=0.8;
+    ctx.strokeStyle='rgba(255,255,255,0.6)';
+    ctx.lineWidth=1.5;
+    ctx.shadowColor='rgba(200,220,255,0.9)';
+    ctx.shadowBlur=8;
+    ctx.beginPath();
+    ctx.moveTo(0,-r*0.95);
+    for(let i=0;i<20;i++){
+      const iy = -r*0.95 + i*(r*1.9/20);
+      const jag = Math.sin(i*1.7)*3;
+      ctx.lineTo(jag,iy);
+    }
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  // Center dot
+  ctx.fillStyle=`hsla(${hueRim},90%,80%,0.9)`;
+  ctx.shadowColor=`hsla(${hueRim},100%,90%,0.8)`;
+  ctx.shadowBlur=8;
+  ctx.beginPath(); ctx.arc(0,0,3,0,Math.PI*2); ctx.fill();
+  ctx.shadowBlur=0;
+
+  ctx.restore();
+}
+
+function drawClocks(){
+  const ctx = ctxClocks;
+  ctx.clearRect(0,0,W,H);
+  CLOCK_DEFS.forEach(cd=>drawClock(ctx,cd,t));
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// LAYER 6 — PARTICLES: ambient time-dust + chronon sparks
+// ─────────────────────────────────────────────────────────────────────────────
+class Chronon {
+  constructor(){this.reset(true)}
+  reset(init=false){
+    // Spawn anywhere
+    if(init){
+      this.x=Math.random()*W; this.y=Math.random()*H;
+    } else {
+      // Spawn at edges
+      const side=Math.floor(Math.random()*4);
+      if(side===0){this.x=Math.random()*W; this.y=-5;}
+      else if(side===1){this.x=W+5; this.y=Math.random()*H;}
+      else if(side===2){this.x=Math.random()*W; this.y=H+5;}
+      else{this.x=-5; this.y=Math.random()*H;}
+    }
+    // Drift toward rift center then escape
+    const toRift = Math.random()<0.5;
+    const angle = toRift
+      ? Math.atan2(CY-this.y, CX-this.x) + (Math.random()-0.5)*0.8
+      : Math.random()*Math.PI*2;
+    const spd = 0.3+Math.random()*1.2;
+    this.vx=Math.cos(angle)*spd;
+    this.vy=Math.sin(angle)*spd;
+    this.r=0.8+Math.random()*2.2;
+    this.life=1;
+    this.maxLife=1;
+    this.decay=0.003+Math.random()*0.004;
+    // Color: split between past(amber) and future(cyan), with white near rift
+    const pastSide = this.x < W/2;
+    this.hue = pastSide ? 38+Math.random()*20 : 190+Math.random()*15;
+    this.alpha=0.3+Math.random()*0.7;
+    this.trail=[];
+  }
+  update(dt){
+    this.trail.push({x:this.x,y:this.y});
+    if(this.trail.length>6) this.trail.shift();
+
+    // Gravitation toward rift crack (CX) if near
+    const dx=CX-this.x, dy=CY-this.y;
+    const dist=Math.sqrt(dx*dx+dy*dy);
+    if(dist<400){
+      const pull=0.0002*(400-dist)/400;
+      this.vx+=dx*pull*dt*60;
+      this.vy+=dy*pull*dt*60;
+    }
+    // Eject if too close to center
+    if(dist<60){
+      const a=Math.atan2(this.y-CY,this.x-CX);
+      this.vx=Math.cos(a)*2;
+      this.vy=Math.sin(a)*2;
+    }
+
+    this.x+=this.vx*dt*60;
+    this.y+=this.vy*dt*60;
+    this.life-=this.decay*dt*60;
+    if(this.life<=0 || this.x<-20||this.x>W+20||this.y<-20||this.y>H+20) this.reset();
+  }
+  draw(ctx){
+    // Trail
+    for(let i=0;i<this.trail.length-1;i++){
+      const a=(i/this.trail.length)*this.alpha*this.life*0.4;
+      ctx.globalAlpha=a;
+      ctx.strokeStyle=`hsl(${this.hue},90%,72%)`;
+      ctx.lineWidth=this.r*0.6;
+      ctx.shadowColor=`hsl(${this.hue},100%,78%)`;
+      ctx.shadowBlur=4;
+      ctx.beginPath();
+      ctx.moveTo(this.trail[i].x,this.trail[i].y);
+      ctx.lineTo(this.trail[i+1].x,this.trail[i+1].y);
+      ctx.stroke();
+    }
+    // Dot
+    ctx.globalAlpha=this.alpha*this.life;
+    ctx.fillStyle=`hsl(${this.hue},95%,80%)`;
+    ctx.shadowColor=`hsl(${this.hue},100%,85%)`;
+    ctx.shadowBlur=this.r*3;
+    ctx.beginPath(); ctx.arc(this.x,this.y,this.r,0,Math.PI*2); ctx.fill();
+    ctx.globalAlpha=1; ctx.shadowBlur=0;
+  }
+}
+const chronons = Array.from({length:130},()=>new Chronon());
+
+// Temporal shockwaves — periodic ripple from rift
+class TShockwave {
+  constructor(){
+    this.r=10; this.maxR=500+Math.random()*300;
+    this.life=1; this.decay=0.008+Math.random()*0.005;
+    this.hue=Math.random()<0.5?42:192;
+  }
+  update(dt){
+    this.r+=(this.maxR-this.r)*0.06*dt*60;
+    this.life-=this.decay*dt*60;
+    return this.life>0;
+  }
+  draw(ctx){
+    ctx.save();
+    ctx.globalAlpha=this.life*this.life*0.3;
+    ctx.strokeStyle=`hsla(${this.hue},90%,75%,1)`;
+    ctx.lineWidth=1.5;
+    ctx.shadowColor=`hsla(${this.hue},100%,80%,0.7)`;
+    ctx.shadowBlur=15;
+    ctx.beginPath(); ctx.arc(CX,CY,this.r,0,Math.PI*2); ctx.stroke();
+    ctx.restore();
+  }
+}
+let tShockwaves=[];
+let nextShock=2;
+
+function drawParticles(dt){
+  const ctx = ctxPart;
+  ctx.clearRect(0,0,W,H);
+
+  chronons.forEach(c=>{ c.update(dt); c.draw(ctx); });
+
+  // Shockwaves
+  nextShock-=dt;
+  if(nextShock<=0){
+    tShockwaves.push(new TShockwave());
+    nextShock=3+Math.random()*4;
+  }
+  tShockwaves=tShockwaves.filter(s=>{ const a=s.update(dt); s.draw(ctx); return a; });
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MAIN LOOP
+// ─────────────────────────────────────────────────────────────────────────────
+function loop(now){
+  const dt = Math.min((now-last)/1000, 0.05);
+  last=now;
+  t+=dt;
+
+  drawBase();
+  drawPast(dt);
+  drawFuture(dt);
+  drawRift(dt);
+  drawClocks();
+  drawParticles(dt);
+
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
