@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8"/>
+<title>Light — Das erste Licht</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{
+  width:1080px;height:1920px;
+  overflow:hidden;
+  background:#000;
+  position:relative;
+}
+canvas{
+  position:absolute;top:0;left:0;
+  width:1080px;height:1920px;
+  pointer-events:none;
+}
+#zone-top{
+  position:absolute;top:0;left:0;width:1080px;height:120px;
+  background:linear-gradient(to bottom,rgba(0,0,0,0.55) 0%,transparent 100%);
+  z-index:50;pointer-events:none;
+}
+#zone-bot{
+  position:absolute;bottom:0;left:0;width:1080px;height:920px;
+  background:linear-gradient(to top,rgba(0,0,0,0.48) 0%,transparent 100%);
+  z-index:50;pointer-events:none;
+}
+#vignette{
+  position:absolute;top:0;left:0;width:1080px;height:1920px;
+  background:radial-gradient(ellipse 92% 92% at 50% 50%,transparent 30%,rgba(0,0,0,0.62) 100%);
+  z-index:49;pointer-events:none;
+}
+#center-darken{
+  position:absolute;left:150px;top:300px;width:780px;height:540px;
+  background:radial-gradient(ellipse at center,rgba(0,0,0,0.30) 0%,transparent 70%);
+  z-index:48;pointer-events:none;
+}
+</style>
+</head>
+<body>
+
+<canvas id="cvBase"   style="z-index:1"></canvas>
+<canvas id="cvSky"    style="z-index:2"></canvas>
+<canvas id="cvClouds" style="z-index:3"></canvas>
+<canvas id="cvTop"    style="z-index:4"></canvas>
+
+<div id="zone-top"></div>
+<div id="zone-bot"></div>
+<div id="vignette"></div>
+<div id="center-darken"></div>
+
+<script>
+'use strict';
+const W=1080,H=1920,CX=540,CY=590,RING_R=300;
+
+['cvBase','cvSky','cvClouds','cvTop'].forEach(id=>{
+  const c=document.getElementById(id);c.width=W;c.height=H;
+});
+const gc=id=>document.getElementById(id).getContext('2d');
+const ctxBase   =gc('cvBase');
+const ctxSky    =gc('cvSky');
+const ctxClouds =gc('cvClouds');
+const ctxTop    =gc('cvTop');
+
+document.getElementById('cvSky').style.mixBlendMode    ='screen';
+document.getElementById('cvClouds').style.mixBlendMode ='screen';
+document.getElementById('cvTop').style.mixBlendMode    ='screen';
+
+let t=0,last=performance.now();
+const rng=(a,b)=>a+(b-a)*Math.random();
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const lerp=(a,b,x)=>a+(b-a)*x;
+const eio=(x)=>x<.5?2*x*x:1-(-2*x+2)**2/2;
+const eo3=(x)=>1-(1-x)**3;
+const hash=(n)=>{ let x=Math.sin(n)*43758.5453; return x-Math.floor(x); };
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CYCLE ENGINE — 4 phases, each ~16s, slow and majestic
+// 0: Morgen  1: Mittag  2: Abend  3: Dämmerung
+// ─────────────────────────────────────────────────────────────────────────────
+const PHASE_DUR=16;
+const TRANS_DUR=3.5;
+let phaseIdx=0, phaseT=0, transiting=false, transT=0;
+
+// Phase color identities
+const PHASES=[
+  // Morgen — horizontal golden, warm
+  {
+    name:'Morgen',
+    skyTop:'#02050e',      skyMid:'#0d1a3a',    skyBot:'#c87020',
+    sunHue:42, sunY:0.72,  sunBright:0.85,
+    horizHue:38, ambientHue:38, ambientSat:80,
+    cloudLight:0.7, cloudHue:42,
+  },
+  // Mittag — brutal white-blue, high sun
+  {
+    name:'Mittag',
+    skyTop:'#050d1f',      skyMid:'#0a1a50',    skyBot:'#1840b0',
+    sunHue:52, sunY:0.08,  sunBright:1.0,
+    horizHue:52, ambientHue:210, ambientSat:60,
+    cloudLight:0.95, cloudHue:55,
+  },
+  // Abend — orange red gold
+  {
+    name:'Abend',
+    skyTop:'#050105',      skyMid:'#180410',    skyBot:'#c03010',
+    sunHue:18, sunY:0.78,  sunBright:0.9,
+    horizHue:14, ambientHue:22, ambientSat:90,
+    cloudLight:0.8, cloudHue:18,
+  },
+  // Dämmerung — impossible gradients, deep blue + orange + cyan
+  {
+    name:'Dämmerung',
+    skyTop:'#00000a',      skyMid:'#001535',    skyBot:'#a03008',
+    sunHue:28, sunY:0.88,  sunBright:0.65,
+    horizHue:24, ambientHue:196, ambientSat:70,
+    cloudLight:0.55, cloudHue:200,
+  },
+];
+
+function tickPhase(dt){
+  if(!transiting){
+    phaseT+=dt;
+    if(phaseT>=PHASE_DUR){ transiting=true; transT=0; phaseT=PHASE_DUR; }
+  } else {
+    transT+=dt;
+    if(transT>=TRANS_DUR){ phaseIdx=(phaseIdx+1)%4; phaseT=0; transiting=false; transT=0; }
+  }
+}
+
+function currentPhase(){
+  if(!transiting) return {a:PHASES[phaseIdx],b:PHASES[phaseIdx],blend:0};
+  return {
+    a:PHASES[phaseIdx],
+    b:PHASES[(phaseIdx+1)%4],
+    blend:eio(clamp(transT/TRANS_DUR,0,1)),
+  };
+}
+
+function lerpPhaseColor(ca,cb,bl,key){
+  // Parse hex to RGB, lerp, return rgba string
+  const pa=PHASES.indexOf(ca)>=0?ca:ca;
+  const hex2rgb=(h)=>{
+    const r=parseInt(h.slice(1,3),16),g=parseInt(h.slice(3,5),16),b=parseInt(h.slice(5,7),16);
+    return [r,g,b];
+  };
+  const [r1,g1,b1]=hex2rgb(ca[key]);
+  const [r2,g2,b2]=hex2rgb(cb[key]);
+  return `rgb(${Math.round(lerp(r1,r2,bl))},${Math.round(lerp(g1,g2,bl))},${Math.round(lerp(b1,b2,bl))})`;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// LAYER 1 — BASE: Absolute Dunkelheit → das erste Licht erwacht
+// Dann: die Bodenebene, Horizont, Erdschatten
+// ─────────────────────────────────────────────────────────────────────────────
+
+// Intro: absolute darkness for 2s, then the first light
+const INTRO_DUR=8;
+let introT=0, introDone=false;
+
+// Stars — visible in darker phases
+const STARS=Array.from({length:300},(_,i)=>({
+  x:hash(i*127.1)*W,
+  y:hash(i*311.7)*H*0.6,
+  r:rng(0.3,1.7),
+  a:rng(0.3,0.9),
+  ph:rng(0,Math.PI*2),
+  sp:rng(0.3,1.5),
+}));
+
+function drawBase(){
+  const c=ctxBase;
+  c.clearRect(0,0,W,H);
+
+  const {a:pa,b:pb,blend:bl}=currentPhase();
+  const vis=introDone?1:clamp((introT-2.5)/3,0,1);
+
+  // Deep sky base — near black, the foundation
+  c.fillStyle='#000005';
+  c.fillRect(0,0,W,H);
+
+  // Stars — visible in Morgen and Dämmerung phases, fade out in Mittag
+  const starVis = phaseIdx===1 ? lerp(1,0,bl) :
+                  phaseIdx===0 ? lerp(0.6,0,bl) :
+                  phaseIdx===3 ? lerp(0.3,0.8,bl) : 0.15;
+  STARS.forEach((s,i)=>{
+    const tw=0.5+0.5*Math.sin(t*s.sp+s.ph);
+    c.globalAlpha=s.a*tw*starVis*vis;
+    c.fillStyle='rgba(220,230,255,1)';
+    c.shadowColor='rgba(200,215,255,0.4)'; c.shadowBlur=s.r*2;
+    c.beginPath(); c.arc(s.x,s.y,s.r,0,Math.PI*2); c.fill();
+    c.shadowBlur=0;
+  });
+  c.globalAlpha=1;
+
+  // Ground/horizon line — dark silhouette at bottom of sky
+  const horizY=H*0.72;
+  const groundG=c.createLinearGradient(0,horizY-20,0,H);
+  groundG.addColorStop(0,'rgba(0,0,0,0)');
+  groundG.addColorStop(0.05,'rgba(2,2,4,0.5)');
+  groundG.addColorStop(0.3,'rgba(4,3,2,0.8)');
+  groundG.addColorStop(1,'rgba(6,4,2,0.95)');
+  c.fillStyle=groundG; c.fillRect(0,horizY-20,W,H-(horizY-20));
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// LAYER 2 — SKY: Himmelsgradient + Sonne + Horizontleuchten
+// ─────────────────────────────────────────────────────────────────────────────
+
+// Intro first-light explosion
+let firstLightAlpha=0;
+
+function drawIntroSky(c){
+  if(introDone) return;
+  if(introT<2) return; // absolute darkness
+
+  const prog=clamp((introT-2)/2,0,1);
+
+  // The first light — a pure point expanding from nowhere
+  if(prog<0.6){
+    const ep=prog/0.6;
+    const er=ep*ep*300;
+    const ea=Math.pow(1-ep,0.8)*0.95;
+    c.globalAlpha=ea;
+    const eg=c.createRadialGradient(CX,CY,0,CX,CY,er);
+    eg.addColorStop(0,'rgba(255,255,255,1)');
+    eg.addColorStop(0.1,'rgba(255,245,200,0.9)');
+    eg.addColorStop(0.4,'rgba(220,200,140,0.4)');
+    eg.addColorStop(1,'rgba(0,0,0,0)');
+    c.fillStyle=eg; c.fillRect(0,0,W,H);
+  }
+
+  // Then: sky starts to appear
+  const skyProg=clamp((prog-0.3)/0.7,0,1);
+  if(skyProg>0){
+    const sp=eio(skyProg);
+    c.globalAlpha=sp*0.6;
+    const sg=c.createLinearGradient(0,0,0,H*0.75);
+    sg.addColorStop(0,`rgba(5,8,25,${sp})`);
+    sg.addColorStop(0.4,`rgba(15,25,60,${sp*0.8})`);
+    sg.addColorStop(0.8,`rgba(50,30,10,${sp*0.6})`);
+    sg.addColorStop(1,`rgba(180,80,10,${sp*0.4})`);
+    c.fillStyle=sg; c.fillRect(0,0,W,H*0.75);
+  }
+  c.globalAlpha=1;
+}
+
+function drawSky(){
+  const c=ctxSky;
+  c.clearRect(0,0,W,H);
+
+  const {a:pa,b:pb,blend:bl}=currentPhase();
+  const vis=introDone?1:clamp((introT-3.5)/3,0,1);
+  if(vis<=0.01){ drawIntroSky(c); return; }
+
+  // Sky gradient — interpolated between phases
+  const sg=c.createLinearGradient(0,0,0,H*0.75);
+  const skyTop=lerpPhaseColor(pa,pb,bl,'skyTop');
+  const skyMid=lerpPhaseColor(pa,pb,bl,'skyMid');
+  const skyBot=lerpPhaseColor(pa,pb,bl,'skyBot');
+  sg.addColorStop(0,   skyTop);
+  sg.addColorStop(0.35,skyMid);
+  sg.addColorStop(0.72,skyBot);
+  sg.addColorStop(1,   'rgba(0,0,0,0)');
+  c.globalAlpha=vis;
+  c.fillStyle=sg; c.fillRect(0,0,W,H*0.8);
+  c.globalAlpha=1;
+
+  // Sun position — phase dependent
+  const sunHue=lerp(pa.sunHue,pb.sunHue,bl);
+  const sunY=lerp(pa.sunY,pb.sunY,bl)*H;
+  const sunBright=lerp(pa.sunBright,pb.sunBright,bl)*vis;
+  const sunPulse=0.92+0.08*Math.sin(t*0.35);
+
+  // Sun corona — multiple glow rings
+  [400,220,120,60,25].forEach((gr,pass)=>{
+    const ga=[0.025,0.05,0.1,0.2,0.6][pass]*sunBright*sunPulse;
+    const gh=lerp(pass<3?sunHue:sunHue+15,sunHue,pass/5);
+    const gg=c.createRadialGradient(CX,sunY,0,CX,sunY,gr);
+    gg.addColorStop(0,`hsla(${gh},100%,${85+pass*2}%,${ga})`);
+    gg.addColorStop(0.5,`hsla(${gh},90%,${60+pass*5}%,${ga*0.4})`);
+    gg.addColorStop(1,'rgba(0,0,0,0)');
+    c.fillStyle=gg; c.fillRect(0,0,W,H);
+  });
+  // Sun disk
+  c.save();
+  c.globalAlpha=sunBright*sunPulse;
+  const sd=c.createRadialGradient(CX,sunY,0,CX,sunY,24);
+  sd.addColorStop(0,'rgba(255,255,240,1)');
+  sd.addColorStop(0.4,'rgba(255,240,180,0.95)');
+  sd.addColorStop(0.8,`hsla(${sunHue},100%,70%,0.6)`);
+  sd.addColorStop(1,'rgba(0,0,0,0)');
+  c.shadowColor=`hsl(${sunHue},100%,75%)`; c.shadowBlur=50;
+  c.fillStyle=sd; c.beginPath(); c.arc(CX,sunY,24,0,Math.PI*2); c.fill();
+  c.shadowBlur=0;
+  c.restore();
+
+  // Horizon glow — the warmth at ground level
+  const horizHue=lerp(pa.horizHue,pb.horizHue,bl);
+  const horizY=H*lerp(pa.sunY,pb.sunY,bl);
+  const hg=c.createRadialGradient(CX,Math.min(horizY+80,H*0.8),0,CX,Math.min(horizY+80,H*0.8),680);
+  hg.addColorStop(0,`hsla(${horizHue},95%,65%,${0.28*sunBright*vis})`);
+  hg.addColorStop(0.35,`hsla(${horizHue},80%,40%,${0.14*sunBright*vis})`);
+  hg.addColorStop(0.7,`hsla(${horizHue},70%,25%,${0.06*vis})`);
+  hg.addColorStop(1,'rgba(0,0,0,0)');
+  c.fillStyle=hg; c.fillRect(0,0,W,H);
+
+  // Dämmerung special — the impossible impossible gradient
+  if(phaseIdx===3||((phaseIdx+1)%4===3&&bl>0.3)){
+    const dw=phaseIdx===3?1:bl;
+    // Cyan belt between orange and blue
+    const cyanG=c.createLinearGradient(0,H*0.35,0,H*0.65);
+    cyanG.addColorStop(0,'rgba(0,0,0,0)');
+    cyanG.addColorStop(0.3,`rgba(20,90,120,${0.12*dw*vis})`);
+    cyanG.addColorStop(0.5,`rgba(30,130,160,${0.18*dw*vis})`);
+    cyanG.addColorStop(0.7,`rgba(20,90,120,${0.12*dw*vis})`);
+    cyanG.addColorStop(1,'rgba(0,0,0,0)');
+    c.fillStyle=cyanG; c.fillRect(0,0,W,H);
+    // Venus/first star
+    c.globalAlpha=0.7*dw*vis;
+    c.fillStyle='rgba(240,240,255,1)';
+    c.shadowColor='rgba(220,230,255,0.8)'; c.shadowBlur=12;
+    c.beginPath(); c.arc(W*0.82,H*0.15,3.5,0,Math.PI*2); c.fill();
+    c.shadowBlur=0;
+    c.globalAlpha=1;
+  }
+
+  drawIntroSky(c);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// LAYER 3 — CLOUDS: über den Wolken, von oben, Wolkentürme, Lichtsäulen
+// ─────────────────────────────────────────────────────────────────────────────
+
+// Cloud masses — large fluffy bodies seen from above
+class CloudMass {
+  constructor(i){
+    this.i=i;
+    this.x=rng(0,W);
+    this.y=rng(H*0.1,H*0.7);
+    this.rx=rng(120,380);
+    this.ry=rng(40,120);
+    this.vx=rng(-0.06,0.06);
+    this.phase=rng(0,Math.PI*2);
+    this.speed=rng(0.008,0.02);
+    this.fluffiness=rng(3,7); // sub-clouds
+    this.subClouds=Array.from({length:this.fluffiness},(_,j)=>({
+      ox:rng(-this.rx*0.7,this.rx*0.7),
+      oy:rng(-this.ry*1.2,this.ry*0.5),
+      rx:rng(this.rx*0.3,this.rx*0.7),
+      ry:rng(this.ry*0.4,this.ry*0.9),
+    }));
+    this.alpha=rng(0.12,0.28);
+  }
+  update(dt){
+    this.x+=this.vx*dt*60;
+    if(this.x<-this.rx*1.5) this.x=W+this.rx*1.5;
+    if(this.x>W+this.rx*1.5) this.x=-this.rx*1.5;
+  }
+  draw(c){
+    const {a:pa,b:pb,blend:bl}=currentPhase();
+    const cloudHue=lerp(pa.cloudHue,pb.cloudHue,bl);
+    const cLight=lerp(pa.cloudLight,pb.cloudLight,bl);
+    const pulse=0.85+0.15*Math.sin(t*this.speed+this.phase);
+    const vis=introDone?1:clamp((introT-4)/3,0,1);
+
+    c.save();
+    c.globalAlpha=this.alpha*pulse*vis;
+    // Main cloud body
+    const drawCloudBlob=(bx,by,brx,bry)=>{
+      c.save();
+      c.translate(bx,by);
+      c.scale(1,bry/brx);
+      const cg=c.createRadialGradient(0,-bry*0.15,0,0,0,brx);
+      cg.addColorStop(0,   `hsla(${cloudHue},${Math.round(lerp(5,25,1-cLight))}%,${Math.round(cLight*95)}%,0.85)`);
+      cg.addColorStop(0.5, `hsla(${cloudHue},${Math.round(lerp(5,20,1-cLight))}%,${Math.round(cLight*80)}%,0.5)`);
+      cg.addColorStop(1,   'rgba(0,0,0,0)');
+      c.fillStyle=cg;
+      c.shadowColor=`hsl(${cloudHue},30%,${Math.round(cLight*90)}%)`;
+      c.shadowBlur=brx*0.3;
+      c.beginPath(); c.arc(0,0,brx,0,Math.PI*2); c.fill();
+      c.shadowBlur=0;
+      c.restore();
+    };
+    drawCloudBlob(this.x,this.y,this.rx,this.ry);
+    this.subClouds.forEach(sc=>{
+      drawCloudBlob(this.x+sc.ox,this.y+sc.oy,sc.rx,sc.ry);
+    });
+    c.restore();
+  }
+}
+const CLOUD_MASSES=Array.from({length:22},(_,i)=>new CloudMass(i));
+
+function drawClouds(dt){
+  const c=ctxClouds;
+  c.clearRect(0,0,W,H);
+
+  const {a:pa,b:pb,blend:bl}=currentPhase();
+  const sunY=lerp(pa.sunY,pb.sunY,bl)*H;
+
+  // Cloud masses
+  CLOUD_MASSES.forEach(cm=>{ cm.update(dt); cm.draw(c); });
+
+  // Cloud underbelly glow — warm light hitting bottom of clouds
+  const vis=introDone?1:clamp((introT-4)/3,0,1);
+  const sunHue=lerp(pa.sunHue,pb.sunHue,bl);
+  const sunBright=lerp(pa.sunBright,pb.sunBright,bl)*vis;
+  for(let ci=0;ci<8;ci++){
+    const cx2=100+ci*130+Math.sin(t*0.04+ci)*60;
+    const cy2=H*lerp(pa.sunY,pb.sunY,bl)*0.85+ci*40;
+    const cr=160+Math.sin(t*0.06+ci)*40;
+    const ca=(0.05+0.03*Math.sin(t*0.08+ci))*sunBright;
+    const cg2=c.createRadialGradient(cx2,cy2,0,cx2,cy2,cr);
+    cg2.addColorStop(0,`hsla(${sunHue},90%,72%,${ca})`);
+    cg2.addColorStop(0.5,`hsla(${sunHue},80%,50%,${ca*0.4})`);
+    cg2.addColorStop(1,'rgba(0,0,0,0)');
+    c.fillStyle=cg2; c.beginPath(); c.arc(cx2,cy2,cr,0,Math.PI*2); c.fill();
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// LAYER 4 — TOP: Spawn Ring + Lichtpartikel
+// ─────────────────────────────────────────────────────────────────────────────
+
+// Light photons — tiny bursts racing outward from ring
+class Photon {
+  constructor(){this.reset()}
+  reset(){
+    const a=rng(0,Math.PI*2);
+    this.x=CX+Math.cos(a)*RING_R*rng(0.2,0.9);
+    this.y=CY+Math.sin(a)*RING_R*rng(0.2,0.9);
+    const speed=rng(1.5,5);
+    this.vx=Math.cos(a)*speed*(0.3+Math.random()*0.7);
+    this.vy=Math.sin(a)*speed*(0.3+Math.random()*0.7);
+    this.r=rng(0.8,2.5);
+    this.life=1;
+    this.decay=rng(0.018,0.045);
+    this.wait=rng(0,6);
+    this.elapsed=Math.random()*this.wait;
+  }
+  update(dt){
+    this.elapsed+=dt;
+    if(this.elapsed<this.wait) return;
+    this.x+=this.vx*dt*60;
+    this.y+=this.vy*dt*60;
+    this.life-=this.decay*dt*60;
+    if(this.life<=0) this.reset();
+  }
+  draw(c){
+    if(this.elapsed<this.wait) return;
+    const {a:pa,b:pb,blend:bl}=currentPhase();
+    const sunHue=lerp(pa.sunHue,pb.sunHue,bl);
+    const vis=introDone?1:clamp((introT-5)/2,0,1);
+    c.save();
+    c.globalAlpha=this.life*this.life*0.8*vis;
+    c.fillStyle=`hsl(${sunHue},100%,90%)`;
+    c.shadowColor=`hsl(${sunHue},100%,88%)`; c.shadowBlur=this.r*5;
+    c.beginPath(); c.arc(this.x,this.y,this.r,0,Math.PI*2); c.fill();
+    c.shadowBlur=0;
+    c.restore();
+  }
+}
+const PHOTONS=Array.from({length:80},()=>new Photon());
+
+// Ring motes
+const RING_MOTES=Array.from({length:65},(_,i)=>({
+  angle:i/65*Math.PI*2,
+  speed:rng(-0.004,0.004),
+  rOff:rng(-0.28,0.28),
+  r:rng(0.8,2.8),
+  life:Math.random(),
+  decay:rng(0.003,0.007),
+  phase:rng(0,Math.PI*2),
+}));
+
+function drawRing(c){
+  const {a:pa,b:pb,blend:bl}=currentPhase();
+  const sunHue=lerp(pa.sunHue,pb.sunHue,bl);
+  const vis=introDone?1:clamp((introT-5.5)/2,0,1);
+  if(vis<0.01) return;
+
+  [70,30,12,3.5].forEach((lw,pass)=>{
+    const la=[0.03,0.07,0.19,0.58][pass]*(0.65+0.35*Math.sin(t*0.9))*vis;
+    c.strokeStyle=`hsla(${sunHue},88%,72%,${la})`;
+    c.lineWidth=lw;
+    c.shadowColor=`hsl(${sunHue},100%,78%)`; c.shadowBlur=lw*2.5;
+    c.beginPath(); c.arc(CX,CY,RING_R,0,Math.PI*2); c.stroke();
+    c.shadowBlur=0;
+  });
+
+  RING_MOTES.forEach(rm=>{
+    rm.angle+=rm.speed;
+    rm.life-=rm.decay;
+    if(rm.life<=0){rm.life=1;rm.decay=rng(0.003,0.007);}
+    const rx=CX+Math.cos(rm.angle)*(RING_R+rm.rOff*24);
+    const ry=CY+Math.sin(rm.angle)*(RING_R+rm.rOff*24);
+    const ra=rm.life*(0.35+0.45*Math.sin(t*2+rm.phase));
+    c.globalAlpha=ra*0.6*vis;
+    c.fillStyle=`hsl(${sunHue},95%,82%)`;
+    c.shadowColor=`hsl(${sunHue},100%,85%)`; c.shadowBlur=rm.r*4;
+    c.beginPath(); c.arc(rx,ry,rm.r,0,Math.PI*2); c.fill();
+    c.shadowBlur=0;
+  });
+  c.globalAlpha=1;
+}
+
+function drawTop(dt){
+  const c=ctxTop;
+  c.clearRect(0,0,W,H);
+  PHOTONS.forEach(p=>{ p.update(dt); p.draw(c); });
+  drawRing(c);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MAIN LOOP
+// ─────────────────────────────────────────────────────────────────────────────
+function loop(now){
+  const dt=Math.min((now-last)/1000,0.05);
+  last=now; t+=dt;
+
+  if(!introDone){
+    introT+=dt;
+    if(introT>=INTRO_DUR) introDone=true;
+  }
+  tickPhase(dt);
+
+  drawBase();
+  drawSky();
+  drawClouds(dt);
+  drawTop(dt);
+
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>

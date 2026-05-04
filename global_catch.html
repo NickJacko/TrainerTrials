@@ -6,111 +6,113 @@
 <title>Global Level</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{
+html,body{
+  width:1080px;height:100px;overflow:hidden;
   font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
-  background:transparent;color:white;overflow:hidden;
-  padding:3px 8px;width:100vw;height:100vh;
+  background:transparent;color:white;
+}
+body{
   display:flex;align-items:center;
+  padding:0 18px;
 }
 
 .bar{
-  width:100%;
-  position:relative;
-  padding:7px 0;
+  width:100%;position:relative;
 }
 
-/* No box. Just a glow layer beneath the track */
-.bar::before{
-  content:'';
-  position:absolute;
-  left:0;right:0;
-  top:50%;transform:translateY(-50%);
-  height:28px;
-  background:radial-gradient(ellipse at left,rgba(102,126,234,0.15) 0%,transparent 70%);
-  pointer-events:none;
+/* ── Row 1: dot + label | boost + level ── */
+.row1{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:7px;
 }
-
-.row1{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;}
-.left{display:flex;align-items:center;gap:7px;}
+.left{display:flex;align-items:center;gap:9px;}
 .dot{
-  width:5px;height:5px;border-radius:50%;
+  width:8px;height:8px;border-radius:50%;flex-shrink:0;
   background:#4ecdc4;
-  box-shadow:0 0 8px rgba(78,205,196,1),0 0 20px rgba(78,205,196,0.4);
+  box-shadow:0 0 10px rgba(78,205,196,1),0 0 22px rgba(78,205,196,0.5);
   animation:dp 2s ease-in-out infinite;
 }
 @keyframes dp{0%,100%{opacity:1}50%{opacity:0.2}}
-.lbl{font-size:9px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,0.3);}
+.lbl{
+  font-size:13px;font-weight:700;letter-spacing:2.5px;
+  text-transform:uppercase;color:rgba(255,255,255,0.3);
+}
 
-.right{display:flex;align-items:center;gap:10px;}
-
-/* Boost — no background box, just glowing text */
+.right{display:flex;align-items:center;gap:16px;}
 .boost{
-  font-size:11px;font-weight:900;letter-spacing:0.3px;
+  font-size:15px;font-weight:900;letter-spacing:0.3px;
   color:#4caf50;
-  text-shadow:0 0 12px rgba(76,175,80,0.8),0 0 24px rgba(76,175,80,0.3);
+  text-shadow:0 0 14px rgba(76,175,80,0.9),0 0 28px rgba(76,175,80,0.35);
 }
 .lvl{
-  font-size:15px;font-weight:900;
+  font-size:28px;font-weight:900;letter-spacing:-1.5px;
   color:#ffd700;
-  text-shadow:0 0 16px rgba(255,215,0,0.8),0 0 32px rgba(255,215,0,0.3);
-  display:flex;align-items:baseline;gap:2px;
-  letter-spacing:-0.5px;
+  text-shadow:0 0 22px rgba(255,215,0,0.9),0 0 45px rgba(255,215,0,0.35);
+  display:flex;align-items:baseline;gap:3px;
 }
-.lvl .sub{font-size:8px;opacity:0.5;letter-spacing:1.5px;font-weight:700}
+.lvl .sub{
+  font-size:11px;opacity:0.4;letter-spacing:2px;font-weight:700;
+}
 
-/* Track — slim, glowing */
+/* ── Track ── */
 .track{
-  height:6px;
-  background:rgba(255,255,255,0.06);
-  border-radius:3px;
-  overflow:hidden;
-  margin-bottom:5px;
+  height:10px;
+  background:rgba(255,255,255,0.07);
+  border-radius:5px;overflow:hidden;
+  margin-bottom:6px;
+  border:1px solid rgba(255,255,255,0.04);
 }
 .fill{
-  height:100%;width:0%;border-radius:3px;
+  height:100%;width:0%;border-radius:5px;
   position:relative;overflow:hidden;
-  transition:width 1.2s cubic-bezier(0.22,1,0.36,1);
+  transition:width 1.3s cubic-bezier(0.22,1,0.36,1);
 }
-/* Shimmer */
 .fill::after{
   content:'';position:absolute;inset:0;
-  background:linear-gradient(90deg,transparent 30%,rgba(255,255,255,0.4) 50%,transparent 70%);
+  background:linear-gradient(90deg,transparent 30%,rgba(255,255,255,0.45) 50%,transparent 70%);
   animation:shim 2s linear infinite;
 }
 @keyframes shim{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
 
-/* Fill colours matched to background palette */
-.f0  {background:rgba(80,80,100,0.7)}
-.f5  {background:linear-gradient(90deg,#2e7d32,#4caf50);box-shadow:0 0 8px rgba(76,175,80,0.5)}
-.f10 {background:linear-gradient(90deg,#00695c,#26c6da);box-shadow:0 0 10px rgba(38,198,218,0.5)}
-.f15 {background:linear-gradient(90deg,#1565c0,#42a5f5);box-shadow:0 0 10px rgba(66,165,245,0.5)}
-.f20 {background:linear-gradient(90deg,#e65100,#ffa726);box-shadow:0 0 12px rgba(255,167,38,0.5)}
-.f30 {background:linear-gradient(90deg,#bf360c,#ff7043);box-shadow:0 0 14px rgba(255,112,67,0.55)}
-.f50 {background:linear-gradient(90deg,#6a1b9a,#ab47bc);box-shadow:0 0 16px rgba(171,71,188,0.6)}
-.f75 {background:linear-gradient(90deg,#4a148c,#e040fb);box-shadow:0 0 20px rgba(224,64,251,0.65)}
-.f100{background:linear-gradient(90deg,#ff0000,#ff8c00,#ffd700,#00e676,#00b0ff,#7c4dff);background-size:300% auto;animation:rb 2s linear infinite;box-shadow:0 0 24px rgba(255,200,0,0.7)}
+.f0  {background:rgba(80,80,100,0.65)}
+.f5  {background:linear-gradient(90deg,#2e7d32,#4caf50);  box-shadow:0 0 10px rgba(76,175,80,0.6)}
+.f10 {background:linear-gradient(90deg,#00695c,#26c6da);  box-shadow:0 0 12px rgba(38,198,218,0.6)}
+.f15 {background:linear-gradient(90deg,#1565c0,#42a5f5);  box-shadow:0 0 12px rgba(66,165,245,0.6)}
+.f20 {background:linear-gradient(90deg,#e65100,#ffa726);  box-shadow:0 0 14px rgba(255,167,38,0.6)}
+.f30 {background:linear-gradient(90deg,#bf360c,#ff7043);  box-shadow:0 0 16px rgba(255,112,67,0.65)}
+.f50 {background:linear-gradient(90deg,#6a1b9a,#ab47bc);  box-shadow:0 0 18px rgba(171,71,188,0.7)}
+.f75 {background:linear-gradient(90deg,#4a148c,#e040fb);  box-shadow:0 0 22px rgba(224,64,251,0.75)}
+.f100{
+  background:linear-gradient(90deg,#ff0000,#ff8c00,#ffd700,#00e676,#00b0ff,#7c4dff);
+  background-size:300% auto;animation:rb 2s linear infinite;
+  box-shadow:0 0 28px rgba(255,200,0,0.8)
+}
 @keyframes rb{to{background-position:-300% center}}
 
-.row2{display:flex;justify-content:space-between;}
-.xt{font-size:9px;color:rgba(255,255,255,0.3);font-weight:600;}
-.nt{font-size:9px;color:rgba(255,255,255,0.2);font-weight:600;font-family:monospace;}
+/* ── Row 2 ── */
+.row2{display:flex;justify-content:space-between;align-items:center;}
+.xt{font-size:11px;color:rgba(255,255,255,0.3);font-weight:600;}
+.nt{font-size:11px;color:rgba(255,255,255,0.2);font-weight:600;font-family:monospace;}
 
-/* Floating XP pop — fades up from track */
+/* ── XP pop ── */
 .xpop{
-  position:absolute;right:0;top:-2px;
-  font-size:11px;font-weight:900;
-  color:#4ecdc4;text-shadow:0 0 12px rgba(78,205,196,0.9);
+  position:absolute;right:0;top:-5px;
+  font-size:14px;font-weight:900;
   pointer-events:none;
-  animation:xpUp 1.1s ease-out forwards;
+  animation:xpUp 1.2s ease-out forwards;
 }
-@keyframes xpUp{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-20px) scale(0.7)}}
+.xpop.like {color:#4ecdc4;text-shadow:0 0 14px rgba(78,205,196,0.9);}
+.xpop.bonus{color:#ffd700;text-shadow:0 0 14px rgba(255,215,0,0.9);}
+@keyframes xpUp{
+  0%  {opacity:1;transform:translateY(0)}
+  100%{opacity:0;transform:translateY(-26px) scale(0.65)}
+}
 
-/* Level-up: subtle purple radial pulse, no hard flash */
+/* ── Level-up pulse ── */
 .lvlup{
   position:fixed;inset:0;pointer-events:none;
-  background:radial-gradient(ellipse at center,rgba(171,71,188,0.35) 0%,transparent 65%);
-  animation:lvlP 1.2s ease-out forwards;
-  z-index:99;
+  background:radial-gradient(ellipse at center,rgba(171,71,188,0.4) 0%,transparent 65%);
+  animation:lvlP 1.3s ease-out forwards;z-index:99;
 }
 @keyframes lvlP{0%{opacity:0}20%{opacity:1}100%{opacity:0}}
 
@@ -121,7 +123,10 @@ body{
 <canvas id="bc"></canvas>
 <div class="bar" id="bar">
   <div class="row1">
-    <div class="left"><div class="dot"></div><div class="lbl">Community Level</div></div>
+    <div class="left">
+      <div class="dot"></div>
+      <div class="lbl">Community Level</div>
+    </div>
     <div class="right">
       <div class="boost" id="boost">+0.0% Catch</div>
       <div class="lvl"><span class="sub">LVL</span><span id="lnum">1</span></div>
@@ -130,54 +135,74 @@ body{
   <div class="track"><div class="fill f0" id="fill"></div></div>
   <div class="row2">
     <div class="xt" id="xt">0 / 100 XP</div>
-    <div class="nt" id="nt">0 total likes</div>
+    <div class="nt" id="nt">0 Likes</div>
   </div>
 </div>
+
 <script type="module">
 import{initializeApp}from'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
 import{getDatabase,ref,onValue}from'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
-const db=getDatabase(initializeApp({apiKey:"AIzaSyDdStpC5rVtgaZ4XvtKLwQttnyIDXL2z7Q",authDomain:"trainertrials.firebaseapp.com",databaseURL:"https://trainertrials-default-rtdb.europe-west1.firebasedatabase.app",projectId:"trainertrials",storageBucket:"trainertrials.firebasestorage.app",messagingSenderId:"22071275267",appId:"1:22071275267:web:92e82d6bfaee169aff8336"}));
+const db=getDatabase(initializeApp({
+  apiKey:"AIzaSyDdStpC5rVtgaZ4XvtKLwQttnyIDXL2z7Q",
+  authDomain:"trainertrials.firebaseapp.com",
+  databaseURL:"https://trainertrials-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId:"trainertrials",storageBucket:"trainertrials.firebasestorage.app",
+  messagingSenderId:"22071275267",appId:"1:22071275267:web:92e82d6bfaee169aff8336"
+}));
 
 const MX=100,BS=0.5;
 function xf(l){return Math.floor(100*Math.pow(1.5,l-1));}
 function lo(t){let l=1,u=0;while(l<MX){const n=xf(l);if(u+n>t)return l;u+=n;l++;}return MX;}
 function xi(t){let l=1,u=0;while(l<MX){const n=xf(l);if(u+n>t)return t-u;u+=n;l++;}return 0;}
-function fc(l){if(l>=100)return'f100';if(l>=75)return'f75';if(l>=50)return'f50';if(l>=30)return'f30';if(l>=20)return'f20';if(l>=15)return'f15';if(l>=10)return'f10';if(l>=5)return'f5';return'f0';}
+function fc(l){
+  if(l>=100)return'f100';if(l>=75)return'f75';if(l>=50)return'f50';
+  if(l>=30)return'f30';if(l>=20)return'f20';if(l>=15)return'f15';
+  if(l>=10)return'f10';if(l>=5)return'f5';return'f0';
+}
 function fmt(n){return n>=1e6?(n/1e6).toFixed(1)+'M':n>=1e3?(n/1e3).toFixed(1)+'K':String(Math.floor(n));}
 
 // Burst canvas
 const cv=document.getElementById('bc'),cx=cv.getContext('2d');
-const rsz=()=>{cv.width=innerWidth;cv.height=innerHeight;};rsz();window.addEventListener('resize',rsz);
+const rsz=()=>{cv.width=1080;cv.height=100;};rsz();
 const ps=[];
 class P{
   constructor(){
     const el=document.getElementById('lnum').getBoundingClientRect();
-    const a=Math.random()*Math.PI*2,s=2+Math.random()*5;
+    const a=Math.random()*Math.PI*2,s=2+Math.random()*7;
     this.x=el.left+el.width/2;this.y=el.top+el.height/2;
     this.vx=Math.cos(a)*s;this.vy=Math.sin(a)*s-2;
-    this.s=1.5+Math.random()*2;this.a=1;
-    // Match background palette colors
+    this.s=1.5+Math.random()*2.5;this.a=1;
     this.c=['#667eea','#764ba2','#4ecdc4','#ffd700','#ff6b6b'][Math.floor(Math.random()*5)];
   }
-  tick(){this.x+=this.vx;this.y+=this.vy;this.vy+=0.1;this.a-=0.02;}
-  draw(){cx.save();cx.globalAlpha=this.a;cx.beginPath();cx.arc(this.x,this.y,this.s,0,Math.PI*2);cx.fillStyle=this.c;cx.shadowBlur=8;cx.shadowColor=this.c;cx.fill();cx.restore();}
+  tick(){this.x+=this.vx;this.y+=this.vy;this.vy+=0.1;this.a-=0.018;}
+  draw(){
+    cx.save();cx.globalAlpha=this.a;
+    cx.beginPath();cx.arc(this.x,this.y,this.s,0,Math.PI*2);
+    cx.fillStyle=this.c;cx.shadowBlur=8;cx.shadowColor=this.c;cx.fill();
+    cx.restore();
+  }
 }
-function ploop(){cx.clearRect(0,0,cv.width,cv.height);for(let i=ps.length-1;i>=0;i--){ps[i].tick();ps[i].draw();if(ps[i].a<=0)ps.splice(i,1);}requestAnimationFrame(ploop);}
+function ploop(){
+  cx.clearRect(0,0,1080,100);
+  for(let i=ps.length-1;i>=0;i--){ps[i].tick();ps[i].draw();if(ps[i].a<=0)ps.splice(i,1);}
+  requestAnimationFrame(ploop);
+}
 ploop();
 
-let dXP=0,tXP=0,pL=1,lt=0,first=true;
+let dXP=0,tXP=0,pL=1,first=true,rawLikes=0,rawBonus=0;
 
 function lvlUp(){
   document.body.insertAdjacentHTML('beforeend','<div class="lvlup"></div>');
-  const el=document.querySelector('.lvlup');setTimeout(()=>el.remove(),1200);
-  for(let i=0;i<40;i++)ps.push(new P());
+  const el=document.querySelector('.lvlup');setTimeout(()=>el.remove(),1300);
+  for(let i=0;i<45;i++)ps.push(new P());
 }
-function xpop(n){
+function xpop(n,type){
   const bar=document.getElementById('bar');
-  const el=document.createElement('div');el.className='xpop';el.textContent='+'+n;
-  bar.appendChild(el);setTimeout(()=>el.remove(),1100);
+  const el=document.createElement('div');
+  el.className=`xpop ${type}`;
+  el.textContent=type==='bonus'?`+${n} XP ✨`:`+${n}`;
+  bar.appendChild(el);setTimeout(()=>el.remove(),1200);
 }
-
 function tick(){
   if(Math.abs(tXP-dXP)>0.3)dXP+=(tXP-dXP)*0.07;else dXP=tXP;
   const l=lo(Math.floor(dXP)),i=xi(Math.floor(dXP)),n=l<MX?xf(l):1;
@@ -190,14 +215,21 @@ function tick(){
   const fill=document.getElementById('fill');
   fill.style.width=p+'%';fill.className=`fill ${fc(l)}`;
   document.getElementById('xt').textContent=l>=MX?'MAX LEVEL':`${fmt(i)} / ${fmt(n)} XP`;
-  document.getElementById('nt').textContent=l>=MX?'🌟 MAX BOOST':`${fmt(dXP)} total likes`;
+  const bonusStr=rawBonus>0?` · +${fmt(rawBonus)} ✨`:'';
+  document.getElementById('nt').textContent=l>=MX?'🌟 MAX BOOST':`${fmt(rawLikes)} Likes${bonusStr}`;
   requestAnimationFrame(tick);
 }
+
 onValue(ref(db,'global/total_likes_ever'),s=>{
-  const t=s.val()||0;
-  if(!first&&t>lt)xpop(t-lt);
-  lt=t;tXP=t;
-  if(first){dXP=t;pL=lo(t);first=false;}
+  const t=s.val()||0,delta=t-rawLikes;
+  rawLikes=t;tXP=rawLikes+rawBonus;
+  if(first){dXP=tXP;pL=lo(tXP);first=false;}
+  else if(delta>0)xpop(delta,'like');
+});
+onValue(ref(db,'global/total_xp_bonus'),s=>{
+  const t=s.val()||0,delta=t-rawBonus;
+  rawBonus=t;tXP=rawLikes+rawBonus;
+  if(!first&&delta>0)xpop(delta,'bonus');
 });
 tick();
 </script>

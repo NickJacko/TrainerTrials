@@ -1,517 +1,711 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-<meta charset="UTF-8">
-<title>Ice — Arktisches Nordlicht</title>
+<meta charset="UTF-8"/>
+<title>Ice — Drei Uhr morgens im Winter</title>
 <style>
-  *{margin:0;padding:0;box-sizing:border-box}
-  html,body{
-    width:1080px;height:1920px;overflow:hidden;
-    background:radial-gradient(ellipse 100% 80% at 50% 20%, #001530 0%, #000c1e 45%, #000408 100%);
-  }
-  canvas{position:absolute;inset:0;width:1080px;height:1920px;display:block;}
-
-  /* Star field base */
-  .stars{
-    position:absolute;top:0;left:0;right:0;height:1100px;
-    background-image:
-      radial-gradient(circle 1px at 12% 8%, rgba(255,255,255,0.85), transparent),
-      radial-gradient(circle 1px at 28% 5%, rgba(200,230,255,0.7), transparent),
-      radial-gradient(circle 1px at 45% 12%, rgba(255,255,255,0.9), transparent),
-      radial-gradient(circle 1px at 67% 4%, rgba(200,220,255,0.75), transparent),
-      radial-gradient(circle 1px at 83% 9%, rgba(255,255,255,0.8), transparent),
-      radial-gradient(circle 1px at 92% 15%, rgba(220,240,255,0.7), transparent),
-      radial-gradient(circle 1px at 8%  22%, rgba(255,255,255,0.65), transparent),
-      radial-gradient(circle 1px at 35% 18%, rgba(200,230,255,0.8), transparent),
-      radial-gradient(circle 1px at 55% 7%, rgba(255,255,255,0.75), transparent),
-      radial-gradient(circle 1px at 74% 20%, rgba(210,235,255,0.7), transparent),
-      radial-gradient(circle 1px at 19% 35%, rgba(255,255,255,0.55), transparent),
-      radial-gradient(circle 1px at 88% 28%, rgba(255,255,255,0.65), transparent),
-      radial-gradient(circle 2px at 52% 25%, rgba(200,230,255,0.4), transparent),
-      radial-gradient(circle 1px at 38% 40%, rgba(255,255,255,0.45), transparent),
-      radial-gradient(circle 1px at 6%  48%, rgba(200,220,255,0.5), transparent),
-      radial-gradient(circle 1px at 96% 42%, rgba(255,255,255,0.5), transparent);
-  }
-
-  /* Distant mountain silhouette */
-  .mountains{
-    position:absolute;bottom:480px;left:0;right:0;height:340px;
-    background:#000c18;
-    clip-path:polygon(
-      0 100%, 0 70%, 4% 62%, 9% 72%, 14% 52%, 19% 65%, 24% 44%,
-      29% 58%, 34% 38%, 39% 54%, 44% 36%, 49% 50%, 54% 33%,
-      59% 48%, 64% 30%, 69% 46%, 74% 34%, 79% 52%, 84% 38%,
-      89% 55%, 94% 42%, 98% 60%, 100% 65%, 100% 100%);
-  }
-  .mountain-snow{
-    position:absolute;bottom:680px;left:0;right:0;height:80px;
-    background:rgba(160,200,240,0.1);
-    clip-path:polygon(
-      4% 100%, 9% 55%, 14% 100%, 24% 30%, 29% 100%, 34% 20%,
-      39% 100%, 44% 18%, 49% 100%, 54% 15%, 59% 100%, 64% 12%,
-      69% 100%, 74% 18%, 79% 100%, 84% 22%, 89% 100%);
-    filter:blur(2px);
-  }
-
-  /* Icebergs */
-  .iceberg{position:absolute;mix-blend-mode:screen;}
-  .ib1{bottom:380px;left:30px;width:260px;height:200px;
-    background:linear-gradient(135deg,rgba(160,220,255,0.18) 0%,rgba(80,160,220,0.1) 60%,transparent 100%);
-    clip-path:polygon(15% 100%,0 60%,12% 30%,25% 45%,40% 15%,55% 35%,70% 20%,85% 40%,100% 60%,88% 100%);
-    filter:blur(1px);}
-  .ib2{bottom:340px;right:60px;width:220px;height:180px;
-    background:linear-gradient(150deg,rgba(140,210,255,0.15) 0%,rgba(60,140,200,0.08) 60%,transparent 100%);
-    clip-path:polygon(0 100%,5% 55%,18% 25%,35% 45%,50% 10%,65% 38%,80% 22%,92% 50%,100% 70%,100% 100%);
-    filter:blur(1px);}
-  .ib3{bottom:360px;left:320px;width:180px;height:150px;
-    background:linear-gradient(140deg,rgba(180,230,255,0.12) 0%,rgba(100,170,230,0.06) 60%,transparent 100%);
-    clip-path:polygon(10% 100%,0 65%,20% 30%,38% 50%,55% 20%,72% 45%,88% 32%,100% 55%,90% 100%);
-    filter:blur(1px);}
-  /* Iceberg glow from aurora */
-  .ib-glow{
-    position:absolute;bottom:340px;left:0;right:0;height:120px;
-    background:linear-gradient(180deg,transparent 0%,rgba(0,200,150,0.06) 60%,rgba(0,160,200,0.04) 100%);
-    mix-blend-mode:screen;
-    animation:ibGlow 7s ease-in-out infinite;
-  }
-  @keyframes ibGlow{0%,100%{opacity:0.6}50%{opacity:1}}
-
-  /* Ice plain */
-  .ice-plain{
-    position:absolute;bottom:0;left:0;right:0;height:420px;
-    background:
-      linear-gradient(0deg, #000c1c 0%, #001428 35%, #001830 70%, transparent 100%);
-  }
-  /* Ice surface sheen */
-  .ice-sheen{
-    position:absolute;bottom:0;left:0;right:0;height:300px;
-    background:
-      radial-gradient(ellipse 80% 30% at 30% 100%, rgba(0,180,200,0.08) 0%, transparent 60%),
-      radial-gradient(ellipse 60% 25% at 70% 100%, rgba(0,160,220,0.06) 0%, transparent 55%),
-      radial-gradient(ellipse 100% 20% at 50% 100%, rgba(0,200,180,0.05) 0%, transparent 50%);
-    mix-blend-mode:screen;
-    animation:sheenShift 10s ease-in-out infinite alternate;
-  }
-  @keyframes sheenShift{0%{transform:translateX(0)}100%{transform:translateX(20px)}}
-
-  /* Ring ice glow from below */
-  .ring-ice-glow{
-    position:absolute;top:230px;left:50%;transform:translateX(-50%);
-    width:760px;height:760px;border-radius:50%;
-    background:radial-gradient(ellipse 100% 100% at 50% 50%,
-      rgba(0,220,200,0.12) 0%,
-      rgba(0,180,220,0.06) 40%,
-      transparent 65%);
-    mix-blend-mode:screen;filter:blur(20px);
-    animation:icePulse 5s ease-in-out infinite;
-  }
-  @keyframes icePulse{0%,100%{opacity:0.7;transform:translateX(-50%) scale(1)}50%{opacity:1;transform:translateX(-50%) scale(1.03)}}
-
-  /* UI zones */
-  .center-darken{position:absolute;top:300px;left:50%;transform:translateX(-50%);width:780px;height:540px;background:radial-gradient(ellipse 50% 50% at 50% 50%,rgba(0,8,20,0.42) 0%,transparent 70%);z-index:38;}
-  .vignette{position:absolute;inset:0;background:radial-gradient(ellipse 80% 70% at 50% 50%,transparent 40%,rgba(0,0,10,0.72) 100%);z-index:39;pointer-events:none;}
-  .zone-top{position:absolute;top:0;left:0;right:0;height:120px;background:linear-gradient(180deg,rgba(0,0,0,0.5) 0%,transparent 100%);z-index:40;}
-  .zone-bot{position:absolute;bottom:0;left:0;right:0;height:920px;background:linear-gradient(0deg,rgba(0,0,12,0.65) 0%,rgba(0,0,12,0.15) 40%,transparent 100%);z-index:40;}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{
+  width:1080px;height:1920px;
+  overflow:hidden;
+  background:#000;
+  position:relative;
+}
+canvas{
+  position:absolute;top:0;left:0;
+  width:1080px;height:1920px;
+  pointer-events:none;
+}
+#zone-top{
+  position:absolute;top:0;left:0;width:1080px;height:120px;
+  background:linear-gradient(to bottom,rgba(0,0,2,0.62) 0%,transparent 100%);
+  z-index:50;pointer-events:none;
+}
+#zone-bot{
+  position:absolute;bottom:0;left:0;width:1080px;height:920px;
+  background:linear-gradient(to top,rgba(0,0,2,0.55) 0%,transparent 100%);
+  z-index:50;pointer-events:none;
+}
+#vignette{
+  position:absolute;top:0;left:0;width:1080px;height:1920px;
+  background:radial-gradient(ellipse 90% 90% at 50% 50%,transparent 32%,rgba(0,0,4,0.70) 100%);
+  z-index:49;pointer-events:none;
+}
+#center-darken{
+  position:absolute;left:150px;top:300px;width:780px;height:540px;
+  background:radial-gradient(ellipse at center,rgba(0,0,4,0.34) 0%,transparent 70%);
+  z-index:48;pointer-events:none;
+}
 </style>
 </head>
 <body>
-  <div class="stars"></div>
-  <div class="mountains"></div>
-  <div class="mountain-snow"></div>
-  <div class="iceberg ib1"></div>
-  <div class="iceberg ib2"></div>
-  <div class="iceberg ib3"></div>
-  <div class="ib-glow"></div>
 
-  <!-- Canvas stack: aurora → ice → ring crystals → particles -->
-  <canvas id="cAurora"></canvas>
-  <canvas id="cIce"></canvas>
-  <canvas id="cRing"></canvas>
-  <canvas id="cParticles"></canvas>
+<canvas id="cvSky"    style="z-index:1"></canvas>
+<canvas id="cvIce"    style="z-index:2"></canvas>
+<canvas id="cvCracks" style="z-index:3"></canvas>
+<canvas id="cvFrost"  style="z-index:4"></canvas>
+<canvas id="cvSnow"   style="z-index:5"></canvas>
+<canvas id="cvTop"    style="z-index:6"></canvas>
 
-  <div class="ice-plain"></div>
-  <div class="ice-sheen"></div>
-  <div class="ring-ice-glow"></div>
-  <div class="center-darken"></div>
-  <div class="vignette"></div>
-  <div class="zone-top"></div>
-  <div class="zone-bot"></div>
+<div id="zone-top"></div>
+<div id="zone-bot"></div>
+<div id="vignette"></div>
+<div id="center-darken"></div>
 
 <script>
-const W=1080, H=1920;
-const RING_CX=540, RING_CY=590, RING_R=300;
+'use strict';
+const W=1080,H=1920,CX=540,CY=590,RING_R=300;
 
-function mkCanvas(id){
-  const c=document.getElementById(id);
-  c.width=W; c.height=H;
-  return c.getContext('2d');
-}
-const auroraCtx  = mkCanvas('cAurora');
-const iceCtx     = mkCanvas('cIce');
-const ringCtx    = mkCanvas('cRing');
-const partCtx    = mkCanvas('cParticles');
+['cvSky','cvIce','cvCracks','cvFrost','cvSnow','cvTop'].forEach(id=>{
+  const c=document.getElementById(id);c.width=W;c.height=H;
+});
+const gc=id=>document.getElementById(id).getContext('2d');
+const ctxSky   =gc('cvSky');
+const ctxIce   =gc('cvIce');
+const ctxCracks=gc('cvCracks');
+const ctxFrost =gc('cvFrost');
+const ctxSnow  =gc('cvSnow');
+const ctxTop   =gc('cvTop');
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   AURORA BOREALIS — 5 animated bands
-   ═══════════════════════════════════════════════════════════════════════════ */
-const auroraBands=[
-  {y:180, amp:55,  freq:0.0028, phOff:0,    speed:0.006, hue:160, sat:100, ht:160, bright:0.45},
-  {y:320, amp:45,  freq:0.0035, phOff:1.2,  speed:0.009, hue:195, sat:95,  ht:130, bright:0.40},
-  {y:220, amp:65,  freq:0.0022, phOff:2.5,  speed:0.005, hue:270, sat:90,  ht:120, bright:0.35},
-  {y:400, amp:40,  freq:0.0042, phOff:3.8,  speed:0.011, hue:175, sat:100, ht:100, bright:0.38},
-  {y:140, amp:70,  freq:0.0018, phOff:0.7,  speed:0.004, hue:210, sat:90,  ht:140, bright:0.32},
-];
-// Per-band phase and flare state
-const bandState=auroraBands.map(()=>({phase:Math.random()*Math.PI*2, flare:0, flareTimer:8+Math.random()*12}));
+document.getElementById('cvIce').style.mixBlendMode   ='screen';
+document.getElementById('cvCracks').style.mixBlendMode='screen';
+document.getElementById('cvFrost').style.mixBlendMode ='screen';
+document.getElementById('cvSnow').style.mixBlendMode  ='screen';
+document.getElementById('cvTop').style.mixBlendMode   ='screen';
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   ICE PLAIN — cracks drawn once
-   ═══════════════════════════════════════════════════════════════════════════ */
-(function buildIceCracks(){
-  iceCtx.clearRect(0,0,W,H);
-  const crackY=H-420;
-  for(let i=0;i<22;i++){
-    const x1=Math.random()*W, y1=crackY+Math.random()*(H-crackY);
-    let cx=x1,cy=y1;
-    const len=3+Math.floor(Math.random()*8);
-    const a=Math.random()*Math.PI*2;
-    iceCtx.beginPath(); iceCtx.moveTo(cx,cy);
-    for(let s=0;s<len;s++){
-      const na=a+(Math.random()-0.5)*0.6;
-      cx+=Math.cos(na)*18+Math.random()*10;
-      cy+=Math.sin(na)*6+Math.random()*4;
-      iceCtx.lineTo(cx,cy);
+let t=0,last=performance.now();
+const rng=(a,b)=>a+(b-a)*Math.random();
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const lerp=(a,b,x)=>a+(b-a)*x;
+const hash=(n)=>{ let x=Math.sin(n)*43758.5453; return x-Math.floor(x); };
+
+// ─────────────────────────────────────────────────────────────────────────────
+// LAYER 1 — SKY: Winterhimmel, 3 Uhr morgens
+// Tiefstes Blau-Schwarz, klare scharfe Sterne, Mond
+// ─────────────────────────────────────────────────────────────────────────────
+const STARS=Array.from({length:320},(_,i)=>({
+  x:hash(i*127.1)*W,
+  y:hash(i*311.7)*H*0.52,
+  r:rng(0.3,1.9),
+  a:rng(0.3,0.95),
+  ph:rng(0,Math.PI*2),
+  sp:rng(0.2,1.0), // slow twinkle — winter air is clear
+  blue:Math.random()<0.2, // some blue-tinted stars
+}));
+
+// Moon position — high, slightly off-center
+const MOON={x:W*0.72, y:H*0.08, r:52};
+
+function drawSky(){
+  const c=ctxSky;
+  c.clearRect(0,0,W,H);
+
+  // Deep winter night sky — very dark blue, not black
+  const bg=c.createLinearGradient(0,0,0,H);
+  bg.addColorStop(0,   '#00000d');
+  bg.addColorStop(0.15,'#00010f');
+  bg.addColorStop(0.35,'#000212');
+  bg.addColorStop(0.55,'#010408');
+  bg.addColorStop(0.75,'#020504');
+  bg.addColorStop(1,   '#030604');
+  c.fillStyle=bg; c.fillRect(0,0,W,H);
+
+  // Moon glow — cold, no warmth
+  const moonGlow=c.createRadialGradient(MOON.x,MOON.y,0,MOON.x,MOON.y,320);
+  moonGlow.addColorStop(0,  `rgba(200,215,240,${0.08+0.02*Math.sin(t*0.05)})`);
+  moonGlow.addColorStop(0.2,`rgba(150,175,210,0.04)`);
+  moonGlow.addColorStop(0.5,`rgba(80,110,160,0.02)`);
+  moonGlow.addColorStop(1,  'rgba(0,0,0,0)');
+  c.fillStyle=moonGlow; c.fillRect(0,0,W,H);
+
+  // Moon disk
+  c.save();
+  // Outer corona
+  [80,40,18].forEach((lr,pass)=>{
+    const la=[0.04,0.08,0.18][pass];
+    c.globalAlpha=la;
+    const cg=c.createRadialGradient(MOON.x,MOON.y,MOON.r,MOON.x,MOON.y,MOON.r+lr);
+    cg.addColorStop(0,`rgba(210,225,245,0.5)`);
+    cg.addColorStop(1,'rgba(0,0,0,0)');
+    c.fillStyle=cg;
+    c.beginPath(); c.arc(MOON.x,MOON.y,MOON.r+lr,0,Math.PI*2); c.fill();
+  });
+  // Moon face
+  c.globalAlpha=1;
+  const mf=c.createRadialGradient(MOON.x-12,MOON.y-10,0,MOON.x,MOON.y,MOON.r);
+  mf.addColorStop(0,  'rgba(235,242,255,0.96)');
+  mf.addColorStop(0.4,'rgba(215,228,248,0.92)');
+  mf.addColorStop(0.85,'rgba(185,205,235,0.85)');
+  mf.addColorStop(1,  'rgba(160,185,220,0.6)');
+  c.fillStyle=mf;
+  c.shadowColor='rgba(190,210,240,0.4)'; c.shadowBlur=20;
+  c.beginPath(); c.arc(MOON.x,MOON.y,MOON.r,0,Math.PI*2); c.fill();
+  c.shadowBlur=0;
+  // Subtle mare (dark patches on moon)
+  [{x:-12,y:8,r:16},{x:14,y:-14,r:11},{x:5,y:20,r:9}].forEach(m=>{
+    const mg=c.createRadialGradient(MOON.x+m.x,MOON.y+m.y,0,MOON.x+m.x,MOON.y+m.y,m.r);
+    mg.addColorStop(0,'rgba(140,165,200,0.35)');
+    mg.addColorStop(1,'rgba(0,0,0,0)');
+    c.fillStyle=mg; c.beginPath(); c.arc(MOON.x+m.x,MOON.y+m.y,m.r,0,Math.PI*2); c.fill();
+  });
+  c.restore();
+
+  // Stars — clear, sharp, cold. No heat shimmer.
+  STARS.forEach((s,i)=>{
+    const twinkle=0.55+0.45*Math.sin(t*s.sp+s.ph);
+    const a=s.a*twinkle;
+    c.globalAlpha=a;
+    if(s.blue){
+      c.fillStyle='rgba(170,195,255,1)';
+      c.shadowColor='rgba(150,180,255,0.6)'; c.shadowBlur=s.r*3;
+    } else {
+      c.fillStyle='rgba(230,238,255,1)';
+      c.shadowColor='rgba(200,215,245,0.5)'; c.shadowBlur=s.r*2;
     }
-    const alpha=0.04+Math.random()*0.08;
-    iceCtx.strokeStyle=`rgba(100,200,240,${alpha})`;
-    iceCtx.lineWidth=0.8+Math.random()*1.2;
-    iceCtx.stroke();
+    c.beginPath(); c.arc(s.x,s.y,s.r,0,Math.PI*2); c.fill();
+    c.shadowBlur=0;
+  });
+  c.globalAlpha=1;
+
+  // Moonlight column — faint column of light descending from moon
+  const mlCol=c.createLinearGradient(MOON.x,MOON.y+MOON.r,MOON.x,H*0.6);
+  mlCol.addColorStop(0,   `rgba(190,210,240,0.025)`);
+  mlCol.addColorStop(0.4,`rgba(160,185,220,0.015)`);
+  mlCol.addColorStop(1,  'rgba(0,0,0,0)');
+  c.fillStyle=mlCol;
+  c.fillRect(MOON.x-80,MOON.y+MOON.r,160,H*0.6-MOON.y-MOON.r);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// LAYER 2 — ICE: zugefrorener See, Mondlicht, tiefes Wasser darunter
+// ─────────────────────────────────────────────────────────────────────────────
+
+// Ice depth zones — opacity layers showing different ice thickness
+// Thin ice = dark water visible, thick ice = lit blue from inside
+const ICE_PATCHES=Array.from({length:22},(_,i)=>({
+  x:rng(0,W),
+  y:rng(H*0.3,H),
+  rx:rng(80,280),
+  ry:rng(40,140),
+  angle:rng(0,Math.PI),
+  thick:rng(0,1), // 0=thin (water visible), 1=thick (opaque blue)
+  phase:rng(0,Math.PI*2),
+  speed:rng(0.008,0.018),
+}));
+
+// Deep water patches — visible through thin ice, black and still
+const WATER_DARK=Array.from({length:8},()=>({
+  x:rng(60,W-60),
+  y:rng(H*0.4,H-60),
+  rx:rng(40,120),
+  ry:rng(20,60),
+  alpha:rng(0.12,0.28),
+  angle:rng(0,Math.PI),
+}));
+
+// Moon reflection on ice
+function drawIce(){
+  const c=ctxIce;
+  c.clearRect(0,0,W,H);
+
+  // Base ice surface — dark blue-grey fill for the whole lower area
+  const iceBase=c.createLinearGradient(0,H*0.28,0,H);
+  iceBase.addColorStop(0,'rgba(0,0,0,0)');
+  iceBase.addColorStop(0.06,`rgba(8,14,22,0.55)`);
+  iceBase.addColorStop(0.3, `rgba(12,20,32,0.65)`);
+  iceBase.addColorStop(0.65,`rgba(10,18,28,0.75)`);
+  iceBase.addColorStop(1,   `rgba(8,14,24,0.85)`);
+  c.fillStyle=iceBase; c.fillRect(0,H*0.28,W,H*0.72);
+
+  // Ice thickness patches — blueish white where thick, dark where thin
+  ICE_PATCHES.forEach(ip=>{
+    const pulse=0.8+0.2*Math.sin(t*ip.speed+ip.phase);
+    const hue=lerp(210,195,ip.thick);
+    const lig=lerp(6,35,ip.thick);
+    const sat=lerp(30,55,ip.thick);
+    const a=lerp(0.06,0.22,ip.thick)*pulse;
+    c.save();
+    c.globalAlpha=a;
+    c.translate(ip.x,ip.y); c.rotate(ip.angle);
+    const g=c.createRadialGradient(0,0,0,0,0,ip.rx);
+    g.addColorStop(0,  `hsl(${hue},${sat}%,${lig}%)`);
+    g.addColorStop(0.5,`hsl(${hue},${sat-12}%,${lig*0.5}%)`);
+    g.addColorStop(1,  'rgba(0,0,0,0)');
+    c.scale(1,ip.ry/ip.rx);
+    c.fillStyle=g;
+    c.shadowColor=`hsl(${hue},${sat}%,${lig+10}%)`;
+    c.shadowBlur=ip.thick*30*pulse;
+    c.beginPath(); c.arc(0,0,ip.rx,0,Math.PI*2); c.fill();
+    c.shadowBlur=0;
+    c.restore();
+  });
+
+  // Deep water — black abyss under thin ice
+  WATER_DARK.forEach(wd=>{
+    c.save();
+    c.globalAlpha=wd.alpha;
+    c.translate(wd.x,wd.y); c.rotate(wd.angle);
+    const g=c.createRadialGradient(0,0,0,0,0,wd.rx);
+    g.addColorStop(0,'rgba(2,4,8,0.95)');
+    g.addColorStop(0.5,'rgba(4,8,14,0.6)');
+    g.addColorStop(1,'rgba(0,0,0,0)');
+    c.scale(1,wd.ry/wd.rx);
+    c.fillStyle=g; c.beginPath(); c.arc(0,0,wd.rx,0,Math.PI*2); c.fill();
+    c.restore();
+  });
+
+  // Moonlight reflection — shimmering oval of white on ice
+  const moonIceX=CX+80, moonIceY=H*0.68;
+  const shimmer=0.5+0.5*Math.sin(t*0.4);
+  const shimmer2=0.5+0.5*Math.sin(t*0.28+1.3);
+  // Outer diffuse glow
+  const moonRef=c.createRadialGradient(moonIceX,moonIceY,0,moonIceX,moonIceY,280);
+  moonRef.addColorStop(0,  `rgba(195,215,245,${0.07+0.03*shimmer})`);
+  moonRef.addColorStop(0.3,`rgba(160,190,230,${0.04+0.02*shimmer2})`);
+  moonRef.addColorStop(0.65,'rgba(110,145,195,0.02)');
+  moonRef.addColorStop(1,  'rgba(0,0,0,0)');
+  c.fillStyle=moonRef; c.fillRect(0,0,W,H);
+  // Core bright reflection
+  c.save();
+  c.translate(moonIceX,moonIceY); c.scale(1,0.28); // squash for perspective
+  [60,28,10,3].forEach((lr,pass)=>{
+    const la=[0.04,0.08,0.18,0.55][pass]*(0.7+0.3*shimmer);
+    c.fillStyle=`rgba(210,228,250,${la})`;
+    c.shadowColor='rgba(200,220,248,0.5)'; c.shadowBlur=lr*3;
+    c.beginPath(); c.arc(0,0,MOON.r+lr,0,Math.PI*2); c.fill();
+    c.shadowBlur=0;
+  });
+  c.restore();
+
+  // Ice surface sheen — horizontal shimmer bands
+  for(let sh=0;sh<12;sh++){
+    const sy=H*0.32+sh*120+Math.sin(t*0.08+sh)*30;
+    const sa=(0.015+0.01*Math.sin(t*0.12+sh))*Math.abs(Math.sin(t*0.06+sh*0.4));
+    const sg=c.createLinearGradient(0,sy-4,0,sy+4);
+    sg.addColorStop(0,'rgba(0,0,0,0)');
+    sg.addColorStop(0.5,`rgba(180,205,235,${sa})`);
+    sg.addColorStop(1,'rgba(0,0,0,0)');
+    c.fillStyle=sg; c.fillRect(0,sy-4,W,8);
   }
-  // Reflection shimmer lines
-  for(let i=0;i<8;i++){
-    const rx=100+Math.random()*880;
-    const rg=iceCtx.createLinearGradient(rx,crackY,rx+Math.random()*80-40,H);
-    rg.addColorStop(0,'rgba(0,200,220,0)');
-    rg.addColorStop(0.4,`rgba(0,180,220,${0.04+Math.random()*0.06})`);
-    rg.addColorStop(1,'rgba(0,200,220,0)');
-    iceCtx.strokeStyle=rg;
-    iceCtx.lineWidth=1.5+Math.random()*2;
-    iceCtx.beginPath();
-    iceCtx.moveTo(rx,crackY);
-    iceCtx.lineTo(rx+(Math.random()-0.5)*40,H);
-    iceCtx.stroke();
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// LAYER 3 — CRACKS: Risse die sich durchs Eis ziehen
+// "ein tiefes Knacken das durch den ganzen See geht"
+// ─────────────────────────────────────────────────────────────────────────────
+
+// Recursive crack builder — like fractal lightning but slower, more deliberate
+function buildCrack(x,y,angle,length,depth,maxD){
+  if(depth>maxD||length<10) return [];
+  const segs=[];
+  let cx=x,cy=y,ca=angle;
+  const steps=Math.max(2,Math.floor(length/20));
+  for(let s=0;s<steps;s++){
+    ca+=rng(-0.25,0.25);
+    const nx=cx+Math.cos(ca)*20;
+    const ny=cy+Math.sin(ca)*20;
+    segs.push({x1:cx,y1:cy,x2:nx,y2:ny,depth});
+    cx=nx; cy=ny;
+    if(s>0&&Math.random()<(0.22-depth*0.04)){
+      const bAngle=ca+(Math.random()<0.5?1:-1)*rng(0.4,0.9);
+      segs.push(...buildCrack(cx,cy,bAngle,length*rng(0.3,0.55),depth+1,maxD));
+    }
   }
+  return segs;
+}
+
+// Main cracks — long, deliberate, radiating outward
+const CRACK_ORIGINS=[
+  {x:CX-180,  y:H*0.55, angle:-0.3,  len:350, maxD:4},
+  {x:CX+220,  y:H*0.72, angle:2.5,   len:300, maxD:4},
+  {x:180,     y:H*0.62, angle:0.8,   len:280, maxD:3},
+  {x:900,     y:H*0.48, angle:Math.PI+0.4, len:260, maxD:3},
+  {x:CX-40,   y:H*0.88, angle:-1.2,  len:220, maxD:3},
+  {x:CX+150,  y:H*0.41, angle:1.8,   len:240, maxD:4},
+  {x:80,      y:H*0.82, angle:0.2,   len:200, maxD:3},
+  {x:980,     y:H*0.75, angle:Math.PI+0.6, len:190, maxD:3},
+];
+const ALL_CRACKS=CRACK_ORIGINS.flatMap(co=>
+  buildCrack(co.x,co.y,co.angle,co.len,0,co.maxD)
+);
+
+// Pre-render cracks static to offscreen
+const crackOff=document.createElement('canvas');
+crackOff.width=W; crackOff.height=H;
+const crackOffCtx=crackOff.getContext('2d');
+(function prerenderCracks(){
+  const c=crackOffCtx;
+  ALL_CRACKS.forEach(seg=>{
+    const d=seg.depth;
+    const a=lerp(0.55,0.18,d/4);
+    const w=lerp(1.8,0.5,d/4);
+    // Ice blue glow
+    c.strokeStyle=`rgba(140,190,230,${a})`;
+    c.lineWidth=w; c.lineCap='round';
+    c.shadowColor='rgba(160,210,245,0.4)'; c.shadowBlur=w*3;
+    c.beginPath(); c.moveTo(seg.x1,seg.y1); c.lineTo(seg.x2,seg.y2); c.stroke();
+    c.shadowBlur=0;
+  });
 })();
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   ICE CRYSTALS — hexagonal prisms around ring
-   ═══════════════════════════════════════════════════════════════════════════ */
-const CRYSTAL_COUNT=14;
-const crystals=[];
-for(let i=0;i<CRYSTAL_COUNT;i++){
-  const ang=(i/CRYSTAL_COUNT)*Math.PI*2;
-  crystals.push({
-    ang,
-    orbitR: RING_R+75+Math.random()*50,
-    h: 38+Math.random()*55,
-    w: 12+Math.random()*10,
-    rot: Math.random()*0.3-0.15,
-    rotV: (Math.random()-0.5)*0.003,
-    phase: Math.random()*Math.PI*2,
-    speed: 0.012+Math.random()*0.008,
-    hue: 160+Math.random()*120,
-    tilt: (Math.random()-0.5)*0.4,
-  });
-}
+// Animated crack glow — slow breathing luminescence from within
+function drawCracks(){
+  const c=ctxCracks;
+  c.clearRect(0,0,W,H);
 
-function drawHexCrystal(ctx, cx, cy, w, h, rot, hue, bright){
-  ctx.save();
-  ctx.translate(cx, cy);
-  ctx.rotate(rot);
+  // Static crack geometry
+  c.globalAlpha=0.85;
+  c.drawImage(crackOff,0,0);
+  c.globalAlpha=1;
 
-  // Crystal body — hexagonal prism top view
-  const pts6=[];
-  for(let i=0;i<6;i++){
-    const a=(i/6)*Math.PI*2-Math.PI/6;
-    pts6.push({x:Math.cos(a)*w, y:Math.sin(a)*w});
-  }
-
-  // Tall crystal shape: flat hex base, pointed tip above
-  const tipX=Math.sin(0.2)*h*0.3;
-  const tipY=-h;
-
-  // Side faces (trapezoids)
-  for(let i=0;i<6;i++){
-    const p1=pts6[i], p2=pts6[(i+1)%6];
-    const shade=0.4+0.6*((i+0.5)/6);
-    const cg=ctx.createLinearGradient(0,0,0,-h);
-    cg.addColorStop(0,`hsla(${hue},80%,${30*shade}%,0.85)`);
-    cg.addColorStop(0.5,`hsla(${hue+10},85%,${55*shade*bright}%,0.7)`);
-    cg.addColorStop(1,`hsla(${hue+20},90%,${75*bright}%,0.3)`);
-    ctx.fillStyle=cg;
-    ctx.shadowBlur=12; ctx.shadowColor=`hsla(${hue},100%,70%,0.7)`;
-    ctx.beginPath();
-    ctx.moveTo(p1.x,p1.y);
-    ctx.lineTo(p2.x,p2.y);
-    ctx.lineTo(p2.x*0.3+tipX*0.7,p2.y*0.3+tipY*0.7);
-    ctx.lineTo(p1.x*0.3+tipX*0.7,p1.y*0.3+tipY*0.7);
-    ctx.closePath(); ctx.fill();
-  }
-
-  // Top tip (bright point)
-  const tg=ctx.createRadialGradient(tipX,tipY,0,tipX,tipY,w*0.8);
-  tg.addColorStop(0,`hsla(${hue+30},100%,90%,${bright*0.95})`);
-  tg.addColorStop(0.4,`hsla(${hue+10},95%,70%,${bright*0.5})`);
-  tg.addColorStop(1,'rgba(0,0,0,0)');
-  ctx.fillStyle=tg;
-  ctx.shadowBlur=20; ctx.shadowColor=`hsla(${hue},100%,80%,0.9)`;
-  ctx.beginPath(); ctx.arc(tipX,tipY,w*0.5,0,Math.PI*2); ctx.fill();
-
-  // Hex base cap
-  ctx.shadowBlur=0;
-  ctx.strokeStyle=`hsla(${hue},90%,75%,${bright*0.5})`;
-  ctx.lineWidth=0.8;
-  ctx.beginPath();
-  ctx.moveTo(pts6[0].x,pts6[0].y);
-  for(let i=1;i<6;i++) ctx.lineTo(pts6[i].x,pts6[i].y);
-  ctx.closePath(); ctx.stroke();
-
-  ctx.restore();
-}
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   SNOWFLAKE RING — delicate crystals swirling around spawn ring
-   ═══════════════════════════════════════════════════════════════════════════ */
-const snowRing=[];
-for(let i=0;i<24;i++){
-  snowRing.push({
-    angle:(i/24)*Math.PI*2,
-    speed:(0.004+Math.random()*0.006)*(Math.random()<0.5?1:-1),
-    r:RING_R+30+Math.random()*40,
-    size:4+Math.random()*7,
-    phase:Math.random()*Math.PI*2,
-  });
-}
-
-function drawSnowflake(ctx,x,y,size,rotation,alpha){
-  ctx.save();
-  ctx.translate(x,y); ctx.rotate(rotation);
-  ctx.strokeStyle=`rgba(200,240,255,${alpha})`;
-  ctx.lineWidth=1;
-  ctx.shadowBlur=6; ctx.shadowColor=`rgba(150,220,255,${alpha*0.8})`;
-  // 6 arms
-  for(let i=0;i<6;i++){
-    const a=(i/6)*Math.PI*2;
-    ctx.beginPath();
-    ctx.moveTo(0,0);
-    ctx.lineTo(Math.cos(a)*size, Math.sin(a)*size);
-    // side branches
-    const bx=Math.cos(a)*size*0.5, by=Math.sin(a)*size*0.5;
-    ctx.moveTo(bx,by);
-    ctx.lineTo(bx+Math.cos(a+Math.PI/3)*size*0.3, by+Math.sin(a+Math.PI/3)*size*0.3);
-    ctx.moveTo(bx,by);
-    ctx.lineTo(bx+Math.cos(a-Math.PI/3)*size*0.3, by+Math.sin(a-Math.PI/3)*size*0.3);
-    ctx.stroke();
-  }
-  ctx.restore();
-}
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   PARTICLES: Snowfall, Ice glitter, Aurora motes
-   ═══════════════════════════════════════════════════════════════════════════ */
-const snowflakes=[];
-for(let i=0;i<95;i++) snowflakes.push(mkSnow(true));
-function mkSnow(init){
-  return{
-    x:Math.random()*W, y:init?Math.random()*H:-20,
-    r:0.8+Math.random()*2.8,
-    vy:0.4+Math.random()*0.8,
-    vx:(Math.random()-0.5)*0.4-0.3,
-    sway:Math.random()*Math.PI*2,
-    swSp:0.008+Math.random()*0.015,
-    a:0.3+Math.random()*0.5,
-  };
-}
-
-// Ice glitter on the ice plain
-const glitter=[];
-for(let i=0;i<38;i++){
-  glitter.push({
-    x:Math.random()*W,
-    y:H-20-Math.random()*380,
-    phase:Math.random()*Math.PI*2,
-    speed:0.04+Math.random()*0.08,
-    r:0.8+Math.random()*1.8,
-    hue:160+Math.random()*60,
-  });
-}
-
-// Aurora motes drifting along bands
-const auroraMotes=[];
-for(let i=0;i<20;i++){
-  const band=auroraBands[Math.floor(Math.random()*auroraBands.length)];
-  auroraMotes.push({
-    x:Math.random()*W,
-    y:band.y+Math.random()*50,
-    vx:0.3+Math.random()*0.8,
-    phase:Math.random()*Math.PI*2,
-    hue:band.hue,
-    r:1.5+Math.random()*3,
-    a:0.4+Math.random()*0.4,
-  });
-}
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   MAIN LOOP
-   ═══════════════════════════════════════════════════════════════════════════ */
-let t=0;
-
-function loop(){
-  t+=0.016;
-
-  /* ── AURORA ── */
-  auroraCtx.clearRect(0,0,W,H);
-  auroraCtx.globalCompositeOperation='screen';
-
-  // Global breath — slow pulsing intensity
-  const globalBreath=0.65+Math.sin(t*0.22)*0.22+Math.sin(t*0.37)*0.13;
-
-  for(let bi=0;bi<auroraBands.length;bi++){
-    const b=auroraBands[bi];
-    const bs=bandState[bi];
-    bs.phase+=b.speed;
-
-    // Flare logic — occasional brightness spike
-    bs.flareTimer-=0.016;
-    if(bs.flareTimer<0){
-      bs.flare=1;
-      bs.flareTimer=8+Math.random()*16;
-    }
-    if(bs.flare>0) bs.flare=Math.max(0,bs.flare-0.025);
-    const flareBoost=bs.flare*0.6;
-
-    const intensity=globalBreath*(0.6+flareBoost);
-
-    // Draw band as a series of gradient strips
-    const STEPS=W/4;
-    for(let xi=0;xi<=STEPS;xi++){
-      const x=(xi/STEPS)*W;
-      const xNext=((xi+1)/STEPS)*W;
-      const waveMid=Math.sin(x*b.freq+bs.phase+b.phOff)*b.amp;
-      const waveNext=Math.sin(xNext*b.freq+bs.phase+b.phOff)*b.amp;
-      const yMid=b.y+waveMid;
-      const yNext=b.y+waveNext;
-
-      const grad=auroraCtx.createLinearGradient(x,yMid-b.ht*0.5,x,yMid+b.ht);
-      grad.addColorStop(0,`hsla(${b.hue},${b.sat}%,60%,0)`);
-      grad.addColorStop(0.2,`hsla(${b.hue},${b.sat}%,65%,${b.bright*intensity*0.6})`);
-      grad.addColorStop(0.45,`hsla(${b.hue+8},${b.sat}%,72%,${b.bright*intensity})`);
-      grad.addColorStop(0.7,`hsla(${b.hue+15},${b.sat}%,60%,${b.bright*intensity*0.5})`);
-      grad.addColorStop(1,`hsla(${b.hue},${b.sat}%,50%,0)`);
-
-      auroraCtx.fillStyle=grad;
-      auroraCtx.beginPath();
-      auroraCtx.moveTo(x, yMid-b.ht*0.5);
-      auroraCtx.lineTo(xNext, yNext-b.ht*0.5);
-      auroraCtx.lineTo(xNext, yNext+b.ht);
-      auroraCtx.lineTo(x, yMid+b.ht);
-      auroraCtx.fill();
+  // Animated pulse — every few seconds a cold light runs along a crack
+  const crackPulse=t%8; // pulse every 8s
+  if(crackPulse<2.5){
+    const prog=crackPulse/2.5;
+    const mainCrack=ALL_CRACKS.filter(s=>s.depth<2);
+    const idx=Math.floor(prog*mainCrack.length);
+    for(let i=Math.max(0,idx-8);i<Math.min(idx+2,mainCrack.length);i++){
+      const seg=mainCrack[i];
+      const dist=Math.abs(i-idx);
+      const la=Math.max(0,0.7-dist*0.08);
+      c.save();
+      c.globalAlpha=la*(0.5+0.5*Math.sin(t*8));
+      c.strokeStyle='rgba(200,230,255,1)';
+      c.lineWidth=2; c.lineCap='round';
+      c.shadowColor='rgba(180,220,255,0.9)'; c.shadowBlur=12;
+      c.beginPath(); c.moveTo(seg.x1,seg.y1); c.lineTo(seg.x2,seg.y2); c.stroke();
+      c.shadowBlur=0;
+      c.restore();
     }
   }
-  auroraCtx.globalCompositeOperation='source-over';
+}
 
-  /* ── RING: Ice crystals + snowflake ring ── */
-  ringCtx.clearRect(0,0,W,H);
+// ─────────────────────────────────────────────────────────────────────────────
+// LAYER 4 — FROST: Eiskristalle wachsen, Farnmuster, Fenster-Frost
+// "Kristalle wachsen in Richtungen die keine Logik haben"
+// ─────────────────────────────────────────────────────────────────────────────
 
-  // Under-ice glow
-  const iceGlow=0.6+Math.sin(t*1.4)*0.3;
-  const ig=ringCtx.createRadialGradient(RING_CX,RING_CY,0,RING_CX,RING_CY,RING_R+180);
-  ig.addColorStop(0,`rgba(0,220,200,${0.18*iceGlow})`);
-  ig.addColorStop(0.35,`rgba(0,180,220,${0.09*iceGlow})`);
-  ig.addColorStop(0.7,`rgba(0,140,200,${0.04*iceGlow})`);
-  ig.addColorStop(1,'rgba(0,0,0,0)');
-  ringCtx.fillStyle=ig;
-  ringCtx.beginPath(); ringCtx.arc(RING_CX,RING_CY,RING_R+180,0,Math.PI*2); ringCtx.fill();
-
-  // Crystals
-  for(const c of crystals){
-    c.phase+=c.speed;
-    c.rot+=c.rotV;
-    const bright=0.5+Math.sin(c.phase)*0.5;
-    // Color shifts with aurora
-    const hueShift=c.hue+Math.sin(t*0.4+c.ang)*40;
-    const cx=RING_CX+Math.cos(c.ang)*c.orbitR;
-    const cy=RING_CY+Math.sin(c.ang)*c.orbitR;
-    drawHexCrystal(ringCtx,cx,cy,c.w,c.h,c.rot+c.tilt,hueShift,bright);
-  }
-  ringCtx.shadowBlur=0;
-
-  // Snowflake ring
-  for(const sf of snowRing){
-    sf.angle+=sf.speed;
-    sf.phase+=0.04;
-    const glow=0.4+Math.sin(sf.phase)*0.4;
-    const sx=RING_CX+Math.cos(sf.angle)*sf.r;
-    const sy=RING_CY+Math.sin(sf.angle)*sf.r;
-    drawSnowflake(ringCtx,sx,sy,sf.size,sf.angle+t*0.5,glow*0.7);
-  }
-  ringCtx.shadowBlur=0;
-
-  /* ── PARTICLES ── */
-  partCtx.clearRect(0,0,W,H);
-
-  // Snow
-  for(let i=0;i<snowflakes.length;i++){
-    const s=snowflakes[i];
-    s.sway+=s.swSp;
-    s.x+=s.vx+Math.sin(s.sway)*0.5;
-    s.y+=s.vy;
-    if(s.y>H+20) snowflakes[i]=mkSnow(false);
-    partCtx.fillStyle=`rgba(220,240,255,${s.a})`;
-    partCtx.beginPath(); partCtx.arc(s.x,s.y,s.r,0,Math.PI*2); partCtx.fill();
-    // Larger flakes get a small cross shape
-    if(s.r>2){
-      partCtx.strokeStyle=`rgba(220,240,255,${s.a*0.5})`;
-      partCtx.lineWidth=0.6;
-      partCtx.beginPath();
-      partCtx.moveTo(s.x-s.r*1.4,s.y); partCtx.lineTo(s.x+s.r*1.4,s.y);
-      partCtx.moveTo(s.x,s.y-s.r*1.4); partCtx.lineTo(s.x,s.y+s.r*1.4);
-      partCtx.stroke();
+// Recursive frost crystal — dendritic branching
+function buildDendrite(x,y,angle,length,depth,maxD){
+  if(depth>maxD||length<4) return [];
+  const segs=[];
+  const nx=x+Math.cos(angle)*length;
+  const ny=y+Math.sin(angle)*length;
+  segs.push({x1:x,y1:y,x2:nx,y2:ny,depth,len:length});
+  // Symmetric branches — the beauty of ice crystals
+  if(depth<maxD){
+    const branchLen=length*rng(0.45,0.65);
+    const branchAngle=rng(0.4,0.7);
+    segs.push(...buildDendrite(nx,ny,angle+branchAngle,branchLen,depth+1,maxD));
+    segs.push(...buildDendrite(nx,ny,angle-branchAngle,branchLen,depth+1,maxD));
+    // Mid-branch offshoot
+    if(depth<maxD-1){
+      const mx=lerp(x,nx,0.5), my=lerp(y,ny,0.5);
+      const sideLen=length*rng(0.25,0.4);
+      segs.push(...buildDendrite(mx,my,angle+Math.PI/2,sideLen,depth+2,maxD));
+      segs.push(...buildDendrite(mx,my,angle-Math.PI/2,sideLen,depth+2,maxD));
     }
   }
+  return segs;
+}
 
-  // Ice glitter
-  partCtx.save();
-  for(const g of glitter){
-    g.phase+=g.speed;
-    const pulse=Math.max(0,Math.sin(g.phase));
-    if(pulse<0.05) continue;
-    partCtx.shadowBlur=6; partCtx.shadowColor=`hsla(${g.hue},90%,80%,0.8)`;
-    partCtx.fillStyle=`hsla(${g.hue},90%,85%,${pulse*0.85})`;
-    partCtx.beginPath(); partCtx.arc(g.x,g.y,g.r,0,Math.PI*2); partCtx.fill();
+// 6-fold symmetric frost crystal
+function buildHexCrystal(cx,cy,size,maxD){
+  const segs=[];
+  for(let arm=0;arm<6;arm++){
+    const angle=arm/6*Math.PI*2;
+    segs.push(...buildDendrite(cx,cy,angle,size,0,maxD));
   }
-  partCtx.shadowBlur=0; partCtx.restore();
+  return segs;
+}
 
-  // Aurora motes
-  partCtx.save();
-  for(const m of auroraMotes){
-    m.phase+=0.04;
-    m.x+=m.vx;
-    if(m.x>W+50) m.x=-50;
-    const band=auroraBands[auroraMotes.indexOf(m)%auroraBands.length];
-    m.y=band.y+Math.sin(m.x*band.freq+bandState[auroraMotes.indexOf(m)%auroraBands.length].phase)*band.amp
-       +Math.sin(m.phase)*15;
-    const pulse=0.4+Math.sin(m.phase*1.5)*0.4;
-    partCtx.shadowBlur=10; partCtx.shadowColor=`hsla(${m.hue},100%,70%,0.9)`;
-    partCtx.fillStyle=`hsla(${m.hue},100%,80%,${m.a*pulse})`;
-    partCtx.beginPath(); partCtx.arc(m.x,m.y,m.r,0,Math.PI*2); partCtx.fill();
+// Frost cluster positions — edges of screen, corners, low zones
+const FROST_CLUSTERS=[
+  {x:0,    y:H*0.0, size:85, maxD:4, growStart:0},
+  {x:W,    y:H*0.0, size:80, maxD:4, growStart:0},
+  {x:0,    y:H*0.5, size:70, maxD:3, growStart:0},
+  {x:W,    y:H*0.45,size:72, maxD:3, growStart:0},
+  {x:0,    y:H,     size:78, maxD:4, growStart:0},
+  {x:W,    y:H,     size:82, maxD:4, growStart:0},
+  {x:W*0.2,y:H,     size:55, maxD:3, growStart:0},
+  {x:W*0.8,y:H,     size:60, maxD:3, growStart:0},
+  {x:W*0.1,y:H*0.85,size:48, maxD:3, growStart:0},
+  {x:W*0.9,y:H*0.82,size:52, maxD:3, growStart:0},
+  // Smaller crystals scattered on ice
+  {x:180,  y:H*0.52,size:32, maxD:3, growStart:0},
+  {x:840,  y:H*0.61,size:28, maxD:2, growStart:0},
+  {x:360,  y:H*0.76,size:35, maxD:3, growStart:0},
+  {x:720,  y:H*0.84,size:30, maxD:2, growStart:0},
+  {x:500,  y:H*0.94,size:40, maxD:3, growStart:0},
+].map(fc=>({...fc, segs:buildHexCrystal(fc.x,fc.y,fc.size,fc.maxD)}));
+
+// Pre-render frost
+const frostOff=document.createElement('canvas');
+frostOff.width=W; frostOff.height=H;
+const frostOffCtx=frostOff.getContext('2d');
+(function prerenderFrost(){
+  const c=frostOffCtx;
+  FROST_CLUSTERS.forEach(fc=>{
+    fc.segs.forEach(seg=>{
+      const d=seg.depth;
+      const a=lerp(0.55,0.12,d/4);
+      const w=lerp(1.5,0.4,d/4);
+      const hue=lerp(200,185,d/4);
+      c.strokeStyle=`hsla(${hue},65%,78%,${a})`;
+      c.lineWidth=w; c.lineCap='round';
+      c.shadowColor=`hsla(${hue},80%,85%,0.3)`;
+      c.shadowBlur=w*2;
+      c.beginPath(); c.moveTo(seg.x1,seg.y1); c.lineTo(seg.x2,seg.y2); c.stroke();
+      c.shadowBlur=0;
+    });
+  });
+})();
+
+function drawFrost(){
+  const c=ctxFrost;
+  c.clearRect(0,0,W,H);
+  // Frost breathes very subtly with cold
+  const breathe=0.75+0.25*Math.sin(t*0.12);
+  c.globalAlpha=breathe;
+  c.drawImage(frostOff,0,0);
+  c.globalAlpha=1;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// LAYER 5 — SNOW: schwebt, nimmt Umwege, ignoriert Schwerkraft
+// "Jede Flocke nimmt sich Zeit. Geht Umwege."
+// ─────────────────────────────────────────────────────────────────────────────
+
+class Snowflake {
+  constructor(){this.reset(true)}
+  reset(init=false){
+    this.x=init?rng(0,W):rng(-40,W+40);
+    this.y=init?rng(-H,H):rng(-80,-5);
+    // Very slow — snow doesn't hurry
+    this.vy=rng(0.18,0.65);
+    this.vx=rng(-0.25,0.25);
+    this.r=rng(0.8,3.8);
+    this.life=init?Math.random():1;
+    this.decay=rng(0.0003,0.001);
+    this.alpha=rng(0.35,0.9);
+    this.phase=rng(0,Math.PI*2);
+    // Each flake has unique drift personality
+    this.driftAmp=rng(0.3,1.8);
+    this.driftFreq=rng(0.15,0.55);
+    this.driftOff=rng(0,Math.PI*2);
+    // Bigger flakes occasionally sparkle
+    this.sparkle=this.r>2.5&&Math.random()<0.3;
   }
-  partCtx.shadowBlur=0; partCtx.restore();
+  update(dt){
+    // Drift — the unhurried, wandering path
+    this.x+=this.vx*dt*60+this.driftAmp*Math.sin(t*this.driftFreq+this.driftOff)*dt*60;
+    this.y+=this.vy*dt*60;
+    this.life-=this.decay*dt*60;
+    if(this.life<=0||this.y>H+20) this.reset(false);
+  }
+  draw(c){
+    const a=this.alpha*this.life;
+    c.save();
+    c.globalAlpha=a;
+    if(this.sparkle){
+      // Catch of moonlight — brief bright glint
+      const glint=Math.pow(Math.max(0,Math.sin(t*3.5+this.phase)),3);
+      c.fillStyle=`rgba(${lerp(210,255,glint)},${lerp(225,250,glint)},${lerp(245,255,glint)},1)`;
+      c.shadowColor='rgba(210,230,255,0.7)'; c.shadowBlur=this.r*4*glint+this.r*1.5;
+    } else {
+      c.fillStyle='rgba(210,225,245,1)';
+      c.shadowColor='rgba(190,215,245,0.4)'; c.shadowBlur=this.r*1.5;
+    }
+    c.beginPath(); c.arc(this.x,this.y,this.r,0,Math.PI*2); c.fill();
+    c.shadowBlur=0;
+    c.restore();
+  }
+}
+
+// Snow accumulation on ground — static bright band
+function drawSnowGround(c){
+  // Snow layer — top surface bright white
+  const sg=c.createLinearGradient(0,H*0.88,0,H);
+  sg.addColorStop(0,'rgba(0,0,0,0)');
+  sg.addColorStop(0.15,`rgba(80,100,130,${0.12+0.03*Math.sin(t*0.06)})`);
+  sg.addColorStop(0.5, `rgba(100,125,160,0.18)`);
+  sg.addColorStop(1,   `rgba(120,145,180,0.22)`);
+  c.fillStyle=sg; c.fillRect(0,H*0.88,W,H*0.12);
+
+  // Snow surface line — slight bumpiness
+  c.save();
+  c.globalAlpha=0.25+0.05*Math.sin(t*0.08);
+  c.strokeStyle='rgba(180,205,235,0.6)';
+  c.lineWidth=1;
+  c.beginPath();
+  for(let ix=0;ix<=W;ix+=8){
+    const sy=H*0.9+Math.sin(ix*0.02)*6+Math.sin(ix*0.007)*12;
+    ix===0?c.moveTo(ix,sy):c.lineTo(ix,sy);
+  }
+  c.stroke();
+  c.restore();
+}
+
+// Ash — falling snow that already landed, very dim flecks on ice
+const SETTLED=Array.from({length:80},()=>({
+  x:rng(0,W), y:rng(H*0.3,H),
+  r:rng(0.5,1.5), alpha:rng(0.04,0.14),
+  ph:rng(0,Math.PI*2), sp:rng(0.02,0.06),
+}));
+
+const FLAKES=Array.from({length:120},()=>new Snowflake());
+
+function drawSnow(dt){
+  const c=ctxSnow;
+  c.clearRect(0,0,W,H);
+
+  // Settled snow on ice surface
+  SETTLED.forEach(s=>{
+    c.globalAlpha=s.alpha*(0.7+0.3*Math.sin(t*s.sp+s.ph));
+    c.fillStyle='rgba(190,210,235,1)';
+    c.beginPath(); c.arc(s.x,s.y,s.r,0,Math.PI*2); c.fill();
+  });
+  c.globalAlpha=1;
+
+  drawSnowGround(c);
+  FLAKES.forEach(f=>{ f.update(dt); f.draw(c); });
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// LAYER 6 — TOP: Atemwolken + Spawn Ring
+// "Kleine weiße Wolken die kurz existieren und dann verschwinden"
+// ─────────────────────────────────────────────────────────────────────────────
+
+// Breath puffs — appear near ring, float up briefly
+class BreathPuff {
+  constructor(){this.reset()}
+  reset(){
+    // Spawn near ring edge
+    const angle=rng(0,Math.PI*2);
+    const dist=RING_R*rng(0.6,1.1);
+    this.x=CX+Math.cos(angle)*dist;
+    this.y=CY+Math.sin(angle)*dist;
+    this.vy=-(rng(0.3,0.8));
+    this.vx=rng(-0.2,0.2);
+    this.r=rng(12,32);
+    this.life=1;
+    this.decay=rng(0.008,0.018);
+    this.wait=rng(0,12);
+    this.elapsed=Math.random()*this.wait;
+  }
+  update(dt){
+    this.elapsed+=dt;
+    if(this.elapsed<this.wait) return;
+    this.x+=this.vx*dt*60;
+    this.y+=this.vy*dt*60;
+    this.r*=(1+dt*0.5); // expand as it dissipates
+    this.life-=this.decay*dt*60;
+    if(this.life<=0) this.reset();
+  }
+  draw(c){
+    if(this.elapsed<this.wait) return;
+    c.save();
+    c.globalAlpha=this.life*this.life*0.22;
+    const g=c.createRadialGradient(this.x,this.y,0,this.x,this.y,this.r);
+    g.addColorStop(0,  'rgba(200,220,245,0.9)');
+    g.addColorStop(0.4,'rgba(175,198,230,0.5)');
+    g.addColorStop(1,  'rgba(0,0,0,0)');
+    c.fillStyle=g;
+    c.shadowColor='rgba(180,205,235,0.4)'; c.shadowBlur=this.r*0.8;
+    c.beginPath(); c.arc(this.x,this.y,this.r,0,Math.PI*2); c.fill();
+    c.shadowBlur=0;
+    c.restore();
+  }
+}
+const BREATHS=Array.from({length:18},()=>new BreathPuff());
+
+// Ice ring motes — slow, cold, deliberate
+const RING_MOTES=Array.from({length:60},(_,i)=>({
+  angle:i/60*Math.PI*2,
+  speed:rng(-0.002,0.002), // very slow
+  rOff:rng(-0.3,0.3),
+  r:rng(0.8,2.5),
+  life:Math.random(),
+  decay:rng(0.002,0.005),
+  phase:rng(0,Math.PI*2),
+}));
+
+function drawRing(c){
+  // Ice ring — cold blue-white
+  [70,30,12,3].forEach((lw,pass)=>{
+    const la=[0.02,0.055,0.16,0.52][pass]*(0.65+0.35*Math.sin(t*0.55));
+    c.strokeStyle=`rgba(160,200,240,${la})`;
+    c.lineWidth=lw;
+    c.shadowColor='rgba(150,195,238,0.35)';
+    c.shadowBlur=lw*2.5;
+    c.beginPath(); c.arc(CX,CY,RING_R,0,Math.PI*2); c.stroke();
+    c.shadowBlur=0;
+  });
+
+  RING_MOTES.forEach(rm=>{
+    rm.angle+=rm.speed;
+    rm.life-=rm.decay;
+    if(rm.life<=0){rm.life=1;rm.decay=rng(0.002,0.005);}
+    const rx=CX+Math.cos(rm.angle)*(RING_R+rm.rOff*24);
+    const ry=CY+Math.sin(rm.angle)*(RING_R+rm.rOff*24);
+    const ra=rm.life*(0.35+0.45*Math.sin(t*1.5+rm.phase));
+    c.globalAlpha=ra*0.55;
+    c.fillStyle='rgba(185,215,245,1)';
+    c.shadowColor='rgba(170,205,240,0.5)'; c.shadowBlur=rm.r*4;
+    c.beginPath(); c.arc(rx,ry,rm.r,0,Math.PI*2); c.fill();
+    c.shadowBlur=0;
+  });
+  c.globalAlpha=1;
+}
+
+// Cold ambient particles — microscopic ice crystals in the air
+const AIR_ICE=Array.from({length:50},()=>({
+  x:rng(0,W), y:rng(0,H),
+  vx:rng(-0.06,0.06), vy:rng(-0.04,0.04),
+  r:rng(0.4,1.2),
+  alpha:rng(0.05,0.18),
+  ph:rng(0,Math.PI*2),
+  sp:rng(0.3,1.2),
+}));
+
+function drawTop(dt){
+  const c=ctxTop;
+  c.clearRect(0,0,W,H);
+
+  // Ambient ice crystals in air
+  AIR_ICE.forEach(ai=>{
+    ai.x+=ai.vx*dt*60; ai.y+=ai.vy*dt*60;
+    if(ai.x<0) ai.x=W; if(ai.x>W) ai.x=0;
+    if(ai.y<0) ai.y=H; if(ai.y>H) ai.y=0;
+    c.globalAlpha=ai.alpha*(0.5+0.5*Math.sin(t*ai.sp+ai.ph));
+    c.fillStyle='rgba(200,220,248,1)';
+    c.shadowColor='rgba(185,210,245,0.5)'; c.shadowBlur=ai.r*3;
+    c.beginPath(); c.arc(ai.x,ai.y,ai.r,0,Math.PI*2); c.fill();
+    c.shadowBlur=0;
+  });
+  c.globalAlpha=1;
+
+  BREATHS.forEach(b=>{ b.update(dt); b.draw(c); });
+  drawRing(c);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MAIN LOOP
+// ─────────────────────────────────────────────────────────────────────────────
+function loop(now){
+  const dt=Math.min((now-last)/1000,0.05);
+  last=now; t+=dt;
+
+  drawSky();
+  drawIce();
+  drawCracks();
+  drawFrost();
+  drawSnow(dt);
+  drawTop(dt);
 
   requestAnimationFrame(loop);
 }
-
-loop();
+requestAnimationFrame(loop);
 </script>
 </body>
 </html>
