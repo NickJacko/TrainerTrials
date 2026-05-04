@@ -1,579 +1,805 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-<meta charset="UTF-8">
-<title>Wind — Hochgebirge Windauge</title>
+<meta charset="UTF-8"/>
+<title>Wind — Das Unsichtbare</title>
 <style>
-  *{margin:0;padding:0;box-sizing:border-box}
-  html,body{
-    width:1080px;height:1920px;overflow:hidden;
-    background:radial-gradient(ellipse 100% 70% at 50% 0%, #4ac8f0 0%, #1a8fd4 30%, #0d5a9a 65%, #082244 100%);
-  }
-  canvas{position:absolute;inset:0;width:1080px;height:1920px;display:block;}
-
-  /* Deep sky gradient */
-  .sky{
-    position:absolute;inset:0;
-    background:
-      radial-gradient(ellipse 80% 50% at 50% 0%,  rgba(180,240,255,0.35) 0%, transparent 55%),
-      radial-gradient(ellipse 60% 40% at 15% 20%, rgba(100,200,255,0.18) 0%, transparent 50%),
-      radial-gradient(ellipse 55% 38% at 88% 25%, rgba(80,190,250,0.15) 0%, transparent 48%),
-      linear-gradient(180deg, #5ad0f5 0%, #2299e0 18%, #0e6ab8 45%, #093570 80%, #041828 100%);
-  }
-
-  /* Atmospheric haze — light scattering at horizon */
-  .haze{
-    position:absolute;bottom:0;left:0;right:0;height:500px;
-    background:linear-gradient(0deg,
-      rgba(180,235,255,0.22) 0%,
-      rgba(140,210,250,0.12) 30%,
-      rgba(100,190,240,0.06) 60%,
-      transparent 100%);
-    filter:blur(4px);
-  }
-
-  /* Mountain silhouettes */
-  .mtn{position:absolute;bottom:0;left:0;right:0;}
-  .m1{
-    height:680px;background:#0a2040;
-    clip-path:polygon(0 100%,0 55%,4% 40%,9% 55%,14% 32%,19% 50%,24% 22%,29% 44%,34% 14%,39% 38%,44% 8%,49% 35%,54% 10%,59% 38%,64% 18%,69% 42%,74% 28%,79% 50%,84% 35%,89% 55%,94% 42%,100% 58%,100% 100%);
-  }
-  .m2{
-    height:520px;background:#0c2848;
-    clip-path:polygon(0 100%,0 62%,5% 48%,11% 62%,17% 38%,23% 56%,29% 30%,35% 50%,41% 22%,47% 45%,53% 16%,59% 42%,65% 25%,71% 48%,77% 36%,83% 54%,89% 44%,95% 60%,100% 52%,100% 100%);
-  }
-  .m3{
-    height:380px;background:#0e3058;
-    clip-path:polygon(0 100%,0 70%,6% 55%,13% 72%,20% 45%,28% 65%,36% 38%,44% 60%,52% 28%,60% 55%,68% 38%,76% 62%,84% 48%,92% 68%,100% 58%,100% 100%);
-  }
-  /* Snow caps */
-  .snow{position:absolute;bottom:0;left:0;right:0;}
-  .sn1{height:200px;background:rgba(220,240,255,0.12);filter:blur(3px);
-    clip-path:polygon(24% 100%,29% 40%,34% 100%,44% 5%,49% 100%,54% 8%,59% 100%);}
-  .sn2{height:160px;background:rgba(200,230,255,0.08);filter:blur(2px);
-    clip-path:polygon(17% 100%,23% 38%,29% 100%,41% 18%,47% 100%,53% 14%,59% 100%);}
-
-  /* Foreground — alpine meadow at bottom */
-  .meadow{
-    position:absolute;bottom:0;left:0;right:0;height:480px;
-    background:
-      radial-gradient(ellipse 100% 55% at 50% 100%, #0a2810 0%, #062010 25%, #04180a 55%, transparent 75%),
-      linear-gradient(0deg, #061a08 0%, #0c2a12 30%, transparent 100%);
-  }
-  /* Grass silhouettes at very bottom */
-  .grass{
-    position:absolute;bottom:0;left:0;right:0;height:140px;
-    background:#04120608;
-    clip-path:polygon(
-      0 100%,0 65%,1% 40%,2% 65%,3% 30%,4% 55%,5% 20%,6% 50%,7% 35%,8% 60%,
-      9% 25%,10% 55%,11% 38%,12% 62%,13% 28%,14% 50%,15% 18%,16% 45%,17% 32%,18% 55%,
-      20% 22%,22% 50%,24% 30%,26% 58%,28% 20%,30% 48%,32% 35%,34% 60%,36% 24%,38% 52%,
-      40% 18%,42% 46%,44% 30%,46% 55%,48% 22%,50% 50%,52% 35%,54% 60%,56% 25%,58% 52%,
-      60% 18%,62% 48%,64% 32%,66% 56%,68% 22%,70% 50%,72% 36%,74% 62%,76% 28%,78% 54%,
-      80% 20%,82% 48%,84% 34%,86% 58%,88% 24%,90% 52%,92% 38%,94% 62%,96% 30%,98% 55%,
-      100% 40%,100% 100%);
-    animation:grassSway 3s ease-in-out infinite;
-  }
-  @keyframes grassSway{
-    0%,100%{transform:skewX(0deg)}
-    50%{transform:skewX(2.5deg) translateX(4px)}
-  }
-
-  /* Wind streaks background texture */
-  .wind-bg{
-    position:absolute;top:100px;left:0;right:0;height:1200px;
-    background:
-      repeating-linear-gradient(175deg,
-        transparent 0px, transparent 55px,
-        rgba(180,230,255,0.025) 55px, rgba(180,230,255,0.025) 57px),
-      repeating-linear-gradient(172deg,
-        transparent 0px, transparent 85px,
-        rgba(160,215,250,0.02) 85px, rgba(160,215,250,0.02) 87px);
-    animation:windBgMove 4s linear infinite;
-  }
-  @keyframes windBgMove{0%{transform:translateX(0)}100%{transform:translateX(-30px)}}
-
-  /* Ring — eye of the storm */
-  .ring-calm{
-    position:absolute;top:215px;left:50%;transform:translateX(-50%);
-    width:820px;height:820px;border-radius:50%;
-    background:radial-gradient(ellipse 100% 100% at 50% 50%,
-      rgba(180,240,255,0.12) 0%,
-      rgba(100,200,240,0.06) 48%,
-      transparent 68%);
-    mix-blend-mode:screen;filter:blur(18px);
-    animation:calmPulse 5s ease-in-out infinite;
-  }
-  @keyframes calmPulse{0%,100%{opacity:0.65;transform:translateX(-50%) scale(1)}50%{opacity:1;transform:translateX(-50%) scale(1.02)}}
-
-  /* UI */
-  .center-darken{position:absolute;top:300px;left:50%;transform:translateX(-50%);width:780px;height:540px;background:radial-gradient(ellipse 50% 50% at 50% 50%,rgba(0,8,20,0.38) 0%,transparent 70%);z-index:38;}
-  .vignette{position:absolute;inset:0;background:radial-gradient(ellipse 82% 72% at 50% 50%,transparent 36%,rgba(0,5,15,0.72) 100%);z-index:39;pointer-events:none;}
-  .zone-top{position:absolute;top:0;left:0;right:0;height:120px;background:linear-gradient(180deg,rgba(0,0,0,0.45) 0%,transparent 100%);z-index:40;}
-  .zone-bot{position:absolute;bottom:0;left:0;right:0;height:920px;background:linear-gradient(0deg,rgba(0,5,10,0.65) 0%,rgba(0,5,10,0.14) 40%,transparent 100%);z-index:40;}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{
+  width:1080px;height:1920px;
+  overflow:hidden;
+  background:#000;
+  position:relative;
+}
+canvas{
+  position:absolute;top:0;left:0;
+  width:1080px;height:1920px;
+  pointer-events:none;
+}
+#zone-top{
+  position:absolute;top:0;left:0;width:1080px;height:120px;
+  background:linear-gradient(to bottom,rgba(0,0,0,0.55) 0%,transparent 100%);
+  z-index:50;pointer-events:none;
+}
+#zone-bot{
+  position:absolute;bottom:0;left:0;width:1080px;height:920px;
+  background:linear-gradient(to top,rgba(0,0,0,0.50) 0%,transparent 100%);
+  z-index:50;pointer-events:none;
+}
+#vignette{
+  position:absolute;top:0;left:0;width:1080px;height:1920px;
+  background:radial-gradient(ellipse 90% 90% at 50% 50%,transparent 30%,rgba(0,0,0,0.65) 100%);
+  z-index:49;pointer-events:none;
+}
+#center-darken{
+  position:absolute;left:150px;top:300px;width:780px;height:540px;
+  background:radial-gradient(ellipse at center,rgba(0,0,0,0.32) 0%,transparent 70%);
+  z-index:48;pointer-events:none;
+}
 </style>
 </head>
 <body>
-  <div class="sky"></div>
-  <div class="wind-bg"></div>
-  <div class="haze"></div>
 
-  <!-- Canvas stack -->
-  <canvas id="cClouds"></canvas>
-  <canvas id="cRing"></canvas>
-  <canvas id="cBirds"></canvas>
-  <canvas id="cParticles"></canvas>
+<canvas id="cvSky"     style="z-index:1"></canvas>
+<canvas id="cvTerrain" style="z-index:2"></canvas>
+<canvas id="cvBending" style="z-index:3"></canvas>
+<canvas id="cvStreams"  style="z-index:4"></canvas>
+<canvas id="cvVortex"  style="z-index:5"></canvas>
+<canvas id="cvCarried" style="z-index:6"></canvas>
 
-  <div class="mtn"><div class="m1"></div><div class="m2"></div><div class="m3"></div></div>
-  <div class="snow"><div class="sn1"></div><div class="sn2"></div></div>
-  <div class="meadow"></div>
-  <div class="grass"></div>
-  <div class="ring-calm"></div>
-  <div class="center-darken"></div>
-  <div class="vignette"></div>
-  <div class="zone-top"></div>
-  <div class="zone-bot"></div>
+<div id="zone-top"></div>
+<div id="zone-bot"></div>
+<div id="vignette"></div>
+<div id="center-darken"></div>
 
 <script>
-const W=1080, H=1920;
-const RING_CX=540, RING_CY=590, RING_R=300;
+'use strict';
+const W=1080, H=1920, CX=540, CY=590, RING_R=300;
 
-function mkCanvas(id){
-  const c=document.getElementById(id);
-  c.width=W; c.height=H;
-  return c.getContext('2d');
-}
-const cloudCtx = mkCanvas('cClouds');
-const ringCtx  = mkCanvas('cRing');
-const birdsCtx = mkCanvas('cBirds');
-const partCtx  = mkCanvas('cParticles');
+['cvSky','cvTerrain','cvBending','cvStreams','cvVortex','cvCarried'].forEach(id=>{
+  const c=document.getElementById(id); c.width=W; c.height=H;
+});
+const gc=id=>document.getElementById(id).getContext('2d');
+const ctxSky    =gc('cvSky');
+const ctxTerrain=gc('cvTerrain');
+const ctxBending=gc('cvBending');
+const ctxStreams =gc('cvStreams');
+const ctxVortex =gc('cvVortex');
+const ctxCarried=gc('cvCarried');
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   CLOUDS — fast-moving storm clouds + high cirrus
-   ═══════════════════════════════════════════════════════════════════════════ */
-// Main storm cloud puffs — racing with the wind
-const stormClouds=[];
-for(let i=0;i<32;i++){
-  stormClouds.push(mkStormCloud(true));
-}
-function mkStormCloud(init){
-  const y=init?120+Math.random()*900:120+Math.random()*700;
-  return{
-    x:init?(Math.random()*W*1.6-W*0.3):-W*0.4-Math.random()*400,
-    y,
-    rx:80+Math.random()*220,
-    ry:35+Math.random()*65,
-    vx:2+Math.random()*3.5, // fast! these are storm clouds
-    a:0.18+Math.random()*0.32,
-    phase:Math.random()*Math.PI*2,
-    // darker higher up, whiter lower
-    bright:y<400?0.55+Math.random()*0.2:0.75+Math.random()*0.2,
-    fluffy:Math.random()<0.5,
-  };
-}
+document.getElementById('cvTerrain').style.mixBlendMode='screen';
+document.getElementById('cvBending').style.mixBlendMode='screen';
+document.getElementById('cvStreams').style.mixBlendMode ='screen';
+document.getElementById('cvVortex').style.mixBlendMode  ='screen';
+document.getElementById('cvCarried').style.mixBlendMode ='screen';
 
-// Cirrus — thin wispy high-altitude streaks
-const cirrusClouds=[];
-for(let i=0;i<20;i++){
-  cirrusClouds.push(mkCirrus(true));
-}
-function mkCirrus(init){
-  return{
-    x:init?(Math.random()*W*1.8-W*0.4):-300-Math.random()*200,
-    y:80+Math.random()*380,
-    len:120+Math.random()*280,
-    h:4+Math.random()*10,
-    vx:3+Math.random()*4,
-    a:0.06+Math.random()*0.1,
-    curl:(Math.random()-0.5)*0.15,
-  };
-}
+let t=0, last=performance.now();
+const rng=(a,b)=>a+(b-a)*Math.random();
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const lerp=(a,b,x)=>a+(b-a)*x;
+const eio=(x)=>x<.5?2*x*x:1-(-2*x+2)**2/2;
+const hash=(n)=>{ let x=Math.sin(n)*43758.5453; return x-Math.floor(x); };
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   RING: Wind vortex — eye of the storm
-   ═══════════════════════════════════════════════════════════════════════════ */
-// Spiral wind arms
-const WIND_ARMS=6;
-let windRot=0;
+// Wind global state — strength pulses, direction stays mostly right-to-left
+// windStr: 0=calm, 1=max gust
+let windStr=0.5;
+let windTarget=0.5;
+let windChangeTimer=rng(3,8);
 
-// Cloud shreds flying through ring
-const ringShreds=[];
-for(let i=0;i<16;i++) ringShreds.push(mkShred());
-function mkShred(){
-  const side=Math.random()<0.5?-1:1;
-  return{
-    x:RING_CX+side*(RING_R*0.9+Math.random()*RING_R*0.5),
-    y:RING_CY+(Math.random()-0.5)*RING_R*1.2,
-    vx:side>0?-(3+Math.random()*3):(3+Math.random()*3),
-    vy:(Math.random()-0.5)*1.5,
-    life:Math.random(),
-    lifeSpd:0.01+Math.random()*0.015,
-    w:25+Math.random()*55,
-    h:6+Math.random()*12,
-    rot:(Math.random()-0.5)*0.5,
-    a:0.2+Math.random()*0.25,
-  };
-}
-
-// Wind orbit particles — debris caught in the eye
-const ORBIT_COUNT=35;
-const orbitParticles=[];
-for(let i=0;i<ORBIT_COUNT;i++){
-  const ang=(i/ORBIT_COUNT)*Math.PI*2;
-  orbitParticles.push({
-    ang,
-    r:RING_R*0.4+Math.random()*RING_R*0.9,
-    speed:(0.02+Math.random()*0.025)*(Math.random()<0.5?1:-1),
-    phase:Math.random()*Math.PI*2,
-    phaseSp:0.04+Math.random()*0.06,
-    size:1+Math.random()*3,
-    a:0.25+Math.random()*0.45,
-    type:Math.random()<0.4?'leaf':'droplet',
-    hue:Math.random()<0.5?160+Math.random()*30:200+Math.random()*30,
-  });
-}
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   BIRDS — V-formations of geese/migrating birds
-   ═══════════════════════════════════════════════════════════════════════════ */
-const formations=[];
-for(let i=0;i<4;i++){
-  const scale=0.35+Math.random()*0.55;
-  const vCount=5+Math.floor(Math.random()*6);
-  formations.push({
-    x:Math.random()<0.5?-80:W+80,
-    y:180+Math.random()*600,
-    vx:Math.random()<0.5?(1.2+Math.random()*0.8):-(1.2+Math.random()*0.8),
-    vy:(Math.random()-0.5)*0.3,
-    scale,
-    flapPhase:Math.random()*Math.PI*2,
-    flapSp:0.06+Math.random()*0.04,
-    vCount,
-    wobble:Math.random()*Math.PI*2,
-    wobbleSp:0.015+Math.random()*0.02,
-  });
-}
-
-function drawBirdV(ctx,fx,fy,flapAngle,scale,vCount,dir){
-  const spacing=28*scale;
-  for(let vi=0;vi<vCount;vi++){
-    const side=vi%2===0?-1:1;
-    const pos=Math.ceil(vi/2);
-    const bx=fx+side*pos*spacing*0.85*dir;
-    const by=fy+pos*spacing*0.5;
-    // Simple bird — M shape
-    const flap=flapAngle+(vi*0.3);
-    const wingOpen=(Math.cos(flap)+1)*0.5;
-    const s=9*scale;
-    ctx.save();
-    ctx.translate(bx,by);
-    ctx.scale(dir,1);
-    ctx.fillStyle=`rgba(5,15,35,${0.7+scale*0.2})`;
-    ctx.shadowBlur=scale*6;
-    ctx.shadowColor='rgba(100,200,255,0.2)';
-    // Body
-    ctx.beginPath();
-    ctx.ellipse(0,0,s*0.55,s*0.18,0,0,Math.PI*2);
-    ctx.fill();
-    // Wings — classic bird M
-    ctx.beginPath();
-    ctx.moveTo(-s*0.1,0);
-    ctx.bezierCurveTo(-s*0.4,-(s*0.45*wingOpen),-s*0.85,-(s*0.5*wingOpen),-s*1.0,0);
-    ctx.bezierCurveTo(-s*0.85,s*0.15*wingOpen,-s*0.4,s*0.1*wingOpen,-s*0.1,0);
-    ctx.fill();
-    ctx.beginPath();
-    ctx.moveTo(s*0.1,0);
-    ctx.bezierCurveTo(s*0.4,-(s*0.42*wingOpen),s*0.82,-(s*0.48*wingOpen),s*0.95,0);
-    ctx.bezierCurveTo(s*0.82,s*0.14*wingOpen,s*0.4,s*0.1*wingOpen,s*0.1,0);
-    ctx.fill();
-    ctx.shadowBlur=0;
-    ctx.restore();
+function tickWind(dt){
+  windChangeTimer-=dt;
+  if(windChangeTimer<=0){
+    windTarget=rng(0.15,1.0);
+    windChangeTimer=rng(2,7);
   }
+  windStr+=(windTarget-windStr)*dt*0.8;
 }
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   PARTICLES: Wind streaks, rain/mist droplets, leaves, updraft
-   ═══════════════════════════════════════════════════════════════════════════ */
-// Wind streaks — fast horizontal
-const windStreaks=[];
-for(let i=0;i<22;i++) windStreaks.push(mkStreak(true));
-function mkStreak(init){
-  return{
-    x:init?(Math.random()*W*1.4-W*0.2):-200-Math.random()*300,
-    y:init?80+Math.random()*H*0.65:100+Math.random()*800,
-    vx:5+Math.random()*7,
-    vy:(Math.random()-0.5)*0.3,
-    len:40+Math.random()*130,
-    a:0.07+Math.random()*0.14,
-    w:0.6+Math.random()*1.2,
-    hue:195+Math.random()*25,
-  };
-}
+// Horizon / terrain reference
+const HORIZON_Y = H*0.52;  // mountain ridge at this y
 
-// Rain-mist particles — blown horizontal
-const mistDrops=[];
-for(let i=0;i<70;i++){
-  mistDrops.push({
-    x:Math.random()*W,
-    y:Math.random()*H*0.75,
-    vx:4+Math.random()*5,
-    vy:0.8+Math.random()*1.5,
-    len:8+Math.random()*18,
-    a:0.08+Math.random()*0.14,
-  });
-}
+// ─────────────────────────────────────────────────────────────────────────────
+// LAYER 1 — SKY: dramatischer Himmel, rasende Wolken, Jetstream-Feeling
+// ─────────────────────────────────────────────────────────────────────────────
 
-// Leaves/debris caught in wind
-const leaves=[];
-for(let i=0;i<20;i++){
-  leaves.push(mkLeaf(true));
-}
-function mkLeaf(init){
-  return{
-    x:init?(Math.random()*W):(-30),
-    y:init?(600+Math.random()*H*0.4):(800+Math.random()*500),
-    vx:2+Math.random()*4,
-    vy:(Math.random()-0.5)*1.5-0.5,
-    rot:Math.random()*Math.PI*2,
-    rotV:0.05+Math.random()*0.12,
-    size:5+Math.random()*9,
-    a:0.45+Math.random()*0.4,
-    sway:Math.random()*Math.PI*2,
-    swaySp:0.04+Math.random()*0.06,
-    hue:105+Math.random()*40,
-  };
-}
+// Fast-moving cloud layers — multiple speeds, wind-shredded edges
+const CLOUD_LAYERS=[
+  // High altitude — very fast, thin, wispy
+  {y:H*0.05, count:6, speed:2.2, ry:28, lig:72, alpha:0.14, hue:210},
+  {y:H*0.12, count:5, speed:1.8, ry:22, lig:68, alpha:0.12, hue:215},
+  // Mid clouds — moderate speed, thicker
+  {y:H*0.22, count:4, speed:1.1, ry:55, lig:62, alpha:0.18, hue:205},
+  {y:H*0.30, count:5, speed:0.9, ry:70, lig:58, alpha:0.22, hue:208},
+  // Low storm clouds — slower but massive, dark
+  {y:H*0.40, count:3, speed:0.55, ry:130, lig:38, alpha:0.28, hue:205},
+  {y:H*0.46, count:4, speed:0.45, ry:110, lig:32, alpha:0.32, hue:210},
+];
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   MAIN LOOP
-   ═══════════════════════════════════════════════════════════════════════════ */
-let t=0;
+const CLOUDS=CLOUD_LAYERS.flatMap(layer=>
+  Array.from({length:layer.count},(_,i)=>({
+    x: rng(-300,W+300),
+    layer,
+    phase: rng(0,Math.PI*2),
+    rx: rng(180,520),
+    subBlobs: Array.from({length:Math.floor(rng(3,8))},(_,j)=>({
+      ox:rng(-200,200), oy:rng(-40,30), r:rng(0.35,0.75)
+    })),
+  }))
+);
 
-function loop(){
-  t+=0.016;
+// Wispy high-altitude streaks — Jetstream visible in cloud shredding
+const JET_STREAKS=Array.from({length:22},(_,i)=>({
+  y: rng(0, H*0.35),
+  x: rng(-200,W+200),
+  len: rng(200,600),
+  speed: rng(2.5,5.0),
+  phase: rng(0,Math.PI*2),
+  alpha: rng(0.05,0.12),
+  thickness: rng(0.8,3),
+  hue: rng(200,220),
+}));
 
-  /* ── CLOUDS ── */
-  cloudCtx.clearRect(0,0,W,H);
+function drawSky(){
+  const c=ctxSky;
+  c.clearRect(0,0,W,H);
 
-  // Cirrus first (behind)
-  cloudCtx.save();
-  for(let i=0;i<cirrusClouds.length;i++){
-    const c=cirrusClouds[i];
-    c.x+=c.vx;
-    c.curl+=(Math.random()-0.5)*0.003;
-    if(c.x>W+400) cirrusClouds[i]=mkCirrus(false);
-    // Draw as a tapered streak
-    const g=cloudCtx.createLinearGradient(c.x,c.y,c.x+c.len,c.y);
-    g.addColorStop(0,'rgba(255,255,255,0)');
-    g.addColorStop(0.3,`rgba(220,240,255,${c.a})`);
-    g.addColorStop(0.7,`rgba(200,230,255,${c.a*0.6})`);
-    g.addColorStop(1,'rgba(255,255,255,0)');
-    cloudCtx.strokeStyle=g;
-    cloudCtx.lineWidth=c.h;
-    cloudCtx.lineCap='round';
-    cloudCtx.beginPath();
-    cloudCtx.moveTo(c.x,c.y);
-    cloudCtx.quadraticCurveTo(c.x+c.len*0.5,c.y+c.curl*c.len,c.x+c.len,c.y);
-    cloudCtx.stroke();
-  }
-  cloudCtx.restore();
+  // Stormy sky gradient — grey-blue, dramatic
+  const bg=c.createLinearGradient(0,0,0,H);
+  bg.addColorStop(0,   '#060a12');
+  bg.addColorStop(0.12,'#080f1a');
+  bg.addColorStop(0.25,'#0a1420');
+  bg.addColorStop(0.38,'#0c1828');
+  bg.addColorStop(0.50,'#0e1c2e');
+  bg.addColorStop(0.62,'#101f32');
+  bg.addColorStop(0.72,'#0e1c2a');
+  bg.addColorStop(0.82,'#0c1820');
+  bg.addColorStop(1,   '#0a1418');
+  c.fillStyle=bg; c.fillRect(0,0,W,H);
 
-  // Storm clouds
-  cloudCtx.globalCompositeOperation='source-over';
-  for(let i=0;i<stormClouds.length;i++){
-    const c=stormClouds[i];
-    c.x+=c.vx; c.phase+=0.006;
-    if(c.x>W+400) stormClouds[i]=mkStormCloud(false);
-    const pulse=0.92+Math.sin(c.phase)*0.08;
-    const lightness=Math.floor(c.bright*100);
-    const col=`hsla(205,45%,${lightness}%,${c.a*pulse})`;
-    const g=cloudCtx.createRadialGradient(c.x,c.y,0,c.x,c.y,c.rx);
-    g.addColorStop(0,col);
-    g.addColorStop(0.5,`hsla(205,35%,${lightness-10}%,${c.a*pulse*0.55})`);
-    g.addColorStop(1,'rgba(0,0,0,0)');
-    cloudCtx.save();
-    cloudCtx.scale(1,c.ry/c.rx);
-    cloudCtx.fillStyle=g;
-    if(c.fluffy){cloudCtx.shadowBlur=20;cloudCtx.shadowColor=`rgba(200,230,255,${c.a*0.4})`;}
-    cloudCtx.beginPath();cloudCtx.arc(c.x,c.y*(c.rx/c.ry),c.rx,0,Math.PI*2);cloudCtx.fill();
-    cloudCtx.shadowBlur=0;
-    cloudCtx.restore();
-  }
+  // Dramatic backlit sky glow — light breaking through storm
+  const breakLight=c.createRadialGradient(W*0.75,H*0.25,0,W*0.75,H*0.25,650);
+  breakLight.addColorStop(0,  `rgba(180,195,220,${0.08+0.04*Math.sin(t*0.3)})`);
+  breakLight.addColorStop(0.25,`rgba(140,158,185,0.04)`);
+  breakLight.addColorStop(0.5, `rgba(100,118,148,0.02)`);
+  breakLight.addColorStop(1,   'rgba(0,0,0,0)');
+  c.fillStyle=breakLight; c.fillRect(0,0,W,H);
 
-  /* ── RING: Eye of the storm ── */
-  ringCtx.clearRect(0,0,W,H);
-  windRot+=0.015;
+  // Storm horizon glow
+  const stormGlow=c.createLinearGradient(0,HORIZON_Y-200,0,HORIZON_Y+100);
+  stormGlow.addColorStop(0,'rgba(0,0,0,0)');
+  stormGlow.addColorStop(0.4,`rgba(60,75,95,${0.12+0.05*windStr})`);
+  stormGlow.addColorStop(0.75,`rgba(80,95,115,0.18)`);
+  stormGlow.addColorStop(1,'rgba(0,0,0,0)');
+  c.fillStyle=stormGlow; c.fillRect(0,HORIZON_Y-200,W,300);
 
-  // Calm eye glow — clear blue
-  const eyePulse=0.5+Math.sin(t*1.4)*0.3;
-  const eg=ringCtx.createRadialGradient(RING_CX,RING_CY,RING_R*0.2,RING_CX,RING_CY,RING_R+200);
-  eg.addColorStop(0,`rgba(100,220,255,${0.18*eyePulse})`);
-  eg.addColorStop(0.38,`rgba(60,180,240,${0.08*eyePulse})`);
-  eg.addColorStop(1,'rgba(0,0,0,0)');
-  ringCtx.fillStyle=eg;ringCtx.beginPath();ringCtx.arc(RING_CX,RING_CY,RING_R+200,0,Math.PI*2);ringCtx.fill();
-
-  // Wind spiral arms — curving inward
-  ringCtx.save();
-  ringCtx.translate(RING_CX,RING_CY);
-  for(let arm=0;arm<WIND_ARMS;arm++){
-    const armOff=(arm/WIND_ARMS)*Math.PI*2;
-    const hue=190+arm*5;
-    const alpha=0.18+Math.sin(t*1.1+arm*0.9)*0.1;
-    ringCtx.strokeStyle=`hsla(${hue},80%,75%,${alpha})`;
-    ringCtx.lineWidth=1.5-arm*0.05;
-    ringCtx.shadowBlur=8;ringCtx.shadowColor=`rgba(100,210,255,0.4)`;
-    ringCtx.lineCap='round';
-    ringCtx.beginPath();
-    for(let i=0;i<70;i++){
-      const angle=windRot+armOff+i*0.11;
-      const r=6+i*5.2;
-      if(r>RING_R+165) break;
-      const x=Math.cos(angle)*r, y=Math.sin(angle)*r;
-      i===0?ringCtx.moveTo(x,y):ringCtx.lineTo(x,y);
-    }
-    ringCtx.stroke();
-  }
-  ringCtx.restore();ringCtx.shadowBlur=0;
-
-  // Cloud shreds flying through
-  for(let i=0;i<ringShreds.length;i++){
-    const s=ringShreds[i];
-    s.life+=s.lifeSpd; s.x+=s.vx; s.y+=s.vy;
-    if(s.life>=1) ringShreds[i]=mkShred();
-    const fade=Math.sin(s.life*Math.PI);
-    ringCtx.save();
-    ringCtx.translate(s.x,s.y);ringCtx.rotate(s.rot);
-    const sg=ringCtx.createRadialGradient(0,0,0,0,0,s.w);
-    sg.addColorStop(0,`rgba(220,240,255,${s.a*fade})`);
-    sg.addColorStop(0.5,`rgba(180,220,250,${s.a*fade*0.4})`);
+  // Jet streaks — high-altitude wind shredding clouds horizontally
+  JET_STREAKS.forEach(js=>{
+    js.x-=js.speed*windStr*1.2;
+    if(js.x<-js.len-200) js.x=W+200;
+    const pulse=0.7+0.3*Math.sin(t*0.8+js.phase);
+    c.save();
+    c.globalAlpha=js.alpha*pulse*windStr;
+    const sg=c.createLinearGradient(js.x,js.y,js.x+js.len,js.y);
+    sg.addColorStop(0,'rgba(0,0,0,0)');
+    sg.addColorStop(0.2,`hsla(${js.hue},45%,${js.lig||70}%,0.9)`);
+    sg.addColorStop(0.5,`hsla(${js.hue},50%,72%,0.7)`);
+    sg.addColorStop(0.8,`hsla(${js.hue},45%,68%,0.4)`);
     sg.addColorStop(1,'rgba(0,0,0,0)');
-    ringCtx.scale(1,s.h/s.w);
-    ringCtx.fillStyle=sg;
-    ringCtx.beginPath();ringCtx.arc(0,0,s.w,0,Math.PI*2);ringCtx.fill();
-    ringCtx.restore();
+    c.strokeStyle=sg; c.lineWidth=js.thickness;
+    c.beginPath();
+    c.moveTo(js.x, js.y+Math.sin(t*0.4+js.phase)*6);
+    c.lineTo(js.x+js.len, js.y+Math.sin(t*0.4+js.phase+0.5)*4);
+    c.stroke();
+    c.restore();
+  });
+
+  // Clouds — moving fast, shredded by wind
+  CLOUDS.forEach(cl=>{
+    const spd=cl.layer.speed*(0.6+0.4*windStr);
+    cl.x-=spd;
+    if(cl.x<-cl.rx*2-300) cl.x=W+cl.rx*1.5;
+    const pulse=0.82+0.18*Math.sin(t*0.06+cl.phase);
+
+    // Clouds get stretched/shredded horizontally by wind
+    const stretchX=1+windStr*0.8;  // horizontally stretched
+
+    c.save();
+    c.globalAlpha=cl.layer.alpha*pulse;
+    c.translate(cl.x,cl.layer.y);
+    c.scale(stretchX,1);
+
+    const drawBlob=(bx,by,br)=>{
+      const cg=c.createRadialGradient(bx,by-br*0.1,0,bx,by,br);
+      cg.addColorStop(0,  `hsl(${cl.layer.hue},18%,${cl.layer.lig}%)`);
+      cg.addColorStop(0.5,`hsl(${cl.layer.hue},14%,${cl.layer.lig-15}%)`);
+      cg.addColorStop(1,  'rgba(0,0,0,0)');
+      c.fillStyle=cg; c.beginPath(); c.arc(bx,by,br,0,Math.PI*2); c.fill();
+    };
+
+    drawBlob(0,0,cl.rx);
+    cl.subBlobs.forEach(sb=>drawBlob(sb.ox,sb.oy,cl.rx*sb.r));
+    c.restore();
+  });
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// LAYER 2 — TERRAIN: Bergkamm-Silhouette, du stehst auf dem Grat
+// ─────────────────────────────────────────────────────────────────────────────
+
+const terrainOff=document.createElement('canvas');
+terrainOff.width=W; terrainOff.height=H;
+(function buildTerrain(){
+  const c=terrainOff.getContext('2d');
+  c.clearRect(0,0,W,H);
+
+  // Far mountains — dark silhouettes, layered depth
+  const layers=[
+    {col:'rgba(22,28,38,0.85)', yBase:HORIZON_Y+20,  peaks:8,  peakH:320},
+    {col:'rgba(16,22,30,0.92)', yBase:HORIZON_Y+55,  peaks:6,  peakH:250},
+    {col:'rgba(10,14,20,0.96)', yBase:HORIZON_Y+100, peaks:5,  peakH:200},
+  ];
+
+  layers.forEach(layer=>{
+    c.fillStyle=layer.col;
+    c.beginPath();
+    c.moveTo(-10,H);
+    c.lineTo(-10,layer.yBase);
+    for(let i=0;i<=layer.peaks;i++){
+      const px=i*(W/layer.peaks);
+      const peakY=layer.yBase-hash(i*127.1+layer.peakH)*layer.peakH;
+      const nextPX=(i+1)*(W/layer.peaks);
+      const nextPeakY=layer.yBase-hash((i+1)*127.1+layer.peakH)*layer.peakH;
+      if(i===0) c.lineTo(px,peakY);
+      // Bezier curve for natural mountain shape
+      const cpx=(px+nextPX)/2, cpy=Math.min(peakY,nextPeakY)-hash(i*311)*60;
+      c.quadraticCurveTo(cpx,cpy,nextPX,nextPeakY);
+    }
+    c.lineTo(W+10,H); c.closePath(); c.fill();
+  });
+
+  // The ridge we're standing on — foreground
+  // Jagged, close, dark
+  c.fillStyle='rgba(6,8,12,0.98)';
+  c.beginPath();
+  c.moveTo(-10,H);
+  c.lineTo(-10,HORIZON_Y+120);
+  // Left side rises up to left edge
+  c.lineTo(0,HORIZON_Y+80);
+  c.lineTo(60,HORIZON_Y+60);
+  c.lineTo(120,HORIZON_Y+90);
+  c.lineTo(200,HORIZON_Y+50);
+  c.lineTo(280,HORIZON_Y+35);
+  c.lineTo(350,HORIZON_Y+55);
+  // Central ridge — where we stand, highest point
+  c.lineTo(420,HORIZON_Y+18);
+  c.lineTo(480,HORIZON_Y+8);
+  c.lineTo(CX,HORIZON_Y);      // apex of ridge
+  c.lineTo(600,HORIZON_Y+8);
+  c.lineTo(660,HORIZON_Y+22);
+  c.lineTo(730,HORIZON_Y+48);
+  c.lineTo(800,HORIZON_Y+38);
+  c.lineTo(880,HORIZON_Y+58);
+  c.lineTo(950,HORIZON_Y+72);
+  c.lineTo(1020,HORIZON_Y+90);
+  c.lineTo(W+10,HORIZON_Y+110);
+  c.lineTo(W+10,H);
+  c.closePath(); c.fill();
+
+  // Ridge detail — loose rocks, small outcroppings
+  for(let r=0;r<18;r++){
+    const rx=rng(50,W-50);
+    const ry=HORIZON_Y + hash(r*89)*60 + 20;
+    const rr=rng(4,20);
+    c.fillStyle=`rgba(${8+Math.floor(hash(r*53)*10)},${10+Math.floor(hash(r*71)*12)},${14+Math.floor(hash(r*37)*8)},0.9)`;
+    c.beginPath(); c.arc(rx,ry,rr,0,Math.PI*2); c.fill();
+  }
+})();
+
+function drawTerrain(){
+  const c=ctxTerrain;
+  c.clearRect(0,0,W,H);
+  c.drawImage(terrainOff,0,0);
+
+  // Atmospheric haze on far mountains — distance fog
+  const hazeLayers=[
+    {y:HORIZON_Y-80, h:80, a:0.08+0.02*Math.sin(t*0.1)},
+    {y:HORIZON_Y,    h:50, a:0.06},
+  ];
+  hazeLayers.forEach(hl=>{
+    const hg=c.createLinearGradient(0,hl.y,0,hl.y+hl.h);
+    hg.addColorStop(0,'rgba(0,0,0,0)');
+    hg.addColorStop(0.5,`rgba(45,55,72,${hl.a})`);
+    hg.addColorStop(1,'rgba(0,0,0,0)');
+    c.fillStyle=hg; c.fillRect(0,hl.y,W,hl.h);
+  });
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// LAYER 3 — BENDING: Alles was der Wind sichtbar macht
+// Bäume biegen sich, Gras peitscht, das ist Wind — nicht der Wind selbst
+// ─────────────────────────────────────────────────────────────────────────────
+
+// Bent tree — draws a single tree with all branches bent by wind
+function drawBentTree(c, tx, ty, height, thickness, alpha, windAmt){
+  c.save();
+  c.globalAlpha=alpha;
+  c.strokeStyle=`rgba(14,18,22,0.9)`;
+  c.fillStyle=`rgba(14,18,22,0.9)`;
+  c.lineCap='round'; c.lineJoin='round';
+
+  // Wind bends trunk — the lean increases with height
+  const leanMax=windAmt*height*0.55;
+
+  function drawBranch(bx,by,dir,len,thick,depth){
+    if(len<4||thick<0.4) return;
+    const heightFrac=(ty-by)/height;
+    const bendX=leanMax*heightFrac*heightFrac;
+    const ex=bx+Math.cos(dir)*len + bendX*0.15;
+    const ey=by-Math.sin(dir)*len;
+
+    c.lineWidth=thick;
+    c.beginPath(); c.moveTo(bx,by); c.lineTo(ex,ey); c.stroke();
+
+    if(depth<5){
+      const spread=0.35+windAmt*0.25;
+      drawBranch(ex,ey,dir+spread*(1+windAmt*0.3),len*0.62,thick*0.62,depth+1);
+      drawBranch(ex,ey,dir-spread*0.7,len*0.58,thick*0.55,depth+1);
+      if(depth<3) drawBranch(ex,ey,dir+spread*0.1,len*0.7,thick*0.7,depth+1);
+    }
   }
 
-  // Orbital debris — caught in the vortex
-  for(const op of orbitParticles){
-    op.ang+=op.speed;
-    op.phase+=op.phaseSp;
-    // Slightly pulsing orbit radius — breathing vortex
-    const r=op.r+Math.sin(op.phase*0.5)*15;
-    const px=RING_CX+Math.cos(op.ang)*r;
-    const py=RING_CY+Math.sin(op.ang)*r;
-    const pulse=0.4+Math.abs(Math.sin(op.phase))*0.5;
+  // Trunk
+  const trunkLean=leanMax;
+  const trunkTopX=tx+trunkLean;
+  const trunkTopY=ty-height;
+  c.lineWidth=thickness; c.beginPath();
+  c.moveTo(tx,ty);
+  c.bezierCurveTo(tx+trunkLean*0.3,ty-height*0.3,
+                   tx+trunkLean*0.7,ty-height*0.6,
+                   trunkTopX,trunkTopY);
+  c.stroke();
 
-    if(op.type==='leaf'){
-      // Small leaf shape
-      ringCtx.save();
-      ringCtx.translate(px,py);ringCtx.rotate(op.ang+Math.PI/2);
-      ringCtx.fillStyle=`hsla(${op.hue},65%,45%,${op.a*pulse})`;
-      ringCtx.beginPath();
-      ringCtx.ellipse(0,0,op.size,op.size*0.45,0,0,Math.PI*2);
-      ringCtx.fill();
-      ringCtx.restore();
+  // Main branches — grown from top 40% of trunk, all leaning in wind
+  for(let bi=0;bi<5;bi++){
+    const bFrac=0.5+bi*0.1;
+    const bx=lerp(tx,trunkTopX,bFrac);
+    const by=lerp(ty,trunkTopY,bFrac);
+    const baseDir=Math.PI*0.35+windAmt*0.4;
+    const bDir=bi%2===0 ? baseDir : Math.PI-baseDir*0.6;
+    const bLen=height*(0.25-bi*0.02);
+    drawBranch(bx,by,bDir,bLen,thickness*(0.35-bi*0.04),1);
+  }
+
+  c.restore();
+}
+
+// Grass/scrub on ridge — small bent blades
+function drawGrassBlade(c,gx,gy,len,windAmt,alpha){
+  c.save();
+  c.globalAlpha=alpha;
+  c.strokeStyle=`rgba(28,35,22,0.85)`;
+  c.lineWidth=1.2; c.lineCap='round';
+  const bendX=windAmt*len*0.85;
+  const bendY=-len*(1-windAmt*0.3);
+  c.beginPath();
+  c.moveTo(gx,gy);
+  c.bezierCurveTo(gx+bendX*0.3,gy+bendY*0.4,
+                   gx+bendX*0.7,gy+bendY*0.75,
+                   gx+bendX,gy+bendY);
+  c.stroke();
+  c.restore();
+}
+
+// Tree positions on ridge
+const TREES=[
+  {x:80,   y:HORIZON_Y+62,  h:200, w:7,  a:0.7},
+  {x:175,  y:HORIZON_Y+50,  h:240, w:8,  a:0.75},
+  {x:310,  y:HORIZON_Y+40,  h:210, w:7,  a:0.65},
+  {x:420,  y:HORIZON_Y+26,  h:180, w:6,  a:0.6},
+  {x:660,  y:HORIZON_Y+22,  h:185, w:6,  a:0.6},
+  {x:755,  y:HORIZON_Y+36,  h:215, w:7,  a:0.65},
+  {x:880,  y:HORIZON_Y+52,  h:230, w:8,  a:0.7},
+  {x:990,  y:HORIZON_Y+78,  h:195, w:7,  a:0.65},
+  // Far background trees — smaller, on far mountains
+  {x:140,  y:HORIZON_Y-12,  h:120, w:4,  a:0.35},
+  {x:380,  y:HORIZON_Y-8,   h:100, w:3,  a:0.30},
+  {x:700,  y:HORIZON_Y-10,  h:115, w:4,  a:0.32},
+  {x:900,  y:HORIZON_Y-5,   h:105, w:3,  a:0.28},
+];
+
+// Grass blade positions along ridge
+const GRASS_BLADES=Array.from({length:60},(_,i)=>({
+  x:rng(20,W-20),
+  y:HORIZON_Y + hash(i*127.1)*80 + 10,
+  len:rng(12,32),
+  phase:rng(0,Math.PI*2),
+  speed:rng(3,8),
+}));
+
+function drawBending(){
+  const c=ctxBending;
+  c.clearRect(0,0,W,H);
+
+  // Wind gusts make the bend animate — not constant but pulsing
+  const gustPhase=Math.sin(t*0.7)*0.3+Math.sin(t*1.4)*0.15+Math.sin(t*3.1)*0.08;
+  const bendAmt=clamp(windStr*(0.7+gustPhase),0,1);
+
+  // Trees
+  TREES.forEach(tr=>drawBentTree(c,tr.x,tr.y,tr.h,tr.w,tr.a,bendAmt));
+
+  // Grass blades
+  GRASS_BLADES.forEach(gb=>{
+    const localGust=bendAmt*(0.7+0.3*Math.sin(t*gb.speed+gb.phase));
+    drawGrassBlade(c,gb.x,gb.y,gb.len,localGust,0.45+0.25*localGust);
+  });
+
+  // Wind-pushed surface on ridge — dust/debris layer hugging ground
+  const dustY=HORIZON_Y+5;
+  for(let dx=0;dx<W;dx+=8){
+    const dWave=Math.sin(dx*0.012+t*4+Math.sin(t*1.3)*1.5)*3;
+    const da=windStr*(0.04+0.02*Math.sin(dx*0.025+t*3));
+    c.fillStyle=`rgba(65,58,42,${da})`;
+    c.fillRect(dx,dustY+dWave,6,2);
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// LAYER 4 — STREAMS: Windströmungen sichtbar gemacht als Linien
+// Der Jetstream, die Böen, die unsichtbare Geometrie des Windes
+// ─────────────────────────────────────────────────────────────────────────────
+
+// Wind stream lines — the invisible made barely visible
+// Fast horizontal flows at different altitudes
+const WIND_STREAMS=Array.from({length:28},(_,i)=>({
+  y0: rng(0, H*0.85),
+  x: rng(-W,W*2),
+  speed: rng(1.8,6.5),
+  len: rng(150,500),
+  alpha: rng(0.025,0.065),
+  thickness: rng(0.5,2.2),
+  hue: rng(200,220),
+  phase: rng(0,Math.PI*2),
+  waveAmp: rng(8,35),
+  waveFreq: rng(0.003,0.008),
+}));
+
+function drawStreams(){
+  const c=ctxStreams;
+  c.clearRect(0,0,W,H);
+
+  WIND_STREAMS.forEach(ws=>{
+    ws.x-=ws.speed*windStr;
+    if(ws.x<-ws.len-200) ws.x=W+200;
+
+    const pulse=0.6+0.4*Math.abs(Math.sin(t*0.4+ws.phase));
+    const a=ws.alpha*windStr*pulse;
+    if(a<0.005) return;
+
+    c.save();
+    c.globalAlpha=a;
+    c.strokeStyle=`hsla(${ws.hue},35%,72%,1)`;
+    c.lineWidth=ws.thickness;
+    c.lineCap='round';
+    c.shadowColor=`hsl(${ws.hue},40%,75%)`;
+    c.shadowBlur=ws.thickness*2;
+
+    // Slightly wavy line
+    c.beginPath();
+    for(let seg=0;seg<=30;seg++){
+      const frac=seg/30;
+      const px=ws.x+frac*ws.len;
+      const py=ws.y0+Math.sin(px*ws.waveFreq+t*1.5+ws.phase)*ws.waveAmp;
+      seg===0?c.moveTo(px,py):c.lineTo(px,py);
+    }
+    c.stroke();
+    c.shadowBlur=0;
+    c.restore();
+  });
+
+  // Broad atmospheric flow suggestion — very faint horizontal gradient bands
+  for(let band=0;band<8;band++){
+    const by=band*H/8+H/16;
+    const scrollX=(t*lerp(40,120,band/7)*windStr)%W;
+    const ba=0.012+0.006*Math.sin(t*0.2+band)*windStr;
+    const bg=c.createLinearGradient(-scrollX,by,-scrollX+W,by);
+    bg.addColorStop(0,'rgba(0,0,0,0)');
+    bg.addColorStop(0.1,`rgba(140,155,175,${ba})`);
+    bg.addColorStop(0.5,`rgba(160,175,195,${ba*0.6})`);
+    bg.addColorStop(0.9,`rgba(140,155,175,${ba})`);
+    bg.addColorStop(1,'rgba(0,0,0,0)');
+    c.fillStyle=bg; c.fillRect(0,by-20,W,40);
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// LAYER 5 — VORTEX: Windhos — kurz, unberechenbar, nimmt Form an dann löst sie sich auf
+// ─────────────────────────────────────────────────────────────────────────────
+
+// Vortex state machine
+let vortexState='dormant'; // dormant | forming | alive | dissolving
+let vortexT=0;
+let vortexX=rng(200,W-200);
+let vortexY=HORIZON_Y+rng(0,300);
+let vortexNextT=rng(5,15);
+let vortexLifetime=0;
+let vortexMaxH=0;
+
+function tickVortex(dt){
+  switch(vortexState){
+    case 'dormant':
+      vortexNextT-=dt;
+      if(vortexNextT<=0&&windStr>0.4){
+        vortexState='forming'; vortexT=0;
+        vortexX=rng(150,W-150);
+        vortexY=HORIZON_Y+rng(10,180);
+        vortexMaxH=rng(200,500);
+      }
+      break;
+    case 'forming':
+      vortexT+=dt;
+      if(vortexT>=2){ vortexState='alive'; vortexLifetime=rng(3,8); }
+      break;
+    case 'alive':
+      vortexLifetime-=dt;
+      // Vortex slowly drifts with wind
+      vortexX-=windStr*0.8;
+      if(vortexLifetime<=0) vortexState='dissolving';
+      break;
+    case 'dissolving':
+      vortexT-=dt*0.8;
+      if(vortexT<=0){
+        vortexState='dormant';
+        vortexNextT=rng(8,20);
+      }
+      break;
+  }
+}
+
+function drawVortex(){
+  const c=ctxVortex;
+  c.clearRect(0,0,W,H);
+
+  if(vortexState==='dormant') return;
+
+  let progress=0;
+  if(vortexState==='forming') progress=eio(vortexT/2);
+  else if(vortexState==='alive') progress=1;
+  else if(vortexState==='dissolving') progress=eio(Math.max(0,vortexT/2));
+
+  if(progress<0.01) return;
+
+  const vH=vortexMaxH*progress;
+  const vW=lerp(8,60,progress)*(1+Math.sin(t*3)*0.1);
+  const rotSpeed=3+windStr*4;
+
+  // Draw vortex as spiraling dust cone — narrow at top, wider at bottom
+  for(let layer=0;layer<5;layer++){
+    const layerFrac=layer/4;
+    const layerY=vortexY;
+    const layerH=vH;
+    const layerAlpha=(0.08+0.06*layer)*progress*windStr;
+
+    c.save();
+    c.globalAlpha=layerAlpha;
+
+    // Rotating ellipses at different heights — the spiral structure
+    for(let ring=0;ring<12;ring++){
+      const ringFrac=ring/12;
+      const ringY=layerY-ringFrac*layerH;
+      const ringW=vW*(0.15+ringFrac*0.85)*(1+layer*0.1);
+      const ringH=ringW*0.28;
+      const rot=t*rotSpeed*(1-ringFrac*0.5)*(layer%2===0?1:-1)+layer;
+
+      const ra=layerAlpha*(1-ringFrac*0.6);
+      c.globalAlpha=ra;
+      c.strokeStyle=`rgba(${160+layer*10},${148+layer*8},${120+layer*5},0.8)`;
+      c.lineWidth=0.8+windStr*0.5;
+      c.shadowColor='rgba(150,140,110,0.3)'; c.shadowBlur=4;
+      c.save();
+      c.translate(vortexX,ringY);
+      c.rotate(rot);
+      c.scale(1,0.3);
+      c.beginPath(); c.arc(0,0,ringW,0,Math.PI*2); c.stroke();
+      c.restore();
+      c.shadowBlur=0;
+    }
+    c.restore();
+  }
+
+  // Dust particles sucked into vortex
+  const partCount=Math.floor(30*progress);
+  for(let pi=0;pi<partCount;pi++){
+    const pAngle=pi/partCount*Math.PI*2+t*rotSpeed*0.8;
+    const pFrac=hash(pi*127+Math.floor(t*0.2))*0.9+0.05;
+    const pr=vW*(0.2+pFrac*0.8);
+    const pH=vH*pFrac;
+    const px=vortexX+Math.cos(pAngle)*pr;
+    const py=vortexY-pH;
+    const pa=progress*(1-pFrac*0.5)*0.6;
+    c.globalAlpha=pa;
+    c.fillStyle=`rgba(${155+Math.floor(pFrac*30)},${142+Math.floor(pFrac*20)},${108+Math.floor(pFrac*15)},0.9)`;
+    c.shadowColor='rgba(140,128,98,0.4)'; c.shadowBlur=2;
+    c.beginPath(); c.arc(px,py,rng(0.8,2.2),0,Math.PI*2); c.fill();
+    c.shadowBlur=0;
+  }
+  c.globalAlpha=1;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// LAYER 6 — CARRIED: Was der Wind trägt — Blätter, Staub, Salz, Asche
+// Der Wind war überall und bringt alles von überall
+// ─────────────────────────────────────────────────────────────────────────────
+
+// Different particle types — what wind carries from different places
+class CarriedParticle {
+  constructor(){this.reset(true)}
+  reset(init=false){
+    // Spawn from right edge (wind comes from right)
+    this.x=init?rng(0,W):W+rng(0,60);
+    this.y=init?rng(0,H):rng(H*0.05,H*0.88);
+    // Base velocity — mostly horizontal, left-moving
+    const baseVX=-(rng(1.5,6)*windStr+0.5);
+    const drift=rng(-0.4,0.4);
+    this.vx=baseVX;
+    this.vy=drift;
+    this.r=rng(0.6,3.5);
+    this.life=init?Math.random():1;
+    this.decay=rng(0.0008,0.003);
+    this.alpha=rng(0.2,0.65);
+    this.phase=rng(0,Math.PI*2);
+    this.type=Math.floor(Math.random()*4); // 0=dust,1=leaf,2=sand,3=unknown(exotic)
+    this.rot=rng(0,Math.PI*2);
+    this.rotSpeed=rng(-0.08,0.08);
+    // Type-based colors — where it's from
+    switch(this.type){
+      case 0: this.hue=rng(28,48);  this.sat=35; this.lig=52; break; // dust — brown
+      case 1: this.hue=rng(85,130); this.sat=40; this.lig=32; break; // leaf — dark green/brown
+      case 2: this.hue=rng(38,55);  this.sat=45; this.lig=62; break; // sand — ochre
+      case 3: this.hue=rng(180,220);this.sat=25; this.lig=65; break; // exotic — pale blue/grey (salt? ash?)
+    }
+  }
+  update(dt){
+    // Wind gusts affect velocity
+    const gust=windStr*(0.8+0.2*Math.sin(t*3.5+this.phase));
+    this.x+=this.vx*gust*dt*60;
+    this.y+=this.vy*dt*60+Math.sin(t*1.2+this.phase)*0.4;
+    this.rot+=this.rotSpeed*gust*dt*60;
+    this.life-=this.decay*dt*60;
+    if(this.life<=0||this.x<-30||this.y<-30||this.y>H+30) this.reset(false);
+  }
+  draw(c){
+    c.save();
+    c.globalAlpha=this.alpha*this.life*(0.5+0.5*Math.sin(t*2+this.phase));
+    c.translate(this.x,this.y); c.rotate(this.rot);
+
+    if(this.type===1){
+      // Leaf — elongated shape
+      c.fillStyle=`hsl(${this.hue},${this.sat}%,${this.lig}%)`;
+      c.shadowColor=`hsl(${this.hue},${this.sat+10}%,${this.lig+10}%)`; c.shadowBlur=3;
+      c.beginPath();
+      c.ellipse(0,0,this.r*2.2,this.r*0.7,0,0,Math.PI*2);
+      c.fill();
     } else {
-      // Water droplet
-      const dg=ringCtx.createRadialGradient(px,py,0,px,py,op.size*2.5);
-      dg.addColorStop(0,`hsla(${op.hue},85%,78%,${op.a*pulse*0.9})`);
-      dg.addColorStop(0.5,`hsla(${op.hue},80%,60%,${op.a*pulse*0.3})`);
-      dg.addColorStop(1,'rgba(0,0,0,0)');
-      ringCtx.fillStyle=dg;
-      ringCtx.shadowBlur=5;ringCtx.shadowColor=`hsla(${op.hue},100%,70%,0.5)`;
-      ringCtx.beginPath();ringCtx.arc(px,py,op.size*2.5,0,Math.PI*2);ringCtx.fill();
-      ringCtx.shadowBlur=0;
+      // Dot — dust, sand, or exotic
+      c.fillStyle=`hsl(${this.hue},${this.sat}%,${this.lig}%)`;
+      c.shadowColor=`hsl(${this.hue},${this.sat+15}%,${this.lig+12}%)`; c.shadowBlur=this.r*2;
+      c.beginPath(); c.arc(0,0,this.r,0,Math.PI*2); c.fill();
     }
+    c.shadowBlur=0;
+    c.restore();
   }
+}
 
-  /* ── BIRDS ── */
-  birdsCtx.clearRect(0,0,W,H);
-  for(const f of formations){
-    f.flapPhase+=f.flapSp;
-    f.wobble+=f.wobbleSp;
-    f.x+=f.vx;
-    f.y+=f.vy+Math.sin(f.wobble)*0.3;
-    if(f.x>W+200||f.x<-200){
-      f.x=f.vx>0?-80:W+80;
-      f.y=180+Math.random()*600;
-    }
-    const flapAngle=Math.sin(f.flapPhase);
-    const dir=f.vx>0?1:-1;
-    drawBirdV(birdsCtx,f.x,f.y,flapAngle,f.scale,f.vCount,dir);
+// Spawn rate depends on wind strength
+const CARRIED=Array.from({length:160},()=>new CarriedParticle());
+
+// Dust cloud bursts — sudden swirls of debris
+class DustBurst {
+  constructor(){this.reset()}
+  reset(){
+    this.x=rng(100,W-100);
+    this.y=HORIZON_Y+rng(-20,200);
+    this.r=0; this.maxR=rng(40,120);
+    this.life=1; this.decay=rng(0.02,0.04);
+    this.hue=rng(28,48);
+    this.wait=rng(0,12);
+    this.elapsed=Math.random()*this.wait;
   }
-
-  /* ── PARTICLES ── */
-  partCtx.clearRect(0,0,W,H);
-
-  // Wind streaks
-  partCtx.save();
-  for(let i=0;i<windStreaks.length;i++){
-    const s=windStreaks[i];
-    s.x+=s.vx; s.y+=s.vy;
-    if(s.x>W+250) windStreaks[i]=mkStreak(false);
-    const tx=s.x-s.len;
-    const sg=partCtx.createLinearGradient(tx,s.y,s.x,s.y);
-    sg.addColorStop(0,'rgba(180,230,255,0)');
-    sg.addColorStop(0.4,`hsla(${s.hue},75%,82%,${s.a})`);
-    sg.addColorStop(0.75,`hsla(${s.hue},70%,78%,${s.a*0.5})`);
-    sg.addColorStop(1,'rgba(180,230,255,0)');
-    partCtx.strokeStyle=sg;
-    partCtx.lineWidth=s.w;
-    partCtx.lineCap='round';
-    partCtx.beginPath();partCtx.moveTo(tx,s.y);partCtx.lineTo(s.x,s.y);partCtx.stroke();
+  update(dt){
+    this.elapsed+=dt;
+    if(this.elapsed<this.wait) return;
+    this.r=Math.min(this.maxR,this.r+dt*this.maxR*0.8*(0.5+windStr*0.5));
+    this.life-=this.decay*dt*60*windStr;
+    return this.life>0;
   }
-  partCtx.restore();
-
-  // Mist/rain droplets blown horizontal
-  partCtx.save();
-  for(const d of mistDrops){
-    d.x+=d.vx; d.y+=d.vy;
-    if(d.x>W+30){d.x=-30;d.y=Math.random()*H*0.75;}
-    if(d.y>H*0.8){d.y=100+Math.random()*200;d.x=Math.random()*W;}
-    const dg=partCtx.createLinearGradient(d.x,d.y,d.x-d.len,d.y-d.vy*(d.len/d.vx));
-    dg.addColorStop(0,'rgba(200,230,255,0)');
-    dg.addColorStop(0.5,`rgba(180,220,250,${d.a})`);
-    dg.addColorStop(1,'rgba(200,230,255,0)');
-    partCtx.strokeStyle=dg;
-    partCtx.lineWidth=0.7;
-    partCtx.beginPath();
-    partCtx.moveTo(d.x,d.y);
-    partCtx.lineTo(d.x-d.len*0.8,d.y-d.vy*(d.len*0.8/d.vx));
-    partCtx.stroke();
+  draw(c){
+    if(this.elapsed<this.wait) return;
+    c.save();
+    c.globalAlpha=this.life*this.life*0.22*windStr;
+    const g=c.createRadialGradient(this.x,this.y,0,this.x,this.y,this.r);
+    g.addColorStop(0,`hsl(${this.hue},40%,55%)`);
+    g.addColorStop(0.5,`hsl(${this.hue},32%,38%)`);
+    g.addColorStop(1,'rgba(0,0,0,0)');
+    c.shadowColor=`hsl(${this.hue},45%,50%)`; c.shadowBlur=this.r*0.5;
+    c.fillStyle=g; c.beginPath(); c.arc(this.x,this.y,this.r,0,Math.PI*2); c.fill();
+    c.shadowBlur=0;
+    c.restore();
   }
-  partCtx.restore();
+}
 
-  // Leaves tumbling in the wind
-  partCtx.save();
-  for(let i=0;i<leaves.length;i++){
-    const l=leaves[i];
-    l.sway+=l.swaySp; l.rot+=l.rotV;
-    l.x+=l.vx+Math.sin(l.sway)*1.2;
-    l.y+=l.vy+Math.cos(l.sway*0.7)*0.6;
-    if(l.x>W+40) leaves[i]=mkLeaf(false);
-    if(l.y<200||l.y>H-200){l.vy*=-0.7;}
-    partCtx.save();
-    partCtx.translate(l.x,l.y);partCtx.rotate(l.rot);
-    partCtx.fillStyle=`hsla(${l.hue},60%,38%,${l.a})`;
-    partCtx.shadowBlur=3;partCtx.shadowColor=`hsla(${l.hue},70%,50%,0.4)`;
-    partCtx.beginPath();
-    // Leaf shape
-    partCtx.moveTo(0,-l.size);
-    partCtx.bezierCurveTo(l.size*0.6,-l.size*0.4,l.size*0.6,l.size*0.4,0,l.size);
-    partCtx.bezierCurveTo(-l.size*0.6,l.size*0.4,-l.size*0.6,-l.size*0.4,0,-l.size);
-    partCtx.fill();
-    // Midrib
-    partCtx.strokeStyle=`hsla(${l.hue+10},55%,50%,${l.a*0.6})`;
-    partCtx.lineWidth=0.8;
-    partCtx.beginPath();partCtx.moveTo(0,-l.size);partCtx.lineTo(0,l.size);partCtx.stroke();
-    partCtx.shadowBlur=0;
-    partCtx.restore();
-  }
-  partCtx.restore();
+const DUST_BURSTS=Array.from({length:10},()=>new DustBurst());
+
+// Ring motes
+const RING_MOTES=Array.from({length:65},(_,i)=>({
+  angle:i/65*Math.PI*2,
+  speed:rng(-0.004,0.004),
+  rOff:rng(-0.28,0.28),
+  r:rng(0.8,2.8),
+  life:Math.random(),
+  decay:rng(0.003,0.007),
+  phase:rng(0,Math.PI*2),
+  hue:rng(200,220),
+}));
+
+function drawCarried(dt){
+  const c=ctxCarried;
+  c.clearRect(0,0,W,H);
+
+  DUST_BURSTS.forEach(db=>{
+    const alive=db.update(dt);
+    db.draw(c);
+    if(!alive) db.reset();
+  });
+
+  CARRIED.forEach(p=>{ p.update(dt); p.draw(c); });
+
+  // Ring — wind-blue/grey
+  const ringHue=205+Math.sin(t*0.3)*8;
+  [65,28,10,3].forEach((lw,pass)=>{
+    const la=[0.022,0.055,0.16,0.52][pass]*(0.65+0.35*Math.sin(t*0.8));
+    c.strokeStyle=`hsla(${ringHue},45%,68%,${la})`;
+    c.lineWidth=lw;
+    c.shadowColor=`hsl(${ringHue},55%,72%)`; c.shadowBlur=lw*2.5;
+    c.beginPath(); c.arc(CX,CY,RING_R,0,Math.PI*2); c.stroke();
+    c.shadowBlur=0;
+  });
+
+  RING_MOTES.forEach(rm=>{
+    rm.angle+=rm.speed*(0.8+windStr*0.4);
+    rm.life-=rm.decay;
+    if(rm.life<=0){rm.life=1;rm.decay=rng(0.003,0.007);}
+    const rx=CX+Math.cos(rm.angle)*(RING_R+rm.rOff*24);
+    const ry=CY+Math.sin(rm.angle)*(RING_R+rm.rOff*24);
+    const ra=rm.life*(0.3+0.45*Math.sin(t*2+rm.phase));
+    c.globalAlpha=ra*0.55;
+    c.fillStyle=`hsl(${rm.hue},45%,72%)`;
+    c.shadowColor=`hsl(${rm.hue},55%,76%)`; c.shadowBlur=rm.r*4;
+    c.beginPath(); c.arc(rx,ry,rm.r,0,Math.PI*2); c.fill();
+    c.shadowBlur=0;
+  });
+  c.globalAlpha=1;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MAIN LOOP
+// ─────────────────────────────────────────────────────────────────────────────
+function loop(now){
+  const dt=Math.min((now-last)/1000,0.05);
+  last=now; t+=dt;
+
+  tickWind(dt);
+  tickVortex(dt);
+
+  drawSky();
+  drawTerrain();
+  drawBending();
+  drawStreams();
+  drawVortex();
+  drawCarried(dt);
 
   requestAnimationFrame(loop);
 }
-
-loop();
+requestAnimationFrame(loop);
 </script>
 </body>
 </html>

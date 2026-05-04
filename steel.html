@@ -1,705 +1,618 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-<meta charset="UTF-8">
-<title>Steel — Raumstation</title>
+<meta charset="UTF-8"/>
+<title>Steel — Die Fabrik</title>
 <style>
-  *{margin:0;padding:0;box-sizing:border-box}
-  html,body{
-    width:1080px;height:1920px;overflow:hidden;
-    background:#020508;
-  }
-  canvas{position:absolute;inset:0;width:1080px;height:1920px;display:block;}
-
-  /* Station interior walls */
-  .station-walls{
-    position:absolute;inset:0;
-    background:
-      linear-gradient(90deg, #040c18 0%, #060e1c 8%, transparent 22%, transparent 78%, #060e1c 92%, #040c18 100%),
-      linear-gradient(180deg, #060e1c 0%, transparent 12%, transparent 88%, #060e1c 100%);
-  }
-
-  /* Metal panel texture — left wall */
-  .panel-left{
-    position:absolute;top:0;left:0;width:130px;height:100%;
-    background:
-      repeating-linear-gradient(0deg, transparent 0px, transparent 58px, rgba(0,120,200,0.06) 58px, rgba(0,120,200,0.06) 60px),
-      repeating-linear-gradient(90deg, transparent 0px, transparent 28px, rgba(0,80,150,0.04) 28px, rgba(0,80,150,0.04) 30px),
-      linear-gradient(90deg, #050d1a 0%, #07121f 70%, transparent 100%);
-  }
-  .panel-right{
-    position:absolute;top:0;right:0;width:130px;height:100%;
-    background:
-      repeating-linear-gradient(0deg, transparent 0px, transparent 58px, rgba(0,120,200,0.06) 58px, rgba(0,120,200,0.06) 60px),
-      repeating-linear-gradient(90deg, transparent 0px, transparent 28px, rgba(0,80,150,0.04) 28px, rgba(0,80,150,0.04) 30px),
-      linear-gradient(270deg, #050d1a 0%, #07121f 70%, transparent 100%);
-  }
-
-  /* LED strips on walls */
-  .led-l1{position:absolute;top:0;left:118px;width:3px;height:100%;background:linear-gradient(180deg,transparent 2%,rgba(0,180,255,0.7) 8%,rgba(0,180,255,0.5) 50%,rgba(0,180,255,0.7) 92%,transparent 98%);filter:blur(2px);box-shadow:0 0 8px rgba(0,180,255,0.5),0 0 20px rgba(0,140,220,0.3);}
-  .led-l2{position:absolute;top:0;left:88px; width:2px;height:100%;background:linear-gradient(180deg,transparent 5%,rgba(0,100,200,0.4) 15%,rgba(0,100,200,0.3) 85%,transparent 95%);filter:blur(1px);}
-  .led-r1{position:absolute;top:0;right:118px;width:3px;height:100%;background:linear-gradient(180deg,transparent 2%,rgba(0,180,255,0.7) 8%,rgba(0,180,255,0.5) 50%,rgba(0,180,255,0.7) 92%,transparent 98%);filter:blur(2px);box-shadow:0 0 8px rgba(0,180,255,0.5),0 0 20px rgba(0,140,220,0.3);}
-  .led-r2{position:absolute;top:0;right:88px; width:2px;height:100%;background:linear-gradient(180deg,transparent 5%,rgba(0,100,200,0.4) 15%,rgba(0,100,200,0.3) 85%,transparent 95%);filter:blur(1px);}
-
-  /* Horizontal structural beams */
-  .beam{position:absolute;left:0;right:0;height:4px;background:linear-gradient(90deg,transparent 5%,rgba(0,140,220,0.25) 20%,rgba(0,180,255,0.35) 50%,rgba(0,140,220,0.25) 80%,transparent 95%);filter:blur(1px);}
-  .bm1{top:245px;} .bm2{top:690px;} .bm3{top:1050px;}
-  .bm4{top:1320px;}.bm5{top:1640px;}
-
-  /* Rivet dots on panels */
-  .rivets-l,.rivets-r{position:absolute;top:0;width:18px;height:100%;}
-  .rivets-l{left:105px;background:repeating-linear-gradient(0deg,transparent 0px,transparent 95px,rgba(40,100,160,0.5) 95px,rgba(40,100,160,0.5) 97px);}
-  .rivets-r{right:105px;background:repeating-linear-gradient(0deg,transparent 0px,transparent 95px,rgba(40,100,160,0.5) 95px,rgba(40,100,160,0.5) 97px);}
-
-  /* Porthole frame — big circular window */
-  .porthole-frame{
-    position:absolute;top:55px;left:50%;transform:translateX(-50%);
-    width:680px;height:680px;border-radius:50%;
-    border:12px solid #0c1e35;
-    box-shadow:
-      0 0 0 4px #081525,
-      0 0 0 8px #0a1a2e,
-      0 0 0 12px #06111e,
-      inset 0 0 30px rgba(0,0,0,0.8),
-      0 0 40px rgba(0,100,200,0.15);
-    z-index:5;overflow:hidden;
-    background:#000;
-  }
-  /* Porthole inner rim bolts */
-  .porthole-frame::before{
-    content:'';position:absolute;inset:8px;border-radius:50%;
-    border:2px solid rgba(0,100,180,0.35);
-    box-shadow:inset 0 0 15px rgba(0,50,100,0.3);
-  }
-
-  /* Hologram displays — floating data panels */
-  .holo{
-    position:absolute;border:1px solid rgba(0,200,255,0.3);
-    background:rgba(0,30,60,0.35);
-    backdrop-filter:blur(2px);
-    box-shadow:0 0 12px rgba(0,180,255,0.2),inset 0 0 8px rgba(0,100,200,0.1);
-    border-radius:4px;
-    overflow:hidden;
-  }
-  .holo::before{
-    content:'';position:absolute;top:0;left:0;right:0;height:20px;
-    background:linear-gradient(90deg,rgba(0,150,255,0.3),rgba(0,200,255,0.15),rgba(0,150,255,0.3));
-    border-bottom:1px solid rgba(0,180,255,0.2);
-  }
-  .h1{top:820px; left:28px; width:220px;height:140px;animation:holoFlick 7s ease-in-out infinite;}
-  .h2{top:940px; right:28px;width:200px;height:125px;animation:holoFlick 9s ease-in-out infinite reverse;animation-delay:-3s;}
-  .h3{top:1160px;left:40px; width:190px;height:130px;animation:holoFlick 6s ease-in-out infinite;animation-delay:-5s;}
-  .h4{top:1280px;right:35px;width:210px;height:145px;animation:holoFlick 11s ease-in-out infinite reverse;animation-delay:-1s;}
-  @keyframes holoFlick{
-    0%,90%,100%{opacity:1}
-    92%{opacity:0.1}93%{opacity:0.8}95%{opacity:0.15}97%{opacity:1}
-  }
-
-  /* Warning stripe floor at bottom */
-  .floor-stripe{
-    position:absolute;bottom:0;left:0;right:0;height:80px;
-    background:repeating-linear-gradient(90deg,rgba(255,150,0,0.08) 0px,rgba(255,150,0,0.08) 28px,transparent 28px,transparent 56px);
-    border-top:2px solid rgba(0,140,220,0.3);
-  }
-
-  /* Ring energy portal glow */
-  .ring-portal{
-    position:absolute;top:215px;left:50%;transform:translateX(-50%);
-    width:840px;height:840px;border-radius:50%;
-    background:radial-gradient(ellipse 100% 100% at 50% 50%,
-      rgba(0,200,255,0.1) 0%,rgba(0,150,220,0.05) 48%,transparent 68%);
-    mix-blend-mode:screen;filter:blur(18px);
-    animation:portalGlow 4s ease-in-out infinite;
-  }
-  @keyframes portalGlow{0%,100%{opacity:0.65;transform:translateX(-50%) scale(1)}50%{opacity:1;transform:translateX(-50%) scale(1.02)}}
-
-  /* UI */
-  .center-darken{position:absolute;top:300px;left:50%;transform:translateX(-50%);width:780px;height:540px;background:radial-gradient(ellipse 50% 50% at 50% 50%,rgba(0,5,15,0.42) 0%,transparent 70%);z-index:38;}
-  .vignette{position:absolute;inset:0;background:radial-gradient(ellipse 80% 70% at 50% 50%,transparent 38%,rgba(0,0,8,0.78) 100%);z-index:39;pointer-events:none;}
-  .zone-top{position:absolute;top:0;left:0;right:0;height:120px;background:linear-gradient(180deg,rgba(0,0,0,0.55) 0%,transparent 100%);z-index:40;}
-  .zone-bot{position:absolute;bottom:0;left:0;right:0;height:920px;background:linear-gradient(0deg,rgba(0,0,10,0.65) 0%,rgba(0,0,10,0.14) 40%,transparent 100%);z-index:40;}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#000;position:relative;}
+canvas{position:absolute;top:0;left:0;width:1080px;height:1920px;pointer-events:none;}
+#zone-top{position:absolute;top:0;left:0;width:1080px;height:120px;
+  background:linear-gradient(to bottom,rgba(0,0,0,0.60) 0%,transparent 100%);z-index:50;pointer-events:none;}
+#zone-bot{position:absolute;bottom:0;left:0;width:1080px;height:920px;
+  background:linear-gradient(to top,rgba(0,0,0,0.55) 0%,transparent 100%);z-index:50;pointer-events:none;}
+#vignette{position:absolute;top:0;left:0;width:1080px;height:1920px;
+  background:radial-gradient(ellipse 90% 90% at 50% 50%,transparent 28%,rgba(0,0,0,0.72) 100%);z-index:49;pointer-events:none;}
+#center-darken{position:absolute;left:150px;top:300px;width:780px;height:540px;
+  background:radial-gradient(ellipse at center,rgba(0,0,0,0.38) 0%,transparent 70%);z-index:48;pointer-events:none;}
 </style>
 </head>
 <body>
-  <div class="station-walls"></div>
-  <div class="panel-left"></div><div class="panel-right"></div>
-  <div class="led-l1"></div><div class="led-l2"></div>
-  <div class="led-r1"></div><div class="led-r2"></div>
-  <div class="rivets-l"></div><div class="rivets-r"></div>
-  <div class="beam bm1"></div><div class="beam bm2"></div><div class="beam bm3"></div>
-  <div class="beam bm4"></div><div class="beam bm5"></div>
-  <div class="floor-stripe"></div>
 
-  <!-- Porthole -->
-  <div class="porthole-frame" id="porthole"></div>
+<canvas id="cvBase"    style="z-index:1"></canvas>
+<canvas id="cvFurnace" style="z-index:2"></canvas>
+<canvas id="cvPipes"   style="z-index:3"></canvas>
+<canvas id="cvSparks"  style="z-index:4"></canvas>
+<canvas id="cvRain"    style="z-index:5"></canvas>
+<canvas id="cvPulse"   style="z-index:6"></canvas>
 
-  <!-- Hologram displays -->
-  <div class="holo h1"><canvas id="holo1" width="220" height="140"></canvas></div>
-  <div class="holo h2"><canvas id="holo2" width="200" height="125"></canvas></div>
-  <div class="holo h3"><canvas id="holo3" width="190" height="130"></canvas></div>
-  <div class="holo h4"><canvas id="holo4" width="210" height="145"></canvas></div>
-
-  <!-- Main canvas stack -->
-  <canvas id="cSpace"></canvas>
-  <canvas id="cStation"></canvas>
-  <canvas id="cRing"></canvas>
-  <canvas id="cParticles"></canvas>
-
-  <div class="ring-portal"></div>
-  <div class="center-darken"></div>
-  <div class="vignette"></div>
-  <div class="zone-top"></div>
-  <div class="zone-bot"></div>
+<div id="zone-top"></div>
+<div id="zone-bot"></div>
+<div id="vignette"></div>
+<div id="center-darken"></div>
 
 <script>
-const W=1080, H=1920;
-const RING_CX=540, RING_CY=590, RING_R=300;
-// Porthole center
-const PH_CX=540, PH_CY=395, PH_R=328;
+'use strict';
+const W=1080,H=1920,CX=540,CY=590,RING_R=300;
 
-function mkCanvas(id){
-  const c=document.getElementById(id);
-  c.width=W; c.height=H;
-  return c.getContext('2d');
-}
-const spaceCtx   = mkCanvas('cSpace');
-const stationCtx = mkCanvas('cStation');
-const ringCtx    = mkCanvas('cRing');
-const partCtx    = mkCanvas('cParticles');
+['cvBase','cvFurnace','cvPipes','cvSparks','cvRain','cvPulse'].forEach(id=>{
+  const c=document.getElementById(id);c.width=W;c.height=H;
+});
+const gc=id=>document.getElementById(id).getContext('2d');
+const ctxBase   =gc('cvBase');
+const ctxFurnace=gc('cvFurnace');
+const ctxPipes  =gc('cvPipes');
+const ctxSparks =gc('cvSparks');
+const ctxRain   =gc('cvRain');
+const ctxPulse  =gc('cvPulse');
 
-// Hologram canvases (already sized in HTML)
-const holoCtxs=[
-  document.getElementById('holo1').getContext('2d'),
-  document.getElementById('holo2').getContext('2d'),
-  document.getElementById('holo3').getContext('2d'),
-  document.getElementById('holo4').getContext('2d'),
-];
+document.getElementById('cvFurnace').style.mixBlendMode='screen';
+document.getElementById('cvPipes').style.mixBlendMode  ='screen';
+document.getElementById('cvSparks').style.mixBlendMode ='screen';
+document.getElementById('cvRain').style.mixBlendMode   ='screen';
+document.getElementById('cvPulse').style.mixBlendMode  ='screen';
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   SPACE through porthole — stars, planet, nebula
-   ═══════════════════════════════════════════════════════════════════════════ */
-const STAR_COUNT=240;
-const stars=[];
-for(let i=0;i<STAR_COUNT;i++){
-  // Place stars within porthole area
-  const ang=Math.random()*Math.PI*2;
-  const r=Math.random()*PH_R*0.95;
-  stars.push({
-    x:PH_CX+Math.cos(ang)*r,
-    y:PH_CY+Math.sin(ang)*r,
-    r:0.4+Math.random()*1.8,
-    a:0.3+Math.random()*0.7,
-    flicker:Math.random()<0.18,
-    phase:Math.random()*Math.PI*2,
-    flickSp:0.04+Math.random()*0.07,
-    // Slow drift (station rotation)
-    driftAng:Math.random()*Math.PI*2,
-    driftSp:0.00008+Math.random()*0.00012,
-    hue:Math.random()<0.12?200+Math.random()*40:0,
-  });
+let t=0,last=performance.now();
+const rng=(a,b)=>a+(b-a)*Math.random();
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const lerp=(a,b,x)=>a+(b-a)*x;
+const eio=(x)=>x<.5?2*x*x:1-(-2*x+2)**2/2;
+const hash=(n)=>{let x=Math.sin(n)*43758.5453;return x-Math.floor(x);};
+// Safe arc — NEVER lets negative radius through
+const safeArc=(c,x,y,r,a0,a1)=>c.arc(x,y,Math.max(0.01,r),a0,a1);
+
+// ── HAMMER PULSE ─────────────────────────────────────────────────────────────
+// Industrial heartbeat — irregular rhythm, felt before heard
+const BEATS=[0,0.42,0.82,1.18,1.72,2.05,2.38,2.95];
+const BEAT_CYCLE=3.2;
+let beatPhase=0,lastBeat=-1,hammerPulse=0;
+
+function tickHammer(dt){
+  beatPhase=(beatPhase+dt)%BEAT_CYCLE;
+  const idx=BEATS.findIndex(b=>Math.abs(beatPhase-b)<0.045);
+  if(idx>=0&&idx!==lastBeat){hammerPulse=1;lastBeat=idx;}
+  if(lastBeat>=0&&Math.abs(beatPhase-BEATS[lastBeat])>0.07) lastBeat=-1;
+  hammerPulse=Math.max(0,hammerPulse-dt*7);
 }
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   STATION INTERIOR — pipes, panels, cables drawn once
-   ═══════════════════════════════════════════════════════════════════════════ */
-(function buildStation(){
-  stationCtx.clearRect(0,0,W,H);
+// ── FLOOR LEVEL ───────────────────────────────────────────────────────────────
+const FLOOR_Y=H*0.74;
 
-  // Vertical pipes on walls
-  const pipes=[
-    {x:32,  w:8,  col:'#0a1828', accent:'rgba(0,100,180,0.4)'},
-    {x:55,  w:5,  col:'#080f1e', accent:'rgba(0,80,160,0.3)'},
-    {x:72,  w:6,  col:'#0a1828', accent:'rgba(0,100,180,0.35)'},
-    {x:W-32,w:8,  col:'#0a1828', accent:'rgba(0,100,180,0.4)', flip:true},
-    {x:W-55,w:5,  col:'#080f1e', accent:'rgba(0,80,160,0.3)',  flip:true},
-    {x:W-72,w:6,  col:'#0a1828', accent:'rgba(0,100,180,0.35)',flip:true},
-  ];
-  for(const p of pipes){
-    const px=p.flip?p.x-p.w:p.x;
-    stationCtx.fillStyle=p.col;
-    stationCtx.fillRect(px,0,p.w,H);
-    stationCtx.strokeStyle=p.accent;
-    stationCtx.lineWidth=1;
-    stationCtx.strokeRect(px,0,p.w,H);
-    // Pipe joints every 200px
-    for(let jy=100;jy<H;jy+=200){
-      stationCtx.fillStyle='rgba(10,28,50,0.9)';
-      stationCtx.fillRect(px-2,jy,p.w+4,10);
-      stationCtx.strokeStyle='rgba(0,120,200,0.35)';
-      stationCtx.lineWidth=0.8;
-      stationCtx.strokeRect(px-2,jy,p.w+4,10);
+// ─────────────────────────────────────────────────────────────────────────────
+// LAYER 1 — BASE: Fabrikhalle — Stahl, Anthrazit, Rost, Geschichte
+// ─────────────────────────────────────────────────────────────────────────────
+const baseOff=document.createElement('canvas');
+baseOff.width=W;baseOff.height=H;
+(function(){
+  const c=baseOff.getContext('2d');
+
+  // Dark anthracite base
+  const bg=c.createLinearGradient(0,0,0,H);
+  bg.addColorStop(0,'#050505');bg.addColorStop(0.4,'#070707');
+  bg.addColorStop(0.7,'#080808');bg.addColorStop(1,'#060606');
+  c.fillStyle=bg;c.fillRect(0,0,W,H);
+
+  // ── Ceiling girders ─────────────────────────────────────────────────────
+  [85,170,265].forEach(gy=>{
+    // I-beam body
+    c.fillStyle='rgba(16,15,13,0.98)';c.fillRect(0,gy,W,20);
+    // Top flange
+    c.fillStyle='rgba(26,24,20,0.9)';c.fillRect(0,gy-5,W,6);
+    // Bottom flange
+    c.fillStyle='rgba(26,24,20,0.85)';c.fillRect(0,gy+20,W,5);
+    // Shadow under beam
+    c.fillStyle='rgba(0,0,0,0.5)';c.fillRect(0,gy+25,W,8);
+    // Highlight on top
+    c.fillStyle='rgba(32,30,25,0.4)';c.fillRect(0,gy-5,W,2);
+    // Rivets
+    for(let rx=50;rx<W;rx+=90){
+      const jx=rx+(hash(rx*0.01+gy)*14-7);
+      c.fillStyle='rgba(30,28,23,0.95)';
+      c.beginPath();safeArc(c,jx,gy+10,4.5,0,Math.PI*2);c.fill();
+      c.fillStyle='rgba(42,39,32,0.6)';
+      c.beginPath();safeArc(c,jx-1,gy+9,1.8,0,Math.PI*2);c.fill();
     }
+  });
+
+  // ── Vertical columns ────────────────────────────────────────────────────
+  [185,430,650,895].forEach(cx=>{
+    const cw=26;
+    // Web
+    c.fillStyle='rgba(14,13,11,0.98)';c.fillRect(cx-cw*0.38,0,cw*0.76,H);
+    // Flanges
+    c.fillStyle='rgba(20,19,16,0.97)';c.fillRect(cx-cw,0,cw*0.55,H);c.fillRect(cx+cw*0.45,0,cw*0.55,H);
+    // Highlight edges
+    c.strokeStyle='rgba(32,30,24,0.45)';c.lineWidth=1;
+    c.beginPath();c.moveTo(cx-cw,0);c.lineTo(cx-cw,H);c.stroke();
+    c.beginPath();c.moveTo(cx+cw,0);c.lineTo(cx+cw,H);c.stroke();
+  });
+
+  // ── Overhead crane rail ─────────────────────────────────────────────────
+  c.fillStyle='rgba(22,21,17,0.97)';c.fillRect(0,308,W,14);
+  c.fillStyle='rgba(32,30,24,0.6)';c.fillRect(0,308,W,3);
+  c.fillStyle='rgba(8,7,6,0.5)';c.fillRect(0,319,W,5);
+  for(let tx=0;tx<W;tx+=44){
+    c.fillStyle='rgba(18,17,14,0.85)';c.fillRect(tx,322,2,22);
   }
 
-  // Porthole frame bolts — decorative
-  stationCtx.fillStyle='rgba(8,22,40,0.9)';
-  stationCtx.strokeStyle='rgba(0,120,200,0.45)';
-  stationCtx.lineWidth=1.5;
-  for(let i=0;i<12;i++){
-    const ang=(i/12)*Math.PI*2;
-    const bx=PH_CX+Math.cos(ang)*(PH_R+28);
-    const by=PH_CY+Math.sin(ang)*(PH_R+28);
-    stationCtx.beginPath();stationCtx.arc(bx,by,7,0,Math.PI*2);
-    stationCtx.fill();stationCtx.stroke();
-    // Bolt highlight
-    stationCtx.fillStyle='rgba(0,100,180,0.4)';
-    stationCtx.beginPath();stationCtx.arc(bx-1.5,by-1.5,2.5,0,Math.PI*2);stationCtx.fill();
-    stationCtx.fillStyle='rgba(8,22,40,0.9)';
+  // ── Floor ───────────────────────────────────────────────────────────────
+  c.fillStyle='rgba(10,10,9,0.99)';c.fillRect(0,FLOOR_Y,W,H-FLOOR_Y);
+  // Metal grating
+  for(let gy=FLOOR_Y+2;gy<H;gy+=20){
+    c.strokeStyle=`rgba(20,19,16,${0.4+0.15*(gy-FLOOR_Y)/(H-FLOOR_Y)})`;
+    c.lineWidth=0.8;c.beginPath();c.moveTo(0,gy);c.lineTo(W,gy);c.stroke();
   }
+  for(let gx=0;gx<W;gx+=20){
+    c.strokeStyle='rgba(18,17,14,0.35)';c.lineWidth=0.8;
+    c.beginPath();c.moveTo(gx,FLOOR_Y);c.lineTo(gx,H);c.stroke();
+  }
+  // Floor edge
+  c.fillStyle='rgba(32,29,22,0.75)';c.fillRect(0,FLOOR_Y,W,4);
 
-  // Cable bundles running across walls
-  const cables=[
-    {y:310, x1:0, x2:140, w:4},
-    {y:315, x1:0, x2:120, w:2},
-    {y:730, x1:W, x2:W-145, w:4},
-    {y:735, x1:W, x2:W-125, w:2},
-    {y:1120,x1:0, x2:160,   w:3},
-    {y:1480,x1:W, x2:W-150, w:3},
-  ];
-  for(const cb of cables){
-    const g=stationCtx.createLinearGradient(cb.x1,cb.y,cb.x2,cb.y);
-    g.addColorStop(0,'rgba(0,0,0,0)');
-    g.addColorStop(0.3,'rgba(5,14,28,0.8)');
-    g.addColorStop(1,'rgba(5,14,28,0.6)');
-    stationCtx.strokeStyle=g;
-    stationCtx.lineWidth=cb.w;
-    stationCtx.beginPath();
-    stationCtx.moveTo(cb.x1,cb.y);
-    stationCtx.quadraticCurveTo((cb.x1+cb.x2)/2,cb.y+10,cb.x2,cb.y);
-    stationCtx.stroke();
-    // Glowing data line alongside cable
-    stationCtx.strokeStyle=`rgba(0,140,255,0.2)`;
-    stationCtx.lineWidth=0.8;
-    stationCtx.beginPath();
-    stationCtx.moveTo(cb.x1,cb.y-2);
-    stationCtx.quadraticCurveTo((cb.x1+cb.x2)/2,cb.y+8,cb.x2,cb.y-2);
-    stationCtx.stroke();
-  }
+  // ── Old machinery silhouettes ────────────────────────────────────────────
+  // Left — heavy press
+  c.fillStyle='rgba(9,8,7,0.98)';
+  c.fillRect(0,H*0.45,150,H*0.55);
+  c.fillRect(20,H*0.30,110,H*0.16);
+  c.fillRect(45,H*0.18,60,H*0.13);
+  c.strokeStyle='rgba(22,20,16,0.5)';c.lineWidth=1;
+  c.strokeRect(0,H*0.45,150,H*0.55);
+  // Right — generator bulk
+  c.fillStyle='rgba(9,8,7,0.98)';
+  c.fillRect(W-160,H*0.42,160,H*0.58);
+  c.fillRect(W-140,H*0.28,120,H*0.15);
+  c.fillRect(W-120,H*0.35,80,8);
+  c.strokeStyle='rgba(22,20,16,0.5)';c.lineWidth=1;
+  c.strokeRect(W-160,H*0.42,160,H*0.58);
+  // Nameplates on machines
+  [[55,H*0.46],[W-120,H*0.44]].forEach(([mx,my])=>{
+    c.fillStyle='rgba(18,16,13,0.9)';c.fillRect(mx-20,my,40,20);
+    c.strokeStyle='rgba(35,32,25,0.6)';c.lineWidth=0.8;c.strokeRect(mx-20,my,40,20);
+    // Engraved lines suggesting text
+    c.strokeStyle='rgba(28,25,19,0.4)';c.lineWidth=0.6;
+    [my+6,my+11,my+15].forEach(ly=>{
+      c.beginPath();c.moveTo(mx-14,ly);c.lineTo(mx+14,ly);c.stroke();
+    });
+  });
 
-  // Floor grating
-  const floorY=H-85;
-  for(let gx=130;gx<W-130;gx+=18){
-    stationCtx.strokeStyle='rgba(0,80,150,0.12)';
-    stationCtx.lineWidth=0.8;
-    stationCtx.beginPath();
-    stationCtx.moveTo(gx,floorY);stationCtx.lineTo(gx,H);stationCtx.stroke();
-  }
-  for(let gy=floorY;gy<H;gy+=16){
-    stationCtx.beginPath();
-    stationCtx.moveTo(130,gy);stationCtx.lineTo(W-130,gy);stationCtx.stroke();
+  // ── Rust stains on walls ─────────────────────────────────────────────────
+  for(let r=0;r<22;r++){
+    const rx=hash(r*127.1)*W;
+    const ry=hash(r*311.7)*H*0.68;
+    const rh=rng(40,180);const rw=rng(3,30);
+    const rg=c.createLinearGradient(rx,ry,rx,ry+rh);
+    const ri=Math.floor(hash(r*89)*15);
+    rg.addColorStop(0,'rgba(0,0,0,0)');
+    rg.addColorStop(0.3,`rgba(${28+ri},${16+Math.floor(ri*0.5)},${9},${rng(0.02,0.055)})`);
+    rg.addColorStop(1,'rgba(0,0,0,0)');
+    c.fillStyle=rg;c.fillRect(rx,ry,rw,rh);
   }
 })();
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   RING: Hologram rings + data streams + scanner
-   ═══════════════════════════════════════════════════════════════════════════ */
-const holoRings=[
-  {r:RING_R+55, rot:0, rotSp:0.012,  dashLen:12, gapLen:8,  hue:190, width:1.5},
-  {r:RING_R+100,rot:1, rotSp:-0.008, dashLen:20, gapLen:14, hue:200, width:1.2},
-  {r:RING_R+148,rot:2, rotSp:0.005,  dashLen:8,  gapLen:16, hue:180, width:1.0},
-  {r:RING_R+195,rot:3, rotSp:-0.003, dashLen:30, gapLen:20, hue:210, width:0.8},
-];
+// Animated crane
+let craneX=W*0.32,craneDir=1;
 
-// Data streams (lines from outside pointing to ring center)
-const DATA_STREAM_COUNT=10;
-const dataStreams=[];
-for(let i=0;i<DATA_STREAM_COUNT;i++){
-  const ang=(i/DATA_STREAM_COUNT)*Math.PI*2+(Math.random()-0.5)*0.3;
-  const startR=RING_R+220+Math.random()*120;
-  dataStreams.push({
-    ang,
-    startR, endR:RING_R-20,
-    packets:[],
-    packetTimer:Math.random()*2,
-    packetInterval:0.8+Math.random()*1.2,
-    hue:185+Math.random()*30,
-  });
-}
+function drawBase(){
+  const c=ctxBase;
+  c.clearRect(0,0,W,H);
+  c.drawImage(baseOff,0,0);
 
-// Scanner beam
-let scannerAng=0;
-const SCANNER_SPEED=0.025;
+  // Crane movement
+  craneX+=craneDir*0.28;
+  if(craneX>W*0.78||craneX<W*0.18) craneDir*=-1;
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   HOLOGRAM DISPLAY RENDERERS
-   ═══════════════════════════════════════════════════════════════════════════ */
-const holoData=[
-  {type:'waveform', phase:0, color:'#00ccff'},
-  {type:'bargraph', phase:1.5, color:'#00ffcc'},
-  {type:'scatter',  phase:3.0, color:'#4488ff'},
-  {type:'radar',    phase:0.8, color:'#00aaff'},
-];
+  // Crane trolley body
+  c.fillStyle='rgba(20,19,15,0.96)';
+  c.fillRect(craneX-32,308,64,22);c.fillRect(craneX-22,304,44,7);
+  // Cable
+  c.strokeStyle='rgba(28,26,20,0.82)';c.lineWidth=2.2;
+  c.beginPath();c.moveTo(craneX,330);c.lineTo(craneX,440);c.stroke();
+  // Hook
+  c.strokeStyle='rgba(35,32,25,0.88)';c.lineWidth=3;
+  c.beginPath();safeArc(c,craneX,452,10,0,Math.PI);c.stroke();
+  c.strokeStyle='rgba(45,42,33,0.5)';c.lineWidth=1.2;
+  c.beginPath();safeArc(c,craneX,452,7.5,-Math.PI*0.15,Math.PI*0.85);c.stroke();
 
-function renderHolo(ctx,w,h,data,t2){
-  ctx.clearRect(0,0,w,h);
-  ctx.fillStyle='rgba(0,10,25,0.6)';
-  ctx.fillRect(0,0,w,h);
-  ctx.strokeStyle=data.color;
-  ctx.fillStyle=data.color;
-  ctx.shadowBlur=6;ctx.shadowColor=data.color;
-
-  if(data.type==='waveform'){
-    ctx.lineWidth=1.2;ctx.beginPath();
-    for(let xi=0;xi<w;xi+=2){
-      const v=h*0.5+Math.sin(xi*0.08+t2*2+data.phase)*15+Math.sin(xi*0.15+t2)*8;
-      xi===0?ctx.moveTo(xi,v):ctx.lineTo(xi,v);
-    }
-    ctx.stroke();
-    // Fill below wave
-    ctx.globalAlpha=0.1;
-    ctx.fillRect(0,0,w,h);ctx.globalAlpha=1;
-    // Grid
-    ctx.strokeStyle='rgba(0,150,220,0.15)';ctx.lineWidth=0.5;
-    for(let yi=0;yi<h;yi+=15){
-      ctx.beginPath();ctx.moveTo(0,yi);ctx.lineTo(w,yi);ctx.stroke();
-    }
-
-  } else if(data.type==='bargraph'){
-    const bars=8;
-    for(let bi=0;bi<bars;bi++){
-      const bh=(0.2+0.7*Math.abs(Math.sin(bi*0.9+t2*1.5+data.phase)))*h*0.7;
-      const bx=12+bi*(w-24)/bars;
-      const grad=ctx.createLinearGradient(bx,h-24,bx,h-24-bh);
-      grad.addColorStop(0,data.color);
-      grad.addColorStop(1,data.color.replace('ff','44').replace('cc','22'));
-      ctx.fillStyle=grad;ctx.fillRect(bx,h-24-bh,12,bh);
-    }
-    // Axis
-    ctx.strokeStyle='rgba(0,150,220,0.3)';ctx.lineWidth=0.8;
-    ctx.beginPath();ctx.moveTo(8,22);ctx.lineTo(8,h-20);ctx.lineTo(w-8,h-20);ctx.stroke();
-
-  } else if(data.type==='scatter'){
-    for(let pi=0;pi<20;pi++){
-      const px=20+Math.sin(pi*2.3+t2*0.5+data.phase)*((w-40)/2)+(w-40)/2;
-      const py=25+Math.cos(pi*1.7+t2*0.7+data.phase)*((h-50)/2)+(h-50)/2;
-      const size=1.5+Math.abs(Math.sin(pi+t2))*2;
-      ctx.beginPath();ctx.arc(px,py,size,0,Math.PI*2);ctx.fill();
-    }
-    // Connecting lines
-    ctx.lineWidth=0.5;ctx.globalAlpha=0.3;
-    ctx.beginPath();
-    for(let pi=0;pi<20;pi++){
-      const px=20+Math.sin(pi*2.3+t2*0.5+data.phase)*((w-40)/2)+(w-40)/2;
-      const py=25+Math.cos(pi*1.7+t2*0.7+data.phase)*((h-50)/2)+(h-50)/2;
-      pi===0?ctx.moveTo(px,py):ctx.lineTo(px,py);
-    }
-    ctx.stroke();ctx.globalAlpha=1;
-
-  } else { // radar
-    const cx2=w/2, cy2=h/2;
-    const rad=Math.min(w,h)*0.38;
-    // Grid circles
-    ctx.strokeStyle='rgba(0,150,220,0.2)';ctx.lineWidth=0.6;
-    for(let ri=1;ri<=3;ri++){
-      ctx.beginPath();ctx.arc(cx2,cy2,rad*ri/3,0,Math.PI*2);ctx.stroke();
-    }
-    // Axes
-    for(let ai=0;ai<6;ai++){
-      const a2=(ai/6)*Math.PI*2;
-      ctx.beginPath();ctx.moveTo(cx2,cy2);
-      ctx.lineTo(cx2+Math.cos(a2)*rad,cy2+Math.sin(a2)*rad);ctx.stroke();
-    }
-    // Rotating sweep
-    const sweepAng=t2*1.2+data.phase;
-    ctx.strokeStyle=data.color;ctx.lineWidth=1;
-    ctx.globalAlpha=0.8;
-    ctx.beginPath();ctx.moveTo(cx2,cy2);
-    ctx.lineTo(cx2+Math.cos(sweepAng)*rad,cy2+Math.sin(sweepAng)*rad);ctx.stroke();
-    // Blip
-    ctx.globalAlpha=1;ctx.beginPath();
-    ctx.arc(cx2+Math.cos(sweepAng)*rad*0.6,cy2+Math.sin(sweepAng)*rad*0.6,3,0,Math.PI*2);
-    ctx.fill();
-    ctx.globalAlpha=1;
+  // Hammer pulse — floor vibration shimmer
+  if(hammerPulse>0.05){
+    const vg=c.createLinearGradient(0,FLOOR_Y-4,0,FLOOR_Y+20);
+    vg.addColorStop(0,'rgba(0,0,0,0)');
+    vg.addColorStop(0.5,`rgba(45,35,15,${hammerPulse*0.06})`);
+    vg.addColorStop(1,'rgba(0,0,0,0)');
+    c.fillStyle=vg;c.fillRect(0,FLOOR_Y-4,W,24);
   }
-  ctx.shadowBlur=0;
 }
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   PARTICLES
-   ═══════════════════════════════════════════════════════════════════════════ */
-// Microgravity dust
-const dustParticles=[];
-for(let i=0;i<50;i++){
-  dustParticles.push({
-    x:130+Math.random()*(W-260),
-    y:100+Math.random()*H,
-    vx:(Math.random()-0.5)*0.22,
-    vy:(Math.random()-0.5)*0.15,
-    r:0.5+Math.random()*1.5,
-    a:0.1+Math.random()*0.25,
-    phase:Math.random()*Math.PI*2,
-    sp:0.005+Math.random()*0.01,
+// ─────────────────────────────────────────────────────────────────────────────
+// LAYER 2 — FURNACE: Schmelzöfen, orangeglühendes Metall, Hallenlicht
+// ─────────────────────────────────────────────────────────────────────────────
+const FURNACES=[
+  {x:175, y:H*0.60,w:145,h:185,phase:0.0, cycle:13,dur:4.5},
+  {x:CX-70,y:H*0.58,w:165,h:205,phase:2.9, cycle:10,dur:5},
+  {x:810, y:H*0.61,w:138,h:178,phase:5.2, cycle:15,dur:3.8},
+];
+
+function furnaceOpen(f){
+  const cy=(t+f.phase)%f.cycle;
+  if(cy>=f.dur) return 0;
+  const p=cy/f.dur;
+  return p<0.14?p/0.14:p>0.72?(1-p)/0.28:1;
+}
+
+function drawFurnace(){
+  const c=ctxFurnace;
+  c.clearRect(0,0,W,H);
+
+  FURNACES.forEach(f=>{
+    const oe=eio(furnaceOpen(f));
+
+    // Furnace housing — pre-draw the dark metal box
+    c.globalAlpha=1;
+    c.fillStyle='rgba(14,13,10,0.97)';
+    c.fillRect(f.x-14,f.y-22,f.w+28,f.h+44);
+    // Door frame thick border
+    c.strokeStyle='rgba(35,30,22,0.85)';c.lineWidth=5;
+    c.strokeRect(f.x,f.y,f.w,f.h);
+    // Rivets on corners
+    [[f.x+12,f.y+12],[f.x+f.w-12,f.y+12],
+     [f.x+12,f.y+f.h-12],[f.x+f.w-12,f.y+f.h-12]].forEach(([rx,ry])=>{
+      c.fillStyle='rgba(42,36,26,0.85)';
+      c.beginPath();safeArc(c,rx,ry,5,0,Math.PI*2);c.fill();
+    });
+    // Control panel stub on side
+    c.fillStyle='rgba(12,11,9,0.95)';
+    c.fillRect(f.x+f.w+14,f.y+20,22,60);
+    c.strokeStyle='rgba(28,25,18,0.5)';c.lineWidth=1;
+    c.strokeRect(f.x+f.w+14,f.y+20,22,60);
+
+    if(oe>0.01){
+      const fcx=f.x+f.w/2,fcy=f.y+f.h/2;
+
+      // Interior — molten metal radial gradient
+      c.save();
+      c.beginPath();c.rect(f.x+2,f.y+2,f.w-4,f.h-4);c.clip();
+      const ig=c.createRadialGradient(fcx,fcy+f.h*0.15,0,fcx,fcy,f.w*0.85);
+      ig.addColorStop(0,  `rgba(255,255,190,${oe*0.92})`);
+      ig.addColorStop(0.12,`rgba(255,210,60,${oe*0.88})`);
+      ig.addColorStop(0.28,`rgba(255,145,18,${oe*0.8})`);
+      ig.addColorStop(0.52,`rgba(210,65,8,${oe*0.65})`);
+      ig.addColorStop(0.78,`rgba(140,25,4,${oe*0.4})`);
+      ig.addColorStop(1,  'rgba(0,0,0,0)');
+      c.globalAlpha=1;c.fillStyle=ig;c.fillRect(f.x,f.y,f.w,f.h);
+
+      // Molten surface pools — slow convection
+      for(let lv=0;lv<3;lv++){
+        const lvx=f.x+f.w*(0.25+lv*0.25)+Math.sin(t*0.25+lv)*f.w*0.09;
+        const lvy=f.y+f.h*0.62+Math.cos(t*0.18+lv)*f.h*0.1;
+        const lvr=f.w*(0.14+lv*0.04);
+        const lvg=c.createRadialGradient(lvx,lvy,0,lvx,lvy,lvr);
+        lvg.addColorStop(0,`rgba(255,255,160,${oe*0.55})`);
+        lvg.addColorStop(0.5,`rgba(255,200,50,${oe*0.28})`);
+        lvg.addColorStop(1,'rgba(0,0,0,0)');
+        c.fillStyle=lvg;c.beginPath();safeArc(c,lvx,lvy,lvr,0,Math.PI*2);c.fill();
+      }
+      c.restore();
+
+      // Hall flood — orange light spilling into the space
+      const hg=c.createRadialGradient(fcx,fcy,f.w*0.25,fcx,fcy,520*oe);
+      hg.addColorStop(0,  `rgba(255,135,14,${oe*0.18})`);
+      hg.addColorStop(0.3,`rgba(220,95,10,${oe*0.10})`);
+      hg.addColorStop(0.6,`rgba(175,55,6,${oe*0.04})`);
+      hg.addColorStop(1,  'rgba(0,0,0,0)');
+      c.fillStyle=hg;c.fillRect(0,0,W,H);
+
+      // Heat columns rising from open door
+      for(let sh=0;sh<5;sh++){
+        const shx=f.x+f.w*(0.18+sh*0.16);
+        const sha=0.038*oe*(0.5+0.5*Math.sin(t*2.8+sh));
+        const shg=c.createLinearGradient(shx,f.y,shx,f.y-220*oe);
+        shg.addColorStop(0,`rgba(255,145,22,${sha})`);
+        shg.addColorStop(0.5,`rgba(200,95,12,${sha*0.35})`);
+        shg.addColorStop(1,'rgba(0,0,0,0)');
+        c.fillStyle=shg;c.fillRect(shx-9,f.y-220*oe,18,220*oe);
+      }
+    }
   });
 }
 
-// Data packets floating horizontally
-const dataPackets=[];
-for(let i=0;i<35;i++){
-  dataPackets.push(mkPacket(true));
-}
-function mkPacket(init){
-  const fromLeft=Math.random()<0.5;
-  return{
-    x:fromLeft?100:W-100,
-    y:init?200+Math.random()*H*0.7:700+Math.random()*800,
-    vx:fromLeft?(0.8+Math.random()*1.2):-(0.8+Math.random()*1.2),
-    w:4+Math.random()*10,
-    h:2+Math.random()*3,
-    hue:185+Math.random()*30,
-    a:0.4+Math.random()*0.5,
-    phase:Math.random()*Math.PI*2,
-  };
-}
-
-// Energy sparks near ring
-const energySparks=[];
-for(let i=0;i<30;i++){
-  const ang=Math.random()*Math.PI*2;
-  const r=RING_R+20+Math.random()*80;
-  energySparks.push({
-    x:RING_CX+Math.cos(ang)*r,
-    y:RING_CY+Math.sin(ang)*r,
-    vx:(Math.random()-0.5)*1.5,
-    vy:(Math.random()-0.5)*1.5,
-    life:Math.random(),
-    decay:0.012+Math.random()*0.018,
-    r:0.8+Math.random()*2,
-    hue:185+Math.random()*30,
-  });
-}
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   MAIN LOOP
-   ═══════════════════════════════════════════════════════════════════════════ */
-let t=0;
-
-function loop(){
-  t+=0.016;
-
-  /* ── SPACE through porthole ── */
-  spaceCtx.clearRect(0,0,W,H);
-  // Clip to porthole circle
-  spaceCtx.save();
-  spaceCtx.beginPath();
-  spaceCtx.arc(PH_CX,PH_CY,PH_R,0,Math.PI*2);
-  spaceCtx.clip();
-
-  // Deep space background inside porthole
-  const spBg=spaceCtx.createRadialGradient(PH_CX,PH_CY,0,PH_CX,PH_CY,PH_R);
-  spBg.addColorStop(0,'#000010');
-  spBg.addColorStop(0.5,'#00000c');
-  spBg.addColorStop(1,'#000008');
-  spaceCtx.fillStyle=spBg;
-  spaceCtx.fillRect(PH_CX-PH_R,PH_CY-PH_R,PH_R*2,PH_R*2);
-
-  // Nebula patches
-  const nebulas=[
-    {x:PH_CX-120,y:PH_CY-80, rx:200,ry:120,hue:200,a:0.12},
-    {x:PH_CX+80, y:PH_CY+60, rx:160,ry:100,hue:260,a:0.1},
-    {x:PH_CX-60, y:PH_CY+100,rx:180,ry:90, hue:180,a:0.08},
+// ─────────────────────────────────────────────────────────────────────────────
+// LAYER 3 — PIPES: Rohrnetz, Dampf, Anfang und Ende unbekannt
+// ─────────────────────────────────────────────────────────────────────────────
+const pipeOff=document.createElement('canvas');
+pipeOff.width=W;pipeOff.height=H;
+(function(){
+  const c=pipeOff.getContext('2d');
+  // Horizontal pipes
+  const HP=[
+    {y:H*0.13,r:15},{y:H*0.25,r:11},{y:H*0.37,r:20},
+    {y:H*0.50,r:9}, {y:H*0.64,r:16},{y:H*0.78,r:7},
   ];
-  spaceCtx.globalCompositeOperation='screen';
-  for(const n of nebulas){
-    const ng=spaceCtx.createRadialGradient(n.x,n.y,0,n.x,n.y,n.rx);
-    ng.addColorStop(0,`hsla(${n.hue},80%,40%,${n.a})`);
-    ng.addColorStop(1,'rgba(0,0,0,0)');
-    spaceCtx.save();spaceCtx.scale(1,n.ry/n.rx);
-    spaceCtx.fillStyle=ng;
-    spaceCtx.beginPath();spaceCtx.arc(n.x,n.y*(n.rx/n.ry),n.rx,0,Math.PI*2);spaceCtx.fill();
-    spaceCtx.restore();
+  HP.forEach(p=>{
+    c.fillStyle='rgba(20,19,15,0.97)';c.fillRect(0,p.y-p.r,W,p.r*2);
+    c.fillStyle='rgba(32,30,24,0.5)';c.fillRect(0,p.y-p.r,W,p.r*0.4);
+    c.fillStyle='rgba(7,6,5,0.55)';c.fillRect(0,p.y+p.r*0.6,W,p.r*0.4);
+    // Flanges
+    for(let fx=55;fx<W;fx+=rng(130,250)){
+      const fw=16;
+      c.fillStyle='rgba(28,26,21,0.97)';c.fillRect(fx-fw/2,p.y-p.r-4,fw,p.r*2+8);
+      c.strokeStyle='rgba(38,35,27,0.7)';c.lineWidth=1;
+      c.strokeRect(fx-fw/2,p.y-p.r-4,fw,p.r*2+8);
+    }
+  });
+  // Vertical connectors
+  [[80,H*0.13,H*0.37,8],[CX-10,H*0.13,H*0.50,13],[340,H*0.25,H*0.64,7],
+   [720,H*0.37,H*0.78,8],[960,H*0.13,H*0.50,9],[160,H*0.50,H*0.78,6]].forEach(([vx,y1,y2,vr])=>{
+    c.fillStyle='rgba(20,19,15,0.97)';c.fillRect(vx-vr,y1,vr*2,y2-y1);
+    c.fillStyle='rgba(30,28,22,0.45)';c.fillRect(vx-vr,y1,vr*0.4,y2-y1);
+    c.fillStyle='rgba(7,6,5,0.45)';c.fillRect(vx+vr*0.6,y1,vr*0.4,y2-y1);
+  });
+  // Pressure gauges
+  [[200,H*0.25],[510,H*0.13],[760,H*0.37],[330,H*0.64],[910,H*0.50]].forEach(([gx,gy])=>{
+    c.fillStyle='rgba(24,22,18,0.99)';
+    c.beginPath();safeArc(c,gx,gy,18,0,Math.PI*2);c.fill();
+    c.strokeStyle='rgba(40,37,29,0.82)';c.lineWidth=2;
+    c.beginPath();safeArc(c,gx,gy,18,0,Math.PI*2);c.stroke();
+    c.fillStyle='rgba(14,13,11,0.9)';
+    c.beginPath();safeArc(c,gx,gy,12,0,Math.PI*2);c.fill();
+    // Dial needle
+    c.strokeStyle='rgba(52,46,34,0.72)';c.lineWidth=1.5;
+    const na=Math.PI*0.2+hash(gx*0.01)*Math.PI*1.2;
+    c.beginPath();c.moveTo(gx,gy);c.lineTo(gx+Math.cos(na)*9,gy+Math.sin(na)*9);c.stroke();
+  });
+})();
+
+// Steam puffs from joints
+const VENTS=[
+  {x:80, y:H*0.37-20,ph:0.0,sp:4.5},{x:CX,y:H*0.50-13,ph:2.1,sp:3.8},
+  {x:720,y:H*0.78-7, ph:3.8,sp:5.2},{x:340,y:H*0.64-7, ph:1.5,sp:4.0},
+];
+class Steam{
+  constructor(v){this.v=v;this.reset()}
+  reset(){
+    this.x=this.v.x+rng(-10,10);this.y=this.v.y;
+    this.r=rng(3,11);this.vx=rng(-0.25,0.25);this.vy=-(rng(0.4,1.4));
+    this.life=1;this.decay=rng(0.01,0.022);this.alpha=rng(0.035,0.08);
   }
-  spaceCtx.globalCompositeOperation='source-over';
-
-  // Planet — partially visible at edge
-  const planetX=PH_CX+160, planetY=PH_CY+120;
-  const planetR=210;
-  // Atmosphere glow
-  const atmG=spaceCtx.createRadialGradient(planetX,planetY,planetR*0.85,planetX,planetY,planetR*1.25);
-  atmG.addColorStop(0,'rgba(40,100,200,0.35)');
-  atmG.addColorStop(0.5,'rgba(20,60,150,0.15)');
-  atmG.addColorStop(1,'rgba(0,0,0,0)');
-  spaceCtx.fillStyle=atmG;
-  spaceCtx.beginPath();spaceCtx.arc(planetX,planetY,planetR*1.25,0,Math.PI*2);spaceCtx.fill();
-  // Planet surface
-  const pg=spaceCtx.createRadialGradient(planetX-40,planetY-40,0,planetX,planetY,planetR);
-  pg.addColorStop(0,'#2a5080');
-  pg.addColorStop(0.3,'#1e3d60');
-  pg.addColorStop(0.6,'#3d2e18');
-  pg.addColorStop(0.85,'#1a1408');
-  pg.addColorStop(1,'rgba(0,0,0,0)');
-  spaceCtx.fillStyle=pg;
-  spaceCtx.beginPath();spaceCtx.arc(planetX,planetY,planetR,0,Math.PI*2);spaceCtx.fill();
-  // Cloud bands
-  spaceCtx.globalAlpha=0.15;
-  for(let band=0;band<3;band++){
-    const by=planetY-50+band*40+Math.sin(t*0.1+band)*5;
-    spaceCtx.fillStyle='rgba(180,200,255,0.5)';
-    spaceCtx.beginPath();spaceCtx.ellipse(planetX,by,planetR*0.8,8,0,0,Math.PI*2);spaceCtx.fill();
+  update(dt){
+    this.x+=this.vx*dt*60;this.y+=this.vy*dt*60;
+    this.r=Math.min(this.r*(1+dt*0.65),120);
+    this.life-=this.decay*dt*60;
+    if(this.life<=0)this.reset();
   }
-  spaceCtx.globalAlpha=1;
-
-  // Stars (slowly drifting)
-  for(const s of stars){
-    s.driftAng+=s.driftSp;
-    const offX=Math.cos(s.driftAng)*0.3;
-    const offY=Math.sin(s.driftAng)*0.2;
-    let a=s.a;
-    if(s.flicker){s.phase+=s.flickSp;a=s.a*(0.4+Math.abs(Math.sin(s.phase))*0.7);}
-    const col=s.hue?`hsla(${s.hue},80%,80%,${a})`:`rgba(220,230,255,${a})`;
-    spaceCtx.fillStyle=col;
-    spaceCtx.beginPath();spaceCtx.arc(s.x+offX,s.y+offY,s.r,0,Math.PI*2);spaceCtx.fill();
+  draw(c){
+    c.save();c.globalAlpha=this.alpha*this.life*this.life;
+    const g=c.createRadialGradient(this.x,this.y,0,this.x,this.y,Math.max(0.1,this.r));
+    g.addColorStop(0,'rgba(175,170,160,0.65)');
+    g.addColorStop(0.5,'rgba(135,130,120,0.28)');
+    g.addColorStop(1,'rgba(0,0,0,0)');
+    c.fillStyle=g;c.beginPath();safeArc(c,this.x,this.y,Math.max(0.1,this.r),0,Math.PI*2);c.fill();
+    c.restore();
   }
-  spaceCtx.restore();
+}
+const STEAM=VENTS.flatMap(v=>Array.from({length:5},()=>new Steam(v)));
 
-  // Porthole inner glass reflection
-  spaceCtx.save();
-  const reflG=spaceCtx.createRadialGradient(PH_CX-PH_R*0.3,PH_CY-PH_R*0.3,0,PH_CX,PH_CY,PH_R);
-  reflG.addColorStop(0,'rgba(80,140,220,0.08)');
-  reflG.addColorStop(0.4,'rgba(40,100,180,0.03)');
-  reflG.addColorStop(1,'rgba(0,0,0,0)');
-  spaceCtx.beginPath();spaceCtx.arc(PH_CX,PH_CY,PH_R,0,Math.PI*2);
-  spaceCtx.fillStyle=reflG;spaceCtx.fill();
-  spaceCtx.restore();
+function drawPipes(dt){
+  const c=ctxPipes;
+  c.clearRect(0,0,W,H);
+  c.drawImage(pipeOff,0,0);
+  STEAM.forEach(s=>{s.update(dt);s.draw(c);});
+}
 
-  /* ── RING AREA ── */
-  ringCtx.clearRect(0,0,W,H);
+// ─────────────────────────────────────────────────────────────────────────────
+// LAYER 4 — SPARKS: Schweißfunken + Schleifbögen — kurz, präzise, schön
+// ─────────────────────────────────────────────────────────────────────────────
+const WELDERS=[
+  {x:265,y:H*0.55,active:false,activeT:0,nextT:rng(1,5)},
+  {x:685,y:H*0.52,active:false,activeT:0,nextT:rng(3,9)},
+  {x:445,y:H*0.68,active:false,activeT:0,nextT:rng(2,7)},
+];
 
-  // Portal energy glow
-  const rPulse=0.5+Math.sin(t*1.8)*0.35;
-  const rg=ringCtx.createRadialGradient(RING_CX,RING_CY,RING_R*0.2,RING_CX,RING_CY,RING_R+220);
-  rg.addColorStop(0,`rgba(0,200,255,${0.16*rPulse})`);
-  rg.addColorStop(0.38,`rgba(0,150,230,${0.07*rPulse})`);
-  rg.addColorStop(1,'rgba(0,0,0,0)');
-  ringCtx.fillStyle=rg;ringCtx.beginPath();ringCtx.arc(RING_CX,RING_CY,RING_R+220,0,Math.PI*2);ringCtx.fill();
-
-  // Hologram rings
-  for(const hr of holoRings){
-    hr.rot+=hr.rotSp;
-    const pulse=0.45+Math.sin(t*1.4+hr.rot)*0.35;
-    ringCtx.save();
-    ringCtx.strokeStyle=`hsla(${hr.hue},100%,65%,${pulse})`;
-    ringCtx.lineWidth=hr.width;
-    ringCtx.shadowBlur=8;ringCtx.shadowColor=`hsla(${hr.hue},100%,60%,0.7)`;
-    ringCtx.setLineDash([hr.dashLen,hr.gapLen]);
-    ringCtx.lineDashOffset=-hr.rot*hr.r;
-    ringCtx.beginPath();ringCtx.arc(RING_CX,RING_CY,hr.r,0,Math.PI*2);ringCtx.stroke();
-    ringCtx.setLineDash([]);
-    ringCtx.restore();
+class Spark{
+  constructor(x,y){
+    this.x=x;this.y=y;
+    // Sparks fly upward and outward
+    const a=rng(-Math.PI*0.92,-Math.PI*0.08)+(Math.random()-0.5)*0.9;
+    const spd=rng(1.8,7.5);
+    this.vx=Math.cos(a)*spd;this.vy=Math.sin(a)*spd-rng(0.8,2.5);
+    this.r=Math.max(0.5,rng(0.6,2.8));
+    this.life=1;this.decay=rng(0.038,0.09);
+    this.arc=Math.random()<0.28; // blue-white arc vs orange spark
+    this.hue=this.arc?rng(200,222):rng(22,48);
+    this.trail=[];
   }
-  ringCtx.shadowBlur=0;
-
-  // Scanner sweep
-  scannerAng+=SCANNER_SPEED;
-  const scanLen=RING_R+220;
-  ringCtx.save();
-  const scanG=ringCtx.createConicalGradient?null:null; // fallback
-  // Manual sweep with triangle
-  for(let si=0;si<20;si++){
-    const a=scannerAng-si*0.025;
-    const alpha=(1-si/20)*0.15;
-    ringCtx.fillStyle=`rgba(0,220,255,${alpha})`;
-    ringCtx.beginPath();
-    ringCtx.moveTo(RING_CX,RING_CY);
-    ringCtx.arc(RING_CX,RING_CY,scanLen,a,a+0.025);
-    ringCtx.closePath();ringCtx.fill();
+  update(dt){
+    this.trail.push({x:this.x,y:this.y});
+    if(this.trail.length>6)this.trail.shift();
+    this.vy+=0.055*dt*60;
+    this.x+=this.vx*dt*60;this.y+=this.vy*dt*60;
+    this.life-=this.decay*dt*60;
+    return this.life>0&&this.y<H+10;
   }
-  ringCtx.restore();
+  draw(c){
+    c.save();
+    for(let i=1;i<this.trail.length;i++){
+      const tf=i/this.trail.length;
+      c.globalAlpha=this.life*tf*tf*0.48;
+      c.strokeStyle=`hsl(${this.hue},${this.arc?82:95}%,${this.arc?80:88}%)`;
+      c.lineWidth=Math.max(0.1,this.r*tf*0.6);c.lineCap='round';
+      c.shadowColor=`hsl(${this.hue},100%,85%)`;c.shadowBlur=3;
+      c.beginPath();
+      c.moveTo(this.trail[i-1].x,this.trail[i-1].y);
+      c.lineTo(this.trail[i].x,this.trail[i].y);c.stroke();c.shadowBlur=0;
+    }
+    c.globalAlpha=this.life*0.9;
+    c.fillStyle=`hsl(${this.hue+10},100%,${this.arc?90:88}%)`;
+    c.shadowColor=`hsl(${this.hue},100%,86%)`;c.shadowBlur=Math.max(0.1,this.r)*6;
+    c.beginPath();safeArc(c,this.x,this.y,this.r,0,Math.PI*2);c.fill();
+    c.shadowBlur=0;c.restore();
+  }
+}
 
-  // Data streams + packets
-  for(const ds of dataStreams){
-    ds.packetTimer+=0.016;
-    if(ds.packetTimer>ds.packetInterval){
-      ds.packetTimer=0;
-      ds.packets.push({
-        progress:0,
-        speed:0.012+Math.random()*0.01,
-        w:5+Math.random()*8,
-        h:2+Math.random()*2,
+let sparks=[];
+
+function drawSparks(dt){
+  const c=ctxSparks;
+  c.clearRect(0,0,W,H);
+
+  WELDERS.forEach(w=>{
+    w.nextT-=dt;
+    if(!w.active&&w.nextT<=0){
+      w.active=true;w.activeT=rng(1.5,4.5);w.nextT=rng(4,13);
+    }
+    if(w.active){
+      w.activeT-=dt;if(w.activeT<=0)w.active=false;
+      // Arc glow at weld point
+      const flicker=0.55+0.45*Math.abs(Math.sin(t*22));
+      [28,11,3].forEach((wr,pass)=>{
+        const wa=[0.04,0.13,0.5][pass]*flicker;
+        c.fillStyle=`rgba(175,208,255,${wa})`;
+        c.shadowColor='rgba(155,190,255,0.6)';c.shadowBlur=wr*3;
+        c.beginPath();safeArc(c,w.x,w.y,Math.max(0.1,wr),0,Math.PI*2);c.fill();
+        c.shadowBlur=0;
       });
+      if(Math.random()<0.55*dt*60){
+        for(let si=0;si<Math.floor(rng(2,7));si++){
+          sparks.push(new Spark(w.x+rng(-9,9),w.y+rng(-5,5)));
+        }
+      }
     }
-    // Draw stream line
-    const sx=RING_CX+Math.cos(ds.ang)*ds.startR;
-    const sy=RING_CY+Math.sin(ds.ang)*ds.startR;
-    const ex=RING_CX+Math.cos(ds.ang)*ds.endR;
-    const ey=RING_CY+Math.sin(ds.ang)*ds.endR;
-    ringCtx.strokeStyle=`hsla(${ds.hue},90%,55%,0.12)`;
-    ringCtx.lineWidth=0.8;
-    ringCtx.beginPath();ringCtx.moveTo(sx,sy);ringCtx.lineTo(ex,ey);ringCtx.stroke();
+  });
 
-    // Animate packets
-    for(let pi=ds.packets.length-1;pi>=0;pi--){
-      const pk=ds.packets[pi];
-      pk.progress+=pk.speed;
-      if(pk.progress>=1){ds.packets.splice(pi,1);continue;}
-      const px=sx+(ex-sx)*pk.progress;
-      const py=sy+(ey-sy)*pk.progress;
-      const fade=1-Math.abs(pk.progress-0.5)*2;
-      const pang=Math.atan2(ey-sy,ex-sx);
-      ringCtx.save();
-      ringCtx.translate(px,py);ringCtx.rotate(pang);
-      ringCtx.fillStyle=`hsla(${ds.hue},100%,72%,${fade*0.9})`;
-      ringCtx.shadowBlur=8;ringCtx.shadowColor=`hsla(${ds.hue},100%,65%,0.8)`;
-      ringCtx.fillRect(-pk.w/2,-pk.h/2,pk.w,pk.h);
-      ringCtx.restore();
-    }
+  sparks=sparks.filter(s=>{const a=s.update(dt);s.draw(c);return a;});
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// LAYER 5 — RAIN: Regen auf Stahldach — jedes Ping einzeln
+// ─────────────────────────────────────────────────────────────────────────────
+class Drop{
+  constructor(){this.reset(true)}
+  reset(init=false){
+    this.x=rng(0,W);this.y=init?rng(-10,H*0.15):-8;
+    this.vy=rng(9,20);this.len=rng(9,24);
+    this.alpha=rng(0.07,0.20);this.ph=rng(0,Math.PI*2);
   }
-  ringCtx.shadowBlur=0;
+  update(dt){this.y+=this.vy*dt*60;return this.y<FLOOR_Y;}
+  draw(c){
+    c.save();c.globalAlpha=this.alpha*(0.55+0.45*Math.sin(t*1.8+this.ph));
+    const dg=c.createLinearGradient(this.x,this.y,this.x,this.y+this.len);
+    dg.addColorStop(0,'rgba(0,0,0,0)');
+    dg.addColorStop(0.3,'rgba(150,158,172,0.85)');
+    dg.addColorStop(1,'rgba(115,122,135,0.18)');
+    c.strokeStyle=dg;c.lineWidth=0.8;
+    c.beginPath();c.moveTo(this.x,this.y);c.lineTo(this.x,this.y+this.len);c.stroke();
+    c.restore();
+  }
+}
 
-  /* ── HOLOGRAM DISPLAYS ── */
-  const holoSizes=[[220,140],[200,125],[190,130],[210,145]];
-  for(let hi=0;hi<holoCtxs.length;hi++){
-    const [hw,hh]=holoSizes[hi];
-    renderHolo(holoCtxs[hi],hw,hh,holoData[hi],t);
+class Ping{
+  constructor(x){this.x=x;this.y=FLOOR_Y;this.r=0;this.life=1;this.decay=rng(0.055,0.11);}
+  update(dt){this.r+=dt*22;this.life-=this.decay*dt*60;return this.life>0&&this.r<25;}
+  draw(c){
+    c.save();c.globalAlpha=this.life*this.life*0.32;
+    c.strokeStyle='rgba(155,162,175,0.85)';c.lineWidth=0.7;
+    c.beginPath();safeArc(c,this.x,this.y,Math.max(0.1,this.r),0,Math.PI*2);c.stroke();
+    c.restore();
+  }
+}
+
+const DROPS=Array.from({length:130},()=>new Drop());
+let pings=[];
+
+function drawRain(dt){
+  const c=ctxRain;
+  c.clearRect(0,0,W,H);
+  DROPS.forEach(d=>{
+    const alive=d.update(dt);
+    if(!alive){if(Math.random()<0.45)pings.push(new Ping(d.x));d.reset(false);}
+    d.draw(c);
+  });
+  pings=pings.filter(p=>{const a=p.update(dt);p.draw(c);return a;});
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// LAYER 6 — PULSE: Hammer-Rhythmus sichtbar, Ring, Bodenböen
+// ─────────────────────────────────────────────────────────────────────────────
+class FloorWave{
+  constructor(){
+    this.x=CX+(rng(-1,1)*180);
+    this.y=FLOOR_Y+rng(5,40);
+    this.r=0;this.life=1;
+  }
+  update(dt){this.r+=dt*380;this.life-=dt*3.8;return this.life>0;}
+  draw(c){
+    c.save();c.globalAlpha=this.life*this.life*0.16;
+    c.strokeStyle=`rgba(110,98,75,${this.life*0.7})`;c.lineWidth=1.4;
+    c.save();c.scale(1,0.22);
+    c.beginPath();safeArc(c,this.x,this.y/0.22,Math.max(0.1,this.r),0,Math.PI*2);c.stroke();
+    c.restore();c.restore();
+  }
+}
+let floorWaves=[];
+
+const RING_MOTES=Array.from({length:65},(_,i)=>({
+  angle:i/65*Math.PI*2,speed:rng(-0.004,0.004),
+  rOff:rng(-0.28,0.28),r:Math.max(0.5,rng(0.8,2.8)),
+  life:Math.random(),decay:rng(0.003,0.007),phase:rng(0,Math.PI*2),
+}));
+
+function drawPulse(dt){
+  const c=ctxPulse;
+  c.clearRect(0,0,W,H);
+
+  if(hammerPulse>0.75&&floorWaves.length<8)floorWaves.push(new FloorWave());
+  floorWaves=floorWaves.filter(fw=>{const a=fw.update(dt);fw.draw(c);return a;});
+
+  // Subtle whole-screen warm flash on beat
+  if(hammerPulse>0.01){
+    c.globalAlpha=hammerPulse*0.038;
+    c.fillStyle='rgba(75,52,22,1)';c.fillRect(0,0,W,H);
+    c.globalAlpha=1;
   }
 
-  /* ── PARTICLES ── */
-  partCtx.clearRect(0,0,W,H);
+  // Ring — oscillates between steel grey and furnace orange
+  const furnaceGlow=FURNACES.reduce((acc,f)=>acc+furnaceOpen(f),0)/FURNACES.length;
+  const ringHue=lerp(205,24,furnaceGlow);
+  const ringPulse=0.68+0.32*Math.sin(t*0.75)+hammerPulse*0.28;
 
-  // Microgravity dust
-  for(const d of dustParticles){
-    d.phase+=d.sp;
-    d.x+=d.vx+Math.sin(d.phase)*0.05;
-    d.y+=d.vy+Math.cos(d.phase*0.7)*0.05;
-    if(d.x<130)d.x=W-130;if(d.x>W-130)d.x=130;
-    if(d.y<100)d.y=H-100;if(d.y>H-80)d.y=100+Math.random()*200;
-    partCtx.fillStyle=`rgba(140,180,220,${d.a*(0.6+Math.sin(d.phase)*0.4)})`;
-    partCtx.beginPath();partCtx.arc(d.x,d.y,d.r,0,Math.PI*2);partCtx.fill();
-  }
+  [65,28,10,3].forEach((lw,pass)=>{
+    const la=[0.022,0.058,0.18,0.55][pass]*ringPulse;
+    c.strokeStyle=`hsla(${ringHue},${lerp(40,80,furnaceGlow)}%,${lerp(48,65,furnaceGlow)}%,${la})`;
+    c.lineWidth=lw*(1+hammerPulse*0.25);
+    c.shadowColor=`hsl(${ringHue},65%,58%)`;c.shadowBlur=lw*2.5*(1+hammerPulse*0.8);
+    c.beginPath();safeArc(c,CX,CY,RING_R,0,Math.PI*2);c.stroke();c.shadowBlur=0;
+  });
 
-  // Data packets floating freely
-  for(let i=0;i<dataPackets.length;i++){
-    const p=dataPackets[i];
-    p.x+=p.vx;
-    if(p.x<100||p.x>W-100) dataPackets[i]=mkPacket(false);
-    partCtx.save();
-    partCtx.fillStyle=`hsla(${p.hue},90%,65%,${p.a*(0.5+Math.sin(p.phase+t*2)*0.5)})`;
-    partCtx.shadowBlur=6;partCtx.shadowColor=`hsla(${p.hue},100%,60%,0.6)`;
-    partCtx.fillRect(p.x-p.w/2,p.y-p.h/2,p.w,p.h);
-    partCtx.restore();
-  }
+  RING_MOTES.forEach(rm=>{
+    rm.angle+=rm.speed*(1+hammerPulse*0.45);
+    rm.life-=rm.decay;
+    if(rm.life<=0){rm.life=1;rm.decay=rng(0.003,0.007);}
+    const rx=CX+Math.cos(rm.angle)*(RING_R+rm.rOff*24);
+    const ry=CY+Math.sin(rm.angle)*(RING_R+rm.rOff*24);
+    const ra=rm.life*(0.3+0.45*Math.sin(t*2+rm.phase))*(1+hammerPulse*0.35);
+    c.globalAlpha=ra*0.55;
+    c.fillStyle=`hsl(${ringHue},${lerp(42,75,furnaceGlow)}%,${lerp(52,68,furnaceGlow)}%)`;
+    c.shadowColor=`hsl(${ringHue},65%,62%)`;c.shadowBlur=rm.r*4*(1+hammerPulse*0.5);
+    c.beginPath();safeArc(c,rx,ry,rm.r,0,Math.PI*2);c.fill();c.shadowBlur=0;
+  });
+  c.globalAlpha=1;
+}
 
-  // Energy sparks near ring
-  partCtx.save();
-  for(let i=0;i<energySparks.length;i++){
-    const s=energySparks[i];
-    s.x+=s.vx;s.y+=s.vy;s.life-=s.decay;
-    if(s.life<=0){
-      const ang=Math.random()*Math.PI*2;
-      const r=RING_R+20+Math.random()*80;
-      Object.assign(s,{x:RING_CX+Math.cos(ang)*r,y:RING_CY+Math.sin(ang)*r,vx:(Math.random()-0.5)*1.5,vy:(Math.random()-0.5)*1.5,life:0.8+Math.random()*0.2,decay:0.012+Math.random()*0.018});
-      continue;
-    }
-    const flick=0.4+Math.sin(t*12+i)*0.6;
-    partCtx.fillStyle=`hsla(${s.hue},100%,72%,${s.life*flick})`;
-    partCtx.shadowBlur=8;partCtx.shadowColor=`hsla(${s.hue},100%,65%,0.8)`;
-    partCtx.beginPath();partCtx.arc(s.x,s.y,s.r,0,Math.PI*2);partCtx.fill();
-  }
-  partCtx.shadowBlur=0;partCtx.restore();
-
+// ─────────────────────────────────────────────────────────────────────────────
+// MAIN LOOP
+// ─────────────────────────────────────────────────────────────────────────────
+function loop(now){
+  const dt=Math.min((now-last)/1000,0.05);
+  last=now;t+=dt;
+  tickHammer(dt);
+  drawBase();
+  drawFurnace();
+  drawPipes(dt);
+  drawSparks(dt);
+  drawRain(dt);
+  drawPulse(dt);
   requestAnimationFrame(loop);
 }
-
-loop();
+requestAnimationFrame(loop);
 </script>
 </body>
 </html>
