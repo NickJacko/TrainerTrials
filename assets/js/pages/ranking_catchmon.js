@@ -2,8 +2,8 @@
 import { db } from '../firebase.client.js';
 import { ref, onValue } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 
-let caughtCatchmon  = []; // aus trainers/
-let escapedCatchmon = []; // aus escaped/
+let caughtCatchmon   = [];
+let escapedCatchmon  = [];
 let catcherDonations = {};
 let activeRarityFilter = 'all';
 let hasScrolled = false;
@@ -81,15 +81,13 @@ function renderTable() {
   const showCaughtOnly = document.getElementById("caughtOnly").checked;
   const savedTrainer   = getSavedTrainer();
 
-  // Caught — immer anzeigen, nach Punkten sortiert
   const visibleCaught = caughtCatchmon
     .filter(p => activeRarityFilter === 'all' || p.rarity === activeRarityFilter)
     .sort((a, b) => b.points - a.points);
 
-  // Escaped — nur wenn Checkbox nicht aktiv
   const visibleEscaped = showCaughtOnly ? [] : escapedCatchmon
     .filter(p => activeRarityFilter === 'all' || p.rarity === activeRarityFilter)
-    .sort((a, b) => (b.escaped_at || 0) - (a.escaped_at || 0)); // neueste zuerst
+    .sort((a, b) => (b.escaped_at || 0) - (a.escaped_at || 0));
 
   if (visibleCaught.length === 0 && visibleEscaped.length === 0) {
     tbody.innerHTML = '<tr><td colspan="8" class="loading"><div class="spinner"></div><div>No Catchmon found</div></td></tr>';
@@ -159,7 +157,7 @@ function renderTable() {
     fragment.appendChild(tr);
   });
 
-  // ── Escaped rows — grau, kein Catcher, kein Rank ─────────────────────────
+  // ── Escaped rows ──────────────────────────────────────────────────────────
   visibleEscaped.forEach((p) => {
     const tr = document.createElement("tr");
     tr.classList.add('uncaught-row');
@@ -168,7 +166,6 @@ function renderTable() {
       window.location.href = `dex_detail.html?name=${encodeURIComponent(p.name)}`;
     });
 
-    // Rank — escaped symbol statt Nummer
     const tdRank = document.createElement('td');
     tdRank.innerHTML = '<span style="opacity:0.3;font-size:0.9em;">✗</span>';
 
@@ -195,8 +192,13 @@ function renderTable() {
     const tdCatcher = document.createElement('td');
     tdCatcher.innerHTML = '<span style="opacity:0.3;font-size:0.85em;">✗ escaped</span>';
 
+    // ── Punkte bei escaped jetzt anzeigen ────────────────────────────────────
     const tdPoints = document.createElement('td');
-    tdPoints.innerHTML = '<span style="opacity:0.25">—</span>';
+    tdPoints.className = 'points-cell';
+    const escapedPoints = calcPoints(p);
+    tdPoints.innerHTML = escapedPoints > 0
+      ? `<span style="opacity:0.45">${escapedPoints.toLocaleString('de-DE')}</span>`
+      : '<span style="opacity:0.25">—</span>';
 
     const tdLevel = document.createElement('td');
     tdLevel.className = 'level-cell';
@@ -233,16 +235,6 @@ function forceRefresh() {
 }
 
 // ── Firebase ──────────────────────────────────────────────────────────────────
-onValue(ref(db, '.info/connected'), snap => {
-  const el = document.getElementById('connectionStatus');
-  if (snap.val()) {
-    el.textContent = '🟢 Live'; el.className = 'connection-status connected';
-  } else {
-    el.textContent = '🔴 Offline'; el.className = 'connection-status disconnected';
-  }
-});
-
-// Caught — aus trainers/
 onValue(ref(db, 'trainers'), snap => {
   const data = snap.val() || {};
   caughtCatchmon = [];
@@ -254,15 +246,15 @@ onValue(ref(db, 'trainers'), snap => {
       if (c?.name) {
         caughtCatchmon.push({
           catcher,
-          name:     c.name,
-          level:    c.level    || 1,
-          shiny:    c.shiny    || false,
-          stats:    c.stats    || {},
-          rarity:   c.rarity   || "Common",
-          sprite:   c.sprite   || "",
-          points:   calcPoints(c),
-          statSum:  sumStats(c.stats),
-          caught:   true,
+          name:    c.name,
+          level:   c.level   || 1,
+          shiny:   c.shiny   || false,
+          stats:   c.stats   || {},
+          rarity:  c.rarity  || "Common",
+          sprite:  c.sprite  || "",
+          points:  calcPoints(c),
+          statSum: sumStats(c.stats),
+          caught:  true,
         });
       }
     }
@@ -270,7 +262,6 @@ onValue(ref(db, 'trainers'), snap => {
   renderTable();
 });
 
-// Escaped — aus escaped/
 onValue(ref(db, 'escaped'), snap => {
   const data = snap.val();
   escapedCatchmon = [];
@@ -279,15 +270,15 @@ onValue(ref(db, 'escaped'), snap => {
   escapedCatchmon = entries
     .filter(e => e?.name)
     .map(e => ({
-      name:      e.name,
-      level:     e.level    || 1,
-      shiny:     e.shiny    || false,
-      stats:     e.stats    || {},
-      rarity:    e.rarity   || "Common",
-      sprite:    e.sprite   || "",
-      statSum:   sumStats(e.stats),
+      name:       e.name,
+      level:      e.level   || 1,
+      shiny:      e.shiny   || false,
+      stats:      e.stats   || {},
+      rarity:     e.rarity  || "Common",
+      sprite:     e.sprite  || "",
+      statSum:    sumStats(e.stats),
       escaped_at: e.escaped_at || 0,
-      caught:    false,
+      caught:     false,
     }));
   renderTable();
 }, err => console.error('Firebase escaped error:', err));

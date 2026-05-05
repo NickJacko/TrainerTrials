@@ -33,7 +33,7 @@ function getDonationTier(donation) {
   return 'normal';
 }
 
-const rawName    = new URLSearchParams(window.location.search).get("name");
+const rawName     = new URLSearchParams(window.location.search).get("name");
 const trainerName = validateTrainerName(rawName);
 
 const rarityOrder  = ["Starter", "Common", "Rare", "Legendary", "Mythical", "God"];
@@ -65,9 +65,13 @@ function buildRaritySection(rarity, pokemons, caughtCount) {
   title.className = 'rarity-title';
   title.textContent = `${rarityEmojis[rarity] || '❓'} ${rarity}`;
 
+  // Caught count in this rarity
+  const totalInRarity  = pokemons.length;
+  const caughtInRarity = pokemons.filter(p => p.name.toLowerCase() in caughtCount).length;
+
   const count = document.createElement('div');
   count.className = 'rarity-count';
-  count.textContent = `${pokemons.length} Catchmon`;
+  count.textContent = `${caughtInRarity} / ${totalInRarity}`;
 
   header.append(title, count);
 
@@ -114,6 +118,42 @@ function buildRaritySection(rarity, pokemons, caughtCount) {
   return section;
 }
 
+// ── Stats Bar ─────────────────────────────────────────────────────────────────
+function buildStatsBar(dexList, caught) {
+  const total      = dexList.length;
+  const caughtCount = Object.keys(caught).length;
+  const pct        = total > 0 ? Math.round((caughtCount / total) * 100) : 0;
+
+  const existing = document.getElementById('dexStatsBar');
+  if (existing) existing.remove();
+
+  const bar = document.createElement('div');
+  bar.id = 'dexStatsBar';
+  bar.style.cssText = `
+    background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);
+    border-radius:14px;padding:14px 18px;margin-bottom:20px;
+    display:flex;align-items:center;justify-content:space-between;gap:16px;
+  `;
+
+  const left = document.createElement('div');
+  left.style.cssText = 'font-size:0.85rem;color:rgba(255,255,255,0.5);';
+  left.innerHTML = `<span style="color:white;font-weight:800;font-size:1rem;">${caughtCount}</span> / ${total} caught`;
+
+  const trackWrap = document.createElement('div');
+  trackWrap.style.cssText = 'flex:1;background:rgba(255,255,255,0.07);border-radius:4px;height:6px;overflow:hidden;';
+  const fill = document.createElement('div');
+  fill.style.cssText = `height:100%;border-radius:4px;background:linear-gradient(90deg,#4ECDC4,#667eea);width:0%;transition:width 1s ease;`;
+  trackWrap.appendChild(fill);
+  setTimeout(() => { fill.style.width = pct + '%'; }, 300);
+
+  const right = document.createElement('div');
+  right.style.cssText = 'font-size:1rem;font-weight:900;color:#FFD700;min-width:40px;text-align:right;';
+  right.textContent = pct + '%';
+
+  bar.append(left, trackWrap, right);
+  return bar;
+}
+
 // ── Load ──────────────────────────────────────────────────────────────────────
 async function loadCatchdex(trainer) {
   const container = document.getElementById("dexContainer");
@@ -126,21 +166,25 @@ async function loadCatchdex(trainer) {
       const data        = snap.val() || {};
       const trainerData = data[trainer];
 
-      if (!trainerData) {
-        document.getElementById("catcherTitle").textContent = `📘 ${capitalize(trainer)}'s Catchdex`;
-        container.innerHTML = '<div class="error-message">Trainer not found.</div>';
-        return;
-      }
+      // ── Trainer nicht in Firebase — leeres Dex anzeigen ──────────────────
+      const team = trainerData
+        ? (Array.isArray(trainerData.team)
+            ? trainerData.team.filter(Boolean)
+            : Object.values(trainerData.team || {}).filter(Boolean))
+        : [];
 
-      const team   = Array.isArray(trainerData.team) ? trainerData.team : Object.values(trainerData.team || {});
+      const donation = trainerData?.donation || 0;
+      setTitle(trainer, donation);
+
+      // Caught-Map aufbauen
       const caught = {};
       team.forEach(mon => {
+        if (!mon?.name) return;
         const key = mon.name.toLowerCase();
         caught[key] = (caught[key] || 0) + 1;
       });
 
-      setTitle(trainer, trainerData.donation || 0);
-
+      // Dex nach Rarity gruppieren
       const byRarity = {};
       rarityOrder.forEach(r => byRarity[r] = []);
       dexList.forEach(mon => {
@@ -150,6 +194,24 @@ async function loadCatchdex(trainer) {
       rarityOrder.forEach(r => { if (byRarity[r]) byRarity[r].sort((a,b) => a.id - b.id); });
 
       container.innerHTML = '';
+
+      // Stats-Bar oben
+      const statsBar = buildStatsBar(dexList, caught);
+      container.appendChild(statsBar);
+
+      // Hinweis wenn noch keine Catches
+      if (team.length === 0) {
+        const hint = document.createElement('div');
+        hint.style.cssText = `
+          text-align:center;padding:20px;margin-bottom:24px;
+          background:rgba(78,205,196,0.06);border:1px solid rgba(78,205,196,0.15);
+          border-radius:12px;font-size:0.85rem;color:rgba(255,255,255,0.4);
+        `;
+        hint.innerHTML = '🎯 No catches yet — all Catchmon shown as <strong style="color:rgba(255,255,255,0.6)">undiscovered</strong>';
+        container.appendChild(hint);
+      }
+
+      // Rarity Sections
       rarityOrder.forEach(r => {
         const section = buildRaritySection(r, byRarity[r] || [], caught);
         if (section) {
@@ -168,7 +230,7 @@ async function loadCatchdex(trainer) {
 // ── Init ──────────────────────────────────────────────────────────────────────
 if (!trainerName) {
   document.getElementById("dexContainer").innerHTML = '<div class="error-message">Invalid or missing trainer name.</div>';
-  document.getElementById("catcherTitle").textContent = "📘 Unknown Trainer's Catchdex";
+  document.getElementById("catcherTitle").textContent = "📘 Unknown Trainer\'s Catchdex";
 } else {
   loadCatchdex(trainerName.toLowerCase());
 }

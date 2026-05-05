@@ -3,8 +3,8 @@ import { db } from '../firebase.client.js';
 import { ref, onValue } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 
 const statsOrder = ["ATK","DEF","SPD","WIS","CHA","LUK"];
-let allEntries = [];      // caught entries aus trainers/
-let escapedEntries = [];  // escaped entries aus escaped/ für dieses Catchmon
+let allEntries = [];
+let escapedEntries = [];
 let catcherDonations = {};
 let dexList = [];
 let isGodMode = false;
@@ -58,17 +58,20 @@ function getDonationTier(donation) {
   return "normal";
 }
 function isGodCatchmon(sprite) { return sprite && sprite.includes('/God/'); }
+
+// ── Relative time in English ──────────────────────────────────────────────────
 function relativeTime(tsMs) {
   if (!tsMs) return null;
   const diff = Date.now() - tsMs;
   const min  = Math.floor(diff / 60000);
   const h    = Math.floor(diff / 3600000);
   const d    = Math.floor(diff / 86400000);
-  if (min < 2)  return 'gerade eben';
-  if (min < 60) return `vor ${min} Min.`;
-  if (h < 24)   return `vor ${h} Std.`;
-  if (d < 30)   return `vor ${d} Tag${d === 1 ? '' : 'en'}`;
-  return `vor ${Math.floor(d / 30)} Monat${Math.floor(d / 30) === 1 ? '' : 'en'}`;
+  if (min < 2)  return 'just now';
+  if (min < 60) return `${min}m ago`;
+  if (h < 24)   return `${h}h ago`;
+  if (d < 30)   return `${d}d ago`;
+  const mo = Math.floor(d / 30);
+  return `${mo} month${mo === 1 ? '' : 's'} ago`;
 }
 
 // ── URL Param ─────────────────────────────────────────────────────────────────
@@ -85,15 +88,10 @@ function renderTable() {
   const showCaughtOnly = document.getElementById("caughtOnly").checked;
   const savedTrainer   = getSavedTrainer();
 
-  // Caught entries — immer anzeigen
-  const caught = allEntries.sort((a, b) => calcPoints(b) - calcPoints(a));
-
-  // Escaped entries — nur wenn Checkbox NICHT aktiv
+  const caught  = allEntries.sort((a, b) => calcPoints(b) - calcPoints(a));
   const escaped = showCaughtOnly ? [] : escapedEntries;
 
-  const totalVisible = caught.length + escaped.length;
-
-  if (totalVisible === 0) {
+  if (caught.length === 0 && escaped.length === 0) {
     tbody.innerHTML = '<tr><td colspan="12" class="loading"><div class="spinner"></div><div>No data available</div></td></tr>';
     return;
   }
@@ -106,7 +104,6 @@ function renderTable() {
     const isMe = savedTrainer && e.catcher && e.catcher.toLowerCase() === savedTrainer.toLowerCase();
     if (isMe) tr.classList.add('my-row');
 
-    // Catcher cell
     const tdCatcher = document.createElement('td');
     if (isGodMode) {
       const span = document.createElement('span');
@@ -116,7 +113,7 @@ function renderTable() {
     } else {
       const tier = getDonationTier(catcherDonations[e.catcher] || 0);
       const el   = document.createElement('span');
-      el.className  = `catcher-name ${tier}`;
+      el.className   = `catcher-name ${tier}`;
       el.textContent = capitalize(e.catcher);
       el.addEventListener('click', () => {
         window.location.href = `catcher_detail.html?name=${encodeURIComponent(e.catcher)}`;
@@ -130,18 +127,18 @@ function renderTable() {
     }
 
     const tdPoints = document.createElement('td');
-    tdPoints.textContent = calcPoints(e).toLocaleString('de-DE');
+    tdPoints.textContent = calcPoints(e).toLocaleString('en-US');
     const tdLevel = document.createElement('td');
     tdLevel.textContent = e.level || 1;
     const tdShiny = document.createElement('td');
     tdShiny.textContent = e.shiny ? "✨" : "";
     const tdSum = document.createElement('td');
-    tdSum.textContent = sumStats(e.stats).toLocaleString('de-DE');
+    tdSum.textContent = sumStats(e.stats).toLocaleString('en-US');
     const tdTime = document.createElement('td');
     tdTime.className = 'time-cell';
     const rel = relativeTime(e.caught_at);
     tdTime.textContent = rel || '—';
-    if (rel && e.caught_at) tdTime.title = new Date(e.caught_at).toLocaleString('de-DE');
+    if (rel && e.caught_at) tdTime.title = new Date(e.caught_at).toLocaleString('en-US');
 
     tr.append(tdCatcher, tdPoints, tdLevel, tdShiny, tdSum, tdTime);
     statsOrder.forEach(s => {
@@ -152,29 +149,35 @@ function renderTable() {
     fragment.appendChild(tr);
   });
 
-  // ── Escaped rows — grau, kein Catcher ─────────────────────────────────────
+  // ── Escaped rows ──────────────────────────────────────────────────────────
   escaped.forEach(e => {
     const tr = document.createElement("tr");
     tr.classList.add('uncaught-row');
-    tr.title = 'Escaped — not caught by anyone';
+    tr.title = 'Escaped — not caught';
 
-    // Catcher cell — escaped indicator
     const tdCatcher = document.createElement('td');
     tdCatcher.innerHTML = '<span style="opacity:0.35;font-size:0.85em;">✗ escaped</span>';
 
+    // ── Points für escaped anzeigen ───────────────────────────────────────────
     const tdPoints = document.createElement('td');
-    tdPoints.innerHTML = '<span style="opacity:0.3">—</span>';
+    const escapedPoints = calcPoints(e);
+    tdPoints.innerHTML = escapedPoints > 0
+      ? `<span style="opacity:0.45">${escapedPoints.toLocaleString('en-US')}</span>`
+      : '<span style="opacity:0.25">—</span>';
+
     const tdLevel = document.createElement('td');
-    tdLevel.textContent = e.level || '—';
+    tdLevel.innerHTML = `<span style="opacity:0.4">${e.level || '—'}</span>`;
     const tdShiny = document.createElement('td');
     tdShiny.textContent = e.shiny ? "✨" : "";
     const tdSum = document.createElement('td');
-    tdSum.textContent = e.stats ? sumStats(e.stats).toLocaleString('de-DE') : '—';
+    tdSum.innerHTML = e.stats
+      ? `<span style="opacity:0.4">${sumStats(e.stats).toLocaleString('en-US')}</span>`
+      : '<span style="opacity:0.25">—</span>';
     const tdTime = document.createElement('td');
     tdTime.className = 'time-cell';
     const rel = relativeTime(e.escaped_at);
     tdTime.textContent = rel || '—';
-    if (rel && e.escaped_at) tdTime.title = new Date(e.escaped_at).toLocaleString('de-DE');
+    if (rel && e.escaped_at) tdTime.title = new Date(e.escaped_at).toLocaleString('en-US');
 
     tr.append(tdCatcher, tdPoints, tdLevel, tdShiny, tdSum, tdTime);
     statsOrder.forEach(s => {
@@ -191,7 +194,7 @@ function renderTable() {
   tbody.appendChild(fragment);
 }
 
-// ── Process trainers data ─────────────────────────────────────────────────────
+// ── Process data ──────────────────────────────────────────────────────────────
 function processTrainers(trainersData) {
   const lowerName = catchmonName.toLowerCase();
   const caughtEntries = [];
@@ -212,32 +215,27 @@ function processTrainers(trainersData) {
   renderTable();
 }
 
-// ── Process escaped data ──────────────────────────────────────────────────────
 function processEscaped(escapedData) {
   const lowerName = catchmonName.toLowerCase();
   escapedEntries = [];
-
   if (!escapedData) { renderTable(); return; }
-
   const entries = typeof escapedData === 'object' ? Object.values(escapedData) : [];
   escapedEntries = entries
     .filter(e => e?.name && e.name.toLowerCase() === lowerName)
-    .sort((a, b) => (b.escaped_at || 0) - (a.escaped_at || 0)); // neueste zuerst
-
+    .sort((a, b) => (b.escaped_at || 0) - (a.escaped_at || 0));
   updateSummary();
   renderTable();
 }
 
-// ── Update Summary ────────────────────────────────────────────────────────────
+// ── Summary in English ────────────────────────────────────────────────────────
 function updateSummary() {
   if (isGodMode) return;
   const trainerCount = new Set(allEntries.map(e => e.catcher)).size;
-  const summaryEl = document.getElementById("summary");
-  summaryEl.textContent =
-    `${allEntries.length} gefangen · ${trainerCount} Trainer · ${escapedEntries.length} entkommen`;
+  document.getElementById("summary").textContent =
+    `${allEntries.length} caught · ${trainerCount} trainer${trainerCount !== 1 ? 's' : ''} · ${escapedEntries.length} escaped`;
 }
 
-// ── Setup Header (once dexList loaded) ───────────────────────────────────────
+// ── Header ────────────────────────────────────────────────────────────────────
 function setupHeader() {
   const lowerName = catchmonName.toLowerCase();
   const dexEntry  = dexList.find(p => p.name.toLowerCase() === lowerName);

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com https://www.google.com https://*.firebasedatabase.app; connect-src 'self' https://*.firebasedatabase.app https://*.firebaseio.com https://www.googleapis.com wss://*.firebasedatabase.app https://www.google.com https://content-firebaseappcheck.googleapis.com https://firebaseappcheck.googleapis.com; frame-src 'self' https://www.google.com https://*.firebasedatabase.app; img-src 'self' data: https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; base-uri 'self';">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' https: wss: data: blob:;">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>">
   <title>🎮 Catchmon Arena</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -108,8 +108,8 @@
       </div>
     </div>
 
-    <!-- NAV -->
-    <div class="nav-grid reveal">
+    <!-- NAV — 3 cards, evenly spread -->
+    <div class="nav-grid nav-grid-3 reveal">
       <a href="catchdex_live.html" class="nav-card">
         <span class="nav-icon">📘</span>
         <span class="nav-title">Catchdex</span>
@@ -119,11 +119,6 @@
         <span class="nav-icon">🧠</span>
         <span class="nav-title">How to Play</span>
         <span class="nav-sub">Learn the mechanics</span>
-      </a>
-      <a href="catcher_ranking_live.html" class="nav-card">
-        <span class="nav-icon">🏆</span>
-        <span class="nav-title">Rankings</span>
-        <span class="nav-sub">Top trainers</span>
       </a>
       <a href="donations.html" class="nav-card nav-gold">
         <span class="nav-icon">💎</span>

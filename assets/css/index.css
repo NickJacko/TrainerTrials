@@ -204,6 +204,12 @@ h1 { font-size: clamp(3.5rem, 11vw, 7.5rem); font-weight: 900; line-height: 0.92
   display: grid; grid-template-columns: repeat(4,1fr);
   gap: 10px; margin-bottom: 12px;
 }
+
+/* 3-Karten Variante — gleichmäßig aufgeteilt */
+.nav-grid-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
 .nav-card {
   display: flex; flex-direction: column; align-items: center; gap: 6px;
   text-decoration: none; color: white;
@@ -236,6 +242,7 @@ h1 { font-size: clamp(3.5rem, 11vw, 7.5rem); font-weight: 900; line-height: 0.92
 @media (max-width: 900px) {
   .stats-row { grid-template-columns: repeat(2,1fr); }
   .nav-grid  { grid-template-columns: repeat(2,1fr); }
+  .nav-grid-3 { grid-template-columns: repeat(3,1fr); }
 }
 @media (max-width: 700px) {
   .spawn-row { grid-template-columns: 1fr; }
@@ -248,6 +255,7 @@ h1 { font-size: clamp(3.5rem, 11vw, 7.5rem); font-weight: 900; line-height: 0.92
   .card.medal-1 { transform: none; }
   .chance-bar-wrap { display: none; }
   .chance-likes    { display: none; }
+  .nav-grid-3 { grid-template-columns: 1fr; }
 }
 @media (prefers-reduced-motion: reduce) {
   *,*::before,*::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }

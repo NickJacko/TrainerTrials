@@ -9,9 +9,8 @@ let dexList     = [];
 let enabledGens = new Set();
 let myTeamNames = new Set();
 
-// Direkt aus Firebase gezählt — kein dex/seen_caught mehr
-let escapedCounts = {}; // { "mindferno": 12, ... }
-let caughtCounts  = {}; // { "mindferno": 3, ... }
+let escapedCounts = {};
+let caughtCounts  = {};
 
 // ── Reveal ────────────────────────────────────────────────────────────────────
 const revealObs = new IntersectionObserver(entries => {
@@ -56,6 +55,10 @@ function buildRaritySection(rarity, pokemons) {
   const section = document.createElement('div');
   section.className = `rarity-section ${rarity.toLowerCase()}`;
 
+  // Count how many are caught vs total in this rarity
+  const totalInRarity  = pokemons.length;
+  const caughtInRarity = pokemons.filter(p => (caughtCounts[p.name.toLowerCase()] || 0) > 0).length;
+
   const header = document.createElement('div');
   header.className = 'rarity-header';
   const title = document.createElement('div');
@@ -63,7 +66,8 @@ function buildRaritySection(rarity, pokemons) {
   title.textContent = `${rarityEmojis[rarity] || '❓'} ${rarity}`;
   const count = document.createElement('div');
   count.className = 'rarity-count';
-  count.textContent = `${pokemons.length} Catchmon`;
+  // Show caught/total in header
+  count.innerHTML = `<span style="color:rgba(255,255,255,0.8);font-weight:800;">${caughtInRarity}</span><span style="opacity:0.4"> / ${totalInRarity}</span>`;
   header.append(title, count);
   section.appendChild(header);
 
@@ -78,14 +82,27 @@ function buildRaritySection(rarity, pokemons) {
     const isGod     = rarity === "God";
     const isMe      = myTeamNames.has(nameLower);
 
+    // ── uncaught if nobody has caught this catchmon yet ──────────────────────
+    const neverCaught = caught === 0;
+
     const card = document.createElement('div');
-    card.className = 'card' + (isMe ? ' my-card' : '');
+    // Add 'uncaught' class if never caught by anyone
+    card.className = 'card' + (isMe ? ' my-card' : '') + (neverCaught ? ' uncaught' : '');
 
     if (isMe) {
       const badge = document.createElement('span');
       badge.className = 'you-card-badge';
       badge.textContent = 'YOU';
       card.appendChild(badge);
+    }
+
+    // First-catch badge — show if caught but escaped > 0 (rare achievement)
+    if (!neverCaught && caught === 1 && escaped > 5) {
+      const rare = document.createElement('span');
+      rare.style.cssText = 'position:absolute;top:4px;left:4px;font-size:9px;font-weight:800;color:#FFD700;letter-spacing:0.5px;text-shadow:0 0 8px rgba(255,215,0,0.6);';
+      rare.textContent = '★ RARE';
+      card.style.position = 'relative';
+      card.appendChild(rare);
     }
 
     const link = document.createElement('a');
@@ -100,11 +117,26 @@ function buildRaritySection(rarity, pokemons) {
 
     const idName = document.createElement('div');
     idName.className = 'id-name';
-    idName.textContent = `#${isGod ? "???" : id}\n${isGod ? "??? ??? ???" : capitalize(p.name)}`;
+    // Hide name for god rarity AND for never-caught (mystery)
+    if (isGod) {
+      idName.textContent = `#???\n??? ??? ???`;
+    } else if (neverCaught) {
+      idName.textContent = `#${id}\n${capitalize(p.name)}`;
+    } else {
+      idName.textContent = `#${id}\n${capitalize(p.name)}`;
+    }
 
     const stats = document.createElement('div');
     stats.className = 'stats';
-    stats.textContent = isGod ? "██ ██ / ██ ██" : `${escaped} escaped / ${caught} caught`;
+    if (isGod) {
+      stats.textContent = "██ ██ / ██ ██";
+    } else if (neverCaught) {
+      // Show escaped count but not caught
+      stats.textContent = escaped > 0 ? `${escaped} escaped / not caught yet` : 'Not caught yet';
+      stats.style.color = 'rgba(255,255,255,0.3)';
+    } else {
+      stats.textContent = `${escaped} escaped / ${caught} caught`;
+    }
 
     link.append(img, idName, stats);
     card.appendChild(link);
@@ -145,7 +177,7 @@ function renderDex() {
   });
 }
 
-// ── Zähle escaped aus escaped/ Liste ─────────────────────────────────────────
+// ── Count helpers ─────────────────────────────────────────────────────────────
 function buildEscapedCounts(escapedData) {
   const counts = {};
   if (!escapedData) return counts;
@@ -158,7 +190,6 @@ function buildEscapedCounts(escapedData) {
   return counts;
 }
 
-// ── Zähle caught aus trainers/ Teams ─────────────────────────────────────────
 function buildCaughtCounts(trainersData) {
   const counts = {};
   if (!trainersData) return counts;
@@ -198,7 +229,6 @@ async function init() {
 
   const savedTrainer = getSavedTrainer();
 
-  // Trainer-Team für YOU-Badge
   if (savedTrainer) {
     onValue(ref(db, `trainers/${savedTrainer.toLowerCase()}`), snap => {
       const info = snap.val();
@@ -210,13 +240,11 @@ async function init() {
     });
   }
 
-  // Escaped-Zählung direkt aus escaped/ Liste
   onValue(ref(db, 'escaped'), snap => {
     escapedCounts = buildEscapedCounts(snap.val());
     renderDex();
   }, err => console.error('Firebase escaped error:', err));
 
-  // Caught-Zählung direkt aus trainers/ Teams
   onValue(ref(db, 'trainers'), snap => {
     caughtCounts = buildCaughtCounts(snap.val());
     renderDex();
