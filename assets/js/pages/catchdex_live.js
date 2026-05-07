@@ -67,7 +67,7 @@ function buildRaritySection(rarity, pokemons) {
   const count = document.createElement('div');
   count.className = 'rarity-count';
   // Show caught/total in header
-  count.innerHTML = `<span style="color:rgba(255,255,255,0.8);font-weight:800;">${caughtInRarity}</span><span style="opacity:0.4"> / ${totalInRarity}</span>`;
+  count.innerHTML = `<span style="color:rgba(255,255,255,0.8);font-weight:800;">${caughtInRarity}</span><span style="opacity:0.4"> / ${totalInRarity} discovered</span>`;
   header.append(title, count);
   section.appendChild(header);
 
@@ -82,12 +82,11 @@ function buildRaritySection(rarity, pokemons) {
     const isGod     = rarity === "God";
     const isMe      = myTeamNames.has(nameLower);
 
-    // ── uncaught if nobody has caught this catchmon yet ──────────────────────
-    const neverCaught = caught === 0;
+    // Noch nie gecatched → nicht anzeigen
+    if (caught === 0 && !isGod) return;
 
     const card = document.createElement('div');
-    // Add 'uncaught' class if never caught by anyone
-    card.className = 'card' + (isMe ? ' my-card' : '') + (neverCaught ? ' uncaught' : '');
+    card.className = 'card' + (isMe ? ' my-card' : '');
 
     if (isMe) {
       const badge = document.createElement('span');
@@ -96,8 +95,8 @@ function buildRaritySection(rarity, pokemons) {
       card.appendChild(badge);
     }
 
-    // First-catch badge — show if caught but escaped > 0 (rare achievement)
-    if (!neverCaught && caught === 1 && escaped > 5) {
+    // Rare-Badge wenn nur 1x gecatched aber oft entkommen
+    if (caught === 1 && escaped > 5) {
       const rare = document.createElement('span');
       rare.style.cssText = 'position:absolute;top:4px;left:4px;font-size:9px;font-weight:800;color:#FFD700;letter-spacing:0.5px;text-shadow:0 0 8px rgba(255,215,0,0.6);';
       rare.textContent = '★ RARE';
@@ -117,25 +116,15 @@ function buildRaritySection(rarity, pokemons) {
 
     const idName = document.createElement('div');
     idName.className = 'id-name';
-    // Hide name for god rarity AND for never-caught (mystery)
-    if (isGod) {
-      idName.textContent = `#???\n??? ??? ???`;
-    } else if (neverCaught) {
-      idName.textContent = `#${id}\n${capitalize(p.name)}`;
-    } else {
-      idName.textContent = `#${id}\n${capitalize(p.name)}`;
-    }
+    idName.textContent = isGod ? `#???\n??? ??? ???` : `#${id}\n${capitalize(p.name)}`;
 
+    // Stats: nur caught-Info, kein escaped
     const stats = document.createElement('div');
     stats.className = 'stats';
     if (isGod) {
-      stats.textContent = "██ ██ / ██ ██";
-    } else if (neverCaught) {
-      // Show escaped count but not caught
-      stats.textContent = escaped > 0 ? `${escaped} escaped / not caught yet` : 'Not caught yet';
-      stats.style.color = 'rgba(255,255,255,0.3)';
+      stats.textContent = "██ ██ ██";
     } else {
-      stats.textContent = `${escaped} escaped / ${caught} caught`;
+      stats.textContent = `${caught}× caught`;
     }
 
     link.append(img, idName, stats);
