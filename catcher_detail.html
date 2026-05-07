@@ -1,304 +1,34 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
   <meta charset="UTF-8" />
   <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' https: wss: data: blob:;">
   <title>🎮 Trainer Profile</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
   <link rel="stylesheet" href="assets/css/catcher_detail.css">
-  <style>
-  /* ── RESET & BASE ──────────────────────────────────────────── */
-  *{box-sizing:border-box;margin:0;padding:0}
-  :root{
-    --gold:#FFD700;--teal:#4ECDC4;--purple:#9C27B0;--red:#FF4444;
-    --bg:#07071a;--card:rgba(255,255,255,0.04);--border:rgba(255,255,255,0.08);
-  }
-  html{overflow-x:hidden;}
-  body{
-    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
-    background:var(--bg);color:white;min-height:100vh;overflow-x:hidden;
-    width:100%;max-width:100vw;
-  }
-  body::before{
-    content:'';position:fixed;inset:0;
-    /* Override grid pattern from catcher_detail.css */
-    background-image:
-      radial-gradient(ellipse 80% 50% at 20% -10%,rgba(78,205,196,0.07) 0%,transparent 60%),
-      radial-gradient(ellipse 60% 40% at 85% 90%,rgba(255,215,0,0.05) 0%,transparent 55%) !important;
-    background-size: auto !important;
-    pointer-events:none;z-index:0;
-  }
-  .orb{position:fixed;border-radius:50%;filter:blur(90px);pointer-events:none;z-index:0;}
-  .orb-1{width:500px;height:500px;background:rgba(78,205,196,0.07);top:-200px;left:-100px;}
-  .orb-2{width:400px;height:400px;background:rgba(255,107,107,0.06);top:40vh;right:-100px;}
-  .orb-3{width:300px;height:300px;background:rgba(255,215,0,0.05);bottom:0;left:35%;}
-
-  .container{max-width:1000px;margin:auto;padding:24px 16px 80px;position:relative;z-index:1;width:100%;}
-
-  /* ── TOP BAR ── */
-  .top-bar{margin-bottom:32px;}
-  .back-btn{
-    display:inline-flex;align-items:center;gap:8px;text-decoration:none;
-    color:rgba(255,255,255,0.4);font-size:13px;font-weight:500;
-    padding:8px 16px;border-radius:30px;border:1px solid var(--border);
-    background:var(--card);transition:all 0.2s;
-  }
-  .back-btn:hover{color:white;border-color:rgba(255,255,255,0.2);}
-
-  /* ── HERO PROFILE ── */
-  .profile-hero{
-    display:grid;grid-template-columns:auto 1fr;gap:20px;
-    align-items:center;margin-bottom:28px;
-    background:var(--card);border:1px solid var(--border);
-    border-radius:24px;padding:24px 20px;
-    position:relative;overflow:hidden;
-    min-width:0;
-  }
-  .profile-hero::before{
-    content:'';position:absolute;top:0;left:0;right:0;height:2px;
-    background:linear-gradient(90deg,transparent,var(--teal),var(--gold),transparent);
-  }
-  .profile-avatar{
-    width:80px;height:80px;border-radius:50%;
-    background:linear-gradient(135deg,rgba(78,205,196,0.2),rgba(255,215,0,0.2));
-    border:2px solid rgba(255,255,255,0.1);
-    display:flex;align-items:center;justify-content:center;
-    font-size:2.2rem;flex-shrink:0;
-  }
-  .profile-info{min-width:0;}
-  .profile-eyebrow{font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--teal);opacity:0.7;margin-bottom:6px;}
-  .profile-name{
-    font-size:clamp(1.8rem,5vw,2.8rem);font-weight:900;letter-spacing:-1.5px;
-    margin-bottom:4px;line-height:1;
-  }
-  .profile-sub{font-size:13px;color:rgba(255,255,255,0.4);font-weight:500;}
-
-  /* Catcher name tiers */
-  .catcher-name{display:inline-block;font-weight:900;background-size:200% auto;background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:nameShine 3s linear infinite;}
-  .king,.god{background-image:linear-gradient(90deg,#ffd700,#fff,#ffd700);}
-  .flame    {background-image:linear-gradient(90deg,#ff4444,#fff,#ff4444);}
-  .diamond  {background-image:linear-gradient(90deg,#00bfff,#fff,#00bfff);}
-  .shine-t  {background-image:linear-gradient(90deg,#32cd32,#fff,#32cd32);}
-  .normal   {color:white;background:none;-webkit-text-fill-color:white;animation:none;}
-  @keyframes nameShine{to{background-position:-200% center;}}
-
-  /* ── STAT BRICKS ── */
-  .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px;}
-  .stat-brick{
-    background:var(--card);border:1px solid var(--border);
-    border-radius:18px;padding:20px 16px;text-align:center;
-    transition:transform 0.2s,border-color 0.2s;
-  }
-  .stat-brick:hover{transform:translateY(-3px);border-color:rgba(255,255,255,0.15);}
-  .stat-num{font-size:2rem;font-weight:900;color:var(--gold);line-height:1;margin-bottom:4px;}
-  .stat-num.teal{color:var(--teal);}
-  .stat-num.red {color:#FF6B6B;}
-  .stat-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;opacity:0.35;}
-
-  /* ── XP BAR ── */
-  .xp-section{
-    background:var(--card);border:1px solid var(--border);
-    border-radius:18px;padding:20px 22px;margin-bottom:12px;
-  }
-  .xp-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
-  .xp-title{font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;opacity:0.4;}
-  .xp-pct{font-size:13px;font-weight:900;color:var(--gold);}
-  .xp-track{height:8px;background:rgba(255,255,255,0.07);border-radius:4px;overflow:hidden;margin-bottom:8px;}
-  .xp-fill{
-    height:100%;border-radius:4px;width:0%;
-    background:linear-gradient(90deg,var(--teal),var(--gold));
-    transition:width 1.2s cubic-bezier(0.22,1,0.36,1);
-    position:relative;overflow:hidden;
-  }
-  .xp-fill::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent 30%,rgba(255,255,255,0.4) 50%,transparent 70%);animation:xpShim 2s linear infinite;}
-  @keyframes xpShim{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
-  .level-gray   {background:rgba(120,120,140,0.7)}
-  .level-lightgreen{background:linear-gradient(90deg,#2e7d32,#81c784)}
-  .level-green  {background:linear-gradient(90deg,#1b5e20,#4caf50)}
-  .level-cyan   {background:linear-gradient(90deg,#006064,#26c6da)}
-  .level-blue   {background:linear-gradient(90deg,#1565c0,#42a5f5)}
-  .level-yellow {background:linear-gradient(90deg,#f57f17,#ffca28)}
-  .level-orange {background:linear-gradient(90deg,#e65100,#ffa726)}
-  .level-red    {background:linear-gradient(90deg,#b71c1c,#ef5350)}
-  .level-deepred{background:linear-gradient(90deg,#880e4f,#e91e63)}
-  .level-rainbow{background:linear-gradient(90deg,#ff0000,#ff8c00,#ffd700,#00e676,#00b0ff,#7c4dff);background-size:300% auto;animation:rbMove 2s linear infinite;}
-  @keyframes rbMove{to{background-position:-300% center}}
-  .xp-label{font-size:11px;color:rgba(255,255,255,0.3);font-weight:600;}
-
-  /* ── DEX ROW ── */
-  .dex-row{
-    display:flex;align-items:center;gap:20px;
-    background:var(--card);border:1px solid var(--border);
-    border-radius:18px;padding:20px 22px;margin-bottom:12px;
-  }
-  .dex-info{flex:1;}
-  .dex-eyebrow{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;opacity:0.35;margin-bottom:8px;}
-  .dex-nums{font-size:1.6rem;font-weight:900;letter-spacing:-1px;margin-bottom:8px;color:var(--teal);}
-  .dex-track{height:6px;background:rgba(255,255,255,0.07);border-radius:3px;overflow:hidden;}
-  .dex-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--teal),#45B7D1);width:0%;transition:width 1.2s ease;}
-  .dex-right{display:flex;flex-direction:column;align-items:flex-end;gap:10px;flex-shrink:0;}
-  .dex-pct{font-size:2rem;font-weight:900;color:var(--teal);letter-spacing:-1px;}
-  .dex-btn{
-    display:inline-flex;align-items:center;gap:6px;text-decoration:none;
-    font-size:12px;font-weight:700;padding:8px 16px;
-    border:1px solid rgba(78,205,196,0.3);border-radius:20px;
-    color:var(--teal);background:rgba(78,205,196,0.06);transition:all 0.2s;
-  }
-  .dex-btn:hover{background:rgba(78,205,196,0.14);border-color:rgba(78,205,196,0.55);}
-
-  /* ── ACHIEVEMENTS ── */
-  .achievements-section{
-    background:var(--card);border:1px solid var(--border);
-    border-radius:18px;padding:22px;margin-bottom:12px;
-  }
-  .achievements-header{
-    display:flex;align-items:center;justify-content:space-between;
-    margin-bottom:18px;
-  }
-  .achievements-title{font-size:1rem;font-weight:800;letter-spacing:-0.3px;}
-  .achievements-count{font-size:12px;color:rgba(255,255,255,0.3);font-weight:700;}
-
-  .achievements-grid{
-    display:grid;grid-template-columns:repeat(5,1fr);gap:8px;
-    width:100%;
-  }
-
-  .ach-badge{
-    display:flex;flex-direction:column;align-items:center;gap:6px;
-    padding:14px 8px;border-radius:14px;cursor:default;
-    position:relative;transition:transform 0.2s;
-    border:1px solid transparent;
-  }
-  .ach-badge.locked{
-    opacity:0.25;filter:grayscale(100%);
-  }
-  .ach-badge.unlocked{
-    background:rgba(255,255,255,0.04);
-    border-color:rgba(255,255,255,0.1);
-  }
-  .ach-badge.unlocked:hover{transform:translateY(-4px);}
-
-  /* Special rarity borders when unlocked */
-  .ach-badge.unlocked.ach-gold  {border-color:rgba(255,215,0,0.4); background:rgba(255,215,0,0.07); box-shadow:0 0 16px rgba(255,215,0,0.1);}
-  .ach-badge.unlocked.ach-teal  {border-color:rgba(78,205,196,0.4);background:rgba(78,205,196,0.07);box-shadow:0 0 16px rgba(78,205,196,0.1);}
-  .ach-badge.unlocked.ach-purple{border-color:rgba(156,39,176,0.4);background:rgba(156,39,176,0.07);box-shadow:0 0 16px rgba(156,39,176,0.1);}
-  .ach-badge.unlocked.ach-red   {border-color:rgba(255,68,68,0.4); background:rgba(255,68,68,0.07); box-shadow:0 0 16px rgba(255,68,68,0.1);}
-  .ach-badge.unlocked.ach-secret{border-color:rgba(255,0,128,0.5); background:rgba(255,0,128,0.08); box-shadow:0 0 20px rgba(255,0,128,0.15);}
-
-  .ach-icon{font-size:1.8rem;line-height:1;}
-  .ach-name{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;text-align:center;opacity:0.6;line-height:1.3;}
-  .ach-badge.unlocked .ach-name{opacity:0.85;}
-
-  /* Unlock sparkle animation */
-  .ach-badge.unlocked.ach-gold .ach-icon,
-  .ach-badge.unlocked.ach-secret .ach-icon{animation:achGlow 2.5s ease-in-out infinite alternate;}
-  @keyframes achGlow{0%{filter:drop-shadow(0 0 4px rgba(255,215,0,0.6))}100%{filter:drop-shadow(0 0 12px rgba(255,215,0,0.9))}}
-
-  /* Tooltip on hover */
-  .ach-badge[title]:hover::after{
-    content:attr(title);
-    position:fixed;
-    background:rgba(10,10,28,0.95);border:1px solid rgba(255,255,255,0.12);
-    border-radius:8px;padding:6px 10px;font-size:11px;color:rgba(255,255,255,0.8);
-    white-space:nowrap;pointer-events:none;z-index:9999;
-    font-weight:600;letter-spacing:0.2px;
-    bottom:auto;left:50%;top:auto;transform:none;
-    /* Simple centered tooltip */
-    max-width:90vw;white-space:normal;text-align:center;
-    left:50%;transform:translateX(-50%);
-    bottom:20px;
-  }
-
-  /* ── TEAM TABLE ── */
-  .team-section{
-    background:var(--card);border:1px solid var(--border);
-    border-radius:18px;overflow:hidden;
-  }
-  .team-header{
-    padding:18px 22px;border-bottom:1px solid var(--border);
-    display:flex;align-items:center;justify-content:space-between;
-  }
-  .team-title{font-size:1rem;font-weight:800;}
-  .team-count{font-size:12px;color:rgba(255,255,255,0.3);font-weight:700;}
-  .table-wrap{overflow-x:auto;}
-  table{width:100%;border-collapse:collapse;}
-  thead th{
-    padding:10px 14px;text-align:left;font-size:10px;font-weight:700;
-    text-transform:uppercase;letter-spacing:1px;opacity:0.3;
-    border-bottom:1px solid var(--border);
-  }
-  tbody tr{
-    border-bottom:1px solid rgba(255,255,255,0.04);
-    transition:background 0.15s;cursor:pointer;
-  }
-  tbody tr:hover{background:rgba(255,255,255,0.04);}
-  tbody tr:last-child{border-bottom:none;}
-  td{padding:10px 14px;font-size:13px;vertical-align:middle;}
-  .catchmon-image{width:44px;height:44px;object-fit:contain;}
-  .catchmon-name{font-weight:700;font-size:14px;}
-  .level-cell{color:rgba(255,255,255,0.5);font-size:12px;font-weight:700;}
-  .stats-cell{color:rgba(255,255,255,0.5);font-size:12px;}
-  .points-cell{color:var(--gold);font-weight:800;font-size:13px;}
-
-  .rarity-group-header td{
-    padding:8px 14px;font-size:9px;font-weight:800;
-    letter-spacing:2px;text-transform:uppercase;
-  }
-
-  /* Loading / error */
-  .loading{display:flex;justify-content:center;align-items:center;height:80px;gap:10px;opacity:0.4;font-size:13px;}
-  .spinner{width:18px;height:18px;border:2px solid rgba(255,255,255,0.15);border-top-color:var(--gold);border-radius:50%;animation:spin 0.8s linear infinite;}
-  @keyframes spin{to{transform:rotate(360deg);}}
-  .error-message{padding:32px;text-align:center;opacity:0.4;font-size:13px;}
-
-  /* Reveal */
-  .reveal{opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease;}
-  .reveal.in{opacity:1;transform:translateY(0);}
-
-  /* Responsive */
-  @media(max-width:700px){
-    .profile-hero{grid-template-columns:auto 1fr;gap:14px;padding:18px 16px;}
-    .profile-avatar{width:60px;height:60px;font-size:1.6rem;}
-    .profile-name{font-size:1.5rem;letter-spacing:-1px;}
-    .stats-row{grid-template-columns:1fr 1fr 1fr;gap:6px;}
-    .stat-brick{padding:14px 8px;}
-    .stat-num{font-size:1.4rem;}
-    .dex-row{flex-direction:column;align-items:flex-start;gap:12px;}
-    .dex-right{flex-direction:row;align-items:center;width:100%;justify-content:space-between;}
-    .achievements-grid{grid-template-columns:repeat(5,1fr);gap:6px;}
-    .ach-badge{padding:10px 4px;}
-    .ach-icon{font-size:1.3rem;}
-    .ach-name{font-size:8px;}
-  }
-  @media(max-width:400px){
-    .profile-hero{grid-template-columns:1fr;text-align:center;}
-    .profile-avatar{margin:0 auto;}
-    .stats-row{grid-template-columns:1fr 1fr;}
-    .achievements-grid{grid-template-columns:repeat(5,1fr);gap:4px;}
-    .ach-badge{padding:8px 2px;}
-    .ach-icon{font-size:1.2rem;}
-    .ach-name{font-size:7px;}
-    .dex-nums{font-size:1.2rem;}
-    .dex-pct{font-size:1.5rem;}
-  }
-  </style>
 </head>
 <body>
   <div class="orb orb-1"></div>
   <div class="orb orb-2"></div>
   <div class="orb orb-3"></div>
+  <div class="bg-grid"></div>
+  <canvas class="bg-canvas" id="bgCanvas"></canvas>
 
   <div class="container">
 
     <div class="top-bar reveal">
-      <a class="back-btn" href="catcher_ranking_live.html">← Rankings</a>
+      <a class="back-btn" href="#" id="backBtn">← Back</a>
     </div>
 
     <!-- Hero Profile Card -->
-    <div class="profile-hero reveal">
-      <div class="profile-avatar">🎮</div>
+    <div class="profile-hero reveal" id="heroCard">
+      <div class="avatar-wrap">
+        <div class="avatar-aura"></div>
+        <div class="avatar-ring"></div>
+        <div class="profile-avatar">🎮</div>
+      </div>
       <div class="profile-info">
-        <div class="profile-eyebrow">Trainer Profile</div>
+        <span class="profile-eyebrow"><span class="pip"></span>Trainer Profile</span>
         <h1 class="profile-name" id="catcherTitle">Loading...</h1>
         <div class="profile-sub" id="totalPoints">—</div>
       </div>
@@ -323,7 +53,7 @@
     <!-- XP Bar -->
     <div class="xp-section reveal">
       <div class="xp-top">
-        <span class="xp-title">Experience Progress</span>
+        <span class="xp-title">⚡ Experience Progress</span>
         <span class="xp-pct" id="levelPercentText">0%</span>
       </div>
       <div class="xp-track"><div class="xp-fill level-gray" id="levelFill"></div></div>
@@ -349,9 +79,7 @@
         <span class="achievements-title">🏅 Achievements</span>
         <span class="achievements-count" id="achCount">0 / 10</span>
       </div>
-      <div class="achievements-grid" id="achGrid">
-        <!-- Filled by JS -->
-      </div>
+      <div class="achievements-grid" id="achGrid"></div>
     </div>
 
     <!-- Team -->
@@ -374,6 +102,7 @@
 
   </div>
 
+  <script src="assets/js/pages/catcher_detail_fx.js"></script>
   <script type="module" src="assets/js/pages/catcher_detail.js"></script>
   <script type="module" src="assets/js/trainer_widget.js"></script>
 </body>
