@@ -340,11 +340,12 @@ function renderModalList(trainersData, filter = '') {
       const team = Array.isArray(info.team) ? info.team : Object.values(info.team || {});
       return { name, totalPoints: calcTeamPts(team), teamSize: team.length, donation: info.donation || 0 };
     })
+    .filter(t => t.teamSize > 0)
     .filter(t => !filter || t.name.toLowerCase().includes(fl))
     .sort((a, b) => b.totalPoints - a.totalPoints);
 
   if (trainers.length === 0) {
-    list.innerHTML = `<div style="text-align:center;padding:32px;opacity:0.35;font-size:13px">${filter ? 'No trainer found for "' + filter + '"' : 'No trainers yet — join the next stream!'}</div>`;
+    list.innerHTML = `<div style="text-align:center;padding:32px;opacity:0.35;font-size:13px">${filter ? 'No trainer found' : 'No trainers yet'}</div>`;
     return;
   }
 
@@ -370,7 +371,7 @@ function renderModalList(trainersData, filter = '') {
     } else { nameRow.textContent = capitalize(t.name); }
 
     const meta = document.createElement('div'); meta.className = 'tw-item-meta';
-    meta.textContent = t.teamSize > 0 ? `Lvl ${calcLevel(t.totalPoints)} · ${t.teamSize} Catchmon` : 'No catches yet';
+    meta.textContent = `Lvl ${calcLevel(t.totalPoints)} · ${t.teamSize} Catchmon`;
     infoEl.append(nameRow, meta);
 
     const ptsEl = document.createElement('div'); ptsEl.className = 'tw-item-pts';
@@ -448,7 +449,7 @@ function buildGuestWidget() {
 
 // ── FIREBASE ──────────────────────────────────────────────────────────────────
 async function loadAndBuildWidget(trainerName) {
-  buildWidget(trainerName, '?', 0);
+  buildWidget(trainerName, 1, 0);
   try {
     const { db } = await import('./firebase.client.js');
     const { ref, get, onValue } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js');
@@ -484,7 +485,7 @@ async function initTrainerWidget() {
       const { ref, onValue } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js');
       onValue(ref(db, 'trainers'), snap => {
         twAllTrainers = snap.val() || {};
-        if (!modalOpened) {
+        if (!modalOpened && Object.keys(twAllTrainers).length > 0) {
           modalOpened = true;
           renderModalList(twAllTrainers, '');
           showModal();

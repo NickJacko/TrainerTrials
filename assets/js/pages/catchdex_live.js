@@ -82,11 +82,11 @@ function buildRaritySection(rarity, pokemons) {
     const isGod     = rarity === "God";
     const isMe      = myTeamNames.has(nameLower);
 
-    // Noch nie gecatched → nicht anzeigen
-    if (caught === 0 && !isGod) return;
+    // Noch nie gecatched → ausgegraut wie bei Trainer-Dex
+    const neverCaught = caught === 0 && !isGod;
 
     const card = document.createElement('div');
-    card.className = 'card' + (isMe ? ' my-card' : '');
+    card.className = 'card' + (isMe ? ' my-card' : '') + (neverCaught ? ' uncaught' : '');
 
     if (isMe) {
       const badge = document.createElement('span');
@@ -118,11 +118,14 @@ function buildRaritySection(rarity, pokemons) {
     idName.className = 'id-name';
     idName.textContent = isGod ? `#???\n??? ??? ???` : `#${id}\n${capitalize(p.name)}`;
 
-    // Stats: nur caught-Info, kein escaped
+    // Stats: nur caught-Info
     const stats = document.createElement('div');
     stats.className = 'stats';
     if (isGod) {
       stats.textContent = "██ ██ ██";
+    } else if (neverCaught) {
+      stats.textContent = 'Not caught yet';
+      stats.style.color = 'rgba(255,255,255,0.25)';
     } else {
       stats.textContent = `${caught}× caught`;
     }

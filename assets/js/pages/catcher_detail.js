@@ -47,7 +47,7 @@ function calcPoints(catchmon) {
   return Math.round(points);
 }
 
-function getPlayerLevel(totalPoints) { return Math.floor(Math.pow(totalPoints / 500, 0.6)); }
+function getPlayerLevel(totalPoints) { return Math.max(1, Math.floor(Math.pow(totalPoints / 500, 0.6))); }
 function getXpForLevel(level) { return Math.pow(level, 1.666) * 500; }
 
 function getLevelColor(level) {
@@ -72,7 +72,9 @@ function animateNumber(elementId, targetNumber) {
     const progress = Math.min((Date.now() - startTime) / duration, 1);
     const eased = 1 - Math.pow(1 - progress, 3);
     const current = Math.floor(targetNumber * eased);
-    element.textContent = elementId === 'statPoints' ? current.toLocaleString('de-DE') : current;
+    element.textContent = elementId === 'statPoints'
+      ? current.toLocaleString('en-US')
+      : current;
     if (progress < 1) requestAnimationFrame(update);
   }
   update();
@@ -85,6 +87,156 @@ const trainerName = validateTrainerName(rawName);
 if (!trainerName) {
   document.getElementById("teamTable").innerHTML =
     '<tr><td colspan="5" class="error-message">Invalid or missing trainer name.</td></tr>';
+}
+
+// ── ACHIEVEMENTS ──────────────────────────────────────────────────────────────
+// Definition: { id, icon, secretIcon, name, desc, color, check(team, dexList) }
+const ACHIEVEMENTS = [
+  {
+    id: 'first_catch',
+    icon: '🥚', name: 'First Catch',
+    desc: 'Catch your very first Catchmon',
+    color: 'ach-teal',
+    check: (team) => team.length >= 1,
+  },
+  {
+    id: 'collector',
+    icon: '🌱', name: 'Collector',
+    desc: 'Catch every Common Catchmon at least once',
+    color: 'ach-teal',
+    check: (team, dexList) => {
+      if (!dexList?.length) return false;
+      // sprite path: "catchmon/Common/Name.png"
+      const commons = dexList.filter(p => p.sprite?.includes('Common/')).map(p => p.name.toLowerCase());
+      if (!commons.length) return false;
+      const caughtNames = new Set(team.map(p => p.name.toLowerCase()));
+      return commons.every(n => caughtNames.has(n));
+    },
+  },
+  {
+    id: 'starter_club',
+    icon: '💧', name: 'Starter Club',
+    desc: 'Catch every Starter Catchmon at least once',
+    color: 'ach-teal',
+    check: (team, dexList) => {
+      if (!dexList?.length) return false;
+      const starters = dexList.filter(p => p.sprite?.includes('Starter/')).map(p => p.name.toLowerCase());
+      if (!starters.length) return false;
+      const caughtNames = new Set(team.map(p => p.name.toLowerCase()));
+      return starters.every(n => caughtNames.has(n));
+    },
+  },
+  {
+    id: 'rare_hunter',
+    icon: '🔵', name: 'Rare Hunter',
+    desc: 'Catch every Rare Catchmon at least once',
+    color: 'ach-teal',
+    check: (team, dexList) => {
+      if (!dexList?.length) return false;
+      const rares = dexList.filter(p => p.sprite?.includes('Rare/')).map(p => p.name.toLowerCase());
+      if (!rares.length) return false;
+      const caughtNames = new Set(team.map(p => p.name.toLowerCase()));
+      return rares.every(n => caughtNames.has(n));
+    },
+  },
+  {
+    id: 'legendary',
+    icon: '🏆', name: 'Legend Slayer',
+    desc: 'Catch a Legendary Catchmon',
+    color: 'ach-gold',
+    check: (team) => team.some(p => p.rarity === 'Legendary'),
+  },
+  {
+    id: 'mythical',
+    icon: '🟣', name: 'Myth Touched',
+    desc: 'Catch a Mythical Catchmon',
+    color: 'ach-purple',
+    check: (team) => team.some(p => p.rarity === 'Mythical'),
+  },
+  {
+    id: 'shiny',
+    icon: '⭐', name: 'Shiny Lucky',
+    desc: 'Catch a shiny Catchmon',
+    color: 'ach-gold',
+    check: (team) => team.some(p => p.shiny),
+  },
+  {
+    id: 'dex_master',
+    icon: '📘', name: 'Dex Master',
+    desc: 'Catch every single Catchmon (excl. God)',
+    color: 'ach-gold',
+    check: (team, dexList) => {
+      if (!dexList?.length) return false;
+      // Exclude God rarity — they are the final secret
+      const required = dexList
+        .filter(p => !p.sprite?.includes('God/'))
+        .map(p => p.name.toLowerCase());
+      if (!required.length) return false;
+      const caughtNames = new Set(team.map(p => p.name.toLowerCase()));
+      return required.every(n => caughtNames.has(n));
+    },
+  },
+  {
+    id: 'supporter',
+    icon: '💎', name: 'Supporter',
+    desc: 'Send a Gift during the live stream',
+    color: 'ach-teal',
+    check: (team, dexList, donation) => (donation || 0) >= 50,
+  },
+  {
+    id: 'god',
+    icon: '❓',
+    unlockedIcon: '⚫',
+    name: '???',
+    unlockedName: 'The One',
+    desc: 'Catch a God-tier Catchmon',
+    color: 'ach-secret',
+    check: (team) => team.some(p => p.rarity === 'God'),
+  },
+];
+
+let dexListGlobal = [];
+
+function renderAchievements(team, donation) {
+  const grid = document.getElementById('achGrid');
+  if (!grid) return;
+
+  grid.innerHTML = '';
+  let unlockedCount = 0;
+
+  ACHIEVEMENTS.forEach(ach => {
+    const unlocked = ach.check(team, dexListGlobal, donation);
+    if (unlocked) unlockedCount++;
+
+    const isSecret = ach.id === 'god';
+    const showSecret = isSecret && !unlocked;
+
+    const badge = document.createElement('div');
+    badge.className = `ach-badge ${unlocked ? 'unlocked ' + ach.color : 'locked'}`;
+    badge.title = unlocked
+      ? `${ach.unlockedName || ach.name}: ${ach.desc}`
+      : showSecret
+        ? '??? — Secret Achievement'
+        : `${ach.name}: ${ach.desc}`;
+
+    const iconEl = document.createElement('div');
+    iconEl.className = 'ach-icon';
+    iconEl.textContent = unlocked
+      ? (ach.unlockedIcon || ach.icon)
+      : showSecret ? '❓' : ach.icon;
+
+    const nameEl = document.createElement('div');
+    nameEl.className = 'ach-name';
+    nameEl.textContent = unlocked
+      ? (ach.unlockedName || ach.name)
+      : showSecret ? '???' : ach.name;
+
+    badge.append(iconEl, nameEl);
+    grid.appendChild(badge);
+  });
+
+  const countEl = document.getElementById('achCount');
+  if (countEl) countEl.textContent = `${unlockedCount} / ${ACHIEVEMENTS.length}`;
 }
 
 // ── Rarity grouping ───────────────────────────────────────────────────────────
@@ -101,19 +253,17 @@ const RARITY_EMOJIS = { God:"⚫", Mythical:"🟣", Legendary:"🟡", Rare:"🔵
 
 function renderTeamGrouped(team) {
   const tbody = document.getElementById("teamTable");
+  const countEl = document.getElementById("teamCount");
+  if (countEl) countEl.textContent = team.length > 0 ? `${team.length} Catchmon` : '';
 
-  // ── Leeres Team — noch keine Catches ──────────────────────────────────────
   if (!team || team.length === 0) {
     tbody.innerHTML = `
       <tr>
         <td colspan="5" style="text-align:center;padding:48px 20px;">
           <div style="font-size:2.5rem;margin-bottom:12px;">🎯</div>
-          <div style="font-size:1rem;font-weight:800;color:rgba(255,255,255,0.7);margin-bottom:6px;">
-            No Catchmon yet
-          </div>
+          <div style="font-size:1rem;font-weight:800;color:rgba(255,255,255,0.7);margin-bottom:6px;">No Catchmon yet</div>
           <div style="font-size:0.85rem;color:rgba(255,255,255,0.3);line-height:1.5;">
-            This trainer hasn't caught anything yet.<br>
-            Join the next live stream to start catching!
+            This trainer hasn't caught anything yet.<br>Join the next live stream to start catching!
           </div>
         </td>
       </tr>`;
@@ -134,10 +284,10 @@ function renderTeamGrouped(team) {
 
     const headerRow = document.createElement('tr');
     headerRow.className = 'rarity-group-header';
-    headerRow.style.cssText = `background:${colors.bg}; border-top: 1px solid ${colors.border};`;
+    headerRow.style.cssText = `background:${colors.bg};border-top:1px solid ${colors.border};`;
     const headerTd = document.createElement('td');
     headerTd.colSpan = 5;
-    headerTd.style.cssText = `color:${colors.text}; font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:1.5px;`;
+    headerTd.style.cssText = `color:${colors.text};font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;`;
     headerTd.textContent = `${RARITY_EMOJIS[rarity] || ''} ${rarity}  ·  ${group.length}`;
     headerRow.appendChild(headerTd);
     fragment.appendChild(headerRow);
@@ -168,11 +318,11 @@ function renderTeamGrouped(team) {
 
       const tdStats = document.createElement('td');
       tdStats.className = 'stats-cell';
-      tdStats.textContent = sumStats.toLocaleString('de-DE');
+      tdStats.textContent = sumStats.toLocaleString('en-US');
 
       const tdPoints = document.createElement('td');
       tdPoints.className = 'points-cell';
-      tdPoints.textContent = points.toLocaleString('de-DE');
+      tdPoints.textContent = points.toLocaleString('en-US');
 
       row.append(tdSprite, tdName, tdLevel, tdStats, tdPoints);
       fragment.appendChild(row);
@@ -188,6 +338,7 @@ async function updateDexCompletion(team) {
   try {
     const res     = await fetch("dex_list.json?" + Date.now());
     const dexList = await res.json();
+    dexListGlobal = dexList;  // save for achievements
     const caught  = new Set(team.map(p => p.name.toLowerCase())).size;
     const total   = dexList.length;
     const pct     = total > 0 ? Math.round((caught / total) * 100) : 0;
@@ -196,10 +347,7 @@ async function updateDexCompletion(team) {
     document.getElementById('dexPct').textContent         = `${pct}%`;
     setTimeout(() => { document.getElementById('dexBar').style.width = `${pct}%`; }, 600);
   } catch {
-    // dex_list.json nicht gefunden — Fallback
-    document.getElementById('dexCaughtCount').textContent = '—';
-    document.getElementById('dexTotalCount').textContent  = '—';
-    document.getElementById('dexPct').textContent         = '—';
+    document.getElementById('dexTotalCount').textContent = '?';
   }
 }
 
@@ -208,41 +356,28 @@ function loadCatcherData(trainersData) {
   const trainer = trainerName.toLowerCase();
   const catcher = trainersData[trainer];
 
-  // ── Trainer existiert noch nicht in Firebase ──────────────────────────────
   if (!catcher) {
-    // Name trotzdem anzeigen — er hat nur noch nichts gefangen
-    const titleEl = document.getElementById("catcherTitle");
-    titleEl.textContent = capitalize(trainer);
-
-    document.getElementById("totalPoints").textContent = "0 Total Points";
-    document.getElementById("statPoints").textContent  = "0";
-    document.getElementById("statTeam").textContent    = "0";
-    document.getElementById("statLevel").textContent   = "1";
-
-    // XP bar auf 0
+    document.getElementById("catcherTitle").textContent = capitalize(trainer);
+    document.getElementById("totalPoints").textContent  = "New Trainer";
+    document.getElementById("statPoints").textContent   = "0";
+    document.getElementById("statTeam").textContent     = "0";
+    document.getElementById("statLevel").textContent    = "1";
     const fill = document.getElementById("levelFill");
-    fill.style.width = "0%";
-    fill.className   = "xp-fill level-gray";
+    fill.style.width = "0%"; fill.className = "xp-fill level-gray";
     document.getElementById("levelPercentText").textContent = "0%";
     document.getElementById("levelLabel").textContent       = "Level 1 – 0 / 500 XP";
-
-    // Dex auf 0
-    document.getElementById('dexCaughtCount').textContent = "0";
-    document.getElementById('dexPct').textContent         = "0%";
-    try { document.getElementById('dexBar').style.width   = "0%"; } catch {}
-
-    // Catchdex Link trotzdem setzen
+    document.getElementById('dexCaughtCount').textContent   = "0";
+    document.getElementById('dexPct').textContent           = "0%";
+    try { document.getElementById('dexBar').style.width = "0%"; } catch {}
     document.getElementById("catchdexLink").href =
       `catchdex_catcher.html?name=${encodeURIComponent(trainerName)}`;
-
-    // Leeres Team rendern
     renderTeamGrouped([]);
+    renderAchievements([], 0);
     return;
   }
 
-  // ── Trainer gefunden ──────────────────────────────────────────────────────
+  // ── Trainer found ─────────────────────────────────────────────────────────
   const tier = getDonationTier(catcher.donation || 0);
-
   const titleEl = document.getElementById("catcherTitle");
   titleEl.textContent = '';
   if (tier !== "normal") {
@@ -259,9 +394,10 @@ function loadCatcherData(trainersData) {
     : Object.values(catcher.team || {}).filter(Boolean);
 
   const totalPoints = team.reduce((sum, p) => sum + calcPoints(p), 0);
+  const donation    = catcher.donation || 0;
 
   document.getElementById("totalPoints").textContent =
-    `${totalPoints.toLocaleString('de-DE')} Total Points`;
+    `${totalPoints.toLocaleString('en-US')} Total Points`;
 
   animateNumber('statPoints', totalPoints);
   animateNumber('statTeam', team.length);
@@ -280,12 +416,15 @@ function loadCatcherData(trainersData) {
     document.getElementById("levelPercentText").textContent = `${pct.toFixed(1)}%`;
   }, 500);
   document.getElementById("levelLabel").textContent =
-    `Level ${level} – ${Math.floor(xpNow).toLocaleString('de-DE')} / ${Math.floor(xpNext).toLocaleString('de-DE')} XP`;
+    `Level ${level} – ${Math.floor(xpNow).toLocaleString('en-US')} / ${Math.floor(xpNext).toLocaleString('en-US')} XP`;
 
   document.getElementById("catchdexLink").href =
     `catchdex_catcher.html?name=${encodeURIComponent(trainerName)}`;
 
-  updateDexCompletion(team);
+  updateDexCompletion(team).then(() => {
+    // Render achievements after dex is loaded so dex-based ones work
+    renderAchievements(team, donation);
+  });
   renderTeamGrouped(team);
   if (team.length > 0) runCatchup(trainerName, team);
 }
