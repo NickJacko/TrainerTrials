@@ -1,21 +1,23 @@
 /* assets/css/catcher_detail.css */
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
+html { overflow-x: hidden; }
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   background: #080818;
   color: white;
   min-height: 100vh;
   overflow-x: hidden;
+  width: 100%;
+  max-width: 100vw;
 }
 
+/* Grid pattern disabled — new profile page uses radial gradients via inline style */
 body::before {
   content: '';
   position: fixed; inset: 0;
-  background-image:
-    linear-gradient(rgba(78,205,196,0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(78,205,196,0.04) 1px, transparent 1px);
-  background-size: 56px 56px;
+  background: none;
   pointer-events: none; z-index: 0;
 }
 
@@ -24,7 +26,7 @@ body::before {
 .orb-2 { width: 400px; height: 400px; background: rgba(255,215,0,0.06);  bottom: 100px; right: -100px; }
 .orb-3 { width: 300px; height: 300px; background: rgba(255,107,107,0.05); top: 50%; left: 50%; transform: translate(-50%,-50%); }
 
-.container { max-width: 1100px; margin: auto; padding: 28px 20px 80px; position: relative; z-index: 1; }
+.container { max-width: 1100px; margin: auto; padding: 28px 16px 80px; position: relative; z-index: 1; width: 100%; }
 
 /* Top bar */
 .top-bar { margin-bottom: 36px; }
@@ -37,7 +39,7 @@ body::before {
 }
 .back-btn:hover { color: white; border-color: rgba(255,255,255,0.22); }
 
-/* ── HERO ── */
+/* ── HERO (legacy — overridden by inline styles in new HTML) ── */
 .hero { margin-bottom: 32px; }
 .hero-eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: #FFD700; opacity: 0.65; margin-bottom: 12px; }
 h1 {
@@ -45,7 +47,6 @@ h1 {
   line-height: 0.92; letter-spacing: -3px; margin-bottom: 14px;
   color: white;
 }
-/* Name tiers inside h1 */
 h1 .catcher-name { background-size: 200% auto; background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shine 3s linear infinite; }
 h1 .king, h1 .god { background-image: linear-gradient(90deg,#ffd700,#fff8,#ffd700); }
 h1 .flame         { background-image: linear-gradient(90deg,#ff4444,#fff8,#ff4444); }
@@ -83,7 +84,6 @@ h1 .normal        { color: white; -webkit-text-fill-color: white; background: no
 .xp-pct { font-size: 1.3rem; font-weight: 900; color: #FFD700; }
 .xp-track { height: 12px; background: rgba(255,255,255,0.07); border-radius: 6px; overflow: hidden; margin-bottom: 10px; }
 .xp-fill { height: 100%; width: 0%; border-radius: 6px; transition: width 1.5s ease; display: flex; align-items: center; justify-content: center; }
-/* Level colours */
 .level-rainbow   { background: linear-gradient(90deg,#ff0000,#ff8000,#ffff00,#00ff00,#00ffff,#0000ff,#8000ff); }
 .level-deepred   { background: linear-gradient(90deg,#B71C1C,#D32F2F); }
 .level-red       { background: linear-gradient(90deg,#C62828,#F44336); }
@@ -102,7 +102,7 @@ h1 .normal        { color: white; -webkit-text-fill-color: white; background: no
   border-radius: 18px; padding: 22px 24px; margin-bottom: 12px;
   display: flex; align-items: center; gap: 24px;
 }
-.dex-info { flex: 1; }
+.dex-info { flex: 1; min-width: 0; }
 .dex-eyebrow { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; opacity: 0.35; margin-bottom: 8px; }
 .dex-nums { font-size: 2rem; font-weight: 900; color: #4ECDC4; margin-bottom: 10px; line-height: 1; }
 .dex-track { height: 5px; background: rgba(255,255,255,0.08); border-radius: 3px; overflow: hidden; }
@@ -137,13 +137,11 @@ th {
 }
 td { padding: 10px 12px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.05); color: white; }
 
-/* Rarity group headers */
 tr.rarity-group-header td {
   cursor: default !important;
   padding: 8px 14px; font-size: 10px; font-weight: 800;
   text-transform: uppercase; letter-spacing: 1.5px; text-align: left;
 }
-/* Catchmon rows */
 tbody tr:not(.rarity-group-header) { cursor: pointer; transition: background-color 0.12s; }
 tbody tr:not(.rarity-group-header):hover td { background: rgba(255,215,0,0.06); }
 tbody tr:not(.rarity-group-header):hover .catchmon-image { transform: scale(1.1); }
@@ -154,21 +152,15 @@ tbody tr:not(.rarity-group-header):hover .catchmon-image { transform: scale(1.1)
 .level-cell  { font-weight: 700; color: #4ECDC4; }
 .stats-cell  { font-weight: 600; color: #FF6B6B; }
 
-/* Loading / error */
 .loading { display: flex; justify-content: center; align-items: center; height: 100px; color: rgba(255,255,255,0.4); gap: 10px; font-size: 13px; }
 .spinner { width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.15); border-top-color: #FFD700; border-radius: 50%; animation: spin 0.8s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 .error-message { text-align: center; padding: 40px; color: rgba(255,255,255,0.4); font-size: 14px; }
 
-/* Reveal */
 .reveal { opacity: 0; transform: translateY(22px); transition: opacity 0.6s ease, transform 0.6s ease; }
 .reveal.in { opacity: 1; transform: translateY(0); }
 
-/* Responsive */
 @media (max-width: 768px) {
-  .stats-row { grid-template-columns: 1fr; gap: 2px; }
-  .stat-brick:first-child { border-radius: 16px 16px 0 0; }
-  .stat-brick:last-child  { border-radius: 0 0 16px 16px; }
   .dex-row { flex-direction: column; gap: 16px; }
   .dex-right { align-items: flex-start; flex-direction: row; align-items: center; }
   h1 { letter-spacing: -2px; }

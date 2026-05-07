@@ -36,7 +36,7 @@ function calcPoints(catchmon) {
   return Math.round(points);
 }
 
-function calcLevel(points) { return Math.floor(Math.pow(points / 500, 0.6)); }
+function calcLevel(points) { return Math.max(1, Math.floor(Math.pow(points / 500, 0.6))); }
 
 function getDonationTier(donation) {
   if (donation >= 2500) return "king";
@@ -130,14 +130,12 @@ function renderTable() {
       window.location.href = `catcher_detail.html?name=${encodeURIComponent(catcher.name)}`;
     });
 
-    // Rank
     const tdRank = document.createElement('td');
     const badge = document.createElement('div');
     badge.className = `rank-badge ${rankClasses[index] || 'rank-other'}`;
     badge.textContent = index + 1;
     tdRank.appendChild(badge);
 
-    // Name + level
     const tdName = document.createElement('td');
     tdName.className = 'catcher-cell';
     const tier = getDonationTier(catcher.donation);
@@ -181,12 +179,6 @@ function renderTable() {
 }
 
 // ── Firebase ──────────────────────────────────────────────────────────────────
-onValue(ref(db, '.info/connected'), snap => {
-  const el = document.getElementById('connectionStatus');
-  if (snap.val()) { el.textContent = '🟢 Live'; el.className = 'connection-status connected'; }
-  else            { el.textContent = '🔴 Offline'; el.className = 'connection-status disconnected'; }
-});
-
 onValue(ref(db, 'trainers'), snap => {
   const data = snap.val() || {};
   allCatchers = Object.entries(data).map(([name, info]) => {
