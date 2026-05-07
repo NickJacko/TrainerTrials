@@ -10,16 +10,23 @@
 <body>
   <div class="orb orb-1"></div>
   <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+  <div class="bg-grid"></div>
+  <canvas class="bg-canvas" id="bgCanvas"></canvas>
 
   <div class="container">
 
-    <div class="top-bar">
-      <a class="back-btn" href="index.html">← Arena</a>
+    <div class="top-bar reveal">
+      <a class="back-btn" href="#" id="backBtn">← Back</a>
     </div>
 
-    <div class="page-header reveal">
-      <div class="eyebrow">Catchmon Arena · Dex</div>
-      <h1><span class="line-white">📘 Epic</span><span class="line-grad">Catchdex</span></h1>
+    <div class="page-header reveal" id="heroCard">
+      <div class="eyebrow"><span class="pip"></span>Catchmon Arena · Dex</div>
+      <h1>
+        <span class="line-white">📘 Epic</span>
+        <span class="line-grad">Catchdex</span>
+      </h1>
+      <p class="page-sub">Browse all Catchmon — track your collection</p>
     </div>
 
     <div class="search-wrap reveal">
@@ -35,6 +42,7 @@
 
   </div>
 
+  <script src="assets/js/pages/catchdex_live_fx.js"></script>
   <script type="module" src="assets/js/pages/catchdex_live.js"></script>
   <script type="module" src="assets/js/trainer_widget.js"></script>
 </body>
